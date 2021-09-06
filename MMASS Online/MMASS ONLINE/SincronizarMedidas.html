@@ -194,13 +194,16 @@
         function onCargarTabla(tablaID, data) {
             rowHTML = ''
             showPleaseWait();
+            var idRenglon = 1;
 
             $.each(data, function (it, MedidaGAM) {
 
                 rowHTML += "<tr>";
-                rowHTML += "<td class='col-xs-1'> " + MedidaGAM.descripcion + "</td > ";
+                rowHTML += "<td class='col-xs-1'> " + idRenglon + "</td > ";
                 rowHTML += "<td class='col-xs-1'> " + MedidaGAM.descripcion + "</td >";
                 rowHTML += "</tr>";
+
+                idRenglon++;
 
             });
 

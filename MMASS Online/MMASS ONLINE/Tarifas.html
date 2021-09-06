@@ -351,7 +351,7 @@
             if (medidas.length > 0) {
                 medidas.forEach(function (medida) {
                     $("#selMedidas option[value=" + medida.id_medidadigital + "]").attr("selected", "selected");
-                    viewListMedidas += "<li class=\"list-group-item\" style='display:none'>" + medida.ancho + 'x' + medida.alto + ' (' + medida.descripcion + ')' + "</li>";
+                    viewListMedidas += "<li class=\"list-group-item\" style='display:none'>" + medida.ancho + 'x' + medida.alto + "</li>";
                 });
             } else {
                 viewListMedidas += "<li class=\"list-group-item\" style='display:none'>(Todos)</li>";
@@ -441,7 +441,7 @@
             var pObj = data;
             var listitems = '';
             $.each(pObj, function (it, iObj) {
-                listitems += '<option value=' + iObj[colId] + '>' + iObj[colAncho] + 'x' + iObj[colAlto] + ' (' + iObj[colDesc] + ')' + '</option>';
+                listitems += '<option value=' + iObj[colId] + '>' + iObj[colAncho] + 'x' + iObj[colAlto] + '</option>';
             });
             $("#" + idSelect).empty();
             $("#" + idSelect).append(listitems);
