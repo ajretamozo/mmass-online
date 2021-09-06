@@ -1,0 +1,262 @@
+CAMBIOS EN LA BD:
+
+Agregado campo [id_google_ad_manager] a tabla [dg_orden_pub_ap]
+Creada tabla [dg_medidas]
+Creada tabla [dg_orden_pub_medidas]
+Creada tabla [dg_orden_pub_areas]
+Creada tabla [dg_areas_geo]
+Agregado campo [id_area] a tabla [dg_orden_pub_as]
+Creada tabla [dg_emplazamientos]
+Creada tabla [dg_orden_pub_emplazamientos]
+Creada tabla [dg_tarifas_emplazamientos]
+Creada tabla [dg_tarifas_medidas]
+Creada tabla [dg_tarifas_medios]
+Creada tabla [dg_tarifas_areas]
+Creada tabla [dg_tarifas_tipos_avisos_dg]
+Creada tabla [conv_dg_detalle]
+Creada tabla [dg_conv_dg_detalle_emplazamientos]
+Creada tabla [dg_conv_dg_detalle_medidas]
+Creada tabla [dg_conv_dg_detalle_medios]
+Agregado campo [id_tipo_aviso_dg] a tabla [conv_dg_detalle]
+
+
+TABLAS SIN DATOS:
+
+aadetail
+aamaster
+abono
+abonodetalle
+abonodetallecb
+activacion
+adjuntos
+afectados
+alertas
+alertas_detalle
+articulos
+auditoria_avisos
+auditoria_sys
+avisos
+avisos_medios
+avisos_variables
+avisosImportados
+categoria_grupos
+categoriamedio
+cfgreport_usuarios
+cobros
+CommandLog
+cond_iibb
+config_import
+config_import_detalle
+configuracion_hojas
+contactos_rel2
+contactos_saldosexternos
+contratomarco (d)
+contratomarco_facturas
+conv_bonif_detalle
+conv_dist_fact
+conv_medios_detalle
+conv_pautad_detalle
+conv_precios_detalle_prod
+conv_rangos_detalle
+convenio_anual_precios_dist_mensual
+convenio_anual_precios_inver
+Convenio_Bonificados
+convenio_precios_detalle
+Convenio_Prg_Bonif
+convenio_tarifas_avisos
+convenios_pagos
+Coti_Nego
+Coti_Nego_Contacto
+cotizacion
+cuenta_contable_ext2
+cuenta_contable_externa
+desc_repre
+descmedios
+descuento_ap
+descuento_as
+det_escalas
+dias_plan
+dur_medios (d)
+dur_tema_ap (d)
+dur_tema_as (d)
+emails (d)
+emi_contexc
+escalas
+escalas_desc
+especialidades
+estado_aprobacion
+estart_ap
+estart_as
+estart_at
+estart_medio
+estart_medio_as
+estim_presup
+estructura_medio
+estructura_medio_detalle
+evento (d)
+ext_ctacte
+factura_ap (d)
+factura_ap_abono
+factura_ap_agentes
+factura_ap_aj
+factura_ap_batch
+factura_ap_cobro
+factura_ap_convenio
+factura_ap_esp
+factura_ap_menciones (d)
+factura_ap_ops (d)
+factura_ap_pagos (d)
+factura_as (d)
+fechas_facturacion
+firmas_digitales
+fl_segdisp
+formas_pago_grupo
+fuentes_habilitadas
+horarios_30
+hs_dias_plan
+log_errores
+materiales (d)
+medidas_avisos
+medio_escalas
+medios_ejecutivos
+menciones (d)
+menciones_neg
+mensaje
+mmsfile
+mmsfilesent
+mnopc_en
+mnopc_es
+monos
+monos_detalle
+monos_edicion_detalle
+monos_hoja
+msgattach
+msgattachsent
+msgcta
+msginbox
+msgsent
+nego_ap
+nego_as
+nego_desc
+nego_reglas
+nego_reglas_medios
+nego_tar_fijas
+nuevos_anunciantes
+numerador_op_x_empresa
+op_as_detalle
+op_as_dias
+opas_tandadiarango
+Orden_esp_ap
+orden_int_ap
+orden_int_as
+orden_pub_agentes
+orden_pub_as_neg
+orden_pub_avisos
+orden_pub_avisos_descuentos
+orden_pub_avisos_detalle
+orden_pub_avisos_ejecutivos
+orden_pub_avisos_formaspago
+orden_pub_avisos_renglon
+orden_pub_desc
+orden_pub_ingreso
+orden_pub_planes_fact
+otronegocio
+otronegociodetalle
+otronegociodetallecb
+otronegociodetalleejec
+partes_medio
+partes_medio_secciones
+partes_medio_ubicaciones
+permisosvisualiznego
+perusu_op
+planes
+plantillas_mono
+plantillas_mono_agrup
+plantillas_mono_agrup_detalle
+plantillas_mono_detalle
+plantillas_mono_excepcion
+plazos_pagos
+presup
+prg_hs_dias_plan
+producto_desde
+prog_plan
+rango_aprobacion
+rango_grupo_ap
+rango_grupo_as
+rdr_target
+rdr_vinculo_target
+rpcentral
+rpexcl
+rpmedio
+rpnodo
+rprutina
+rubros
+rutina (d)
+rutina_bloqueo (d)
+rutina_estart
+rutina_export (d)
+rutina_export_settings
+rutina_programa (d)
+rutina_spot (d)
+rutina_tanda (d)
+secciones
+sector_horario_pgma
+servidorhdx (d)
+suceso
+tablaescala
+tablaescalaagencia
+tablaescalaanunciante
+tablaescalacontacto
+tablaescalamedio
+talonario_tipocomprobante (d)
+talonarios (d)
+tanda_dia (d)
+target_producto
+tarifas_avisos
+tarifas_avisos_detalle
+tarifas_avisos_secciones
+tarifas_avisos_tipos_avisos
+tarifas_programa
+tarifas_tanda
+temas (d)
+temas_locutores (d)
+tipo_materiales (d)
+tipos_avisos
+tipos_avisos_excepciones
+tipos_avisos_variables
+tipos_comp_medios
+tipos_orden_usuario
+tipos_organismo
+topes_tipos_publicidad
+tsk_hs
+tsk_log
+tsk_svc
+turnos_caja
+ubicaciones
+UploadFiles
+vtk_capitulo
+vtk_clase_prov
+vtk_contrato
+vtk_contrato_venc
+vtk_destino
+vtk_f_pasadas
+vtk_lic
+vtk_lic_periodo
+vtk_licemi
+vtk_licencia
+vtk_log_pasada
+vtk_mat_art
+vtk_mat_spt
+vtk_material
+vtk_paquete
+vtk_paquete_cap
+vtk_paquete_tit
+vtk_pasada
+vtk_prestamo
+vtk_rutina
+vtk_rutina_det
+vtk_subclase_prov
+vtk_titulo
+vtk_titulo_oc
+vtk_ubicacion
+vtk_ubicnivel2

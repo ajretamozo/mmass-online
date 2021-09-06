@@ -1,0 +1,54 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29123.88
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "MMASS ONLINE", "MMASS ONLINE\", "{87DA629E-89CD-4B8F-B6A0-0B8C9B569307}"
+	ProjectSection(WebsiteProperties) = preProject
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.6.1"
+		Debug.AspNetCompiler.VirtualPath = "/localhost_6854"
+		Debug.AspNetCompiler.PhysicalPath = "MMASS ONLINE\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_6854\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/localhost_6854"
+		Release.AspNetCompiler.PhysicalPath = "MMASS ONLINE\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_6854\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		VWDPort = "6854"
+		SlnRelativePath = "MMASS ONLINE\"
+		DefaultWebSiteLanguage = "Visual C#"
+	EndProjectSection
+	ProjectSection(ProjectDependencies) = postProject
+		{B767C19F-283E-4057-B828-AE11D61173A3} = {B767C19F-283E-4057-B828-AE11D61173A3}
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApi", "WebAPI\WebApi.csproj", "{B767C19F-283E-4057-B828-AE11D61173A3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{87DA629E-89CD-4B8F-B6A0-0B8C9B569307}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{87DA629E-89CD-4B8F-B6A0-0B8C9B569307}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{87DA629E-89CD-4B8F-B6A0-0B8C9B569307}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{87DA629E-89CD-4B8F-B6A0-0B8C9B569307}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{B767C19F-283E-4057-B828-AE11D61173A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B767C19F-283E-4057-B828-AE11D61173A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B767C19F-283E-4057-B828-AE11D61173A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B767C19F-283E-4057-B828-AE11D61173A3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {97FC73C8-7175-4AFE-B0C4-DDEC1FF04217}
+	EndGlobalSection
+EndGlobal

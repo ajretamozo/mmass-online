@@ -1,0 +1,403 @@
+﻿<!DOCTYPE html>
+<html>
+<head runat="server">
+    <title>MMASS - Tarifas</title>
+
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment-with-locales.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/js/tempusdominus-bootstrap-4.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/css/tempusdominus-bootstrap-4.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400&display=swap" rel="stylesheet">
+    <script src="./js/autentificar.js"></script>
+
+    <style>
+        .table-hover tbody tr:hover > td {
+            cursor: pointer;
+        }
+
+        .input-group-addon {
+            padding: 5px;
+            background: #b3c1cc;
+        }
+
+        .search-box-closed {
+            width: 53px;
+        }
+
+        .dataTitle {
+            font-family: 'Roboto';
+            font-size: 20px;
+        }
+
+        @media (max-width: 767px) {
+            .search-box-open {
+                width: 100%;
+            }
+
+            #divMessage {
+                position: fixed;
+                width: 100%;
+                bottom: 2px;
+                text-align: center;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .search-box-open {
+                width: 300px;
+            }
+        }
+
+        @media (min-width: 1100px) { 
+            .container {
+                max-width: 1080px;
+            }
+        }
+
+        @media screen {
+
+            #divMessage {
+                position: fixed;
+                left: 50%;
+                margin-left: -200px;
+                width: 400px;
+                bottom: 30px;
+                text-align: center;
+            }
+        }
+    </style>
+
+</head>
+<body>
+    <!--MENU-->
+    <div id="divNavBar"></div>
+
+    <main role="main" class="container">
+        <div id="divBlock" style="left:0; right:0;top:0; bottom:0;overflow-x: hidden; overflow-y: auto;position:fixed;z-index:1051;outline:0;display:none"></div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="modalCenter" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header d-flex justify-content-center">
+                        <h5 class="modal-title" id="modalCenterTitle">Advertencia</h5>
+                    </div>
+                    <div class="modal-body" id="modalCenterBody">
+
+                    </div>
+                    <div class="modal-footer d-flex justify-content-center" id="modalCenterFooter">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div id="divMessage" class="alert" style="display:none;cursor:pointer;z-index:10000;" title="Click para cerrar" onclick="$('#divMessage').hide('slideDown')"> </div>
+        <div class="jumbotron mt-4 py-4" id="divTarifasMain">
+            <!--Tarifas DATA-->
+            <p class="dataTitle">TARIFAS</p>
+            <div id="divTarifasData d-flex align-items-around">
+                <!--Filtros-->
+                <div class="row py-1">
+                    <div class="col-lg-4">
+                        <label for="descFiltro">Descripcion: </label>
+                        <div class="input-group"> <input type="text" id="descFiltro" class="form-control enterSearch"></div>
+                    </div>
+                    <div class="col-lg-4">
+                        <label for="">Medios:</label>
+                        <div class="input-group">
+                            <select class="form-control enterSearch" name="medio" id="selMedios">
+                                <option value=''>(Todos) </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <label>Vigencia:</label>
+                        <div class="input-group input-daterange">
+                            <input type="text" class="form-control enterSearch" id="fechaDesde" data-toggle="datetimepicker" data-target="#fechaDesde" />
+                            <span class="input-group-addon">hasta</span>
+                            <input type="text" class="form-control enterSearch" id="fechaHasta" data-toggle="datetimepicker" data-target="#fechaHasta" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row py-1">
+                    <div class="col-lg-4">
+                        <label for="">Tipo de Publicidad:</label>
+                        <div class="input-group">
+                            <select class="form-control enterSearch" name="medio" id="selTipoPublicidad">
+                                <option value=''>(Todos) </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <label for="">Forma de uso:</label>
+                        <div class="input-group">
+                            <select class="form-control enterSearch" name="medio" id="selFormaUso">
+                                <option value=''>(Todos) </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-1 d-flex align-items-end">
+                        <input type="checkbox" id="checkEsVigente" style="margin-bottom: .8rem; margin-right: .2rem" checked>
+                        <label for="checkEsVigente">Vigente</label>
+                    </div>
+                    <div class="col-lg-3 d-flex justify-content-end align-items-end">
+                        <button type="button" class="btn btn-dark btn-sm mx-1" onclick="searchTarifas()">
+                            <span class="fa fa-search"></span> Buscar
+                        </button>
+                        <button type="button" class="btn btn-dark btn-sm mx-1" onclick="nuevaTarifa()">
+                            <span class="fa fa-check"></span> Nueva Tarifa
+                        </button>
+                    </div>
+                </div>
+                <!--<div class="row justify-content-end align-items-end">
+                <button type="button" class="btn btn-dark btn-sm mx-1" onclick="searchTarifas()">
+                    <span class="fa fa-check"></span> Buscar
+                </button>
+                <button type="button" class="btn btn-dark btn-sm mx-1" onclick="nuevaTarifa()">
+                    <span class="fa fa-check"></span> Nueva Tarifa
+                </button>
+            </div>-->
+                <!--Tabla-->
+                <div class="table-responsive mt-2">
+                    <table class='table table-hover'>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Descripcion</th>
+                                <th>Vigencia</th>
+                                <th>Forma de Uso</th>
+                                <th>Importe</th>
+                                <th class="d-flex justify-content-center">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="TableTarifas" class="small"></tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!--Scripts-->
+    <script type="text/javascript">
+    var globalBearer = "1";
+    //DatePickers Initialization
+    $(function () {
+        $("#divNavBar").load("navBar.html");
+        $('#fechaDesde').datetimepicker({ format: 'L', locale: 'es' });
+        $('#fechaHasta').datetimepicker({ format: 'L', locale: 'es' });
+        $('input[type=text]').attr('autocomplete', 'off');
+        ///autentificar();
+        populateFields();
+        $(".enterSearch").on("keydown", function (e) {
+            if (event.which == 13) {
+                searchTarifas();
+            }
+        });
+
+    });
+
+	
+  
+    function populateFields() {    
+
+    $.when(
+        // Llenar select Medios
+        callWS("medios", "getAll", '', function (data) { onPopulateSelectDone(data, 'selMedios', 'id_medio', 'desc_medio'); }),
+        // Llenar select Tipos de publicidad
+        callWS("tipos_avisos", "getAll", '', function (data) { onPopulateSelectDone(data, 'selTipoPublicidad', 'id_tipo_aviso_dg', 'descripcion'); }),
+        // Llenar select Formas de uso
+        callWS("tarifas", "getFormasUsoAll", '', function (data) { onPopulateSelectDone(data, 'selFormaUso', 'id', 'descripcion'); }),
+    ).then(function () { searchTarifas() },function (data1, data2, data3) {
+        console.log("Medios: " + data1[2].statusText + "; Tipos de Publicidad: " + data2[2].statusText + "Formas de uso: " + data3[2].statusText + ";");
+        showMessage("Se produjo un error al cargar los campos, intentelo nuevamente", type = "alert");
+    });
+
+    //// Llenar tabla con tarifas existentes
+    //callWS("tarifas", "getAll", '', function (data) { populateTable(data, 'TableTarifas'); });
+    }
+
+    function populateTable(data, idTable) {
+        listTar = data;
+        rowHTML = ''
+        $.each(listTar, function (it, itar) {
+            rowHTML += "<tr id-tar=\"" + itar.id_tarifa_dg + "\">"
+            //rowHTML += "<tr onclick='openTarifa(this)'>"
+            rowHTML += "<td class='col-xs-1'>" + itar.id_tarifa_dg + "</td>";
+            rowHTML += "<td class='col-xs-1'>" + itar.descripcion + "</td>";
+            rowHTML += "<td class='col-xs-1'>" + dateToFieldFormat(itar.fecha_desde) + ' - ' + dateToFieldFormat(itar.fecha_hasta) + "</td>";
+            rowHTML += "<td class='col-xs-1'>" + itar.forma_uso.descripcion + "</td>";
+            rowHTML += "<td class='col-xs-1'>" + itar.precio_unitario + "</td>";
+            //Acciones
+            rowHTML += "<td id='colAcciones' class='col-xs-2 d-flex justify-content-center'>"
+            rowHTML += "<div class='divAcciones' id='divAcciones_" + itar.id_tarifa_dg + "'>"
+            rowHTML += "<button type='button' title='Ver' class='btn btn-outline-dark btn-sm mx-1' onclick=\"openTarifa("+itar.id_tarifa_dg+",'view')\"><span class='fa fa-eye'></span> </button>"
+            rowHTML += "<button type='button' title='Editar' class='btn btn-outline-dark btn-sm mx-1' onclick=\"openTarifa("+itar.id_tarifa_dg+",'edit')\"><span class='fa fa-edit'></span> </button>"
+            rowHTML += "<button type='button' title='Eliminar' class='btn btn-outline-dark btn-sm mx-1' onclick=\"checkBorrarTarifa("+itar.id_tarifa_dg+")\"><span class='fa fa-times'></span> </button>"
+            rowHTML += "</div>"
+            rowHTML += "</td>"
+            rowHTML += '</tr>'
+        })
+        $("#" + idTable).html(rowHTML);
+    }
+   
+
+    function onPopulateSelectDone(data, idSelect, colId, colDesc) {
+        var pObj = data;
+        var listitems = '';
+        $.each(pObj, function (it, iObj) {
+            listitems += '<option value=' + iObj[ colId ] + '>' + iObj[ colDesc ] + '</option>';
+        });
+        $("#" + idSelect).empty();
+        $("#" + idSelect).append("<option value=''>(Todos) </option>");
+        $("#" + idSelect).append(listitems);
+        if (pObj.length > 1) {
+            $("#" + idSelect).val([]);
+        }
+    }
+
+    function searchTarifas() {
+        error = '';
+        params = {};
+        params.descripcion = $('#descFiltro').val();
+        if ($('#fechaDesde').val() != "") {
+            fDesde = new Date(moment($("#fechaDesde").val(), 'DD/MM/YYYY', true).format());
+            mfDesde = moment(fDesde);
+            if (mfDesde.isValid()) {
+                params.fecha_desde = dateToSqlFormat($('#fechaDesde').val());
+            } else {
+                error += "Formato 'Fecha Desde' invalido";
+            }
+        }
+        if ($('#fechaHasta').val() != "") {
+            fHasta = new Date(moment($("#fechaHasta").val(), 'DD/MM/YYYY', true).format());
+            mfHasta = moment(fHasta);
+            if (mfHasta.isValid()) {
+                params.fecha_hasta = dateToSqlFormat($('#fechaHasta').val());
+            } else {
+                if (error != '') { error += ' / '}
+                error += "Formato 'Fecha Hasta' invalido";
+            }
+        }
+        params.forma_uso = $('#selFormaUso').val();
+        params.id_tipo_aviso_dg = $('#selTipoPublicidad').val();
+        params.id_medio = $('#selMedios').val();
+        if (document.getElementById("checkEsVigente").checked) {
+            params.vigente = "1";
+        };
+
+        for (param in params) {
+            if (params[param] == null) {
+                params[param] = '';
+            }
+        };
+
+        var parametros = setListaParametros(params);
+        if (error == '') {
+            callWS("tarifas", "filter", JSON.stringify(parametros), function (data) {
+                if (data.length > 0) {
+                    populateTable(data, 'TableTarifas');
+                } else {
+                    message = 'La búsqueda no produjo ningun resultado';
+                    showMessage(message, "info");
+                }
+            });
+        } else {
+            showMessage(error, "info");
+        }
+    }
+
+    function setListaParametros(data) {
+        var parametros = {};
+        var listaParametros = [];
+
+        Object.keys(data).forEach(function(key) {
+            var objParametro = {};
+            objParametro.ParameterName = key;
+            objParametro.Value = data[key];
+            listaParametros.push(objParametro);
+        });
+        parametros.Parametros = listaParametros;
+        return parametros;
+    }
+
+    function nuevaTarifa() {
+        location.href = "/tarifas.html?mode=new";
+    }
+   
+    function openTarifa(data, mode) {
+        var newURL = "/Tarifas.html?idTarifa=" + data + '&mode=' + mode;
+        location.href = newURL;
+    }
+
+        function checkBorrarTarifa(id) {
+
+            options = [
+                {
+                    optionDesc: "Aceptar",
+                    optionFunc: "borrarTarifa('" + id + "')"
+                },
+                {
+                    optionDesc: "Cancelar",
+                    optionFunc: ""
+                }
+            ];
+
+            var mensaje = "<div class='d-flex justify-content-center'>Está seguro de eliminar la tarifa?</div>";
+
+            showModal(mensaje, options);
+        }
+
+    function borrarTarifa(id) {
+        var data = {};
+        data.id_tarifa_dg = id;
+        callWS("tarifas", "remove", JSON.stringify(data), function (data) {
+            if (data == true) {
+                searchTarifas();
+            } else {
+                message = 'Ocurrió un problema al borrar la tarifa';
+                showMessage(message, "alert");
+            }
+            
+        });
+    }
+
+    function selectToJson(idSelect, idCol) {
+        ret = [];
+            
+        values = $('#' + idSelect).val();
+        values.forEach(function (value) {
+            item = {};
+            item[idCol] = value;
+            ret.push(item);
+        });
+        return ret;
+    }
+
+    function dateToSqlFormat(date) {
+        arr = date.split("/");
+        sqlFormatDate = '';
+        sqlFormatDate = arr[2] + '-' + arr[1] + '-' + arr[0];
+        return sqlFormatDate; 
+    }
+
+    function dateToFieldFormat(date) {
+        date = date.split('T')[0];
+        arr = date.split("-");
+        fieldFormatDate = '';
+        fieldFormatDate = arr[2] + '/' + arr[1] + '/' + arr[0];
+        return fieldFormatDate;
+    }
+     
+    
+    </script>
+</body>
+
+</html>

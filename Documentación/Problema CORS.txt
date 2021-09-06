@@ -1,0 +1,2 @@
+Revisar consultas a Base de Datos, probablemente ese sea el problema (por ej, pasar fechas en formato incorrecto). 
+Problema con conexion a BD

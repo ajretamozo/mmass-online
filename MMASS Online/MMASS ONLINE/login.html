@@ -1,0 +1,306 @@
+﻿<!DOCTYPE html>
+<html>
+<head runat="server">
+    <title>MMASS Online - Login</title>
+
+
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment-with-locales.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/js/tempusdominus-bootstrap-4.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/css/tempusdominus-bootstrap-4.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src="./js/autentificar.js"></script>
+    <script src="./dist/duallistbox/jquery.bootstrap-duallistbox.min.js"></script>
+    <link href="./dist/duallistbox/bootstrap-duallistbox.min.css" rel="stylesheet">
+
+
+
+
+    <style>
+        :root {
+            --input-padding-x: 1.5rem;
+            --input-padding-y: .75rem;
+        }
+
+        body {
+            background: #007bff;
+            background: linear-gradient(to right, #adb5bd, #e9ecef);
+        }
+
+        .card-signin {
+            border: 0;
+            border-radius: 1rem;
+            box-shadow: 0 0.5rem 1rem 0 rgba(0, 0, 0, 0.1);
+        }
+
+            .card-signin .card-title {
+                margin-bottom: 1rem;
+                font-weight: 300;
+                font-size: 1.5rem;
+            }
+
+            .card-signin .card-body {
+                padding: 2rem;
+            }
+
+        .form-signin {
+            width: 100%;
+        }
+
+            .form-signin .btn {
+                font-size: 80%;
+                border-radius: .5rem;
+                letter-spacing: .1rem;
+                font-weight: bold;
+                padding: 1rem;
+                transition: all 0.2s;
+            }
+
+        .form-label-group {
+            position: relative;
+            margin-bottom: 1rem;
+        }
+
+            .form-label-group input {
+                height: auto;
+                border-radius: .5rem;
+            }
+
+            .form-label-group > input,
+            .form-label-group > label {
+                padding: var(--input-padding-y) var(--input-padding-x);
+            }
+
+            .form-label-group > label {
+                position: absolute;
+                top: 0;
+                left: 0;
+                display: block;
+                width: 100%;
+                margin-bottom: 0;
+                /* Override default `<label>` margin */
+                line-height: 1.5;
+                color: #495057;
+                border: 1px solid transparent;
+                border-radius: .25rem;
+                transition: all .1s ease-in-out;
+            }
+
+            .form-label-group input::-webkit-input-placeholder {
+                color: transparent;
+            }
+
+            .form-label-group input:-ms-input-placeholder {
+                color: transparent;
+            }
+
+            .form-label-group input::-ms-input-placeholder {
+                color: transparent;
+            }
+
+            .form-label-group input::-moz-placeholder {
+                color: transparent;
+            }
+
+            .form-label-group input::placeholder {
+                color: transparent;
+            }
+
+            .form-label-group input:not(:placeholder-shown) {
+                padding-top: calc(var(--input-padding-y) + var(--input-padding-y) * (2 / 3));
+                padding-bottom: calc(var(--input-padding-y) / 3);
+            }
+
+                .form-label-group input:not(:placeholder-shown) ~ label {
+                    padding-top: calc(var(--input-padding-y) / 3);
+                    padding-bottom: calc(var(--input-padding-y) / 3);
+                    font-size: 12px;
+                    color: #777;
+                }
+
+        .btn-google {
+            color: white;
+            background-color: #ea4335;
+        }
+
+        .btn-facebook {
+            color: white;
+            background-color: #3b5998;
+        }
+
+        .card-img-top {
+            width: 50%;
+        }
+
+        /* Fallback for Edge
+        -------------------------------------------------- */
+
+        @supports (-ms-ime-align: auto) {
+            .form-label-group > label {
+                display: none;
+            }
+
+            .form-label-group input::-ms-input-placeholder {
+                color: #777;
+            }
+        }
+
+        /* Fallback for IE
+        -------------------------------------------------- */
+         @media screen {
+
+            #divMessage {
+                position: fixed;
+                left: 20%;
+                width: 60%;
+                bottom: 3rem;
+                text-align: center;
+            }
+        }
+
+        @media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+            .form-label-group > label {
+                display: none;
+            }
+
+            .form-label-group input:-ms-input-placeholder {
+                color: #777;
+            }
+        }
+        }
+    </style>
+</head>
+<body>
+    <!--MENU-->
+    <div id="divNavBar"></div>
+
+    <!--CONTENEDOR PRINCIPAL HTML-->
+
+    <div class="container">
+        <div id="divBlock" style="left:0; right:0;top:0; bottom:0;overflow-x: hidden; overflow-y: auto;position:fixed;z-index:1051;outline:0;display:none"></div>
+        <div class="modal " id="pleaseWaitDialog" data-backdrop="static" data-keyboard="false" style="display:none">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <!--<img class="app-icon" alt="Brand" src="images/waiting2.png" style="float:left;margin-right:15px;">-->
+                        <h4 class="modal-title" onclick='hidePleaseWait();'>Procesando...</h4>
+
+
+                    </div>
+                    <div class="modal-body">
+                        <div class="progress">
+                            <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+
+                            </div>
+                        </div>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div>
+
+        <div class="modal fade" id="largeModal">
+
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="largeModalTitle"></h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+
+                    <!-- Modal body -->
+                    <div class="modal-body" id="largeModalBody">
+
+                    </div>
+
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div id="divMessage" class="alert" style="display:none;cursor:pointer;z-index:10000;" title="Click para cerrar"> </div>
+        <div class="row">
+            <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
+                <div class="card card-signin my-5">
+                    <div class="card-body">
+                        <div class="row d-flex justify-content-center">
+                        <img class="card-img-top pb-4" src="/img/logoMmassOnlineFC.svg">
+                        </div>
+                        <h5 class="card-title text-center">Inicio de Sesion</h5>
+                        <div class="form-signin">
+                            <div class="form-label-group">
+                                <input type="text" id="inputUser" class="form-control" placeholder="Usuario" required autofocus>
+                                <label for="inputUser">Usuario</label>
+                            </div>
+
+                            <div class="form-label-group">
+                                <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
+                                <label for="inputPassword">Password</label>
+                            </div>
+                            <button class="btn btn-lg btn-primary btn-block text-uppercase" onclick="submit()">Iniciar Sesion</button>
+                            <p class="card-text text-right"><small class="text-muted">Strategy Zone S.A.</small></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+    <!--Scripts-->
+    <script type="text/javascript">
+
+       
+
+        $(function () {
+            //autentificar();
+            $("#inputUser").on("keydown", function (event) {
+                if (event.which == 13) {
+                    document.getElementById("inputPassword").focus(); 
+                }
+            });
+            $("#inputPassword").on("keydown", function (event) {
+                if (event.which == 13) {
+                    submit();
+                }
+            });
+            $("#divMessage").on("click", function () { $("#divMessage").hide(); });
+
+        });
+
+        function submit() {
+            if ($("#inputUser").val() == "" || $("#inputPassword").val() == "") {
+                showMessage("Complete el usuario y el password","error");
+
+            } else {
+                autentificar($("#inputUser").val(), $("#inputPassword").val(), onAutentificar, onError);
+            }
+        }
+
+        function onError() {
+            showMessage("Usuario o Clave incorrecta", "error");
+           
+
+        }
+        function onAutentificar(data){
+            location.href = '/ordenList.html';
+            //callWS("contactos", "getAgencias", '', function (data) { test(data); });
+        }
+
+
+
+    </script>
+</body>
+
+</html>

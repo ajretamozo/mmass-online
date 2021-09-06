@@ -1,0 +1,653 @@
+﻿<!DOCTYPE html>
+<html>
+<head runat="server">
+    <meta http-equiv="content-type" content="application/vnd.ms-excel;" charset="UTF-8">
+    <title>Informe de ventas - MMASS Online</title>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="./js/popper.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment-with-locales.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/js/tempusdominus-bootstrap-4.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/css/tempusdominus-bootstrap-4.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400&display=swap" rel="stylesheet">
+    <script src="./js/autentificar.js"></script>
+    <script src="./js/export.js"></script>
+    <script src="./js/filesaver.js"></script>
+    <script src="./js/tableexport.js"></script>
+    <link href="./css/media.css" rel="stylesheet">
+    <!--<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.11/css/jquery.dataTables.css">
+    <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.11/js/jquery.dastaTables.js"></script>-->
+    <script src="./js/bootstrap-select.min.js"></script>
+    <link rel="stylesheet" href="./css/bootstrap-select.min.css">
+
+    <style>
+        .container {
+            width: auto;
+        }
+
+        #cont {
+            width: 98% !important;
+            margin: 1% !important;
+        }
+
+        .table-secondary td {
+            font-weight: 800;
+        }
+
+        .monto {
+            text-align: end;
+        }
+
+        .align-center {
+            text-align: center;
+        }
+
+        .tableFixHead {
+            overflow-y: auto;
+            /*min-height: 100vh;*/
+            border: 1px 0 solid #b3b7bb;
+        }
+        
+        .nav-item {
+            color: #212529;
+        }
+        .printOnly {
+            display:none;
+            text-align: center;
+        }
+
+        .table-secondary td {
+            border-color: #d2d6da;
+        }
+
+        .agGroup td{
+            background-color: #c7ccce;
+        }
+
+        .anGroup td {
+            background-color: #d9dde0;
+        }
+            .tableFixHead thead th {
+                position: sticky;
+                top: 0;
+                background-color: #e9ecef;
+                border-bottom: 1px solid #b3b7bb;
+                border-top: 1px solid #b3b7bb;
+                box-shadow: 1px 0 0 1px #e9ecef;
+            }
+    </style>
+
+</head>
+<body>
+
+    <!--MENU-->
+    <div id="divNavBar"></div>
+
+    <main role="main" class=".container-fluid" id="cont" style="width: 98% !important;margin: 1% !important">
+        <div id="divBlock" style="left:0; right:0;top:0; bottom:0;overflow-x: hidden; overflow-y: auto;position:fixed;z-index:1051;outline:0;display:none"></div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="modalCenter" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalTitle"> Advertencia </h5>
+                    </div>
+                    <div class="modal-body">
+
+                    </div>
+                    <div class="modal-footer">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div id="divMessage" class="alert" style="display:none;cursor:pointer;z-index:10000;" title="Click para cerrar" onclick="$('#divMessage').hide('slideDown')"> </div>
+        <div class="jumbotron mt-4 py-4" id="divTarifasMain">
+            <div class="row justify-content-center mt-2">
+                <h4>Informe de Ventas</h4>
+            </div>
+            <div class="row justify-content-center mt-2 printOnly">
+                <h6 id="obsReporte" >
+
+                </h6>
+                <hr />
+            </div>
+
+            <!-- NAV -->
+            <nav class="noPrint">
+                <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                    <a class="nav-item nav-link active" id="nav-reporte-tab" data-toggle="tab" href="#reporte" role="tab" aria-controls="nav-home" aria-selected="true">Reporte</a>
+                    <a class="nav-item nav-link" id="nav-filtros-tab" data-toggle="tab" href="#filtros" role="tab" aria-controls="nav-profile" aria-selected="false">Filtros</a>
+                </div>
+            </nav>
+            <div class="tab-content" id="myTabContent">
+                <!-- Tab Reporte -->
+                <div class="tab-pane fade show active" id="reporte" role="tabpanel" aria-labelledby="reporte-tab">
+                    <div class="row py-1 noPrint">
+                        <div class="col-lg-4">
+                            <label>Seleccionar Fechas:</label>
+                            <div class="input-group input-daterange">
+                                <input type="text" class="form-control enterSearch" id="fechaDesde" data-toggle="datetimepicker" data-target="#fechaDesde" />
+                                <span class="input-group-addon">hasta</span>
+                                <input type="text" class="form-control enterSearch" id="fechaHasta" data-toggle="datetimepicker" data-target="#fechaHasta" />
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <label>Agrupado por: </label>
+                            <div class="mt-1">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="tipo" id="0" value="0" checked>
+                                    <label class="form-check-label" for="0">Orden</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="tipo" id="1" value="1">
+                                    <label class="form-check-label" for="1">Campaña</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="tipo" id="2" value="2">
+                                    <label class="form-check-label" for="2">Detallado</label>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!--ACCIONES-->
+                    <div class="mt-2 noPrint">
+                        <button type="button" class="btn btn-dark btn-sm mx-1" onclick="test();">
+                            Consultar
+                        </button>
+                        <button type="button" class="btn btn-dark btn-sm mx-1" onclick="imprimir();">
+                            Imprimir
+                        </button>
+                        <button type="button" class="btn btn-dark btn-sm mx-1" onclick="excel();">
+                            Excel
+                        </button>
+                    </div>
+                    <!--Tabla detallada-->
+                    <div id="divTablaDet" class="table-responsive mt-2 vh-100" style="display:none;">
+                        <table id="table" class='table table-sm tableFixHead'>
+                            <thead>
+                                <tr>
+                                    <th>Agencia</th>
+                                    <th>Anunciante</th>
+                                    <th>Producto</th>
+                                    <th>NroOrd</th>
+                                    <th>OrdAg</th>
+                                    <th class="align-center">Impresiones</th>
+                                    <th>Medios</th>
+                                    <th class="monto">%Medio</th>
+                                    <th class="monto">Subtotal</th>
+                                    <th class="monto">% NC</th>
+                                    <th class="monto">Subtotal1</th>
+                                    <th class="monto">% FC</th>
+                                    <th class="monto">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableReport" class="small"></tbody>
+                        </table>
+                    </div>
+                    <!--Tabla agrupada-->
+                    <div id="divTablaAgrup" class="table-responsive mt-2 vh-100" style="display:none;">
+                        <table id="tablaAgrup" class='table table-sm tableFixHead'>
+                            <thead>
+                                <tr>
+                                    <th>Agencia</th>
+                                    <th>Anunciante</th>
+                                    <th>Producto</th>
+                                    <th>NroOrd</th>
+                                    <th>OrdAg</th>
+                                    <th class="align-center">Impresiones</th>
+                                    <th class="monto">Subtotal</th>
+                                    <th class="monto">% NC</th>
+                                    <th class="monto">Subtotal1</th>
+                                    <th class="monto">% FC</th>
+                                    <th class="monto">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableReportAgrup" class="small"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- Tab Filtros -->
+                <div class="tab-pane fade noPrint" id="filtros" role="tabpanel" aria-labelledby="filtros-tab">
+                    <div class="row py-1 noPrint">
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label>Agencias:</label>
+                                <select id="selAgencias" class="selectpicker form-control" data-deselect-all-text="Ninguno" data-select-all-text="Todos" data-none-selected-text="Seleccionar" data-actions-box="true" data-size="10" data-live-search="true" multiple></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row py-1 noPrint">
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label>Anunciantes:</label>
+                                <select id="selAnunciantes" class="selectpicker form-control" data-deselect-all-text="Ninguno" data-select-all-text="Todos" data-none-selected-text="Seleccionar" data-actions-box="true" data-size="10" data-live-search="true" multiple></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row py-1 noPrint">
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label>Productos:</label>
+                                <select id="selProductos" class="selectpicker form-control" data-deselect-all-text="Ninguno" data-select-all-text="Todos" data-none-selected-text="Seleccionar" data-actions-box="true" data-size="10" data-live-search="true" multiple></select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+            
+
+
+
+    </main>
+
+    <script type="text/javascript">
+
+        $(function () {
+            //const getCellValue = (tr, idx) => tr.children[idx].innerText || tr.children[idx].textContent;
+
+            //const comparer = (idx, asc) => (a, b) => ((v1, v2) =>
+            //    v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2) ? v1 - v2 : v1.toString().localeCompare(v2)
+            //)(getCellValue(asc ? a : b, idx), getCellValue(asc ? b : a, idx));
+
+            //// do the work...
+            //document.querySelectorAll("th").forEach(th => th.style.cursor = "pointer");
+            //document.querySelectorAll('th').forEach(th => th.addEventListener('click', (() => {
+            //    var table = th.closest('table');
+            //    jtable = $(table);
+            //    Array.from(table.querySelectorAll('tbody>tr'))
+            //        .sort(comparer(Array.from(th.parentNode.children).indexOf(th), this.asc = !this.asc))
+            //        .forEach(tr => jtable.append(tr));
+            //})));
+
+            //$('input[type=text]').attr('autocomplete', 'off');
+            //$('a[data-toggle="tab"]').on('hide.bs.tab', function (e) {
+            //    idContentToHide = e.target.getAttribute("href");
+            //    idContentToShow = e.relatedTarget.getAttribute("href");
+            //    $(idContentToHide).hide();
+            //})
+            //$('a[data-toggle="tab"]').on('hidden.bs.tab', function (e) {
+            //    idContentToShow = e.relatedTarget.getAttribute("href");
+            //    $(idContentToShow).show();
+            //})
+
+            $('#fechaDesde').datetimepicker({ format: 'L', locale: 'es' });
+            $('#fechaHasta').datetimepicker({ format: 'L', locale: 'es' });
+            $("#divNavBar").load("navBar.html");
+            $("#divMessage").on("click", function () { $("#divMessage").hide(); });
+            populateFields();
+        });
+
+        function test(idTable) {
+            error = '';
+            params = {};
+            tipo = $('input[type=radio]:checked').val();
+            params.Tipo = tipo;
+            if (tipo == 2) {
+                idTable = "tableReport";
+            } else {
+                idTable = "tableReportAgrup";
+            }
+
+            if ($('#fechaDesde').val() == "" || $('#fechaHasta').val() == "") {
+                error += "Es obligatorio seleccionar fechas para el reporte"
+            }
+
+            if ($('#fechaDesde').val() != "") {
+                fDesde = new Date(moment($("#fechaDesde").val(), 'DD/MM/YYYY', true).format());
+                mfDesde = moment(fDesde);
+                if (mfDesde.isValid()) {
+                    params.FechaDesde = dateToSqlFormat($('#fechaDesde').val());
+                } else {
+                    error += "Formato 'Fecha Desde' invalido";
+                }
+            }
+            if ($('#fechaHasta').val() != "") {
+                fHasta = new Date(moment($("#fechaHasta").val(), 'DD/MM/YYYY', true).format());
+                mfHasta = moment(fHasta);
+                if (mfHasta.isValid()) {
+                    params.FechaHasta = dateToSqlFormat($('#fechaHasta').val());
+                } else {
+                    if (error != '') { error += ' / ' }
+                    error += "Formato 'Fecha Hasta' invalido";
+                }
+            }
+
+            listaAgencias = "";
+            $.each($("#selAgencias").val(), function (it, agencia) {
+                listaAgencias += agencia + ",";
+            });
+            listaAgencias = listaAgencias.slice(0, -1);
+            params.ListaAgencias = listaAgencias;
+
+            listaAnunciantes = "";
+            $.each($("#selAnunciantes").val(), function (it, anunciante) {
+                listaAnunciantes += anunciante + ",";
+            });
+            listaAnunciantes = listaAnunciantes.slice(0, -1);
+            params.ListaAnunciantes = listaAnunciantes;
+
+            listaProductos = "";
+            $.each($("#selProductos").val(), function (it, producto) {
+                listaProductos += producto + ",";
+            });
+            listaProductos = listaProductos.slice(0, -1);
+            params.ListaProductos = listaProductos;
+
+            for (param in params) {
+                if (params[param] == null) {
+                    params[param] = '';
+                }
+            };
+
+            var parametros = setListaParametros(params);
+
+            if (error == '') {
+                //Consultar datos
+                callWS("R_Ventas", "filterBy", JSON.stringify(parametros), function (data) {
+                    if (data.length > 0) {
+                        //Cambia la descripcion del reporte
+                        obsReporte = "";
+                        if (tipo == 0) {
+                            obsReporte += "Agrupado por orden - "
+                        } else if (tipo == 1) {
+                            obsReporte += "Agrupado por campaña - "
+                        } else {
+                            obsReporte += "Detallado - "
+                        }
+                        obsReporte += "Fechas: " + $('#fechaDesde').val() + " - " + $('#fechaHasta').val();
+                        $("#obsReporte").text(obsReporte);
+                        //llena la tabla
+                        populateTable(data, idTable, tipo);
+                        //muestra la tabla indicada
+                        if (tipo == 2) {
+                            $("#divTablaAgrup").hide();
+                            $("#divTablaDet").show();
+                        } else {
+                            $("#divTablaAgrup").show();
+                            $("#divTablaDet").hide();
+                        }
+                    } else {
+                        message = 'La búsqueda no produjo ningun resultado';
+                        showMessage(message, "info");
+                    }
+                });
+            } else {
+                showMessage(error, "info");
+            }
+        }
+
+        function populateTable(data, idTable, tipo) {
+            orderlist = data;
+
+            listaxAg = groupBy(orderlist,"agencia")
+
+            $.each(listaxAg, function(it,rowAg) {
+	            listaxAg[it] = groupBy(rowAg, "anunciante");
+            })
+
+            rowHTML = '';
+            sumImpresionesGral = 0;
+            sumSubtotalGral = 0;
+            sumSubtotal1Gral = 0;
+            sumTotalGral = 0;
+            //grupo agencia
+            $.each(listaxAg, function(itAg, groupAg) {
+	            sumImpresionesAg = 0;
+	            sumSubtotalAg = 0;
+	            sumSubtotal1Ag = 0;
+	            sumTotalAg = 0;
+	            rowHTML += "<tr class='tableexport-ignore table-secondary agGroup' agencia='" + itAg + "'>"
+	            rowHTML += "<td colspan='13'> AGENCIA: " + itAg + "</td>";
+	            rowHTML += "</tr>"
+	            //grupo anunciante
+	            $.each(groupAg, function (itAn, groupAn) {
+		            sumImpresionesAn = 0;
+		            sumSubtotalAn = 0;
+		            sumSubtotal1An = 0;
+		            sumTotalAn = 0;
+		            rowHTML += "<tr class='tableexport-ignore table-secondary anGroup' anunciante='" + itAn + "'>"
+		            rowHTML += "<td></td><td colspan='12'>         ANUNCIANTE: " + itAn + "</td>";
+		            rowHTML += "</tr>"
+		            //filas detalle
+		            $.each(groupAn, function(it, iord) {
+                        if (iord.primer_neto != 0) {
+                            var porcNC = (iord.imp_conf_nc / iord.primer_neto * 100);
+                            var porcFC = (iord.imp_conf_fc / iord.primer_neto * 100);
+                        } else {
+                            porcNC = 0;
+                            porcFC = 0;
+                        }
+                        if (tipo == 2) {
+                            var impXmedio = iord.cantidad_impresiones * iord.porc_ron / 100;
+                            var subtotal = (iord.monto_neto_det * iord.porc_ron / 100);
+                        }
+                        else
+                        if (tipo == 1) {
+                            subtotal = iord.monto_neto_det;
+                        } else {
+                            subtotal = iord.primer_neto;
+                        }
+
+                        var subtotal1 = (subtotal - (subtotal * porcNC / 100));
+                        var total = (subtotal1 - (subtotal * porcFC / 100));
+
+                        rowHTML += "<tr id-order=\"" + iord.op + "\">"
+                        rowHTML += "<td class='col-xs-1'>" + iord.agencia + "</td>";
+                        rowHTML += "<td class='col-xs-1'>" + iord.anunciante + "</td>";
+                        rowHTML += "<td class='col-xs-1'>" + iord.producto + "</td>";
+                        rowHTML += "<td style='mso-number-format:\"\@\";' class='col-xs-1'>" + iord.nro_orden + "</td>";
+                        rowHTML += "<td class='col-xs-1'>" + iord.nro_orden_agencia + "</td>";
+                        
+
+                        if (tipo == 2) {
+                            rowHTML += "<td class='align-center col-xs-1'>" + roundSinFormato(impXmedio,2) + "</td>";
+                            rowHTML += "<td class='col-xs-1'>" + iord.medio + "</td>";
+                            rowHTML += "<td class='monto col-xs-1'>" + iord.porc_ron + "%</td>";
+                        } else {
+                            rowHTML += "<td class='align-center col-xs-1'>" + iord.cantidad_impresiones + "</td>";
+                        }
+
+                        rowHTML += "<td class='monto col-xs-1'>$" + round(subtotal, 2) + "</td>";
+                        rowHTML += "<td class='monto col-xs-1'>"+ round(porcNC,2) + "%</td>";
+                        rowHTML += "<td class='monto col-xs-1'>$" + round(subtotal1, 2) + "</td>";
+                        rowHTML += "<td class='monto col-xs-1'>" + round(porcFC,2) + "%</td>";
+                        rowHTML += "<td class='monto col-xs-1'>$" + round(total,2) + "</td>";
+                        rowHTML += '</tr>'
+			
+                        //incremento totales anunciante
+                        if (tipo == 2) {
+                            sumImpresionesAn += impXmedio;
+                        } else {
+                            sumImpresionesAn += iord.cantidad_impresiones;
+                        }
+			            
+			            sumSubtotalAn += subtotal;
+			            sumSubtotal1An += subtotal1;
+			            sumTotalAn += total;
+
+		            })
+		            //totales anunciante
+		            rowHTML += "<tr class='tableexport-ignore table-secondary anGroup' anunciante='" + itAn + "'>"
+                    rowHTML += "<td></td><td colspan='4'> TOTALES ANUNCIANTE: " + itAn + "</td>";
+                    rowHTML += "<td class='align-center'>" + roundSinFormato(sumImpresionesAn,2) + "</td>";
+
+                    if (tipo == 2) {
+                        rowHTML += "<td></td><td></td>";
+                    }
+
+		            rowHTML += "<td class='monto'>$" + round(sumSubtotalAn,2) + "</td><td></td>";
+		            rowHTML += "<td class='monto'>$" + round(sumSubtotal1An,2) + "</td><td></td>";
+		            rowHTML += "<td class='monto'>$" + round(sumTotalAn,2) + "</td>";
+		            rowHTML += "</tr>"
+		            
+		
+		            //incremento totales agencia
+		            sumImpresionesAg += sumImpresionesAn;
+		            sumSubtotalAg += sumSubtotalAn;
+		            sumSubtotal1Ag += sumSubtotal1An;
+		            sumTotalAg += sumTotalAn;
+	            })
+	            //totales agencia
+	            rowHTML += "<tr class='tableexport-ignore table-secondary agGroup' agencia='" + itAg + "'>"
+	            rowHTML += "<td colspan='5'> TOTALES AGENCIA: " + itAg + "</td>";
+                rowHTML += "<td class='align-center'>" + sumImpresionesAg + "</td>";
+
+                if (tipo == 2) {
+                    rowHTML += "<td></td><td></td>";
+                }
+
+	            rowHTML += "<td class='monto'>$" + round(sumSubtotalAg,2) + "</td><td></td>";
+	            rowHTML += "<td class='monto'>$" + round(sumSubtotal1Ag,2) + "</td><td></td>";
+	            rowHTML += "<td class='monto'>$" + round(sumTotalAg,2) + "</td>";
+	            rowHTML += "</tr>"
+	
+	            //incremento totales generales
+	            sumImpresionesGral += sumImpresionesAg;
+	            sumSubtotalGral += sumSubtotalAg;
+	            sumSubtotal1Gral += sumSubtotal1Ag;
+	            sumTotalGral += sumTotalAg;
+            })
+            //totales
+            rowHTML += "<tr class='tableexport-ignore table-secondary'>"
+            rowHTML += "<td colspan='5'> TOTALES: </td>";
+            rowHTML += "<td class='align-center'>" + sumImpresionesGral + "</td>";
+
+            if (tipo == 2) {
+                rowHTML += "<td></td><td></td>";
+            }
+
+            rowHTML += "<td class='monto'>$" + round(sumSubtotalGral,2) + "</td><td></td>";
+            rowHTML += "<td class='monto'>$" + round(sumSubtotal1Gral,2) + "</td><td></td>";
+            rowHTML += "<td class='monto'>$" + round(sumTotalGral,2) + "</td>";
+            rowHTML += "</tr>"
+            $("#" + idTable).html(rowHTML);
+
+        }
+
+        function formatearMonto(x) {
+            return Number.parseFloat(x).toFixed(2);
+        }
+
+        function round(value, decimals) {
+            return formatearMonto(Number(Math.round(value + 'e' + decimals) + 'e-' + decimals));
+        }
+
+        function roundSinFormato(value, decimals) {
+            return Number(Math.round(value + 'e' + decimals) + 'e-' + decimals);
+        }
+
+        function setListaParametros(data) {
+            var parametros = {};
+            var listaParametros = [];
+
+            Object.keys(data).forEach(function (key) {
+                var objParametro = {};
+                objParametro.ParameterName = key;
+                objParametro.Value = data[key];
+                listaParametros.push(objParametro);
+            });
+            parametros.Parametros = listaParametros;
+            return parametros;
+        }
+
+        function dateToSqlFormat(date) {
+            arr = date.split("/");
+            sqlFormatDate = '';
+            sqlFormatDate = arr[2] + '-' + arr[1] + '-' + arr[0];
+            return sqlFormatDate;
+        }
+
+        function dateToFieldFormat(date) {
+            date = date.split('T')[0];
+            arr = date.split("-");
+            fieldFormatDate = '';
+            fieldFormatDate = arr[2] + '/' + arr[1] + '/' + arr[0];
+            return fieldFormatDate;
+        }
+
+        function groupBy(xs, key) {
+        return xs.reduce(function(rv, x) {
+        (rv[x[key]] = rv[x[key]] || []).push(x);
+        return rv;
+        }, {});
+            };
+
+    function imprimir() {
+        //selecciono el div de la tabla para ajustar el tamaño por la impresion
+        t = document.getElementById("divTablaAgrup");
+        t2 = document.getElementById("divTablaDet");
+        t.classList.remove("vh-100");
+        t2.classList.remove("vh-100");
+        $(".printOnly").show();
+        window.print();
+        $(".printOnly").hide();
+        t.classList.add("vh-100");
+        t2.classList.add("vh-100");
+    }
+
+    function populateFields() {
+
+        //Llenar select Medios
+        //callWS("medios", "getAll", '', function (data) { onPopulateSelectDone(data, 'selMedios', 'id_medio', 'desc_medio'); });
+        //// Llenar select Tipos de publicidad
+        //callWS("tipos_avisos", "getAll", '', function (data) { onPopulateSelectDone(data, 'selTipoPublicidad', 'id_tipo_aviso_dg', 'descripcion'); });
+        //// Llenar select Formas de uso
+        //callWS("tarifas", "getFormasUsoAll", '', function (data) { onPopulateSelectDone(data, 'selFormaUso', 'id', 'descripcion'); });
+
+
+        $.when(
+            callWS("contactos", "getAgencias", '', function (data) { onPopulateSelectDone(data, 'selAgencias', 'id_contacto', 'razonSocial'); }),
+            callWS("contactos", "getAnunciantes", '', function (data) { onPopulateSelectDone(data, 'selAnunciantes', 'id_contacto', 'razonSocial'); }),
+            callWS("productos", "getAll", '', function (data) { onPopulateSelectDone(data, 'selProductos', 'id_producto', 'desc_producto'); }),
+            $('#fechaDesde').val(moment().startOf('month').format('DD/MM/YYYY')),
+            $('#fechaHasta').val(moment().endOf('month').format('DD/MM/YYYY'))
+        ).then(function () {  }, function (data1, data2) {
+            console.log("Medios: " + data1[2].statusText + "; Tipos de Publicidad: " + data2[2].statusText + "Formas de uso: " + data3[2].statusText + ";");
+            showMessage("Se produjo un error al cargar los campos, intentelo nuevamente", type = "alert");
+        });
+            }
+
+    function onPopulateSelectDone(data, idSelect, colId, colDesc) {
+        var pObj = data;
+        var listitems = '';
+        $.each(pObj, function (it, iObj) {
+            listitems += '<option value=' + iObj[colId] + '>' + iObj[colDesc] + '</option>';
+        });
+        $("#" + idSelect).empty();
+        $("#" + idSelect).append(listitems);
+        if (pObj.length > 1) {
+            $("#" + idSelect).val([]);
+        }
+        if ($("#" + idSelect).attr('multiple') == 'multiple') {
+            $('.selectpicker').selectpicker('refresh');
+        }
+    }
+
+    function excel() {
+        tipo = $('input[type=radio]:checked').val(); 
+        if (tipo == 2) {
+            idTable = "table"
+        } else {
+            idTable = "tablaAgrup"
+        }
+        exportTableToExcel(idTable, 'Informe de Ventas ' + moment().format("YYYYMMDD")+ "_" + moment().hour() + "" + moment().minute() + "" + moment().second());
+    }
+
+    </script>
+
+
+
+
+</body>
+</html >

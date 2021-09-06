@@ -1,0 +1,4 @@
+  ALTER TABLE [usuarios] ADD clave_web VARCHAR (100) ;
+  
+  ALTER TABLE [dg_order_pub_as] ADD id_google_ad_manager BIGINT ;
+  update usuarios set clave_web = 'P9OFm1z7/FY2xpB03ZdU7w==' where id_usuario = 1

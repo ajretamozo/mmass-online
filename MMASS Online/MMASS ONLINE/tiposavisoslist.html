@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html>
+<head runat="server">
+    <title>MMASS - Tipos de Publicidad</title>
+
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/js/tempusdominus-bootstrap-4.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/css/tempusdominus-bootstrap-4.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400&display=swap" rel="stylesheet">
+    <script src="./js/autentificar.js"></script>
+
+
+    <style>
+        .table-hover tbody tr:hover > td {
+            cursor: pointer;
+        }
+
+        .search-box-closed {
+            width: 53px;
+        }
+
+        th {
+            text-align: center;
+        }
+
+        .dataTitle {
+            font-family: 'Roboto';
+            font-size: 20px;
+        }
+
+        @media (max-width: 767px) {
+            .search-box-open {
+                width: 100%;
+            }
+
+            #divMessage {
+                position: fixed;
+                width: 100%;
+                bottom: 2px;
+                text-align: center;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .search-box-open {
+                width: 300px;
+            }
+        }
+
+        @media screen {
+
+            #divMessage {
+                position: fixed;
+                left: 50%;
+                margin-left: -200px;
+                width: 400px;
+                bottom: 30px;
+                text-align: center;
+            }
+        }
+    </style>
+
+</head>
+<body>
+    <!--MENU-->
+    <div id="divNavBar"></div>
+
+    <main role="main" class="container d-flex justify-content-center">
+        <div id="divBlock" style="left:0; right:0;top:0; bottom:0;overflow-x: hidden; overflow-y: auto;position:fixed;z-index:1051;outline:0;display:none"></div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="modalCenter" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header d-flex justify-content-center">
+                        <h5 class="modal-title" id="modalCenterTitle">Advertencia</h5>
+                    </div>
+                    <div class="modal-body" id="modalCenterBody">
+
+                    </div>
+                    <div class="modal-footer d-flex justify-content-center" id="modalCenterFooter">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div id="divMessage" class="alert" style="display:none;cursor:pointer;z-index:10000;" title="Click para cerrar" onclick="$('#divMessage').hide('slideDown')"> </div>
+        <div class="jumbotron mt-4 py-4 col-lg-9" id="divTiposAvisosMain">
+            <!--Tipos de Avisos DATA-->
+            <p class="dataTitle">TIPOS DE PUBLICIDAD</p>
+            <div id="divTiposAvisosData d-flex align-items-around align-items-end">
+                <div class="row py-1">
+                    <div class="col-md-5">
+                        <label for="descFiltro">Descripcion: </label>
+                        <div class="input-group "> <input type="text" id="descFiltro" class="form-control"></div>
+                    </div>
+                    <div class="col-md-7 d-flex justify-content-end align-items-end">
+                        <button type="button" class="btn btn-dark btn-sm mx-1" onclick="searchTiposAvisos()">
+                            <span class="fa fa-search"></span> Buscar
+                        </button>
+                        <button type="button" class="btn btn-dark btn-sm mx-1" onclick="nuevoTipoAviso()">
+                            <span class="fa fa-check"></span> Nuevo Tipo de Publicidad
+                        </button>
+                    </div>
+                </div>
+                <div class="table-responsive mt-2">
+                    <table class='table table-hover'>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Descripcion</th>
+                                <th>Envía a AdServer</th>
+                                <th class="d-flex justify-content-center">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="TableTiposAvisos" class="small"></tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!--Scripts-->
+    <script type="text/javascript">
+        
+        //DatePickers Initialization
+        $(function () {
+            $('input[type=text]').attr('autocomplete', 'off');
+            $("#divNavBar").load("navBar.html");
+            populateFields();
+        });
+
+      
+
+        function populateFields() {
+
+            // Llenar tabla con tipos de publicidad existentes
+            callWS("tipos_avisos", "getAll", '', function (data) { populateTable(data, 'TableTiposAvisos'); });
+        }
+
+        function populateTable(data, idTable) {
+            listTiposAvisos = data;
+            rowHTML = ''
+            $.each(listTiposAvisos, function (it, itipo) {
+                rowHTML += "<tr id-tar=\"" + itipo.id_tipo_aviso_dg + "\">"
+                //rowHTML += "<tr onclick='openTarifa(this)'>"
+                rowHTML += "<td class='col-xs-1' align='center'>" + itipo.id_tipo_aviso_dg + "</td>";
+                rowHTML += "<td class='col-xs-1' align='center'>" + itipo.descripcion + "</td>";
+                if (itipo.permite_envio_ads) {
+                    rowHTML += "<td class='col-xs-1' align='center'> Si </td>";
+                } else {
+                    rowHTML += "<td class='col-xs-1' align='center'> No </td>";
+                }
+                //Acciones
+                rowHTML += "<td id='colAcciones' class='col-xs-2 d-flex justify-content-center'>"
+                rowHTML += "<button type='button' title='Ver' class='btn btn-outline-dark btn-sm mx-1' onclick=\"openTipoAviso(" + itipo.id_tipo_aviso_dg + ",'view')\"><span class='fa fa-eye'></span> </button>"
+                rowHTML += "<button type='button' title='Editar' class='btn btn-outline-dark btn-sm mx-1' onclick=\"openTipoAviso(" + itipo.id_tipo_aviso_dg + ",'edit')\"><span class='fa fa-edit'></span> </button>"
+                rowHTML += "<button type='button' title='Eliminar' class='btn btn-outline-dark btn-sm mx-1' onclick=\"checkBorrarTipoAviso(" + itipo.id_tipo_aviso_dg + ")\"><span class='fa fa-times'></span> </button>"
+                rowHTML += "</td>"
+                rowHTML += '</tr>'
+            })
+            $("#" + idTable).html(rowHTML);
+        }
+
+        function searchTiposAvisos() {
+            params = {};
+            params.descripcion = $('#descFiltro').val();
+
+            for (param in params) {
+                if (params[param] == null) {
+                    params[param] = '';
+                }
+            };
+
+            var parametros = setListaParametros(params);
+
+            callWS("tipos_avisos", "filter", JSON.stringify(parametros), function (data) {
+                if (data.length > 0) {
+                    populateTable(data, 'TableTiposAvisos');
+                } else {
+                    message = 'La búsqueda no produjo ningun resultado';
+                    showMessage(message, "info");
+                }
+            });
+        }
+
+        function setListaParametros(data) {
+            var parametros = {};
+            var listaParametros = [];
+
+            Object.keys(data).forEach(function (key) {
+                var objParametro = {};
+                objParametro.ParameterName = key;
+                objParametro.Value = data[key];
+                listaParametros.push(objParametro);
+            });
+            parametros.Parametros = listaParametros;
+            return parametros;
+        }
+
+        function nuevoTipoAviso() {
+            location.href = "/tiposavisos.html?mode=new";
+        }
+
+        function openTipoAviso(data, mode) {
+            var newURL = "/tiposavisos.html?idTipoAviso=" + data + '&mode=' + mode;
+            location.href = newURL;
+        }
+
+        function checkBorrarTipoAviso(id) {
+
+            options = [
+                {
+                    optionDesc: "Aceptar",
+                    optionFunc: "borrarTipoAviso('" + id + "')"
+                },
+                {
+                    optionDesc: "Cancelar",
+                    optionFunc: ""
+                }
+            ];
+
+            var mensaje = "<div class='d-flex justify-content-center'>¿Esta seguro de borrar el Tipo de Publicidad?</div>";
+
+            showModal(mensaje, options);
+        }
+
+        function borrarTipoAviso(id) {
+            var data = {};
+            data.id_tipo_aviso_dg = id;
+            callWS("tipos_avisos", "remove", JSON.stringify(data), function (data) {
+                if (data == true) {
+                    callWS("tipos_avisos", "getAll", '', function (data) { populateTable(data, 'TableTiposAvisos'); });
+                } else {
+                    message = 'Ocurrió un problema al borrar el Tipo de Publicidad';
+                    showMessage(message, "alert");
+                }
+
+            });
+        }
+
+      
+        function selectToJson(idSelect, idCol) {
+            ret = [];
+
+            values = $('#' + idSelect).val();
+            values.forEach(function (value) {
+                item = {};
+                item[idCol] = value;
+                ret.push(item);
+            });
+            return ret;
+        }
+
+        function dateToSqlFormat(date) {
+            arr = date.split("/");
+            sqlFormatDate = '';
+            sqlFormatDate = arr[2] + '-' + arr[1] + '-' + arr[0];
+            return sqlFormatDate;
+        }
+
+        function dateToFieldFormat(date) {
+            date = date.split('T')[0];
+            arr = date.split("-");
+            fieldFormatDate = '';
+            fieldFormatDate = arr[2] + '/' + arr[1] + '/' + arr[0];
+            return fieldFormatDate;
+        }
+
+    
+    </script>
+</body>
+
+</html>

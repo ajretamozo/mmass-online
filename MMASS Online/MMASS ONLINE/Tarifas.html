@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>MMASS - Tarifas</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment-with-locales.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/js/tempusdominus-bootstrap-4.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/css/tempusdominus-bootstrap-4.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="/dist/duallistbox/jquery.bootstrap-duallistbox.min.js"></script>
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/dist/duallistbox/bootstrap-duallistbox.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400&display=swap" rel="stylesheet">
+    <script src="./js/autentificar.js"></script>
+
+
+
+    <style type="text/css">
+        .jumbotron {
+            padding: 20px;
+        }
+
+        #title {
+            padding: 0 15px;
+            margin-top: 75px;
+            height: 40px;
+        }
+
+        .dataTitle {
+            font-family: 'Roboto';
+            font-size: 20px;
+        }
+
+        .input-group-addon {
+            padding: 5px;
+            background: #e9ecef;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .form-check-input {
+            position: absolute;
+            margin-top: .6rem;
+            margin-left: 0;
+        }
+
+        .list-group-item {
+            padding: .2rem 1rem;
+        }
+
+        .list-group {
+            margin-top: .6rem;
+        }
+
+        @media screen {
+
+            #divMessage {
+                position: fixed;
+                left: 20%;
+                width: 60%;
+                bottom: 3rem;
+                text-align: center;
+            }
+        }
+
+        /*.container {
+            max-width:
+        }*/
+    </style>
+
+</head>
+<body>
+    <!--MENU-->
+    <div id="divNavBar"></div>
+    <main role="main" class="container">
+        <!-- Modal -->
+        <div class="modal fade" id="modalCenter" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header d-flex justify-content-center">
+                        <h5 class="modal-title" id="modalCenterTitle">Advertencia</h5>
+                    </div>
+                    <div class="modal-body" id="modalCenterBody">
+
+                    </div>
+                    <div class="modal-footer d-flex justify-content-center" id="modalCenterFooter">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-3" style="max-width: 100rem; margin-top: 5rem;">
+            <div id="divMessage" class="alert" style="display:none;cursor:pointer;z-index:10000;" title="Click para cerrar" onclick="$('#divMessage').slideToggle();"> </div>
+            <!--HEADER-->
+            <div class="card-header d-flex align-items-center" style="margin-bottom: 1rem;">
+                <span id="headerTitle" class="mr-auto dataTitle">Tarifas</span>
+                <div>
+                    <button id="botNuevo" type="button" class="btn btn-light disableOnEdit" onclick="nuevaTarifa()">Nuevo</button>
+                    <button id="botEditar" type="button" class="btn btn-light disableOnEdit" onclick="editarTarifa()">Editar</button>
+                    <button id="botBorrar" type="button" class="btn btn-light disableOnEdit" onclick="checkBorrarTarifa()">Borrar</button>
+                </div>
+            </div>
+            <!--BODY-->
+            <div class="card-body">
+                <div class="row">
+                    <div class="input-group input-group-sm col-lg-2 mb-2">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="inputGroup-sizing-sm">#</span>
+                        </div>
+                        <input id="idTarifa" value="0" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" readonly>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <label for="descTarifa">Descripcion de la tarifa</label>
+                        <div class="input-group">
+                            <input type="text" id="descTarifa" class="form-control readonlyOnView" placeholder="Descripcion">
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <label for="selFormaUso">Forma de uso</label>
+                        <div class="input-group">
+                            <select class="form-control enableOnEdit" id="selFormaUso"></select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <label> Vigencia</label>
+                        <div class="input-group input-daterange">
+                            <input type="text" class="form-control readonlyOnView" id="fechaDesde" data-toggle="datetimepicker" data-target="#fechaDesde" />
+                            <span class="input-group-addon">hasta</span>
+                            <input type="text" class="form-control readonlyOnView" id="fechaHasta" data-toggle="datetimepicker" data-target="#fechaHasta" />
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <label for="selAreasGeo">Area Geográfica</label>
+                        <div class="input-group">
+                            <select class="form-control enableOnEdit" id="selAreasGeo"></select>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <label for="inpImporte">Importe</label>
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon1">$</span>
+                            </div>
+                            <input id="inpImporte" type="number" value=0 min="0" class="form-control readonlyOnView" aria-describedby="basic-addon1">
+                        </div>
+                    </div>
+                </div>
+                <!--MULTI SELECTS-->
+                <div class="row">
+                    <div class="col-lg-6">
+                        <label for="selMedios"> Medios</label>
+                        <select id="selMedios" class="custom-select" style="display:none" multiple></select>
+                    </div>
+                    <div class="col-lg-6">
+                        <label for="selTipoPublicidad"> Tipo de publicidad</label>
+                        <select id="selTipoPublicidad" class="custom-select" style="display:none" multiple></select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <label for="selMedidas"> Tamaños</label>
+                        <select id="selMedidas" class="custom-select" style="display:none" multiple></select>
+                    </div>
+                    <div class="col-lg-6">
+                        <label for="selEmplaza"> Emplazamientos</label>
+                        <select id="selEmplaza" class="custom-select" style="display:none" multiple></select>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer bg-transparent mb-3" style="text-align: right; vertical-align: middle; padding-bottom: 0;">
+                <button id="botGuardar" type="button" class="btn btn-light enableOnEdit" onclick="guardarTarifa()">Guardar</button>
+                <button id="botCancelar" type="button" class="btn btn-light enableOnEdit View" onclick="cancelarEdicion()">Cancelar</button>
+            </div>
+        </div>
+    </main>
+
+
+    <script type="text/javascript">
+
+
+        
+
+        var getUrlParameter = function getUrlParameter(sParam) {
+            var sPageURL = window.location.search.substring(1),
+                sURLVariables = sPageURL.split('&'),
+                sParameterName,
+                i;
+
+            for (i = 0; i < sURLVariables.length; i++) {
+                sParameterName = sURLVariables[i].split('=');
+
+                if (sParameterName[0] === sParam) {
+                    return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+                }
+            }
+        };
+
+
+        $(function () {
+            $('input[type=text]').attr('autocomplete', 'off');
+            formatMultipleSelects();
+            $('#fechaDesde').datetimepicker({ format: 'L', locale: 'es' });
+            $('#fechaHasta').datetimepicker({ format: 'L', locale: 'es' });
+            $("#divNavBar").load("navBar.html");
+            //input number >= 0
+            $("input[type=number]").attr("onkeydown", "return event.keyCode !== 69 && event.keyCode !== 109");
+            $("input[type=number]").attr("min","0");
+            //autentificar();
+            populateFields();
+        });
+
+        function formatMultipleSelects() {
+            var demo1 = $('.custom-select').bootstrapDualListbox({
+                infoText: '',
+                filterTextClear: '',
+                filterPlaceHolder: 'Filtrar'
+            });
+            $(".moveall").hide();
+            $(".removeall").hide();
+            $(".filter").hide();
+            $(".btn-group").hide();
+
+        }
+        var demo1 = $('.custom-select').bootstrapDualListbox({
+            infoText: '',
+            filterTextClear: '',
+            filterPlaceHolder: 'Filtrar'
+        });
+
+
+
+        function setMode(mode) {
+            if (mode == 'view') {
+                $('#headerTitle').html("Tarifa");
+                //#botNuevo, #botEditar, #botBorrar
+                $('.disableOnEdit').attr("disabled", false);
+                //#botGuardar, #botCancelar, #selFormaUso
+                $('.enableOnEdit').attr("disabled", true);
+                //AGREGUE:
+                $('.View').attr("disabled", false);
+                //#descTarifa, #fechaDesde, #fechaHasta, #inpImporte
+                $('.readonlyOnView').attr("readonly", true);
+                $('.list-group-item').show();
+                $('.bootstrap-duallistbox-container').hide();
+            } else if (mode == 'edit') {
+                $('#headerTitle').html("Editar tarifa");
+                //#botNuevo, #botEditar, #botBorrar
+                $('.disableOnEdit').attr("disabled", true);
+                //#botGuardar, #botCancelar, #selFormaUso
+                $('.enableOnEdit').attr("disabled", false);
+                //#descTarifa, #fechaDesde, #fechaHasta, #inpImporte
+                $('.readonlyOnView').attr("readonly", false);
+                $('.list-group-item').hide();
+                $('.bootstrap-duallistbox-container').show();
+            } else if (mode == 'new') {
+                $('#headerTitle').html("Nueva tarifa");
+                //#botNuevo, #botEditar, #botBorrar
+                $('.disableOnEdit').attr("disabled", true);
+                //#botGuardar, #botCancelar, #selFormaUso
+                $('.enableOnEdit').attr("disabled", false);
+                //#descTarifa, #fechaDesde, #fechaHasta, #inpImporte
+                $('.readonlyOnView').attr("readonly", false);
+                $('.list-group-item').hide();
+                $('.bootstrap-duallistbox-container').show();
+            } else {
+                console.log("invalid mode:" + mode);
+                location.href = "/tarifaslist.html"
+            }
+        }
+
+        function checkParameters() {
+            var id = getUrlParameter("idTarifa");
+            var mode = getUrlParameter("mode");
+            //setMode(mode);
+            if (id != undefined) {
+                var data = {};
+                data.id_tarifa_dg = id;
+                $.when(
+                    callWS("tarifas", "getById", JSON.stringify(data), function (data) { onGetTarifa(data); }))
+                    .then(function () { setMode(mode); }, function () { alert("No se pudieron obtener los datos de la tarifa indicada"); });
+            } else {
+                setMode(mode);
+            }
+
+        }
+
+        function onGetTarifa(data) {
+            $('#botBorrar').attr("onclick", "checkBorrarTarifa(" + data.id_tarifa_dg + ")");
+            $('#idTarifa').attr("value", data.id_tarifa_dg);
+            $('#descTarifa').attr("value", data.descripcion);
+            $("#selFormaUso option[value=" + data.forma_uso.id + "]").attr("selected", "selected");
+            $('#fechaDesde').attr("value", dateToFieldFormat(data.fecha_desde));
+            $('#fechaHasta').attr("value", dateToFieldFormat(data.fecha_hasta));
+            $('#inpImporte').attr("value", data.precio_unitario);
+            var medios = {};
+            medios = data.medios;
+            var viewListMedios = "<ul class=\"list-group\">"
+            if (medios.length > 0) {
+                medios.forEach(function (medio) {
+                    $("#selMedios option[value=" + medio.id_medio + "]").attr("selected", "selected");
+                    viewListMedios += "<li class=\"list-group-item\" style='display:none'>" + medio.desc_medio + "</li>";
+                });
+            } else {
+                viewListMedios += "<li class=\"list-group-item\" style='display:none'>(Todos)</li>";
+            };
+            viewListMedios += "</ul>"
+            $("#selMedios").after(viewListMedios);
+            var tipos_avisos = {};
+            var viewListTipos = '<ul class=\"list-group\">';
+            tipos_avisos = data.tipos_Avisos;
+            if (tipos_avisos.length > 0) {
+                tipos_avisos.forEach(function (tipo_aviso) {
+                    $("#selTipoPublicidad option[value=" + tipo_aviso.id_tipo_aviso_dg + "]").attr("selected", "selected");
+                    viewListTipos += "<li class=\"list-group-item\" style='display:none'>" + tipo_aviso.descripcion + "</li>";
+                });
+            } else {
+                viewListTipos += "<li class=\"list-group-item\" style='display:none'>(Todos)</li>";
+            };
+            viewListTipos += "</ul>"
+            demo1.bootstrapDualListbox('refresh');
+            $("#selTipoPublicidad").after(viewListTipos);
+            //AGREGUE:
+            var emplazamientos = {};
+            emplazamientos = data.emplazamientos;
+            var viewListEmplaza = "<ul class=\"list-group\">"
+            if (emplazamientos.length > 0) {
+                emplazamientos.forEach(function (emplaza) {
+                    $("#selEmplaza option[value=" + emplaza.id_emplazamiento + "]").attr("selected", "selected");
+                    viewListEmplaza += "<li class=\"list-group-item\" style='display:none'>" + emplaza.descripcion + "</li>";
+                });
+            } else {
+                viewListEmplaza += "<li class=\"list-group-item\" style='display:none'>(Todos)</li>";
+            };
+            viewListEmplaza += "</ul>"
+            $("#selEmplaza").after(viewListEmplaza);
+            demo1.bootstrapDualListbox('refresh');
+            //AGREGUE:
+            var medidas = {};
+            medidas = data.medidas;
+            var viewListMedidas = "<ul class=\"list-group\">"
+            if (medidas.length > 0) {
+                medidas.forEach(function (medida) {
+                    $("#selMedidas option[value=" + medida.id_medidadigital + "]").attr("selected", "selected");
+                    viewListMedidas += "<li class=\"list-group-item\" style='display:none'>" + medida.ancho + 'x' + medida.alto + ' (' + medida.descripcion + ')' + "</li>";
+                });
+            } else {
+                viewListMedidas += "<li class=\"list-group-item\" style='display:none'>(Todos)</li>";
+            };
+            viewListMedidas += "</ul>"
+            $("#selMedidas").after(viewListMedidas);
+            demo1.bootstrapDualListbox('refresh');
+            //AGREGUE:
+            $("#selAreasGeo option[value=" + data.area_geo.id_area + "]").attr("selected", "selected");
+        }
+
+
+
+        function populateFields() {
+
+            //Llenar select Medios
+            //callWS("medios", "getAll", '', function (data) { onPopulateSelectDone(data, 'selMedios', 'id_medio', 'desc_medio'); });
+            //// Llenar select Tipos de publicidad
+            //callWS("tipos_avisos", "getAll", '', function (data) { onPopulateSelectDone(data, 'selTipoPublicidad', 'id_tipo_aviso_dg', 'descripcion'); });
+            //// Llenar select Formas de uso
+            //callWS("tarifas", "getFormasUsoAll", '', function (data) { onPopulateSelectDone(data, 'selFormaUso', 'id', 'descripcion'); });
+
+
+            $.when(
+                callWS("medios", "getAll", '', function (data) { onPopulateSelectDone(data, 'selMedios', 'id_medio', 'desc_medio'); }),
+                callWS("tipos_avisos", "getAll", '', function (data) { onPopulateSelectDone(data, 'selTipoPublicidad', 'id_tipo_aviso_dg', 'descripcion'); }),
+                //AGREGUE (emplazamientos, medidas y areas):
+                callWS("medios", "getAllE", '', function (data) { onPopulateSelectEmplaza(data, 'selEmplaza', 'id_emplazamiento', 'descripcion', 'codigo_emplazamiento'); }),
+                callWS("medios", "getAllM", '', function (data) { onPopulateSelectMedidas(data, 'selMedidas', 'id_medidadigital', 'descripcion', 'ancho', 'alto'); }),
+                callWS("medios", "getAllA", '', function (data) { onPopulateSelectDone(data, 'selAreasGeo', 'id_area', 'descripcion'); }),
+                callWS("tarifas", "getFormasUsoAll", '', function (data) { onPopulateSelectDone(data, 'selFormaUso', 'id', 'descripcion'); })
+            ).then(function () { checkParameters() }, function (data1, data2, data3) {
+                console.log("Medios: " + data1[2].statusText + "; Tipos de Publicidad: " + data2[2].statusText + "Formas de uso: " + data3[2].statusText + ";");
+                showMessage("Se produjo un error al cargar los campos, intentelo nuevamente", type = "alert");
+            });
+        }
+
+        function checkDates(idFechaDesde, idFechaHasta) {
+            //fDesde = new Date($("#" + idFechaDesde).val());
+            fDesde = new Date(moment($("#" + idFechaDesde).val(), 'DD/MM/YYYY', true).format());
+            mfDesde = moment(fDesde);
+            //fHasta = new Date($("#" + idFechaHasta).val());
+            fHasta = new Date(moment($("#" + idFechaHasta).val(), 'DD/MM/YYYY', true).format());
+            mfHasta = moment(fHasta);
+            var res = (fDesde <= fHasta) && mfDesde.isValid() && mfHasta.isValid();
+            return res;
+        }
+
+        function onPopulateSelectDone(data, idSelect, colId, colDesc) {
+            var pObj = data;
+            var listitems = '';
+            $.each(pObj, function (it, iObj) {
+                listitems += '<option value=' + iObj[colId] + '>' + iObj[colDesc] + '</option>';
+            });
+            $("#" + idSelect).empty();
+            $("#" + idSelect).append(listitems);
+            if (pObj.length > 1 && idSelect != "selAreasGeo") {
+                $("#" + idSelect).val([]);
+            }
+            if ($("#" + idSelect).attr('multiple') == 'multiple') {
+                demo1.bootstrapDualListbox('refresh');
+            }
+        }
+
+        //AGREGUE:           
+        function onPopulateSelectEmplaza(data, idSelect, colId, colDesc, colCod) {
+
+            var pObj = data;
+            var listitems = '';
+            $.each(pObj, function (it, iObj) {
+                listitems += '<option codigo_emplazamiento=' + iObj[colCod] + ' value=' + iObj[colId] + '>' + iObj[colDesc] + '</option>';
+            });
+            $("#" + idSelect).empty();
+            $("#" + idSelect).append(listitems);
+            if (pObj.length > 1) {
+                $("#" + idSelect).val([]);
+            }
+
+            if ($("#" + idSelect).attr('multiple') == 'multiple') {
+                demo1.bootstrapDualListbox('refresh');
+            }
+        }
+
+        //AGREGUE:           
+        function onPopulateSelectMedidas(data, idSelect, colId, colDesc, colAncho, colAlto) {
+
+            var pObj = data;
+            var listitems = '';
+            $.each(pObj, function (it, iObj) {
+                listitems += '<option value=' + iObj[colId] + '>' + iObj[colAncho] + 'x' + iObj[colAlto] + ' (' + iObj[colDesc] + ')' + '</option>';
+            });
+            $("#" + idSelect).empty();
+            $("#" + idSelect).append(listitems);
+            if (pObj.length > 1) {
+                $("#" + idSelect).val([]);
+            }
+
+            if ($("#" + idSelect).attr('multiple') == 'multiple') {
+                demo1.bootstrapDualListbox('refresh');
+            }
+        }
+
+        function cancelarEdicion() {
+            location.href = "/tarifaslist.html"
+        }
+
+        function editarTarifa() {
+            //var id = getUrlParameter("idTarifa");
+            //location.search = "?idTarifa=" + id + '&mode=edit'
+            setMode('edit');
+        }
+
+        function nuevaTarifa() {
+            location.href = "/tarifas.html?mode=new"
+        }
+
+        function checkBorrarTarifa(id) {
+
+            options = [
+                {
+                    optionDesc: "Aceptar",
+                    optionFunc: "borrarTarifa('" + id + "')"
+                },
+                {
+                    optionDesc: "Cancelar",
+                    optionFunc: ""
+                }
+            ];
+
+            var mensaje = "<div class='d-flex justify-content-center'>Está seguro de eliminar la tarifa?</div>";
+
+            showModal(mensaje, options);
+        }
+
+        function borrarTarifa(id) {
+            var data = {};
+            data.id_tarifa_dg = id;
+            callWS("tarifas", "remove", JSON.stringify(data), function (data) {
+                if (data == true) {
+                    location.href = "/tarifaslist.html";
+                } else {
+                    console.log(data);
+                }
+            });
+        }
+
+        function guardarTarifa() {
+
+            var data = {};
+            var error = [];
+            if ($("#descTarifa").val() == "") {
+                error.push("Descripcion");
+            }
+            if ($("#selFormaUso").val() == null) {
+                error.push("Forma Uso");
+            }
+            if ($("#fechaDesde").val() == "" || $("#fechaHasta").val() == "") {
+                error.push("Fecha");
+            }
+            if ($("#selMedios").val() == 0) {
+                error.push("Medios");
+            }
+            //AGREGUE (areas, emplaza y medidas):
+            //if ($("#selEmplazamientos").val() == 0) {
+            //    error.push("Emplazamientos");
+            //}
+            //if ($("#selMedidas").val() == 0) {
+            //    error.push("Medidas");
+            //}
+            if ($("#selAreasGeo").val() == null) {
+                error.push("AreasGeo");
+            }
+
+            var rangoValido = checkDates("fechaDesde", "fechaHasta");
+
+            if (error.length == 0 && rangoValido) {
+                data.Id_tarifa_dg = $('#idTarifa').attr("value");
+                data.Descripcion = $("#descTarifa").val();
+                f_uso = {};
+                f_uso['id'] = $("#selFormaUso").val();
+                data.Forma_uso = f_uso;
+                data.Precio_unitario = $("#inpImporte").val();
+                data.Fecha_desde = dateToSqlFormat($("#fechaDesde").val());
+                data.Fecha_hasta = dateToSqlFormat($("#fechaHasta").val());
+                data.Medios = selectToJson('selMedios', 'id_medio');
+                data.Tipos_Avisos = selectToJson('selTipoPublicidad', 'Id_tipo_aviso_dg');
+                //AGREGUE (areas, emplaza y medidas)
+                data.Emplazamientos = selectToJson('selEmplaza', 'id_emplazamiento');
+                data.Medidas = selectToJson('selMedidas', 'id_medidadigital');
+                data.Area_geo = {};
+                data.Area_geo.Id_area = $('#selAreasGeo').val();
+
+                callWS("Tarifas", "save", JSON.stringify(data), function (data) {
+                    if (data == true) {
+                        location.href = "/tarifaslist.html";
+                    } else {
+                        console.log(data);
+                    }
+                });
+
+            } else if (rangoValido) {
+                message = "Falta completar/indicar los siguientes datos: "
+                error.forEach(function (err) {
+                    message += err + " - ";
+                });
+                message = message.slice(0, -3);
+                showMessage(message, "error");
+            } else {
+                message = "Formato o Rango de fechas incorrectos (Formato correcto DD/MM/AAAA)";
+                showMessage(message, "error");
+            }
+
+        }
+
+        function selectToJson(idSelect, idCol) {
+            ret = [];
+
+            values = $('#' + idSelect).val();
+            values.forEach(function (value) {
+                item = {};
+                item[idCol] = value;
+                ret.push(item);
+            });
+            return ret;
+        }
+
+        function dateToSqlFormat(date) {
+            arr = date.split("/");
+            sqlFormatDate = '';
+            sqlFormatDate = arr[2] + '-' + arr[1] + '-' + arr[0];
+            return sqlFormatDate;
+        }
+
+        function dateToFieldFormat(date) {
+            date = date.split('T')[0];
+            arr = date.split("-");
+            fieldFormatDate = '';
+            fieldFormatDate = arr[2] + '/' + arr[1] + '/' + arr[0];
+            return fieldFormatDate;
+        }
+
+      
+
+    </script>
+</body>
+</html>
