@@ -18,7 +18,12 @@ Creada tabla [dg_conv_dg_detalle_emplazamientos]
 Creada tabla [dg_conv_dg_detalle_medidas]
 Creada tabla [dg_conv_dg_detalle_medios]
 Agregado campo [id_tipo_aviso_dg] a tabla [conv_dg_detalle]
-
+Creada tabla [dg_red_GAM]
+Creada tabla [dg_contacto_red_GAM]
+Agregado campo [id_red] a tabla [dg_orden_pub_ap]
+Agregado campo [id_red] a tabla [dg_orden_pub_as]
+Agregado campo [id_red] a tabla [dg_emplazamientos] 
+Agregado campo [id_red] a tabla [dg_medidas]
 
 TABLAS SIN DATOS:
 

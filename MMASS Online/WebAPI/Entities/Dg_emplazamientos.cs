@@ -14,6 +14,7 @@ namespace WebApi.Entities
         public string Descripcion { get; set; }    
         public long Codigo_emplazamiento { get; set; }
         public bool Es_borrado { get; set; }
+        public int Id_red { get; set; }
 
         public static Dg_emplazamientos getDg_emplazamientos(DataRow item)
         {
@@ -22,13 +23,14 @@ namespace WebApi.Entities
             mi.Descripcion = item["Descripcion"].ToString();
             mi.Codigo_emplazamiento = DB.DLong(item["Codigo_emplazamiento"].ToString());
             mi.Es_borrado = (item["Es_borrado"].ToString() == "1");
+            mi.Id_red = DB.DInt(item["Id_red"].ToString());
 
             return mi;
         }
 
         public static Dg_emplazamientos getById(int Id_emplazamiento)
         {
-            string sqlCommand = " select id_emplazamiento, descripcion, codigo_emplazamiento, es_borrado from dg_emplazamientos" +
+            string sqlCommand = " select id_emplazamiento, descripcion, codigo_emplazamiento, es_borrado, id_red from dg_emplazamientos" +
                                 " where id_emplazamiento = " + Id_emplazamiento.ToString();
             Dg_emplazamientos resultado;
             resultado = new Dg_emplazamientos();
@@ -42,7 +44,7 @@ namespace WebApi.Entities
         }
         public static List<Dg_emplazamientos> getAll()
         {
-            string sqlCommand = " select id_emplazamiento, descripcion, codigo_emplazamiento, es_borrado from dg_emplazamientos where es_borrado = 0 ";
+            string sqlCommand = " select id_emplazamiento, descripcion, codigo_emplazamiento, es_borrado, id_red from dg_emplazamientos where es_borrado = 0 ";
             List<Dg_emplazamientos> col = new List<Dg_emplazamientos>();
             Dg_emplazamientos elem;
             DataTable t = DB.Select(sqlCommand);
@@ -57,15 +59,17 @@ namespace WebApi.Entities
 
         public void save()
         {
-            string sql = "insert into dg_emplazamientos (descripcion, codigo_emplazamiento, es_borrado)" +
-                                 " values ( @descripcion, @codigo_emplazamiento, 0)";
+            string sql = "insert into dg_emplazamientos (descripcion, codigo_emplazamiento, es_borrado, id_red)" +
+                                 " values ( @descripcion, @codigo_emplazamiento, 0, @id_red)";
 
                     List<SqlParameter> parametros = new List<SqlParameter>()
                     {
                         new SqlParameter()
                         { ParameterName="@descripcion",SqlDbType = SqlDbType.NVarChar, Value = Descripcion },
                         new SqlParameter()
-                        { ParameterName="@codigo_emplazamiento", SqlDbType = SqlDbType.BigInt, Value = Codigo_emplazamiento }
+                        { ParameterName="@codigo_emplazamiento", SqlDbType = SqlDbType.BigInt, Value = Codigo_emplazamiento },
+                         new SqlParameter()
+                        { ParameterName="@id_red", SqlDbType = SqlDbType.Int, Value = Id_red }
                     };
             try
             {
@@ -95,7 +99,7 @@ namespace WebApi.Entities
         public static bool getByCodigo(long codigo)
         { 
             bool resultado = false;
-            string sqlCommand = " select id_emplazamiento, descripcion, codigo_emplazamiento, es_borrado from dg_emplazamientos" +
+            string sqlCommand = " select id_emplazamiento, descripcion, codigo_emplazamiento, es_borrado, id_red from dg_emplazamientos" +
                                 " where codigo_emplazamiento = " + codigo.ToString();
            
             DataTable t = DB.Select(sqlCommand);
@@ -105,6 +109,22 @@ namespace WebApi.Entities
                 resultado = true;
             }
             return resultado;
+        }
+
+        public static List<Dg_emplazamientos> getByIdRed(int IdRed)
+        {
+            string sqlCommand = " select id_emplazamiento, descripcion, codigo_emplazamiento, es_borrado, id_red from dg_emplazamientos" +
+                                " where id_red = " + IdRed.ToString();
+            List<Dg_emplazamientos> col = new List<Dg_emplazamientos>();
+            Dg_emplazamientos elem;
+            DataTable t = DB.Select(sqlCommand);
+
+            foreach (DataRow item in t.Rows)
+            {
+                elem = getDg_emplazamientos(item);
+                col.Add(elem);
+            }
+            return col;
         }
 
     }

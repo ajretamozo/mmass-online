@@ -19,7 +19,7 @@ namespace WebApi.Services
         //AGREGUE (getallm, getalla, getalle):
         IEnumerable<Dg_medidas> getAllM();
         IEnumerable<Dg_areas_geo> getAllA();
-        IEnumerable<Dg_emplazamientos> getAllE();       
+        IEnumerable<Dg_emplazamientos> getAllE(int redGAM);       
         bool saveE(EmplazamientosList emplazamientos);
         bool saveMedidas(Dg_medidas miObj);
         IEnumerable<Convenios> getAllConvenios();
@@ -27,6 +27,7 @@ namespace WebApi.Services
         IEnumerable<Convenios> filter(List<Parametro> parametros);
         Conv_dg_detalle getDetConvenioById(int IdConv, int IdDet);
         IEnumerable<Conv_dg_detalle> getDetConveniosByIdConv(int IdConv);
+        IEnumerable<Dg_red_GAM> getAllRedes();
     }
 
     public class MedioService : IMedioService
@@ -48,9 +49,9 @@ namespace WebApi.Services
             return Dg_areas_geo.getAll();
         }
 
-        public IEnumerable<Dg_emplazamientos> getAllE()
+        public IEnumerable<Dg_emplazamientos> getAllE(int redGAM)
         {
-            return Dg_emplazamientos.getAll();
+            return Dg_emplazamientos.getByIdRed(redGAM);
         }
 
         public bool saveE(EmplazamientosList miObj)
@@ -85,6 +86,11 @@ namespace WebApi.Services
         public IEnumerable<Conv_dg_detalle> getDetConveniosByIdConv(int IdConv)
         {
             return Conv_dg_detalle.getByIdConv(IdConv);
+        }
+
+        public IEnumerable<Dg_red_GAM> getAllRedes()
+        {
+            return Dg_red_GAM.getAll();
         }
     }
 }

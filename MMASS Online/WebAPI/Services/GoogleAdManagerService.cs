@@ -28,7 +28,7 @@ namespace WebApi.Services
         //TEST
         void reporteTest();
         //AGREGUE:
-        IEnumerable<Dg_emplazamientos> GetEmplazamientos();
+        IEnumerable<Dg_emplazamientos> GetEmplazamientos(string redGAM);
         IEnumerable<Dg_medidas> GetMedidas();
         long ArchivarLineItems(long lineItemIdt);
     }
@@ -147,9 +147,9 @@ namespace WebApi.Services
         }
 
         //AGREGUE:
-        public IEnumerable<Dg_emplazamientos> GetEmplazamientos()
+        public IEnumerable<Dg_emplazamientos> GetEmplazamientos(string redGAM)
         {
-            return GoogleAdManager.getEmplazamientos();
+            return GoogleAdManager.getEmplazamientos(redGAM);
         }
 
         public IEnumerable<Dg_medidas> GetMedidas()

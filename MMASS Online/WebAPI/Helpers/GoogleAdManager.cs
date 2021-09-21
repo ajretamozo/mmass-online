@@ -16,7 +16,13 @@ namespace WebApi.Helpers
     public class GoogleAdManager
     {
 
-
+        public static AdManagerUser CambiarRed(string netCode)
+        {
+            AdManagerUser user = new AdManagerUser();
+            AdManagerAppConfig config = (AdManagerAppConfig)user.Config;
+            config.NetworkCode = netCode;
+            return user;
+        }
 
         public static List<Contacto> getAnunciantes(string desc)
         {
@@ -707,13 +713,13 @@ namespace WebApi.Helpers
                 }
             }
         }
-
-        public static List<Dg_emplazamientos> getEmplazamientos()
+        
+        public static List<Dg_emplazamientos> getEmplazamientos(string redGAM)
         {
             List<Dg_emplazamientos> Emplazamientos = new List<Dg_emplazamientos>();
             Dg_emplazamientos Emplazamiento = null;
 
-            AdManagerUser user = new AdManagerUser();
+            AdManagerUser user = CambiarRed(redGAM);
             using (PlacementService placementService = user.GetService<PlacementService>())
             {
                 // Create a statement to select placements.

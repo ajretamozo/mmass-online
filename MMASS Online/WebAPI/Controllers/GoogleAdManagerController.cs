@@ -87,9 +87,9 @@ namespace WebApi.Controllers
         }
         //AGREGUE:
         [HttpPost("getEmplazamientos")]
-        public IActionResult GetEmplazamientos()
+        public IActionResult GetEmplazamientos([FromBody] string redGAM)
         {
-            var emplazamientos = _GoogleAdManagerService.GetEmplazamientos();
+            var emplazamientos = _GoogleAdManagerService.GetEmplazamientos(redGAM);
             return Ok(emplazamientos);
         }
 

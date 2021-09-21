@@ -105,64 +105,56 @@
         </div>
         <div id="divMessage" class="alert" style="display:none;cursor:pointer;z-index:10000;" title="Click para cerrar"> </div>
         <div class="jumbotron" id="divGeneral">
-            <!--<div class="row">
-                <div class="col-md-4">
-                    <label for="descFiltro">Anunciante adServer: </label>
-                    <div class="input-group enterSearch"> <input type="text" id="descFiltro" class="form-control"></div>
-                </div>
-                <div class="col-md-3 d-flex justify content-start align-items-end">
-                    <input type="checkbox" id="checkMostrarVinculados" style="margin-bottom: .8rem; margin-right: .2rem">
-                    <label for="checkMostrarVinculados">Mostrar Vinculados</label>
-                </div>
-                <div class="col-md-5 d-flex justify-content-end align-items-end">
-                    <button type="button" class="btn btn-dark btn-sm mx-1" onclick="filter()">
-                        <span class="fa fa-search"></span> Buscar
-                    </button>
-                </div>
-            </div>-->
-
             <div class="row">
-                <div class="col-md-5">
-                    <label><b>AdServer:</b></label>
-                    <!--Tabla GAM-->
-                    <div id="tabla" class="table-responsive mt-2">
-                        <table class='table table-hover table-sm '>
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Emplazamiento</th>
-                                </tr>
-                            </thead>
-                            <tbody id="TableGAM" class="small"></tbody>
-                        </table>
-                    </div>
+                <div class="col-lg-2" style="padding-right: 0px;">
+                    <label>Red Ad Server</label>
                 </div>
-                <div class="col-md-2" style="padding-left: 30px;padding-right: 30px;padding-top: 40px;">
-                    <!--Botón Sincronizar-->
-                    <button type="button" class="btn btn-dark btn-sm mx-1" onclick="sincronizar()">
-                         Sincronizar <span class="fa fa-chevron-right"></span><span class="fa fa-chevron-right"></span>
-                    </button>
+                <div class="col-lg-3" style="padding-left: 0px;">
+                    <select class="form-control" id="selRedes" onchange="onRedSelected()"></select>
                 </div>
-                <div class="col-md-5">
-                    <label><b>MMASSOnline:</b></label>
-                    <!--Tabla MMASSOnline-->
-                    <div id="tabla" class="table-responsive mt-2">
-                        <table class='table table-hover table-sm '>
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Emplazamiento</th>
-                                </tr>
-                            </thead>
-                            <tbody id="TableMMASS" class="small"></tbody>
-                        </table>
-                    </div>
-                </div>
-                
             </div>
+                <div class="row">
+                    <div class="col-md-5">
+                        <label><b>AdServer:</b></label>
+                        <!--Tabla GAM-->
+                        <div id="tabla" class="table-responsive mt-2">
+                            <table class='table table-hover table-sm '>
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Emplazamiento</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="TableGAM" class="small"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="col-md-2" style="padding-left: 30px;padding-right: 30px;padding-top: 40px;">
+                        <!--Botón Sincronizar-->
+                        <button type="button" class="btn btn-dark btn-sm mx-1" onclick="sincronizar()">
+                            Sincronizar <span class="fa fa-chevron-right"></span><span class="fa fa-chevron-right"></span>
+                        </button>
+                    </div>
+                    <div class="col-md-5">
+                        <label><b>MMASSOnline:</b></label>
+                        <!--Tabla MMASSOnline-->
+                        <div id="tabla" class="table-responsive mt-2">
+                            <table class='table table-hover table-sm '>
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Emplazamiento</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="TableMMASS" class="small"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
 
         </div>
-    </main>
+</main>
 
 
     <!--Scripts-->
@@ -171,8 +163,9 @@
         //ONLOAD se ejecuta cuando se termina de cargar la pagina
         $(function () {
             $("#divMessage").on("click", function () { $("#divMessage").hide(); });
-            getEmplazamientosGAM();
-            getEmplazamientosMMASS();
+            getRedesGAM();
+            //getEmplazamientosGAM();
+            //getEmplazamientosMMASS();
 
             //$(".enterSearch").on("keydown", function (e) {
             //    if (event.which == 13) {
@@ -182,34 +175,60 @@
 
         });
 
-        function getEmplazamientosGAM() {
-            callWS("googleAdManager", "getEmplazamientos", '', function (data) { onCargarTabla('TableGAM', data); });
+        function getRedesGAM() {
+            callWS("medios", "getAllRedes", '', function (data) { onCargarSelect(data, 'selRedes', 'id_red', 'descripcion', 'codigo_red'); });
         }
-        function getEmplazamientosMMASS() {
-            callWS("medios", "getAllE", '', function (data) { onCargarTabla('TableMMASS', data); });
+
+         function onCargarSelect(data, idSelect) {
+            var pObj = data;
+            var listitems = '';
+            $.each(pObj, function (it, iObj) {
+                listitems += '<option  codigo_red= ' + iObj['codigo_red'] + ' value=' + iObj['id_red'] + '>' + iObj["descripcion"] + '</option>';
+            });
+            $("#" + idSelect).empty();
+            $("#" + idSelect).append(listitems);
+         }
+
+        function onRedSelected() {
+            idRed = $('#selRedes').val();
+            codRed = $('#selRedes>option:selected').attr("codigo_red");
+            getEmplazamientosGAM(codRed);
+            getEmplazamientosMMASS(idRed);
+        }
+
+        function getEmplazamientosGAM(codRed) {
+            callWS("googleAdManager", "getEmplazamientos", codRed, function (data) { onCargarTabla('TableGAM', data); });
+        }
+        function getEmplazamientosMMASS(idRed) {
+            callWS("medios", "getAllE", idRed, function (data) { onCargarTabla('TableMMASS', data); });
         }
 
         function sincronizar() {
-            callWS("googleAdManager", "getEmplazamientos", '', function (data) { onSincronizar(data); });
-            callWS("googleAdManager", "getEmplazamientos", '', function (data) { onCargarTabla('TableGAM', data); });
+            idRed = $('#selRedes').val();
+            codRed = $('#selRedes>option:selected').attr("codigo_red");
+            callWS("googleAdManager", "getEmplazamientos", codRed, function (data) { onSincronizar(data, idRed); });
+            getEmplazamientosGAM(codRed);
         }
 
-
-        function onSincronizar(data) {
+        function onSincronizar(data, idRed) {
             var EmplazamientoList = {};
+
+            data.forEach(emplaza => {
+                emplaza.id_red = idRed;
+            });
 
             EmplazamientoList.Emplazamientos = data;
 
             callWS("medios", "saveE", JSON.stringify(EmplazamientoList), function (data2){
                 if (data2 == true) {
-                    RecargarTablas();
+                    RecargarTablas(idRed);
                 }
             });
         }
 
-        function RecargarTablas() {
+        function RecargarTablas(idRed) {
             $("#TableMMASS").empty();
-            callWS("medios", "getAllE", '', function (data) { onCargarTabla('TableMMASS', data); });
+            callWS("medios", "getAllE", idRed, function (data) { onCargarTabla('TableMMASS', data); });
 
             showMessage("Emplazamientos actualizados", "info");
         }
@@ -228,13 +247,15 @@
             });
 
             $("#" + tablaID).html(rowHTML);
-            //filter();
+
             hidePleaseWait();
         }
 
         function GetData() {
-            getEmplazamientosGAM();
-            getEmplazamientosMMASS();
+            idRed = $('#selRedes').val();
+            codRed = $('#selRedes>option:selected').attr("codigo_red");
+            getEmplazamientosGAM(codRed);
+            getEmplazamientosMMASS(idRed);
         }
 
     </script>

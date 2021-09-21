@@ -40,9 +40,9 @@ namespace WebApi.Controllers
         }
 
         [HttpPost("getAllE")]
-        public IActionResult getAllE()
+        public IActionResult getAllE([FromBody] int redGAM)
         {
-            var emplazamientos = _medioService.getAllE();
+            var emplazamientos = _medioService.getAllE(redGAM);
             return Ok(emplazamientos);
         }
 
@@ -93,6 +93,13 @@ namespace WebApi.Controllers
         {
             var detConvenios = _medioService.getDetConveniosByIdConv(IdConv);
             return Ok(detConvenios);
+        }
+
+        [HttpPost("getAllRedes")]
+        public IActionResult getAllRedes()
+        {
+            var redes = _medioService.getAllRedes();
+            return Ok(redes);
         }
     }
 }
