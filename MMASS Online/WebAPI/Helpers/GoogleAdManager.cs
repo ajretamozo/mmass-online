@@ -15,13 +15,50 @@ namespace WebApi.Helpers
 {
     public class GoogleAdManager
     {
+        //Parámretro global para mantener el usuario GAM
+        public static AdManagerUser user = new AdManagerUser();
 
-        public static AdManagerUser CambiarRed(string netCode)
+        //public static AdManagerUser CambiarRed(string netCode)
+        //{
+        //    AdManagerUser user = new AdManagerUser();
+        //    AdManagerAppConfig config = (AdManagerAppConfig)user.Config;
+        //    config.NetworkCode = netCode;
+        //    return user;
+        //}
+
+        public static void CambiarRed(string netCode)
         {
-            AdManagerUser user = new AdManagerUser();
             AdManagerAppConfig config = (AdManagerAppConfig)user.Config;
             config.NetworkCode = netCode;
-            return user;
+        }
+
+        public static long GetRedActual()
+        {
+
+            long netCode = 0;
+
+            //AdManagerUser user = new AdManagerUser();
+
+            using (NetworkService networkService = user.GetService<NetworkService>())
+            {
+                try
+                {
+                    // Get the current network.
+                    Network network = networkService.getCurrentNetwork();
+
+                    Console.WriteLine(
+                        "Current network has network code \"{0}\" and display name \"{1}\".",
+                        network.networkCode, network.displayName);
+                        netCode =  long.Parse(network.networkCode);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Failed to get current network. Exception says \"{0}\"",
+                        e.Message);
+                }
+            }
+
+            return netCode;
         }
 
         public static List<Contacto> getAnunciantes(string desc)
@@ -39,7 +76,7 @@ namespace WebApi.Helpers
                 where = "type = :type and name like '%" + desc + "%'";
             }
 
-            AdManagerUser user = new AdManagerUser();
+            //AdManagerUser user = new AdManagerUser();
             using (CompanyService companyService = user.GetService<CompanyService>())
             {
                 // Create a statement to select companies.
@@ -714,12 +751,12 @@ namespace WebApi.Helpers
             }
         }
         
-        public static List<Dg_emplazamientos> getEmplazamientos(string redGAM)
+        public static List<Dg_emplazamientos> getEmplazamientos()
         {
             List<Dg_emplazamientos> Emplazamientos = new List<Dg_emplazamientos>();
             Dg_emplazamientos Emplazamiento = null;
 
-            AdManagerUser user = CambiarRed(redGAM);
+            //AdManagerUser user = CambiarRed(redGAM);
             using (PlacementService placementService = user.GetService<PlacementService>())
             {
                 // Create a statement to select placements.

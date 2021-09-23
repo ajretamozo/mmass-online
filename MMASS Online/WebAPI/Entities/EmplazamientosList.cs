@@ -12,10 +12,10 @@ namespace WebApi.Entities
     {
         public List<Dg_emplazamientos> Emplazamientos;
 
-
         public bool save()
         {
-            //HACER DB.Execute("update dg_emplazamientos set es_borrado = 1 where id_red = " + emp.Id_red); CONSEGUIR TRAER EL IDRED DE UN EMPLAZA
+            int idRed = Emplazamientos[1].Id_red;
+            DB.Execute("update dg_emplazamientos set es_borrado = 1 where id_red = " + idRed);
             bool ret = true;
             //DB.Execute("update dg_emplazamientos set es_borrado = 1");
             foreach (Dg_emplazamientos emp in Emplazamientos)

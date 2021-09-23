@@ -211,6 +211,14 @@
                             </div>
                         </div>
                     </div>
+                    <!--<div class="row">
+                        <div class="col-lg-2" style="padding-right: 0px;">
+                            <label>Red Ad Server</label>
+                        </div>
+                        <div class="col-lg-3" style="padding-left: 0px;">
+                            <select class="form-control" id="selRedes" onchange="onRedSelected()"></select>
+                        </div>
+                    </div>-->
                 </div>
                 <!--Tabla-->
                 <div id="tabla" class="table-responsive mt-2">
@@ -238,6 +246,47 @@
 
     <!--Scripts-->
     <script type="text/javascript">
+
+        //redgam
+    //    var idRedActual;
+    //    var codRed;
+    //getRedesGAM();
+
+    //    if (idRedActual != null) {
+    //        var idRedActual = $('#selRedes').val();
+    //        var codRed = $('#selRedes>option:selected').attr("codigo_red");
+    //        $("#selRedes option[value=" + idRedActual + "]").attr("selected", "selected");
+    //        callWS("googleAdManager", "cambiarRed", codRed);
+    //    }
+    //    else {
+    //        callWS("medios", "getRedById", "1", function (data) { cambiarRed(data); });
+    //    }
+
+    //    function cambiarRed(data) {
+    //        codRed = data.codigo_red;
+    //        callWS("googleAdManager", "cambiarRed", codRed);
+    //    }
+
+    //function getRedesGAM() {
+    //        callWS("medios", "getAllRedes", '', function (data) { onCargarSelect(data, 'selRedes', 'id_red', 'descripcion', 'codigo_red'); });
+    //}
+
+    //function onCargarSelect(data, idSelect) {
+    //     var pObj = data;
+    //     var listitems = '';
+    //     $.each(pObj, function (it, iObj) {
+    //         listitems += '<option  codigo_red= ' + iObj['codigo_red'] + ' value=' + iObj['id_red'] + '>' + iObj["descripcion"] + '</option>';
+    //     });
+    //     $("#" + idSelect).empty();
+    //    $("#" + idSelect).append(listitems);
+    //}
+
+    //function onRedSelected() {
+    //    codRed = $('#selRedes>option:selected').attr("codigo_red");
+    //    callWS("googleAdManager", "cambiarRed", codRed);
+    //    idRedActual = $('#selRedes').val();
+    //    location.reload();
+    //}
 
     //DatePickers Initialization
     $(function () {
@@ -398,7 +447,7 @@
 
         //TEST
         function reporteTest() {   
-            callWS("googleAdManager", "reporteTest");
+            //callWS("googleAdManager", "reporteTest");
         }
 
     function formatearMonto(x) {

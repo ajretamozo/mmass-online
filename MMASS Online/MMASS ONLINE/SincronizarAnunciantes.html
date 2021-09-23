@@ -108,14 +108,18 @@
         <div class="jumbotron" id="divGeneral">
             <div class="row">
                 <div class="col-md-4">
-                    <label for="descFiltro">Anunciante adServer: </label>
+                    <label for="descFiltro">Anunciante AdServer: </label>
                     <div class="input-group enterSearch"> <input type="text" id="descFiltro" class="form-control"></div>
                 </div>
+                <div class="col-md-4">
+                    <label for="descFiltro">Red AdServer: </label>
+                    <select class="form-control enterSearch" id="selRedes" onchange="onRedSelected()"></select>
+                </div>
                 <!--<div class="col-md-3 d-flex justify content-start align-items-end">
-                    <input type="checkbox" id="checkMostrarVinculados" style="margin-bottom: .8rem; margin-right: .2rem">
-                    <label for="checkMostrarVinculados">Mostrar Vinculados</label>
+                <input type="checkbox" id="checkMostrarVinculados" style="margin-bottom: .8rem; margin-right: .2rem">
+                <label for="checkMostrarVinculados">Mostrar Vinculados</label>
                 </div>-->
-                <div class="col-md-5 d-flex justify-content-end align-items-end">
+                <div class="col-md-4 d-flex justify-content-end align-items-end">
                     <button type="button" class="btn btn-dark btn-sm mx-1" onclick="filter()">
                         <span class="fa fa-search"></span> Buscar
                     </button>
@@ -155,6 +159,7 @@
         $(function () {
             $("#divMessage").on("click", function () { $("#divMessage").hide(); });
             //getAnunciantesGAM();
+            getRedesGAM()
 
             $(".enterSearch").on("keydown", function (e) {
                 if (event.which == 13) {
@@ -167,8 +172,31 @@
         //function getAnunciantesGAM() {
         //    callWS("googleAdManager", "getAnunciantes", '', onGetAnuncianteGAM);
         //}
+
+         function getRedesGAM() {
+            callWS("medios", "getAllRedes", '', function (data) { onCargarSelect(data, 'selRedes', 'id_red', 'descripcion', 'codigo_red'); });
+         }
+
+         function onCargarSelect(data, idSelect) {
+            var pObj = data;
+            var listitems = '';
+            $.each(pObj, function (it, iObj) {
+                listitems += '<option  codigo_red= ' + iObj['codigo_red'] + ' value=' + iObj['id_red'] + '>' + iObj["descripcion"] + '</option>';
+            });
+            $("#" + idSelect).empty();
+            $("#" + idSelect).append(listitems);
+            $("#" + idSelect).val('');
+         }
+
+        function onRedSelected() {
+            idRed = $('#selRedes').val();
+            codRed = $('#selRedes>option:selected').attr("codigo_red");
+            callWS("googleAdManager", "cambiarRed", codRed);
+        }
+
         function getAnunciantes(anunciantesGAM) {
-            callWS("contactos", "getAnunciantes", '', function (data) { onCargarTabla(data, anunciantesGAM); });
+            idRed = $('#selRedes').val();
+            callWS("contactos", "getAnunciantes", '', function (data) { onCargarTabla(data, anunciantesGAM, idRed); });
         }
         function llenarStrOption(anunciantes) {
             var str = '<option value="-1">  </option>';
@@ -182,7 +210,7 @@
             return str;
 
         }
-        function vincular(idGAM) {
+        function vincular(idGAM, idRed) {
             var idGAMSel = "#sel" + idGAM;
             idGAMSel = idGAMSel + ">option:selected";
             if ($(idGAMSel).attr("idContacto") == undefined) {
@@ -191,6 +219,7 @@
                 var cont = {};
                 cont.Id = $(idGAMSel).attr("idContacto");
                 cont.IdContactoDigital = idGAM;
+                cont.IdRed = idRed;
                 callWS("contactos", "saveASRelation", JSON.stringify(cont), function (data) { onVincular(data, idGAM) });
             }            
             
@@ -216,13 +245,17 @@
         function filter() {
             rows = $("tr").not("#header");
             desc = $("#descFiltro").val();
+            red = $("#selRedes").val();
 
-            if (desc != '') {
-               callWS("googleAdManager", "getAnunciantes", JSON.stringify(desc), onGetAnuncianteGAM);
+            if (desc != '' && (red != 0 && red != null)) {
+                callWS("googleAdManager", "getAnunciantes", JSON.stringify(desc), onGetAnuncianteGAM);
+            }
+            else if (red != 0 && red != null) {
+                //ver forma de que me acepte no pasar parametros (y modificar el metodo getAnunciantes en GAM)
+                callWS("googleAdManager", "getAnunciantes", JSON.stringify("a"), onGetAnuncianteGAM);
             }
             else {
-               //ver forma de que me acepte no pasar parametros (y modificar el metodo getAnunciantes en GAM)
-               callWS("googleAdManager", "getAnunciantes", JSON.stringify("a"), onGetAnuncianteGAM);
+                //HACER CARTEL "SELECCIONE RED AD SERVER"
             }
 
             //mostrarVinculados = document.getElementById("checkMostrarVinculados").checked;
@@ -263,7 +296,7 @@
             //}
         }
 
-        function onCargarTabla(data, anunciantesGAM) {
+        function onCargarTabla(data, anunciantesGAM, idRed) {
             var str = ''
             str = "<tr>";
             var strCabeceraOption = ' <select class="form-control-sm " ';
@@ -275,7 +308,7 @@
                 str = str + "<td class='col-xs-2' > " + anuncianteGAM.idContactoDigital + "</td > ";
                 str = str + "<td class='col-xs-4' > " + anuncianteGAM.razonSocial + "</td >";
                 str = str + '<td class="col-xs-4" >' + strCabeceraOption + " id='sel" + anuncianteGAM.idContactoDigital + "' >" + strOption + '</td >';
-                str = str + "<td class='col-xs-2' > <button type='button' id=button" + anuncianteGAM.idContactoDigital + " class='btn btn-primary' onClick='vincular(" + anuncianteGAM.idContactoDigital+")'>Vincular</button> </td ></tr>";
+                str = str + "<td class='col-xs-2' > <button type='button' id=button" + anuncianteGAM.idContactoDigital + " class='btn btn-primary' onClick='vincular(" + anuncianteGAM.idContactoDigital +", " + idRed + ")'>Vincular</button> </td ></tr>";
                 //$("#TableRenglones").append(str);
                 $("#TableRenglones").html(str);
                 var idAGam = "#sel" + anuncianteGAM.idContactoDigital;
@@ -304,6 +337,13 @@
         function onGetAnuncianteGAM(data) {
 
             //Cuando me trae los anunciantes con los codigos de Google Ad Manager cargo los anunciantes de MMASS
+            //COMPLETAR PARA QUE MUESTRE CARTEL CUANDO NO ENCUENTRA ANUNCIANTES GAM
+            //if (data != null) {
+            //     getAnunciantes(data);
+            //}
+            //else {
+            //    //borrar tabla y cartel
+            //}
             getAnunciantes(data);
 
         }

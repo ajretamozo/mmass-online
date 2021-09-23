@@ -86,10 +86,17 @@ namespace WebApi.Controllers
 
         }
         //AGREGUE:
+        //[HttpPost("getEmplazamientos")]
+        //public IActionResult GetEmplazamientos([FromBody] string redGAM)
+        //{
+        //    var emplazamientos = _GoogleAdManagerService.GetEmplazamientos(redGAM);
+        //    return Ok(emplazamientos);
+        //}
+
         [HttpPost("getEmplazamientos")]
-        public IActionResult GetEmplazamientos([FromBody] string redGAM)
+        public IActionResult GetEmplazamientos()
         {
-            var emplazamientos = _GoogleAdManagerService.GetEmplazamientos(redGAM);
+            var emplazamientos = _GoogleAdManagerService.GetEmplazamientos();
             return Ok(emplazamientos);
         }
 
@@ -107,5 +114,17 @@ namespace WebApi.Controllers
             return Ok(res);
         }
 
+        [HttpPost("cambiarRed")]
+        public void cambiarRed([FromBody] string redGAM)
+        {
+            _GoogleAdManagerService.CambiarRed(redGAM);
+        }
+
+        [HttpPost("getRedActual")]
+        public IActionResult getRedActual()
+        {
+            var cod = _GoogleAdManagerService.GetRedActual();
+            return Ok(cod);
+        }
     }
 }

@@ -101,5 +101,19 @@ namespace WebApi.Controllers
             var redes = _medioService.getAllRedes();
             return Ok(redes);
         }
+
+        [HttpPost("getRedByCodigo")]
+        public IActionResult getRedById([FromBody] long netCode)
+        {
+            var red = _medioService.getRedByCodigo(netCode);
+            return Ok(red);
+        }
+
+        [HttpPost("getRedById")]
+        public IActionResult getRedById([FromBody] int id)
+        {
+            var red = _medioService.getRedById(id);
+            return Ok(red);
+        }
     }
 }

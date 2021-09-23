@@ -28,9 +28,12 @@ namespace WebApi.Services
         //TEST
         void reporteTest();
         //AGREGUE:
-        IEnumerable<Dg_emplazamientos> GetEmplazamientos(string redGAM);
+        //IEnumerable<Dg_emplazamientos> GetEmplazamientos(string redGAM);
+        IEnumerable<Dg_emplazamientos> GetEmplazamientos();
         IEnumerable<Dg_medidas> GetMedidas();
         long ArchivarLineItems(long lineItemIdt);
+        void CambiarRed(string netCode);
+        long GetRedActual();
     }
 
     public class GoogleAdManagerService : IGoogleAdManagerService
@@ -147,9 +150,14 @@ namespace WebApi.Services
         }
 
         //AGREGUE:
-        public IEnumerable<Dg_emplazamientos> GetEmplazamientos(string redGAM)
+        //public IEnumerable<Dg_emplazamientos> GetEmplazamientos(string redGAM)
+        //{
+        //    return GoogleAdManager.getEmplazamientos(redGAM);
+        //}
+
+        public IEnumerable<Dg_emplazamientos> GetEmplazamientos()
         {
-            return GoogleAdManager.getEmplazamientos(redGAM);
+            return GoogleAdManager.getEmplazamientos();
         }
 
         public IEnumerable<Dg_medidas> GetMedidas()
@@ -162,6 +170,20 @@ namespace WebApi.Services
             long result = 0;
 
             result = GoogleAdManager.ArchivarLineItem(lineItemId);
+
+            return result;
+        }
+
+        public void CambiarRed(string netCode)
+        {          
+            GoogleAdManager.CambiarRed(netCode);
+        }
+
+        public long GetRedActual()
+        {
+            long result = 0;
+
+            result = GoogleAdManager.GetRedActual();
 
             return result;
         }

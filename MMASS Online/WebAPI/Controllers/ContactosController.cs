@@ -42,7 +42,7 @@ namespace WebApi.Controllers
         [HttpPost("saveASRelation")]
         public IActionResult saveASRelation(Contacto p)
         {
-            var result = _contactoService.saveASRelation(p.Id,p.IdContactoDigital);
+            var result = _contactoService.saveASRelation(p.Id,p.IdContactoDigital, p.IdRed);
             return Ok(result);
         }
 

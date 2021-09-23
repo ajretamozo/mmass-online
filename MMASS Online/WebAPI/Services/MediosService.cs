@@ -28,6 +28,8 @@ namespace WebApi.Services
         Conv_dg_detalle getDetConvenioById(int IdConv, int IdDet);
         IEnumerable<Conv_dg_detalle> getDetConveniosByIdConv(int IdConv);
         IEnumerable<Dg_red_GAM> getAllRedes();
+        Dg_red_GAM getRedByCodigo(long netCode);
+        Dg_red_GAM getRedById(int id);
     }
 
     public class MedioService : IMedioService
@@ -91,6 +93,16 @@ namespace WebApi.Services
         public IEnumerable<Dg_red_GAM> getAllRedes()
         {
             return Dg_red_GAM.getAll();
+        }
+
+        public Dg_red_GAM getRedByCodigo(long netCode)
+        {
+            return Dg_red_GAM.getByCodigo(netCode);
+        }
+
+        public Dg_red_GAM getRedById(int id)
+        {
+            return Dg_red_GAM.getById(id);
         }
     }
 }

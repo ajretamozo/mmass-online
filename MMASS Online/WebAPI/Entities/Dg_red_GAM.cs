@@ -26,20 +26,36 @@ namespace WebApi.Entities
             return mi;
         }
 
-        //public static Dg_medidas getById(int Id_medidadigital)
-        //{
-        //    string sqlCommand = " select id_medidadigital, descripcion, ancho, alto, tipo from dg_medidas" +
-        //                        " where id_medidadigital = " + Id_medidadigital.ToString();
-        //    Dg_medidas resultado;
-        //    resultado = new Dg_medidas();
-        //    DataTable t = DB.Select(sqlCommand);
+        public static Dg_red_GAM getByCodigo(long netCode)
+        {
+            string sqlCommand = " select id_red, codigo_red, descripcion from dg_red_GAM" +
+                                " where codigo_red = " + netCode.ToString();
+            Dg_red_GAM resultado;
+            resultado = new Dg_red_GAM();
+            DataTable t = DB.Select(sqlCommand);
 
-        //    if (t.Rows.Count == 1)
-        //    {
-        //        resultado = getDg_medidas(t.Rows[0]);
-        //    }
-        //    return resultado;
-        //}
+            if (t.Rows.Count == 1)
+            {
+                resultado = getDg_red_GAM(t.Rows[0]);
+            }
+            return resultado;
+        }
+
+        public static Dg_red_GAM getById(int id)
+        {
+            string sqlCommand = " select id_red, codigo_red, descripcion from dg_red_GAM" +
+                                " where id_red = " + id.ToString();
+            Dg_red_GAM resultado;
+            resultado = new Dg_red_GAM();
+            DataTable t = DB.Select(sqlCommand);
+
+            if (t.Rows.Count == 1)
+            {
+                resultado = getDg_red_GAM(t.Rows[0]);
+            }
+            return resultado;
+        }
+
         public static List<Dg_red_GAM> getAll()
         {
             string sqlCommand = " select id_red, codigo_red, descripcion from dg_red_GAM";
