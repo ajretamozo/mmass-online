@@ -459,10 +459,14 @@
                                 <!--AGREGUE:-->
                                 <div class="col-lg-4">
                                     <div class="row">
-                                        <div class="col-lg-6">
+                                        <div class="col-lg-5">
                                             <label for="inpIdOrdenAdServer">ID AdServer</label>
                                             <input type="number" class="form-control" id="inpIdOrdenAdServer" disabled="disabled">
                                         </div>
+                                        <div class="col-lg-5" style="padding-right: 0px;">
+                                            <label for="selRedes">Red AdServer</label>
+                                            <select class="form-control" id="selRedes" onchange="onRedSelected()"></select>
+                                        </div>                                       
                                         <div class="col-lg-2 pt-1">
                                             <label for="bgetOrderASDetais" class="invisible">InfoGAM</label>
                                             <button type="button" data-id="getOrderASDetails" id="bgetOrderASDetais" disabled="disabled" class="btn actions btn-outline-dark btn-sm mr-1" onclick="getOrderDetails()">
@@ -1680,6 +1684,7 @@
                 showMessage("Seleccione un Producto", "info");
                 return 0;
             }
+            idRed = $('#selRedes').val();
 
             $("#selDetConvenio").attr("disabled", false);
             $('#divDetailsRows').hide(); $('#divAddRow').show();
@@ -1706,7 +1711,7 @@
             //AGREGUE (callws getall medidas, getall areasgeo, getall emplaza):
             callWS("medios", "getAllM", '', function (data) { onPopulateSelectMedidas(data, 'selMedidasD', 'id_medidadigital', 'ancho', 'alto'); });
             callWS("medios", "getAllA", '', function (data) { onAreasGeoGetAll(data, 'selAreasGeo', 'Id_area', 'descripcion', 'Codigo_area', 'tipo'); });
-            callWS("medios", "getAllE", '', function (data) { onPopulateSelectEmplaza(data, 'selEmplazaD', 'id_emplazamiento', 'descripcion', 'codigo_emplazamiento'); });
+            callWS("medios", "getAllE", JSON.stringify(idRed), function (data) { onPopulateSelectEmplaza(data, 'selEmplazaD', 'id_emplazamiento', 'descripcion', 'codigo_emplazamiento'); });
             //callWS("programa", "getAllProgramasMedio", "1", function (data) {onPopulateSelectDone(data,'selPrograma','id_programa','desc_programa')})
             params = {}
             params.fecha_desta = dateToSqlFormat($('#fechaDesde').val());
@@ -2556,9 +2561,9 @@
         }
 
         function LimpiarSelectMultiples() {
-
+            idRed = $('#selRedes').val();
             callWS("medios", "getAllM", '', function (data) { onPopulateSelectMedidas(data, 'selMedidasD', 'id_medidadigital', 'ancho', 'alto'); });
-            callWS("medios", "getAllE", '', function (data) { onPopulateSelectEmplaza(data, 'selEmplazaD', 'id_emplazamiento', 'descripcion', 'codigo_emplazamiento'); });
+            callWS("medios", "getAllE", idRed, function (data) { onPopulateSelectEmplaza(data, 'selEmplazaD', 'id_emplazamiento', 'descripcion', 'codigo_emplazamiento'); });
             callWS("medios", "getAll", '', function (data) { onPopulateSelectDone(data, 'selMediosD', 'id_medio', 'desc_medio'); });
         }
 
@@ -2731,7 +2736,8 @@
                 callWS("empresas", "getall", '', function (data) { onPopulateSelectDone(data, 'selEmpresa', 'id_empresa', 'razon_social'); }),
                 callWS("contactos", "getEjecutivos", '', function (data) { onPopulateSelectDone(data, 'selEjecutivo', 'id', 'razonSocial'); }),
                 //callWS("archivos", "getArchivosPorOP", id_op , function (data) { populateFilesTable(data); }),
-                callWS("forma_pagos", "getAll", '', function (data) { onPopulateSelectDone(data, 'selFPago', 'id_formapago', 'desc_formapago'); })
+                callWS("forma_pagos", "getAll", '', function (data) { onPopulateSelectDone(data, 'selFPago', 'id_formapago', 'desc_formapago'); }),
+                callWS("medios", "getAllRedes", '', function (data) { onCargarSelect(data, 'selRedes', 'id_red', 'descripcion', 'codigo_red'); })
             ).then(function () { checkParameters(); }, function (data1, data2, data3, data4, data5, data6) {
                 console.log("Agencias: " + data1[2].statusText + "; Anunciantes " + data2[2].statusText + "empresas: " + data3[2].statusText + ";" + "ejecutivos: " + data4[2].statusText + ";" + "ejecutivos: " + data5[2].statusText + ";" + "ejecutivos: " + data6[2].statusText + ";");
                 showMessage("Se produjo un error al cargar los campos, intentelo nuevamente", type = "alert");
@@ -3050,6 +3056,26 @@
 
         function nuevaOrden() {
             location.href = "/orden.html";
+        }
+
+         function onCargarSelect(data, idSelect) {
+            var pObj = data;
+            var listitems = '';
+            $.each(pObj, function (it, iObj) {
+                listitems += '<option  codigo_red= ' + iObj['codigo_red'] + ' value=' + iObj['id_red'] + '>' + iObj["descripcion"] + '</option>';
+            });
+            $("#" + idSelect).empty();
+            $("#" + idSelect).append(listitems);
+            $("#" + idSelect).val('');
+         }
+
+        function onRedSelected() {
+            idRed = $('#selRedes').val();
+            codRed = $('#selRedes>option:selected').attr("codigo_red");
+            callWS("googleAdManager", "cambiarRed", codRed);
+
+            //recargar emplazamientos y tamaños
+            callWS("medios", "getAllE", idRed, function (data) { onPopulateSelectEmplaza(data, 'selEmplazaD', 'id_emplazamiento', 'descripcion', 'codigo_emplazamiento'); });
         }
 
     </script>

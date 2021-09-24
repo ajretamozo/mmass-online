@@ -67,7 +67,7 @@ namespace WebApi.Helpers
             Contacto Anunciante = null;
 
             string where = "";
-            if (desc == "a")
+            if (desc == "772771779")
             {
                 where = "type = :type";
             }
@@ -119,12 +119,12 @@ namespace WebApi.Helpers
             return Anunciantes;
         }
 
-        public static Order GetOrder(AdManagerUser user, long orderId)
+        public static Order GetOrder(long orderId)
         {
-            if (user == null)
-            {
-                user = new AdManagerUser();
-            }
+            //if (user == null)
+            //{
+            //    user = new AdManagerUser();
+            //}
 
             using (OrderService orderService = user.GetService<OrderService>())
             {
@@ -163,8 +163,8 @@ namespace WebApi.Helpers
         public static string GetOrderDetails(long orderId, string anunciante = null, List<string> sitios = null)
         {
    
-            AdManagerUser user = new AdManagerUser();
-            Order camp = GetOrder(user, orderId);
+            //AdManagerUser user = new AdManagerUser();
+            Order camp = GetOrder(orderId);
             string result = @"<div class='breakBefore'><div class='divImgCert add-mb-6'></div><p><span style='font-weight: bold;'>Orden Publicitaria: </span>" + camp.name + "</p><p class='add-mb-6'><span style='font-weight: bold;'>Anunciante: </span ><span id='txtAnunciante'>" + anunciante + "</span></p>";
             result = result + "<table id='detailsTable' class='table add-mb-6'>";
             result = result + " <thead><tr><th class='certTableHeader'> Campaña </th> <th class='sitio certTableHeader'> Sitio </th> <th class='pautado certTableHeader headerObjetivo'> Objetivo </th><th class='impreso certTableHeader'> Impresiones </th><th class='certTableHeader'> Clicks </th><th class='ctr pautado certTableHeader'> CTR </th> <th class='ctr impreso certTableHeader'> CTR </th><th class='certTableHeader' width='1px'></th>";
@@ -320,7 +320,7 @@ namespace WebApi.Helpers
         public static long CreateOrder(String name, long advertiserId)
         {
             long result = -1;
-            AdManagerUser user = new AdManagerUser();
+            //AdManagerUser user = new AdManagerUser();
             using (OrderService orderService = user.GetService<OrderService>())
             {
                 Order[] orders = new Order[1];
@@ -367,7 +367,7 @@ namespace WebApi.Helpers
             long result = -1;
             string rootId = "";
 
-            AdManagerUser user = new AdManagerUser();
+            //AdManagerUser user = new AdManagerUser();
 
             using (NetworkService networkService = user.GetService<NetworkService>())
             {
@@ -632,7 +632,7 @@ namespace WebApi.Helpers
         public static List<long> GetLineItemCreatives(long lineItemId)
         {
             List<long> lista = new List<long>();
-            AdManagerUser user = new AdManagerUser();
+            //AdManagerUser user = new AdManagerUser();
             using (LineItemCreativeAssociationService lineItemCreativeAssociationService = user.GetService<LineItemCreativeAssociationService>())
             {
                 // Create a statement to select line item creative associations.
@@ -685,12 +685,12 @@ namespace WebApi.Helpers
             }
         }
         //AGREGUE:
-        public static void RunAdExchangeReport(AdManagerUser user)
+        public static void RunAdExchangeReport()
         {
-            if (user == null)
-            {
-                user = new AdManagerUser();
-            }
+            //if (user == null)
+            //{
+            //    user = new AdManagerUser();
+            //}
             using (ReportService reportService = user.GetService<ReportService>())
             {
                 // Set the file path where the report will be saved.
@@ -803,7 +803,7 @@ namespace WebApi.Helpers
             List<Dg_medidas> Tamaños = new List<Dg_medidas>();
             Dg_medidas Tamaño = null;
 
-            AdManagerUser user = new AdManagerUser();
+            //AdManagerUser user = new AdManagerUser();
 
             using (InventoryService inventoryService = user.GetService<InventoryService>())
             {
@@ -837,12 +837,12 @@ namespace WebApi.Helpers
         }
 
         //REPORTE INVENTARIO (error en el archivo que descarga)
-        public static void ReporteInventario(AdManagerUser user)
+        public static void ReporteInventario()
         {
-            if (user == null)
-            {
-                user = new AdManagerUser();
-            }
+            //if (user == null)
+            //{
+            //    user = new AdManagerUser();
+            //}
 
                 using (ReportService reportService = user.GetService<ReportService>())
                 {
@@ -907,7 +907,7 @@ namespace WebApi.Helpers
         public static long UpdateLineItem(String name, float cost, long units, double discount, System.DateTime? fechaDesde, System.DateTime? fechaHasta, List<Dg_orden_pub_medidas> medidas, Dg_areas_geo areaGeo, List<Dg_orden_pub_emplazamientos> emplazamientos, int tipoTarifa, long Id)
         {
             long result = -1;
-            AdManagerUser user = new AdManagerUser();
+            //AdManagerUser user = new AdManagerUser();
 
             using (LineItemService lineItemService = user.GetService<LineItemService>())
             {
@@ -1111,7 +1111,7 @@ namespace WebApi.Helpers
         public static long ArchivarLineItem(long Id)
         {
             long result = -1;
-            AdManagerUser user = new AdManagerUser();
+            //AdManagerUser user = new AdManagerUser();
 
             using (LineItemService lineItemService = user.GetService<LineItemService>())
             {

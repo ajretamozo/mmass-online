@@ -231,9 +231,9 @@
                 var idButton = "#button" + idGAM;
                 $(idButton).removeClass("btn-primary").addClass("btn-success");
                 $(idButton).css("background-color", "#c3e6cb");
-                
+                showMessage("Anunciante vinculado", "success");
             } else {
-                showMessage("Ocurrio un error al vincular el contacto", "info");
+                showMessage("Ocurrio un error al vincular el Anunciante", "alert");
             }
 
         }
@@ -252,10 +252,10 @@
             }
             else if (red != 0 && red != null) {
                 //ver forma de que me acepte no pasar parametros (y modificar el metodo getAnunciantes en GAM)
-                callWS("googleAdManager", "getAnunciantes", JSON.stringify("a"), onGetAnuncianteGAM);
+                callWS("googleAdManager", "getAnunciantes", JSON.stringify("772771779"), onGetAnuncianteGAM);
             }
             else {
-                //HACER CARTEL "SELECCIONE RED AD SERVER"
+                showMessage("Seleccione una Red AdServer", "alert");
             }
 
             //mostrarVinculados = document.getElementById("checkMostrarVinculados").checked;
@@ -337,15 +337,14 @@
         function onGetAnuncianteGAM(data) {
 
             //Cuando me trae los anunciantes con los codigos de Google Ad Manager cargo los anunciantes de MMASS
-            //COMPLETAR PARA QUE MUESTRE CARTEL CUANDO NO ENCUENTRA ANUNCIANTES GAM
-            //if (data != null) {
-            //     getAnunciantes(data);
-            //}
-            //else {
-            //    //borrar tabla y cartel
-            //}
-            getAnunciantes(data);
 
+            if (data.length != 0) {
+                 getAnunciantes(data);
+            }
+            else {
+                $("#TableRenglones").remove(); 
+                showMessage("No se enontraron Anunciantes", "info");
+            }
         }
 
 

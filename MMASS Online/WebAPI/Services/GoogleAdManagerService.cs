@@ -51,7 +51,7 @@ namespace WebApi.Services
 
         public Order GetOrder(long idGAM)
         {
-            return GoogleAdManager.GetOrder(null, idGAM);
+            return GoogleAdManager.GetOrder(idGAM);
         }
 
         //AGREGUE:
@@ -112,7 +112,7 @@ namespace WebApi.Services
         //AGREGUE:
         public void RunAdExchangeReport()
         {
-            GoogleAdManager.RunAdExchangeReport(null);
+            GoogleAdManager.RunAdExchangeReport();
         }
         //TEST
         public void reporteTest()
