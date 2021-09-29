@@ -1070,6 +1070,13 @@
                 $("#selEjecutivo option[value=" + data.ejecutivos[0].id_ejecutivo + "]").attr("selected", "selected");
             }
 
+            $("#selRedes option[value=" + data.id_red + "]").attr("selected", "selected");
+            if (data.id_red > 0) {
+                codRed = $('#selRedes>option:selected').attr("codigo_red");
+                callWS("googleAdManager", "cambiarRed", codRed);
+               $("#selRedes").attr("disabled", true);
+            }
+            
             //AGREGUE:
             if ((data.id_op_dg != undefined && data.id_op_dg != 0) && (data.id_Google_Ad_Manager == undefined || data.id_Google_Ad_Manager == 0)) {
                 $("#bSendOrdenAddServer").attr("disabled", false);
@@ -1321,6 +1328,7 @@
             if ($("#inpIdOrdenAdServer").val() != "") {
                 data.id_Google_Ad_Manager = $('#inpIdOrdenAdServer').val();
             }
+            data.id_red = $('#selRedes').val();
             callWS("dg_orden_pub_aps", "save", JSON.stringify(data), onSaveOrder);
             $("#bSendOrdenAddServer").attr("disabled", false);
 
@@ -1401,6 +1409,7 @@
                     $("#inpFechaAlta").val(today);
                 }
 
+                $("#selRedes").attr("disabled", true);
                 //AGREGUE:
                 //if (data.es_facturada) {
                 //    $("#inpEsFacturada").val("SI");
@@ -2182,6 +2191,7 @@
             else {
                 $("#selDetConvenio").attr("disabled", true);
             }
+            idRed = $('#selRedes').val();
 
             $.when(
                 callWS("medios", "getAll", '', function (data) { onPopulateSelectDone(data, 'selMediosD', 'id_medio', 'desc_medio'); }),
@@ -2189,7 +2199,7 @@
                 //AGREGUE callws medidas, areasgeo, emplaza:
                 callWS("medios", "getAllM", '', function (data) { onPopulateSelectMedidas(data, 'selMedidasD', 'id_medidadigital', 'ancho', 'alto'); }),
                 callWS("medios", "getAllA", '', function (data) { onAreasGeoGetAll(data, 'selAreasGeo', 'Id_area', 'descripcion', 'Codigo_area', 'tipo'); }),
-                callWS("medios", "getAllE", '', function (data) { onPopulateSelectEmplaza(data, 'selEmplazaD', 'id_emplazamiento', 'descripcion', 'codigo_emplazamiento'); }),
+                callWS("medios", "getAllE", JSON.stringify(idRed), function (data) { onPopulateSelectEmplaza(data, 'selEmplazaD', 'id_emplazamiento', 'descripcion', 'codigo_emplazamiento'); }),
                 //callWS("programa", "getAllProgramasMedio", "1", function (data) {onPopulateSelectDone(data,'selPrograma','id_programa','desc_programa')}),
                 ///callWS("tarifas", "getAll", '', function (data) { onTarifasGetAll(data, 'selTarifaD', 'id_tarifa_dg', 'descripcion'); }),
                 callWS("Tipos_avisos", "getAll", '', function (data) { onTipoAvisoGetAll(data, 'selTipoAvisoD', 'Id_tipo_aviso_dg', 'descripcion', 'Permite_envio_ads'); })
@@ -2563,7 +2573,7 @@
         function LimpiarSelectMultiples() {
             idRed = $('#selRedes').val();
             callWS("medios", "getAllM", '', function (data) { onPopulateSelectMedidas(data, 'selMedidasD', 'id_medidadigital', 'ancho', 'alto'); });
-            callWS("medios", "getAllE", idRed, function (data) { onPopulateSelectEmplaza(data, 'selEmplazaD', 'id_emplazamiento', 'descripcion', 'codigo_emplazamiento'); });
+            callWS("medios", "getAllE", JSON.stringify(idRed), function (data) { onPopulateSelectEmplaza(data, 'selEmplazaD', 'id_emplazamiento', 'descripcion', 'codigo_emplazamiento'); });
             callWS("medios", "getAll", '', function (data) { onPopulateSelectDone(data, 'selMediosD', 'id_medio', 'desc_medio'); });
         }
 
@@ -3061,12 +3071,13 @@
          function onCargarSelect(data, idSelect) {
             var pObj = data;
             var listitems = '';
+            listitems += '<option  codigo_red= ' + 0 + ' value=' + 0 + '> </option>';
             $.each(pObj, function (it, iObj) {
                 listitems += '<option  codigo_red= ' + iObj['codigo_red'] + ' value=' + iObj['id_red'] + '>' + iObj["descripcion"] + '</option>';
             });
             $("#" + idSelect).empty();
             $("#" + idSelect).append(listitems);
-            $("#" + idSelect).val('');
+            $("#" + idSelect).val(0);
          }
 
         function onRedSelected() {
@@ -3075,7 +3086,7 @@
             callWS("googleAdManager", "cambiarRed", codRed);
 
             //recargar emplazamientos y tamaños
-            callWS("medios", "getAllE", idRed, function (data) { onPopulateSelectEmplaza(data, 'selEmplazaD', 'id_emplazamiento', 'descripcion', 'codigo_emplazamiento'); });
+            callWS("medios", "getAllE", JSON.stringify(idRed), function (data) { onPopulateSelectEmplaza(data, 'selEmplazaD', 'id_emplazamiento', 'descripcion', 'codigo_emplazamiento'); });
         }
 
     </script>

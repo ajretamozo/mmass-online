@@ -42,6 +42,29 @@ namespace WebApi.Entities
             return contacto;
         }
 
+        public static Contacto getContactoByIdyRed(int Id, int idRed)
+        {
+            string sqlCommand = @"Select c.id_contacto, c.no_facturable, razon_social, g.id_contactodigital from contactos c
+                                  left join dg_contacto_red_GAM g on c.id_contacto = g.id_contacto
+                                  where c.id_contacto = " + Id.ToString() + " and g.id_red = " + idRed.ToString();
+
+            Contacto contacto = new Contacto();
+            DataTable t = DB.Select(sqlCommand);
+
+            foreach (DataRow item in t.Rows)
+            {
+                contacto = new Contacto
+                {
+                    Id = int.Parse(item["id_contacto"].ToString()),
+                    Id_contacto = int.Parse(item["id_contacto"].ToString()),
+                    IdContactoDigital = item["id_contactodigital"].ToString(),
+                    RazonSocial = item["razon_social"].ToString(),
+                    No_facturable = !(item["no_facturable"].ToString() == "1")
+                };
+            }
+            return contacto;
+        }
+
 
         public static List<Contacto> GetAgenciasPorAnunciante(int IdAnunciante)
         {

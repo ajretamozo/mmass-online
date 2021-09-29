@@ -42,20 +42,20 @@ namespace WebApi.Entities
             }
             return resultado;
         }
-        public static List<Dg_emplazamientos> getAll()
-        {
-            string sqlCommand = " select id_emplazamiento, descripcion, codigo_emplazamiento, es_borrado, id_red from dg_emplazamientos where es_borrado = 0 ";
-            List<Dg_emplazamientos> col = new List<Dg_emplazamientos>();
-            Dg_emplazamientos elem;
-            DataTable t = DB.Select(sqlCommand);
+        //public static List<Dg_emplazamientos> getAll()
+        //{
+        //    string sqlCommand = " select id_emplazamiento, descripcion, codigo_emplazamiento, es_borrado, id_red from dg_emplazamientos where es_borrado = 0 ";
+        //    List<Dg_emplazamientos> col = new List<Dg_emplazamientos>();
+        //    Dg_emplazamientos elem;
+        //    DataTable t = DB.Select(sqlCommand);
 
-            foreach (DataRow item in t.Rows)
-            {
-                elem = getDg_emplazamientos(item);
-                col.Add(elem);
-            }
-            return col;
-        }
+        //    foreach (DataRow item in t.Rows)
+        //    {
+        //        elem = getDg_emplazamientos(item);
+        //        col.Add(elem);
+        //    }
+        //    return col;
+        //}
 
         public void save()
         {
@@ -113,8 +113,16 @@ namespace WebApi.Entities
 
         public static List<Dg_emplazamientos> getByIdRed(int IdRed)
         {
-            string sqlCommand = " select id_emplazamiento, descripcion, codigo_emplazamiento, es_borrado, id_red from dg_emplazamientos" +
+            string sqlCommand = "";
+            if (IdRed != 0)
+            {
+                sqlCommand = " select id_emplazamiento, descripcion, codigo_emplazamiento, es_borrado, id_red from dg_emplazamientos" +
                                 " where id_red = " + IdRed.ToString() + "and es_borrado = 0";
+            }
+            else
+            {
+                sqlCommand = " select id_emplazamiento, descripcion, codigo_emplazamiento, es_borrado, id_red from dg_emplazamientos where es_borrado = 0 ";
+            }
             List<Dg_emplazamientos> col = new List<Dg_emplazamientos>();
             Dg_emplazamientos elem;
             DataTable t = DB.Select(sqlCommand);

@@ -19,7 +19,7 @@ namespace WebApi.Services
         //AGREGUE (getallm, getalla, getalle):
         IEnumerable<Dg_medidas> getAllM();
         IEnumerable<Dg_areas_geo> getAllA();
-        IEnumerable<Dg_emplazamientos> getAllE(int redGAM);       
+        IEnumerable<Dg_emplazamientos> getAllE(int redGAM);
         bool saveE(EmplazamientosList emplazamientos);
         bool saveMedidas(Dg_medidas miObj);
         IEnumerable<Convenios> getAllConvenios();
