@@ -30,6 +30,7 @@ namespace WebApi.Services
         IEnumerable<Dg_red_GAM> getAllRedes();
         Dg_red_GAM getRedByCodigo(long netCode);
         Dg_red_GAM getRedById(int id);
+        List<string> getCodigosRed();
     }
 
     public class MedioService : IMedioService
@@ -103,6 +104,11 @@ namespace WebApi.Services
         public Dg_red_GAM getRedById(int id)
         {
             return Dg_red_GAM.getById(id);
+        }
+
+        public List<string> getCodigosRed()
+        {
+            return Dg_red_GAM.getCodigos();
         }
     }
 }

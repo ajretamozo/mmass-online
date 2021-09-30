@@ -107,6 +107,13 @@ namespace WebApi.Controllers
             return Ok(medidas);
         }
 
+        [HttpPost("getMedidasTodasRedes")]
+        public IActionResult GetMedidasTodasRedes(ListaParametro parametros)
+        {
+            var res = _GoogleAdManagerService.GetMedidasTodasRedes(parametros.Parametros);
+            return Ok(res);
+        }
+
         [HttpPost("archivarLineItems")]
         public IActionResult ArchivarLineItems([FromBody] long lineItemId)
         {

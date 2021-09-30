@@ -155,20 +155,64 @@
         //ONLOAD se ejecuta cuando se termina de cargar la pagina
         $(function () {
             $("#divMessage").on("click", function () { $("#divMessage").hide(); });
-            getMedidasGAM();
+
+            getRedesGAM();
+            //getMedidasGAM();
             getMedidasMMASS();
+            var redes;
         });
 
-        function getMedidasGAM() {
-            callWS("googleAdManager", "getMedidas", '', function (data) { onCargarTabla('TableGAM', data); });
+        function getRedesGAM() {
+            callWS("medios", "getCodigosRed", '', function (data) { getMedidasGAM(data); });
         }
+
+        function getMedidasGAM(data) {
+            //callWS("googleAdManager", "getMedidas", '', function (data) { onCargarTabla('TableGAM', data); });
+            redes = data;
+
+            var parametros = {};
+            var listaParametros = [];
+            var objParametro = {};
+            params = {}
+
+            data.forEach(function (dat) {
+                objParametro = {};
+                objParametro.ParameterName = "cod_red";
+                objParametro.Value = dat;
+                listaParametros.push(objParametro);
+            });
+
+            parametros.Parametros = listaParametros;
+
+                callWS("googleAdManager", "getMedidasTodasRedes", JSON.stringify(parametros), function (data1) { onCargarTabla('TableGAM', data1); });
+        }
+
         function getMedidasMMASS() {
             callWS("medios", "getAllM", '', function (data) { onCargarTabla('TableMMASS', data); });
         }
 
         function sincronizar() {
-            callWS("googleAdManager", "getMedidas", '', function (data) { onSincronizar(data); });
-            callWS("googleAdManager", "getMedidas", '', function (data) { onCargarTabla('TableGAM', data); });
+
+            var parametros = {};
+            var listaParametros = [];
+            var objParametro = {};
+            params = {}
+
+            redes.forEach(function (red) {
+                objParametro = {};
+                objParametro.ParameterName = "cod_red";
+                objParametro.Value = red;
+                listaParametros.push(objParametro);
+            });
+
+            parametros.Parametros = listaParametros;
+
+            callWS("googleAdManager", "getMedidasTodasRedes", JSON.stringify(parametros),function (data) { onSincronizar(data); });
+            callWS("googleAdManager", "getMedidasTodasRedes", JSON.stringify(parametros), function (data1) { onCargarTabla('TableGAM', data1); });
+
+            //callWS("googleAdManager", "getMedidas", '', function (data) { onSincronizar(data); });
+            //callWS("googleAdManager", "getMedidas", '', function (data) { onCargarTabla('TableGAM', data); });
+
         }
 
 
@@ -211,10 +255,10 @@
             hidePleaseWait();
         }
 
-        function GetData() {
-            getMedidasGAM();
-            getMedidasMMASS();
-        }
+        //function GetData() {
+        //    getMedidasGAM();
+        //    getMedidasMMASS();
+        //}
 
     </script>
 </body>

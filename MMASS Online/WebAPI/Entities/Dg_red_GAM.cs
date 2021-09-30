@@ -71,6 +71,21 @@ namespace WebApi.Entities
             return col;
         }
 
+        public static List<string> getCodigos()
+        {
+            string sqlCommand = " select codigo_red from dg_red_GAM";
+            List<string> col = new List<string>();
+            string elem;
+            DataTable t = DB.Select(sqlCommand);
+
+            foreach (DataRow item in t.Rows)
+            {
+                elem = item["codigo_red"].ToString();
+                col.Add(elem);
+            }
+            return col;
+        }
+
         //public void save()
         //{
         //    String sqlId = "select max(id_medidadigital) as maximo from dg_medidas";

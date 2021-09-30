@@ -836,13 +836,13 @@ namespace WebApi.Helpers
             return TamOrdenados;
         }
 
-        public static List<Dg_medidas> GetMedidasTodasRedes(List<string> redes)
+        public static List<Dg_medidas> GetMedidasTodasRedes(List<Parametro> redes)
         {
             List<Dg_medidas> Tamaños = new List<Dg_medidas>();
 
-            foreach (string red in redes)
+            foreach (Parametro red in redes)
             {
-                CambiarRed(red);
+                CambiarRed(red.Value);
 
                 Dg_medidas Tamaño = null;
 
@@ -886,7 +886,6 @@ namespace WebApi.Helpers
                     }
                     Console.WriteLine("Number of results found: {0}", adUnitSizes.Length);
                 }
-                return Tamaños;
             }
             List<Dg_medidas> TamOrdenados = Tamaños.OrderBy(tamaño => tamaño.Ancho).ThenBy(tamaño => tamaño.Alto).ToList();
             return TamOrdenados;
