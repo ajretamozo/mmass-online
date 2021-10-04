@@ -129,6 +129,10 @@
                             <select class="form-control enableOnEdit" id="selFormaUso"></select>
                         </div>
                     </div>
+                    <div class="col-lg-3">
+                        <label for="selRedes">Red AdServer</label>
+                        <select class="form-control enableOnEdit" id="selRedes" onchange="onRedSelected()"></select>
+                    </div>
                 </div>
                 <div class="row">
                     <div class="col-lg-6">
@@ -216,7 +220,10 @@
             $("input[type=number]").attr("onkeydown", "return event.keyCode !== 69 && event.keyCode !== 109");
             $("input[type=number]").attr("min","0");
             //autentificar();
-            populateFields();
+ 
+            callWS("medios", "getAllRedes", '', function (data) { onCargarSelectRedes(data, 'selRedes', 'id_red', 'descripcion', 'codigo_red'); });
+                    
+            
         });
 
         function formatMultipleSelects() {
@@ -361,6 +368,7 @@
             demo1.bootstrapDualListbox('refresh');
             //AGREGUE:
             $("#selAreasGeo option[value=" + data.area_geo.id_area + "]").attr("selected", "selected");
+            $("#selRedes option[value=" + data.id_red + "]").attr("selected", "selected");
         }
 
 
@@ -373,13 +381,13 @@
             //callWS("tipos_avisos", "getAll", '', function (data) { onPopulateSelectDone(data, 'selTipoPublicidad', 'id_tipo_aviso_dg', 'descripcion'); });
             //// Llenar select Formas de uso
             //callWS("tarifas", "getFormasUsoAll", '', function (data) { onPopulateSelectDone(data, 'selFormaUso', 'id', 'descripcion'); });
-
+            idRed = $('#selRedes').val();
 
             $.when(
                 callWS("medios", "getAll", '', function (data) { onPopulateSelectDone(data, 'selMedios', 'id_medio', 'desc_medio'); }),
                 callWS("tipos_avisos", "getAll", '', function (data) { onPopulateSelectDone(data, 'selTipoPublicidad', 'id_tipo_aviso_dg', 'descripcion'); }),
                 //AGREGUE (emplazamientos, medidas y areas):
-                callWS("medios", "getAllE", '', function (data) { onPopulateSelectEmplaza(data, 'selEmplaza', 'id_emplazamiento', 'descripcion', 'codigo_emplazamiento'); }),
+                callWS("medios", "getAllE", JSON.stringify(idRed), function (data) { onPopulateSelectEmplaza(data, 'selEmplaza', 'id_emplazamiento', 'descripcion', 'codigo_emplazamiento'); }),
                 callWS("medios", "getAllM", '', function (data) { onPopulateSelectMedidas(data, 'selMedidas', 'id_medidadigital', 'descripcion', 'ancho', 'alto'); }),
                 callWS("medios", "getAllA", '', function (data) { onPopulateSelectDone(data, 'selAreasGeo', 'id_area', 'descripcion'); }),
                 callWS("tarifas", "getFormasUsoAll", '', function (data) { onPopulateSelectDone(data, 'selFormaUso', 'id', 'descripcion'); })
@@ -399,6 +407,20 @@
             var res = (fDesde <= fHasta) && mfDesde.isValid() && mfHasta.isValid();
             return res;
         }
+
+         function onCargarSelectRedes(data, idSelect) {
+            var pObj = data;
+            var listitems = '';
+            listitems += '<option  codigo_red= ' + 0 + ' value=' + 0 + '> Todas </option>';
+            $.each(pObj, function (it, iObj) {
+                listitems += '<option  codigo_red= ' + iObj['codigo_red'] + ' value=' + iObj['id_red'] + '>' + iObj["descripcion"] + '</option>';
+            });
+            $("#" + idSelect).empty();
+            $("#" + idSelect).append(listitems);
+             $("#" + idSelect).val(0);
+
+             populateFields()
+         }
 
         function onPopulateSelectDone(data, idSelect, colId, colDesc) {
             var pObj = data;
@@ -543,6 +565,7 @@
                 data.Medidas = selectToJson('selMedidas', 'id_medidadigital');
                 data.Area_geo = {};
                 data.Area_geo.Id_area = $('#selAreasGeo').val();
+                data.id_red = $('#selRedes').val();
 
                 callWS("Tarifas", "save", JSON.stringify(data), function (data) {
                     if (data == true) {
@@ -593,7 +616,14 @@
             return fieldFormatDate;
         }
 
-      
+        function onRedSelected() {
+            idRed = $('#selRedes').val();
+            codRed = $('#selRedes>option:selected').attr("codigo_red");
+            callWS("googleAdManager", "cambiarRed", codRed);
+
+            //recargar emplazamientos
+            callWS("medios", "getAllE", JSON.stringify(idRed), function (data) { onPopulateSelectEmplaza(data, 'selEmplaza', 'id_emplazamiento', 'descripcion', 'codigo_emplazamiento'); });
+        }
 
     </script>
 </body>

@@ -46,7 +46,7 @@ namespace WebApi.Entities
         }
         public static List<Dg_medidas> getAll()
         {
-            string sqlCommand = " select id_medidadigital, descripcion, ancho, alto, tipo from dg_medidas";
+            string sqlCommand = " select id_medidadigital, descripcion, ancho, alto, tipo from dg_medidas order by ancho, alto";
             List<Dg_medidas> col = new List<Dg_medidas>();
             Dg_medidas elem;
             DataTable t = DB.Select(sqlCommand);

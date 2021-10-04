@@ -122,5 +122,12 @@ namespace WebApi.Controllers
             var redes = _medioService.getCodigosRed();
             return Ok(redes);
         }
+
+        [HttpPost("remove")]
+        public IActionResult remove(Dg_red_GAM miobj)
+        {
+            var redGam = _medioService.deleteRed(miobj);
+            return Ok(redGam);
+        }
     }
 }

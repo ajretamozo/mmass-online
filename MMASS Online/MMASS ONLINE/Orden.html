@@ -3085,7 +3085,7 @@
             codRed = $('#selRedes>option:selected').attr("codigo_red");
             callWS("googleAdManager", "cambiarRed", codRed);
 
-            //recargar emplazamientos y tamaños
+            //recargar emplazamientos
             callWS("medios", "getAllE", JSON.stringify(idRed), function (data) { onPopulateSelectEmplaza(data, 'selEmplazaD', 'id_emplazamiento', 'descripcion', 'codigo_emplazamiento'); });
         }
 

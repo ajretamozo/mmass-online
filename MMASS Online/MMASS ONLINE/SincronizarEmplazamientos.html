@@ -227,9 +227,13 @@
 
         function getEmplazamientosGAM(idRed) {
              //callWS("googleAdManager", "getEmplazamientos", '', function (data) { onGetEmplazaGAM(data, idRed); });
-             callWS("googleAdManager", "getEmplazamientos", '', function (data) { onCargarTabla('TableGAM', data); });
+             //callWS("googleAdManager", "getEmplazamientos", '', function (data) { onCargarTabla('TableGAM', data); });
              //getEmplazamientosMMASS(idRed);
-            onGetEmplazaGAM(idRed);
+            //onGetEmplazaGAM(idRed);
+
+             $.when(
+                callWS("googleAdManager", "getEmplazamientos", '', function (data) { onCargarTabla('TableGAM', data); })
+            ).then( onGetEmplazaGAM(idRed));
         }
 
         function onGetEmplazaGAM(idRed) {
@@ -243,10 +247,14 @@
             idRed = $('#selRedes').val();
             codRed = $('#selRedes>option:selected').attr("codigo_red");
             //callWS("googleAdManager", "cambiarRed", codRed, function () { getEmplazamientosMMASS(idRed); });
-            callWS("googleAdManager", "cambiarRed", codRed);
+            //callWS("googleAdManager", "cambiarRed", codRed);
             //getEmplazamientosMMASS(idRed);
-            getEmplazamientosGAM(idRed);
+            //getEmplazamientosGAM(idRed);
             //$.when(callWS("googleAdManager", "cambiarRed", codRed)).then(function () { getEmplazamientosMMASS(idRed); })
+
+            $.when(
+                callWS("googleAdManager", "cambiarRed", codRed)
+            ).then( getEmplazamientosGAM(idRed));
         }
 
         //function getEmplazamientosGAM(codRed) {

@@ -31,6 +31,7 @@ namespace WebApi.Services
         Dg_red_GAM getRedByCodigo(long netCode);
         Dg_red_GAM getRedById(int id);
         List<string> getCodigosRed();
+        bool deleteRed(Dg_red_GAM miobj);
     }
 
     public class MedioService : IMedioService
@@ -110,5 +111,11 @@ namespace WebApi.Services
         {
             return Dg_red_GAM.getCodigos();
         }
+
+        public bool deleteRed(Dg_red_GAM miobj)
+        {
+            return miobj.deleteRed();
+        }
+
     }
 }
