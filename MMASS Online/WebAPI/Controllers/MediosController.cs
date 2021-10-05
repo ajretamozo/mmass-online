@@ -103,7 +103,7 @@ namespace WebApi.Controllers
         }
 
         [HttpPost("getRedByCodigo")]
-        public IActionResult getRedById([FromBody] long netCode)
+        public IActionResult getRedByCodigo([FromBody] long netCode)
         {
             var red = _medioService.getRedByCodigo(netCode);
             return Ok(red);
@@ -123,11 +123,27 @@ namespace WebApi.Controllers
             return Ok(redes);
         }
 
-        [HttpPost("remove")]
+        [HttpPost("removeRed")]
         public IActionResult remove(Dg_red_GAM miobj)
         {
             var redGam = _medioService.deleteRed(miobj);
             return Ok(redGam);
         }
+
+        [HttpPost("saveRed")]
+        public IActionResult save(Dg_red_GAM miobj)
+        {
+            var redGam = _medioService.saveRed(miobj);
+            return Ok(redGam);
+        }
+
+        [HttpPost("filterRedes")]
+        public IActionResult filterRedes(ListaParametro parametros)
+        {
+
+            var fu = _medioService.filterRedes(parametros.Parametros);
+            return Ok(fu);
+        }
+
     }
 }

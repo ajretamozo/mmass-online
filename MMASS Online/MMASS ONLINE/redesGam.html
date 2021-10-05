@@ -100,9 +100,9 @@
             <div class="card-header d-flex align-items-center" style="margin-bottom: 1rem;">
                 <span id="headerTitle" class="mr-auto dataTitle">Redes AdServer</span>
                 <div>
-                    <button id="botNuevo" type="button" class="btn btn-light disableOnEdit" onclick="nuevaTipoAviso()">Nuevo</button>
-                    <button id="botEditar" type="button" class="btn btn-light disableOnEdit" onclick="editarTipoAviso()">Editar</button>
-                    <button id="botBorrar" type="button" class="btn btn-light disableOnEdit" onclick="checkBorrarTipoAviso()">Borrar</button>
+                    <button id="botNuevo" type="button" class="btn btn-light disableOnEdit" onclick="nuevaRed()">Nuevo</button>
+                    <button id="botEditar" type="button" class="btn btn-light disableOnEdit" onclick="editarRed()">Editar</button>
+                    <button id="botBorrar" type="button" class="btn btn-light disableOnEdit" onclick="checkBorrarRed()">Borrar</button>
                 </div>
             </div>
             <div class="card-body">
@@ -112,7 +112,7 @@
                             <div class="input-group-prepend">
                                 <span class="input-group-text" id="inputGroup-sizing-sm">#</span>
                             </div>
-                            <input id="idTipoAviso" value="0" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" readonly>
+                            <input id="idRed" value="0" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" readonly>
                         </div>
                     </div>
                 </div>
@@ -120,7 +120,7 @@
                     <div class="col-lg-6">
                         <label for="descTipoAviso"> Descripción Red</label>
                         <div class="input-group">
-                            <input type="text" id="descTipoAviso" class="form-control readonlyOnView" placeholder="Descripcion">
+                            <input type="text" id="descRed" class="form-control readonlyOnView" placeholder="Descripcion">
                         </div>
                     </div>
                     <div class="col-lg-6">
@@ -138,7 +138,7 @@
                 </div>-->
             </div>
             <div class="card-footer bg-transparent mb-3" style="text-align: right; vertical-align: middle; padding-bottom: 0;">
-                <button id="botGuardar" type="button" class="btn btn-light enableOnEdit" onclick="guardarTipoAviso()">Guardar</button>
+                <button id="botGuardar" type="button" class="btn btn-light enableOnEdit" onclick="guardarRed()">Guardar</button>
                 <button id="botCancelar" type="button" class="btn btn-light enableOnEdit View" onclick="cancelarEdicion()">Cancelar</button>
             </div>
         </div>
@@ -150,7 +150,7 @@
         $(function () {
             $('input[type=text]').attr('autocomplete', 'off');
             $("#divNavBar").load("navBar.html");
-            //autentificar();
+
             checkParameters();
         });
 
@@ -176,14 +176,13 @@
             setMode(mode);
 
             if (id != undefined) {
-                var data = {};
-                data.id_tipo_aviso_dg = id;
+                var data = id;
                 callWS("medios", "getRedById", JSON.stringify(data), function (data) { onGetRed(data); });
             }
         }
 
         function onGetRed(data) {
-            $('#botBorrar').attr("onclick", "checkBorrarTipoAviso(" + data.id_red + ")");
+            $('#botBorrar').attr("onclick", "checkBorrarRed(" + data.id_red + ")");
             $('#idRed').attr("value", data.id_red);
             $('#descRed').attr("value", data.descripcion);
             $('#codRed').attr("value", data.codigo_red);
@@ -194,27 +193,27 @@
                 $('#headerTitle').html("Red AdServer");
                 //#botNuevo, #botEditar, #botBorrar
                 $('.disableOnEdit').attr("disabled", false);
-                //#botGuardar, #botCancelar, #checkEnvioAdServer
+                //#botGuardar, #botCancelar
                 $('.enableOnEdit').attr("disabled", true);
                 //AGREGUE:
                 $('.View').attr("disabled", false);
-                //#descTipoAviso
+                //#descRed
                 $('.readonlyOnView').attr("readonly", true);
             } else if (mode == 'edit') {
                 $('#headerTitle').html("Editar Red AdServer");
                 //#botNuevo, #botEditar, #botBorrar
                 $('.disableOnEdit').attr("disabled", true);
-                //#botGuardar, #botCancelar, #checkEnvioAdServer
+                //#botGuardar, #botCancelar
                 $('.enableOnEdit').attr("disabled", false);
-                //#descTipoAviso
+                //#descRed
                 $('.readonlyOnView').attr("readonly", false);
             } else if (mode == 'new') {
                 $('#headerTitle').html("Editar Red AdServer");
                 //#botNuevo, #botEditar, #botBorrar
                 $('.disableOnEdit').attr("disabled", true);
-                //#botGuardar, #botCancelar, #checkEnvioAdServer
+                //#botGuardar, #botCancelar
                 $('.enableOnEdit').attr("disabled", false);
-                //#descTipoAviso
+                //#descRed
                 $('.readonlyOnView').attr("readonly", false);
             } else {
                 console.log("invalid mode:" + mode);
@@ -228,11 +227,11 @@
             location.href = "/redesGamlist.html"
         }
 
-        function editarTipoAviso() {
+        function editarRed() {
             setMode('edit');
         }
 
-        function nuevoTipoAviso() {
+        function nuevaRed() {
             location.href = "/redesGam.html?mode=new"
         }
 
@@ -255,7 +254,7 @@
         function borrarRed(id) {
             var data = {};
             data.id_red = id;
-            callWS("medios", "remove", JSON.stringify(data), function (data) {
+            callWS("medios", "removeRed", JSON.stringify(data), function (data) {
                 if (data == true) {
                     location.href = "/redesGamlist.html";
                 } else {
@@ -277,9 +276,9 @@
                 data.descripcion = $("#descRed").val();
                 data.codigo_red = $('#codRed').val();
 
-                callWS("tipos_avisos", "save", JSON.stringify(data), function (data) {
+                callWS("medios", "saveRed", JSON.stringify(data), function (data) {
                     if (data == true) {
-                        location.href = "/tiposavisoslist.html";
+                        location.href = "/redesGamlist.html";
                     } else {
                         console.log(data);
                     }

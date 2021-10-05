@@ -15,6 +15,7 @@ namespace WebApi.Entities
         public string Descripcion { get; set; }
         public bool Permite_envio_ads { get; set; }
         public bool Es_borrado { get; set; }
+        
         public static Dg_tipos_avisos getById(int Id)
         {
             string sqlCommand = "Select * FROM Dg_tipos_avisos where Id_tipo_aviso_dg = " + Id.ToString();
@@ -120,6 +121,32 @@ namespace WebApi.Entities
             return true;
         }
 
+        public static List<Dg_tipos_avisos> filter(List<Parametro> parametros)
+        {
+            string sqlCommand = " Select Id_tipo_aviso_dg, Descripcion, Permite_envio_ads, Es_borrado FROM Dg_tipos_avisos where ((Es_borrado = 0) or (Es_borrado is null))";
+
+            string mifiltro = "";
+
+            foreach (Parametro p in parametros)
+            {
+                if (p.Value.ToString() != "")
+                {
+                    if ((p.ParameterName == "descripcion") && (p.Value.ToString() != ""))
+                        mifiltro = mifiltro + " and Descripcion like '%" + p.Value + "%'";
+                }
+            }
+
+            List<Dg_tipos_avisos> col = new List<Dg_tipos_avisos>();
+            Dg_tipos_avisos elem;
+            DataTable t = DB.Select(sqlCommand + mifiltro);
+
+            foreach (DataRow item in t.Rows)
+            {
+                elem = getDg_tipos_avisos(item);
+                col.Add(elem);
+            }
+            return col;
+        }
 
     }
 }

@@ -30,6 +30,7 @@ namespace WebApi.Controllers
             var tipos_avisos = _tipos_AvisosService.saveTipo_aviso(miobj);
             return Ok(tipos_avisos);
         }
+
         [HttpPost("remove")]
         public IActionResult remove(Dg_tipos_avisos miobj)
         {
@@ -44,6 +45,12 @@ namespace WebApi.Controllers
             return Ok(tipos_avisos);
         }
 
+        [HttpPost("filter")]
+        public IActionResult filter(ListaParametro parametros)
+        {
 
+            var fu = _tipos_AvisosService.filter(parametros.Parametros);
+            return Ok(fu);
+        }
     }
 }

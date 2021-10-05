@@ -32,6 +32,8 @@ namespace WebApi.Services
         Dg_red_GAM getRedById(int id);
         List<string> getCodigosRed();
         bool deleteRed(Dg_red_GAM miobj);
+        bool saveRed(Dg_red_GAM miobj);
+        IEnumerable<Dg_red_GAM> filterRedes(List<Parametro> parametros);
     }
 
     public class MedioService : IMedioService
@@ -115,6 +117,16 @@ namespace WebApi.Services
         public bool deleteRed(Dg_red_GAM miobj)
         {
             return miobj.deleteRed();
+        }
+
+        public bool saveRed(Dg_red_GAM miobj)
+        {
+            return miobj.save();
+        }
+
+        public IEnumerable<Dg_red_GAM> filterRedes(List<Parametro> parametros)
+        {
+            return Dg_red_GAM.filter(parametros);
         }
 
     }

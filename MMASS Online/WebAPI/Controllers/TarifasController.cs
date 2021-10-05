@@ -39,6 +39,7 @@ namespace WebApi.Controllers
             var tarifas = _tarifaService.saveTarifa(miobj);
             return Ok(tarifas);
         }
+
         [HttpPost("remove")]
         public IActionResult removeTarifa(Dg_tarifas miobj)
         {
@@ -52,6 +53,7 @@ namespace WebApi.Controllers
             var fu = _tarifaService.getFormasUso();
             return Ok(fu);
         }
+
         [HttpPost("filter")]
         public IActionResult filter(ListaParametro parametros)
         {
