@@ -102,14 +102,21 @@ namespace WebApi.Entities
             if (item["id_agencia"].ToString() != "")
                 mi.agencia = Contacto.getContactoById(DB.DInt(item["id_agencia"].ToString()));
             if (item["id_anunciante"].ToString() != "")
-                if(DB.DInt(item["id_red"].ToString()) > 0)
-                {
-                    mi.anunciante = Contacto.getContactoByIdyRed(DB.DInt(item["id_anunciante"].ToString()), DB.DInt(item["id_red"].ToString()));
-                }
-                else
+            {
+                //if(DB.DInt(item["id_red"].ToString()) > 0)
+                //{
+                //    mi.anunciante = Contacto.getContactoByIdyRed(DB.DInt(item["id_anunciante"].ToString()), DB.DInt(item["id_red"].ToString()));
+                //}
+                mi.anunciante = Contacto.getContactoByIdyRed(DB.DInt(item["id_anunciante"].ToString()), DB.DInt(item["id_red"].ToString()));
+                if (mi.anunciante.Id == 0)
                 {
                     mi.anunciante = Contacto.getContactoById(DB.DInt(item["id_anunciante"].ToString()));
                 }
+                //else
+                //{
+                //    mi.anunciante = Contacto.getContactoById(DB.DInt(item["id_anunciante"].ToString()));
+                //}
+            }            
             if (item["id_producto"].ToString() != "")
                 mi.producto = Producto.getById(DB.DInt(item["id_producto"].ToString()));
             mi.Id_condpagoap = DB.DInt(item["Id_condpagoap"].ToString());

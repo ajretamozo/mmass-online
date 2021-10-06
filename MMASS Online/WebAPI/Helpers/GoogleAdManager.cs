@@ -9,7 +9,7 @@ using Google.Api.Ads.AdManager.v202105;
 using Google.Api.Ads.Common.Util.Reports;
 using System.Diagnostics;
 using System.Configuration;
-
+using User = Google.Api.Ads.AdManager.v202105.User;
 
 namespace WebApi.Helpers
 {
@@ -59,6 +59,49 @@ namespace WebApi.Helpers
             }
 
             return netCode;
+        }
+
+        public static long GetUserActual()
+        {
+            long traffId = 0;
+
+            using (UserService userService = user.GetService<UserService>())
+            {
+                // Create a statement to select users.
+                int pageSize = StatementBuilder.SUGGESTED_PAGE_LIMIT;
+                StatementBuilder statementBuilder = new StatementBuilder()
+                    .Where("email = :email")
+                    .OrderBy("id ASC")
+                    .Limit(pageSize)
+                    .AddValue("email", "admanagertest@admanagertest.iam.gserviceaccount.com");
+
+                // Retrieve a small amount of users at a time, paging through until all
+                // users have been retrieved.
+                int totalResultSetSize = 0;
+                do
+                {
+                    UserPage page = userService.getUsersByStatement(statementBuilder.ToStatement());
+
+                    // Print out some information for each user.
+                    if (page.results != null)
+                    {
+                        totalResultSetSize = page.totalResultSetSize;
+                        int i = page.startIndex;
+                        foreach (User usr in page.results)
+                        {
+                            Console.WriteLine("{0}) User with ID {1} and name \"{2}\" was found.",
+                                i++, usr.id, usr.name);
+                            traffId = usr.id;
+                        }
+                    }
+
+                    statementBuilder.IncreaseOffsetBy(pageSize);
+                } while (statementBuilder.GetOffset() < totalResultSetSize);
+
+                Console.WriteLine("Number of results found: {0}", totalResultSetSize);
+            }
+
+            return traffId;
         }
 
         public static List<Contacto> getAnunciantes(string desc)
@@ -328,8 +371,8 @@ namespace WebApi.Helpers
                 Order order = new Order();
                 order.name = name;//string.Format("Order #{0}", i);
                 order.advertiserId = advertiserId;//advertiserId - 4747697929;
-                order.traffickerId = long.Parse(ConfigurationManager.AppSettings["traffickerId"]);// traffickerId  - User;
-                //order.traffickerId = 245442393;// traffickerId  - User;
+                order.traffickerId = GetUserActual();
+                //order.traffickerId = long.Parse(ConfigurationManager.AppSettings["traffickerId"]);// traffickerId  - User;
 
                 Debug.WriteLine("user client id:" + user.Config.OAuth2ClientId.ToString());
                 orders[0] = order;

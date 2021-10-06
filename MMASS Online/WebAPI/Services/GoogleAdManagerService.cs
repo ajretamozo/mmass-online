@@ -61,7 +61,11 @@ namespace WebApi.Services
 
             Dg_orden_pub_ap op = Dg_orden_pub_ap.getById(Convert.ToInt32(idOrden));
 
-            if (DB.DLong(op.anunciante.IdContactoDigital) < 1)
+            if (op.anunciante.IdContactoDigital == null)
+            {
+                return -2; //El contacto no esta sincronizado
+            }
+            else if (DB.DLong(op.anunciante.IdContactoDigital) < 1)
             {
                 return -2; //El contacto no esta sincronizado
             }
