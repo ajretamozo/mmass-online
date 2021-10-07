@@ -17,6 +17,12 @@ namespace WebApi.Services
     {
         User Authenticate(string username, string password);
         IEnumerable<User> GetAll();
+        bool saveUser(Usuario miobj);
+        IEnumerable<Usuario> getAllUsers();
+        IEnumerable<Usuario> getUserByNom(string nom);
+        bool deleteUser(Usuario miobj);
+        Usuario getById(int id);
+        bool cantMaxUsers();
     }
 
     public class UserService : IUserService
@@ -32,6 +38,28 @@ namespace WebApi.Services
         public UserService(IOptions<AppSettings> appSettings)
         {
             _appSettings = appSettings.Value;
+        }
+
+        private const string initVector = "mnopqrstuggabcde";
+        private const int keysize = 256;
+
+        public static string Encriptar(string plainText, string passPhrase)
+        {
+            byte[] initVectorBytes = Encoding.UTF8.GetBytes(initVector);
+            byte[] plainTextBytes = Encoding.UTF8.GetBytes(plainText);
+            PasswordDeriveBytes password = new PasswordDeriveBytes(passPhrase, null);
+            byte[] keyBytes = password.GetBytes(keysize / 8);
+            RijndaelManaged symmetricKey = new RijndaelManaged();
+            symmetricKey.Mode = CipherMode.CBC;
+            ICryptoTransform encryptor = symmetricKey.CreateEncryptor(keyBytes, initVectorBytes);
+            MemoryStream memoryStream = new MemoryStream();
+            CryptoStream cryptoStream = new CryptoStream(memoryStream, encryptor, CryptoStreamMode.Write);
+            cryptoStream.Write(plainTextBytes, 0, plainTextBytes.Length);
+            cryptoStream.FlushFinalBlock();
+            byte[] cipherTextBytes = memoryStream.ToArray();
+            memoryStream.Close();
+            cryptoStream.Close();
+            return Convert.ToBase64String(cipherTextBytes);
         }
 
         private static string Decencriptar(string cipherText, string passPhrase)
@@ -110,5 +138,40 @@ namespace WebApi.Services
                 return x;
             });
         }
+
+        public bool saveUser(Usuario miobj)
+        {
+            miobj.Clave_web = Encriptar(miobj.Clave_web, "silverblue");
+            return miobj.save();
+        }
+
+        public IEnumerable<Usuario> getAllUsers()
+        {
+            return Usuario.getAllUsers();
+        }
+
+        public IEnumerable<Usuario> getUserByNom(string nom)
+        {
+            return Usuario.getByNombreList(nom);
+        }
+
+        public bool deleteUser(Usuario miobj)
+        {
+            return miobj.deleteUser();
+        }
+
+        public Usuario getById(int id)
+        {
+            Usuario user = Usuario.getById(id);
+            user.Clave_web = Decencriptar(user.Clave_web, "silverblue");
+
+            return user;
+        }
+
+        public bool cantMaxUsers()
+        {
+            return Usuario.cantMaxUsers();
+        }
+
     }
 }

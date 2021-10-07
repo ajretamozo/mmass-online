@@ -33,7 +33,7 @@ namespace WebApi.Services
         }
         public IEnumerable<Contacto> GetEjecutivos()
         {            
-            return Contacto.GetContactosPorTipo("6");
+            return Contacto.GetContactosPorTipo("2");
         }
 
 

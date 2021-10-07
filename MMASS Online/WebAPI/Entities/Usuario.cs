@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Data;
 using WebApi.Helpers;
+using System.Data.SqlClient;
 
 namespace WebApi.Entities
 {
@@ -24,6 +25,30 @@ namespace WebApi.Entities
         public int Usrrol { get; set; }
         public string Idioma { get; set; }
         public int Sistema { get; set; }
+
+        public static Usuario getUsuario(DataRow item)
+        {
+            Usuario miUsuario = new Usuario
+            {
+                Id_usuario = int.Parse(item["id_usuario"].ToString()),
+                Nombre = item["nombre"].ToString(),
+                Nombrel = item["nombrel"].ToString(),
+                Tipodoc = int.Parse(item["tipodoc"].ToString()),
+                Nrodoc = item["nrodoc"].ToString(),
+                F_alta = DB.DFecha(item["f_alta"].ToString()),
+                F_baja = DB.DFecha(item["f_baja"].ToString()),
+                Clave = item["clave"].ToString(),
+                Clave_web = item["clave_web"].ToString(),
+                Email = item["email"].ToString(),
+                Adusuario = item["adusuario"].ToString(),
+                Ambito = DB.DInt(item["Ambito"].ToString()),
+                Usrrol = DB.DInt(item["usrrol"].ToString()),
+                Idioma = item["idioma"].ToString(),
+                Sistema = DB.DInt(item["sistema"].ToString())
+            };
+            return miUsuario;
+        }
+
         public static Usuario getById(int Id)
         {
             string sqlCommand = " select id_usuario, nombre, nombrel, tipodoc, nrodoc, f_alta, f_baja, clave, clave_web, email, adusuario, Ambito, " +
@@ -84,6 +109,128 @@ namespace WebApi.Entities
             return resultado;
         }
 
+        public bool save()
+        {
+            string sql = "";
+            F_alta = DateTime.Now;
+            if (Id_usuario == 0)
+            {
+                string sqlId = "select max(id_usuario) as maximo from usuarios";
+                int nuevoId = 0;
+                DataTable t = DB.Select(sqlId);
+
+                if (t.Rows.Count == 1)
+                {
+                    nuevoId = DB.DInt(t.Rows[0]["maximo"].ToString());
+                    nuevoId++;
+                    Id_usuario = nuevoId;
+                }
+
+                sql = "insert into usuarios (id_usuario, nombre, nombrel, tipodoc, nrodoc, f_alta, clave, clave_web, email, adusuario, usrrol)" +
+                                   " values (@id_usuario, @nombre, @nombrel, 0, '', @f_alta, '', @clave_web, '', '', 0)";
+            }
+
+            else
+            {
+                sql = "update usuarios set nombre = @nombre, nombrel = @nombrel, clave_web = @clave_web where id_usuario = @id_usuario";
+            }
+
+            List<SqlParameter> parametros = new List<SqlParameter>()
+            {
+                new SqlParameter()
+                { ParameterName="@id_usuario", SqlDbType = SqlDbType.Int, Value = Id_usuario },
+                new SqlParameter()
+                { ParameterName="@nombre",SqlDbType = SqlDbType.VarChar, Value = Nombre },
+                new SqlParameter()
+                { ParameterName="@nombrel",SqlDbType = SqlDbType.VarChar, Value = Nombrel },
+                new SqlParameter()
+                { ParameterName="@clave_web", SqlDbType = SqlDbType.VarChar, Value = Clave_web },
+                 new SqlParameter()
+                { ParameterName="@f_alta", SqlDbType = SqlDbType.DateTime, Value = F_alta }
+            };
+            try
+            {
+                DB.Execute(sql, parametros);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+            return true;
+        }
+
+        public static List<Usuario> getAllUsers()
+        {
+            string sqlCommand = " select id_usuario, nombre, nombrel, tipodoc, nrodoc, f_alta, f_baja, clave, clave_web, email, adusuario, Ambito, " +
+                                " usrrol, idioma, sistema from usuarios where clave_web is not null";
+
+            List<Usuario> col = new List<Usuario>();
+            Usuario user;
+            DataTable t = DB.Select(sqlCommand);
+
+            foreach (DataRow item in t.Rows)
+            {
+                user = getUsuario(item);
+                col.Add(user);
+            }
+            return col;
+        }
+
+        public static List<Usuario> getByNombreList(string pNombre)
+        {
+            string sqlCommand = " select id_usuario, nombre, nombrel, tipodoc, nrodoc, f_alta, f_baja, clave, clave_web, email, adusuario, Ambito, " +
+                                " usrrol, idioma, sistema from usuarios where clave_web is not null and nombre like '%" + pNombre + "%'";
+            List<Usuario> col = new List<Usuario>();
+            Usuario user;
+            DataTable t = DB.Select(sqlCommand);
+
+            foreach (DataRow item in t.Rows)
+            {
+                user = getUsuario(item);
+                col.Add(user);
+            }
+            return col;
+        }
+
+        public bool deleteUser()
+        {
+            string sql = "delete from usuarios where id_usuario = " + Id_usuario.ToString();
+
+            if (Id_usuario != 0)
+            {
+                try
+                {
+                    DB.Execute(sql);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        public static bool cantMaxUsers()
+        {
+            string sqlCommand = "select count(*) as cant from usuarios where clave_web is not null";
+            bool resultado = false;
+            int cant = 0;
+
+            DataTable t = DB.Select(sqlCommand);
+
+            if (t.Rows.Count == 1)
+            {
+                cant = DB.DInt(t.Rows[0]["cant"].ToString());
+
+                if (cant > 19)
+                {
+                    resultado = true;
+                }
+            }
+            return resultado;
+        }
 
     }
 }

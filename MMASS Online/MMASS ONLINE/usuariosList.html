@@ -1,0 +1,280 @@
+﻿<!DOCTYPE html>
+<html>
+<head runat="server">
+    <title>MMASS - Usuarios</title>
+
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/js/tempusdominus-bootstrap-4.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/css/tempusdominus-bootstrap-4.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400&display=swap" rel="stylesheet">
+    <script src="./js/autentificar.js"></script>
+
+
+    <style>
+        .table-hover tbody tr:hover > td {
+            cursor: pointer;
+        }
+
+        .search-box-closed {
+            width: 53px;
+        }
+
+        th {
+            text-align: center;
+        }
+
+        .dataTitle {
+            font-family: 'Roboto';
+            font-size: 20px;
+        }
+
+        @media (max-width: 767px) {
+            .search-box-open {
+                width: 100%;
+            }
+
+            #divMessage {
+                position: fixed;
+                width: 100%;
+                bottom: 2px;
+                text-align: center;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .search-box-open {
+                width: 300px;
+            }
+        }
+
+        @media screen {
+
+            #divMessage {
+                position: fixed;
+                left: 50%;
+                margin-left: -200px;
+                width: 400px;
+                bottom: 30px;
+                text-align: center;
+            }
+        }
+    </style>
+
+</head>
+<body>
+    <!--MENU-->
+    <div id="divNavBar"></div>
+
+    <main role="main" class="container d-flex justify-content-center">
+        <div id="divBlock" style="left:0; right:0;top:0; bottom:0;overflow-x: hidden; overflow-y: auto;position:fixed;z-index:1051;outline:0;display:none"></div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="modalCenter" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header d-flex justify-content-center">
+                        <h5 class="modal-title" id="modalCenterTitle">Advertencia</h5>
+                    </div>
+                    <div class="modal-body" id="modalCenterBody">
+
+                    </div>
+                    <div class="modal-footer d-flex justify-content-center" id="modalCenterFooter">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div id="divMessage" class="alert" style="display:none;cursor:pointer;z-index:10000;" title="Click para cerrar" onclick="$('#divMessage').hide('slideDown')"> </div>
+        <div class="jumbotron mt-4 py-4 col-lg-9" id="divUsersMain">
+            <!--Usuarios DATA-->
+            <p class="dataTitle">USUARIOS</p>
+            <div id="divUsersData d-flex align-items-around align-items-end">
+                <div class="row py-1">
+                    <div class="col-md-5">
+                        <label for="descFiltro">Nombre de Usuario: </label>
+                        <div class="input-group "> <input type="text" id="descFiltro" class="form-control"></div>
+                    </div>
+                    <div class="col-md-7 d-flex justify-content-end align-items-end">
+                        <button type="button" class="btn btn-dark btn-sm mx-1" onclick="searchUsers()">
+                            <span class="fa fa-search"></span> Buscar
+                        </button>
+                        <button type="button" class="btn btn-dark btn-sm mx-1" onclick="nuevoUser()">
+                            <span class="fa fa-check"></span> Nuevo Usuario
+                        </button>
+                    </div>
+                </div>
+                <div class="table-responsive mt-2">
+                    <table class='table table-hover'>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Nombre</th>
+                                <th>Usuario</th>
+                                <th class="d-flex justify-content-center">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="TableUsers" class="small"></tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!--Scripts-->
+    <script type="text/javascript">
+
+        //DatePickers Initialization
+        $(function () {
+            $('input[type=text]').attr('autocomplete', 'off');
+            $("#divNavBar").load("navBar.html");
+            populateFields();
+        });
+
+
+
+        function populateFields() {
+
+            // Llenar tabla con redes existentes
+            callWS("users", "getAllUsers", '', function (data) { populateTable(data, 'TableUsers'); });
+        }
+
+        function populateTable(data, idTable) {
+            listUsers = data;
+            rowHTML = ''
+            $.each(listUsers, function (it, iuser) {
+                rowHTML += "<tr id-tar=\"" + iuser.id_usuario + "\">"
+                rowHTML += "<td class='col-xs-1' align='center'>" + iuser.id_usuario + "</td>";
+                rowHTML += "<td class='col-xs-1' align='center'>" + iuser.nombrel + "</td>";
+                rowHTML += "<td class='col-xs-1' align='center'>" + iuser.nombre + "</td>";
+
+                //Acciones
+                rowHTML += "<td id='colAcciones' class='col-xs-2 d-flex justify-content-center'>"
+                rowHTML += "<button type='button' title='Ver' class='btn btn-outline-dark btn-sm mx-1' onclick=\"openUser(" + iuser.id_usuario + ",'view')\"><span class='fa fa-eye'></span> </button>"
+                rowHTML += "<button type='button' title='Editar' class='btn btn-outline-dark btn-sm mx-1' onclick=\"openUser(" + iuser.id_usuario + ",'edit')\"><span class='fa fa-edit'></span> </button>"
+                rowHTML += "<button type='button' title='Eliminar' class='btn btn-outline-dark btn-sm mx-1' onclick=\"checkBorrarUser(" + iuser.id_usuario + ")\"><span class='fa fa-times'></span> </button>"
+                rowHTML += "</td>"
+                rowHTML += '</tr>'
+            })
+            $("#" + idTable).html(rowHTML);
+        }
+
+        function searchUsers() {
+            var nombre = $('#descFiltro').val();
+            //params = {};
+            //params.nombre = $('#descFiltro').val();
+
+            //for (param in params) {
+            //    if (params[param] == null) {
+            //        params[param] = '';
+            //    }
+            //};
+
+            //var parametros = setListaParametros(params);
+
+            callWS("users", "getUserByNom", JSON.stringify(nombre), function (data) {
+                if (data.length > 0) {
+                    populateTable(data, 'TableUsers');
+                } else {
+                    message = 'La búsqueda no produjo ningun resultado';
+                    showMessage(message, "info");
+                }
+            });
+        }
+
+        //function setListaParametros(data) {
+        //    var parametros = {};
+        //    var listaParametros = [];
+
+        //    Object.keys(data).forEach(function (key) {
+        //        var objParametro = {};
+        //        objParametro.ParameterName = key;
+        //        objParametro.Value = data[key];
+        //        listaParametros.push(objParametro);
+        //    });
+        //    parametros.Parametros = listaParametros;
+        //    return parametros;
+        //}
+
+        function nuevoUser() {
+            location.href = "/usuarios.html?mode=new";
+        }
+
+        function openUser(data, mode) {
+            var newURL = "/usuarios.html?idUser=" + data + '&mode=' + mode;
+            location.href = newURL;
+        }
+
+        function checkBorrarUser(id) {
+
+            options = [
+                {
+                    optionDesc: "Aceptar",
+                    optionFunc: "borrarUser('" + id + "')"
+                },
+                {
+                    optionDesc: "Cancelar",
+                    optionFunc: ""
+                }
+            ];
+
+            var mensaje = "<div class='d-flex justify-content-center'>¿Esta seguro de borrar el Usuario?</div>";
+
+            showModal(mensaje, options);
+        }
+
+        function borrarUser(id) {
+            var data = {};
+            data.id_usuario = id;
+            callWS("users", "removeUser", JSON.stringify(data), function (data) {
+                if (data == true) {
+                    callWS("users", "getAllUsers", '', function (data) { populateTable(data, 'TableRedes'); });
+                } else {
+                    message = 'Ocurrió un problema al borrar el Usuario';
+                    showMessage(message, "alert");
+                }
+
+            });
+        }
+
+
+        function selectToJson(idSelect, idCol) {
+            ret = [];
+
+            values = $('#' + idSelect).val();
+            values.forEach(function (value) {
+                item = {};
+                item[idCol] = value;
+                ret.push(item);
+            });
+            return ret;
+        }
+
+        function dateToSqlFormat(date) {
+            arr = date.split("/");
+            sqlFormatDate = '';
+            sqlFormatDate = arr[2] + '-' + arr[1] + '-' + arr[0];
+            return sqlFormatDate;
+        }
+
+        function dateToFieldFormat(date) {
+            date = date.split('T')[0];
+            arr = date.split("-");
+            fieldFormatDate = '';
+            fieldFormatDate = arr[2] + '/' + arr[1] + '/' + arr[0];
+            return fieldFormatDate;
+        }
+
+
+    </script>
+</body>
+
+</html>

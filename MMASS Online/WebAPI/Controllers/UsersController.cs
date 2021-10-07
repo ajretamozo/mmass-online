@@ -35,5 +35,48 @@ namespace WebApi.Controllers
             var users =  _userService.GetAll();
             return Ok(users);
         }
+
+        [HttpPost("saveUser")]
+        public IActionResult save(Usuario miobj)
+        {
+            var user = _userService.saveUser(miobj);
+            return Ok(user);
+        }
+
+        [HttpPost("getAllUsers")]
+        public IActionResult getAllUsers()
+        {
+            var users = _userService.getAllUsers();
+            return Ok(users);
+        }
+
+        [HttpPost("getUserByNom")]
+        public IActionResult getUserByNom([FromBody] string nom)
+        {
+            var users = _userService.getUserByNom(nom);
+            return Ok(users);
+        }
+
+        [HttpPost("removeUser")]
+        public IActionResult remove(Usuario miobj)
+        {
+            var user = _userService.deleteUser(miobj);
+            return Ok(user);
+        }
+
+        [HttpPost("getById")]
+        public IActionResult getById([FromBody] int id)
+        {
+            var user = _userService.getById(id);
+            return Ok(user);
+        }
+
+        [HttpPost("cantMaxUsers")]
+        public IActionResult cantMaxUsers()
+        {
+            var res = _userService.cantMaxUsers();
+            return Ok(res);
+        }
+
     }
 }

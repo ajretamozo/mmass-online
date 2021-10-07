@@ -1,0 +1,328 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>MMASS - Usuarios</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment-with-locales.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/js/tempusdominus-bootstrap-4.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/css/tempusdominus-bootstrap-4.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="/dist/duallistbox/jquery.bootstrap-duallistbox.min.js"></script>
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/dist/duallistbox/bootstrap-duallistbox.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400&display=swap" rel="stylesheet">
+    <script src="./js/autentificar.js"></script>
+
+
+    <style type="text/css">
+        .jumbotron {
+            padding: 20px;
+        }
+
+        #title {
+            padding: 0 15px;
+            margin-top: 75px;
+            height: 40px;
+        }
+
+        .dataTitle {
+            font-family: 'Roboto';
+            font-size: 20px;
+        }
+
+        .input-group-addon {
+            padding: 5px;
+            background: #e9ecef;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .form-check-input {
+            position: absolute;
+            margin-top: .6rem;
+            margin-left: 0;
+        }
+
+        .list-group-item {
+            padding: .2rem 1rem;
+        }
+
+        .list-group {
+            margin-top: .6rem;
+        }
+
+        @media screen {
+
+            #divMessage {
+                position: fixed;
+                left: 20%;
+                width: 60%;
+                bottom: 3rem;
+                text-align: center;
+            }
+        }
+
+
+        /*.container {
+            max-width:
+        }*/
+    </style>
+
+</head>
+<body>
+    <!--MENU-->
+    <div id="divNavBar"></div>
+
+    <main role="main" class="container">
+        <!-- Modal -->
+        <div class="modal fade" id="modalCenter" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalTitle"> Advertencia </h5>
+                    </div>
+                    <div class="modal-body">
+
+                    </div>
+                    <div class="modal-footer">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-3" style="max-width: 100rem; margin-top: 5rem;">
+            <div class="card-header d-flex align-items-center" style="margin-bottom: 1rem;">
+                <span id="headerTitle" class="mr-auto dataTitle">Usuarios</span>
+                <div>
+                    <button id="botNuevo" type="button" class="btn btn-light disableOnEdit" onclick="nuevoUser()">Nuevo</button>
+                    <button id="botEditar" type="button" class="btn btn-light disableOnEdit" onclick="editarUser()">Editar</button>
+                    <button id="botBorrar" type="button" class="btn btn-light disableOnEdit" onclick="checkBorrarUser()">Borrar</button>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="input-group input-group-sm col-lg-3 mb-2">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="inputGroup-sizing-sm">#</span>
+                            </div>
+                            <input id="idUser" value="0" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" readonly>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4">
+                        <label for="descUser"> Nombre y Apellido</label>
+                        <div class="input-group">
+                            <input type="text" id="descUser" class="form-control readonlyOnView" placeholder="Nombre">
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <label for="usuario"> Usuario</label>
+                        <div class="input-group">
+                            <input type="text" id="usuario" class="form-control readonlyOnView" placeholder="Usuario">
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <label for="contra"> Contraseña</label>
+                        <div class="input-group">
+                            <input type="text" id="contra" class="form-control readonlyOnView" placeholder="Contraseña">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer bg-transparent mb-3" style="text-align: right; vertical-align: middle; padding-bottom: 0;">
+                <button id="botGuardar" type="button" class="btn btn-light enableOnEdit" onclick="guardarUser()">Guardar</button>
+                <button id="botCancelar" type="button" class="btn btn-light enableOnEdit View" onclick="cancelarEdicion()">Cancelar</button>
+            </div>
+        </div>
+    </main>
+
+    <script type="text/javascript">
+
+
+        $(function () {
+            $('input[type=text]').attr('autocomplete', 'off');
+            $("#divNavBar").load("navBar.html");
+
+            checkParameters();
+        });
+
+        var getUrlParameter = function getUrlParameter(sParam) {
+            var sPageURL = window.location.search.substring(1),
+                sURLVariables = sPageURL.split('&'),
+                sParameterName,
+                i;
+
+            for (i = 0; i < sURLVariables.length; i++) {
+                sParameterName = sURLVariables[i].split('=');
+
+                if (sParameterName[0] === sParam) {
+                    return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+                }
+            }
+        };
+
+
+        function checkParameters() {
+            var id = getUrlParameter("idUser");
+            var mode = getUrlParameter("mode");
+            setMode(mode);
+
+            if (id != undefined) {
+                var data = id;
+                callWS("users", "getById", JSON.stringify(data), function (data) { onGetUser(data); });
+            }
+        }
+
+        function onGetUser(data) {
+            $('#botBorrar').attr("onclick", "checkBorrarUser(" + data.id_usuario + ")");
+            $('#idUser').attr("value", data.id_usuario);
+            $('#descUser').attr("value", data.nombrel);
+            $('#usuario').attr("value", data.nombre);
+            $('#contra').attr("value", data.clave_web);
+        }
+
+        function setMode(mode) {
+            if (mode == 'view') {
+                $('#headerTitle').html("Usuario");
+                //#botNuevo, #botEditar, #botBorrar
+                $('.disableOnEdit').attr("disabled", false);
+                //#botGuardar, #botCancelar
+                $('.enableOnEdit').attr("disabled", true);
+                //AGREGUE:
+                $('.View').attr("disabled", false);
+                //#descRed
+                $('.readonlyOnView').attr("readonly", true);
+            } else if (mode == 'edit') {
+                $('#headerTitle').html("Editar Usuario");
+                //#botNuevo, #botEditar, #botBorrar
+                $('.disableOnEdit').attr("disabled", true);
+                //#botGuardar, #botCancelar
+                $('.enableOnEdit').attr("disabled", false);
+                //#descRed
+                $('.readonlyOnView').attr("readonly", false);
+            } else if (mode == 'new') {
+                $('#headerTitle').html("Editar Usuario");
+                //#botNuevo, #botEditar, #botBorrar
+                $('.disableOnEdit').attr("disabled", true);
+                //#botGuardar, #botCancelar
+                $('.enableOnEdit').attr("disabled", false);
+                //#descRed
+                $('.readonlyOnView').attr("readonly", false);
+            } else {
+                console.log("invalid mode:" + mode);
+                location.href = "/usuariosList.html"
+            }
+        }
+
+
+
+        function cancelarEdicion() {
+            location.href = "/usuariosList.html"
+        }
+
+        function editarRed() {
+            setMode('edit');
+        }
+
+        function nuevaRed() {
+            location.href = "/usuarios.html?mode=new"
+        }
+
+        function checkBorrarUser(id) {
+
+            options = [
+                {
+                    optionDesc: "Cancelar",
+                    optionFunc: ""
+                },
+                {
+                    optionDesc: "Aceptar",
+                    optionFunc: "borrarRed(" + id + ")"
+                }
+            ];
+
+            showModal("¿Está seguro de eliminar el Usuario?", options);
+        }
+
+        function borrarUser(id) {
+            var data = {};
+            data.id_usuario = id;
+            callWS("users", "removeUser", JSON.stringify(data), function (data) {
+                if (data == true) {
+                    location.href = "/usuariosList.html";
+                } else {
+                    console.log(data);
+                }
+            });
+        }
+
+        function guardarUser() {
+
+            var data = {};
+            var error = [];
+            if ($("#descUser").val() == "") {
+                error.push("Nombre");
+            }
+            if ($("#usuario").val() == "") {
+                error.push("Usuario");
+            }
+            if ($("#contra").val() == "") {
+                error.push("Contraseña");
+            }
+
+            if (error.length == 0) {
+                data.id_usuario = $('#idUser').attr("value");
+                data.nombre = $("#usuario").val();
+                data.nombrel = $('#descUser').val();
+                data.clave_web = $('#contra').val();
+
+                if (data.id_usuario == 0) {
+                    callWS("users", "cantMaxUsers", '', function (data1) {
+                        if (data1 == true) {
+                            showMessage("Emplazamientos actualizados", "info");
+
+                        } else {
+                            callWS("users", "saveUser", JSON.stringify(data), function (data) {
+                                if (data == true) {
+                                    location.href = "/usuariosList.html";
+                                } else {
+                                    console.log(data);
+                                }
+                            });
+                        }
+                    });
+                }
+                else {
+                  callWS("users", "saveUser", JSON.stringify(data), function (data) {
+                    if (data == true) {
+                        location.href = "/usuariosList.html";
+                    } else {
+                        console.log(data);
+                    }
+                  });
+                }
+
+            } else {
+                message = "Falta completar/indicar los siguientes datos: "
+                error.forEach(function (err) {
+                    message += err + " - ";
+                });
+                message = message.slice(0, -3);
+                showMessage(message, "error");
+            }
+
+        }
+
+    </script>
+
+</body>
+</html>
+

@@ -202,10 +202,12 @@
             codRed = data;
             if (codRed == 0) {
                 codRed = $('#selRedes>option:selected').attr("codigo_red");
-                callWS("googleAdManager", "cambiarRed", codRed);
-                idRed = $('#selRedes').val();
-                //getEmplazamientosMMASS(idRed);
-                getEmplazamientosGAM(idRed);
+                if (codRed != undefined) {
+                     callWS("googleAdManager", "cambiarRed", codRed);
+                     idRed = $('#selRedes').val();
+                     //getEmplazamientosMMASS(idRed);
+                     getEmplazamientosGAM(idRed);
+                }             
             }
             else {
                 callWS("medios", "getRedByCodigo", JSON.stringify(codRed), function (data2) { cargarRedAnterior(data2); });
