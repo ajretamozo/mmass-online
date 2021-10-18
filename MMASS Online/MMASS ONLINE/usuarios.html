@@ -83,13 +83,13 @@
         <div class="modal fade" id="modalCenter" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="modalTitle"> Advertencia </h5>
+                    <div class="modal-header d-flex justify-content-center">
+                        <h5 class="modal-title" id="modalCenterTitle">Advertencia</h5>
                     </div>
-                    <div class="modal-body">
+                    <div class="modal-body" id="modalCenterBody">
 
                     </div>
-                    <div class="modal-footer">
+                    <div class="modal-footer d-flex justify-content-center" id="modalCenterFooter">
 
                     </div>
                 </div>
@@ -228,29 +228,31 @@
             location.href = "/usuariosList.html"
         }
 
-        function editarRed() {
+        function editarUser() {
             setMode('edit');
         }
 
-        function nuevaRed() {
+        function nuevoUser() {
             location.href = "/usuarios.html?mode=new"
         }
 
-        function checkBorrarUser(id) {
+         function checkBorrarUser(id) {
 
             options = [
                 {
-                    optionDesc: "Cancelar",
-                    optionFunc: ""
+                    optionDesc: "Aceptar",
+                    optionFunc: "borrarUser('" + id + "')"
                 },
                 {
-                    optionDesc: "Aceptar",
-                    optionFunc: "borrarRed(" + id + ")"
+                    optionDesc: "Cancelar",
+                    optionFunc: ""
                 }
             ];
 
-            showModal("¿Está seguro de eliminar el Usuario?", options);
-        }
+            var mensaje = "<div class='d-flex justify-content-center'>¿Esta seguro de borrar el Usuario?</div>";
+
+            showModal(mensaje, options);
+         }
 
         function borrarUser(id) {
             var data = {};
@@ -287,7 +289,7 @@
                 if (data.id_usuario == 0) {
                     callWS("users", "cantMaxUsers", '', function (data1) {
                         if (data1 == true) {
-                            showMessage("Emplazamientos actualizados", "info");
+                            showMessage("Se a alcanzado el límite de Usuarios (20)", "info");
 
                         } else {
                             callWS("users", "saveUser", JSON.stringify(data), function (data) {

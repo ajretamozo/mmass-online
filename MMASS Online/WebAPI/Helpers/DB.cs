@@ -122,6 +122,35 @@ namespace WebApi.Helpers
             }
         }
 
+        public static void ExecuteSp(string sp, List<SqlParameter> parameters = null)
+        {
+            string query = sp;
+
+            SqlCommand cmd = new SqlCommand(query, conexion);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.CommandTimeout = 180;
+
+            if (parameters != null)
+            {
+                cmd.Parameters.AddRange(parameters.ToArray());
+            }
+            lock (conexionLock)
+            {
+                try
+                {
+                    conexion.Open();
+                    cmd.ExecuteNonQuery();
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+                finally
+                {
+                    conexion.Close();
+                }
+            }
+        }
 
         public static DateTime? DFecha(Object data)
         {

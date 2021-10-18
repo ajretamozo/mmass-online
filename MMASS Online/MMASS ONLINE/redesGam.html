@@ -83,13 +83,13 @@
         <div class="modal fade" id="modalCenter" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="modalTitle"> Advertencia </h5>
+                    <div class="modal-header d-flex justify-content-center">
+                        <h5 class="modal-title" id="modalCenterTitle">Advertencia</h5>
                     </div>
-                    <div class="modal-body">
+                    <div class="modal-body" id="modalCenterBody">
 
                     </div>
-                    <div class="modal-footer">
+                    <div class="modal-footer d-flex justify-content-center" id="modalCenterFooter">
 
                     </div>
                 </div>
@@ -131,11 +131,11 @@
                     </div>
                 </div>
                 <!--<div class="row">
-                    <div class="col-lg-6">
-                        <input class="enableOnEdit" type="checkbox" id="checkEnvioAdServer">
-                        <label for="checkEnvioAdServer"> Envia al adServer</label>
-                    </div>
-                </div>-->
+                <div class="col-lg-6">
+                    <input class="enableOnEdit" type="checkbox" id="checkEnvioAdServer">
+                    <label for="checkEnvioAdServer"> Envia al adServer</label>
+                </div>
+            </div>-->
             </div>
             <div class="card-footer bg-transparent mb-3" style="text-align: right; vertical-align: middle; padding-bottom: 0;">
                 <button id="botGuardar" type="button" class="btn btn-light enableOnEdit" onclick="guardarRed()">Guardar</button>
@@ -239,16 +239,18 @@
 
             options = [
                 {
-                    optionDesc: "Cancelar",
-                    optionFunc: ""
+                    optionDesc: "Aceptar",
+                    optionFunc: "borrarRed('" + id + "')"
                 },
                 {
-                    optionDesc: "Aceptar",
-                    optionFunc: "borrarRed(" + id + ")"
+                    optionDesc: "Cancelar",
+                    optionFunc: ""
                 }
             ];
 
-            showModal("¿Está seguro de eliminar la Red?", options);
+            var mensaje = "<div class='d-flex justify-content-center'>¿Esta seguro de borrar la Red AdServer?</div>";
+
+            showModal(mensaje, options);
         }
 
         function borrarRed(id) {

@@ -236,12 +236,13 @@
             data.id_usuario = id;
             callWS("users", "removeUser", JSON.stringify(data), function (data) {
                 if (data == true) {
-                    callWS("users", "getAllUsers", '', function (data) { populateTable(data, 'TableRedes'); });
+                    //callWS("users", "getAllUsers", '', function (data2) { populateTable(data2, 'TableRedes'); });
+                    //$( "#TableRedes" ).load( "/usuariosList.html #TableRedes" );
+                    populateFields();
                 } else {
                     message = 'Ocurrió un problema al borrar el Usuario';
                     showMessage(message, "alert");
                 }
-
             });
         }
 

@@ -163,7 +163,7 @@ namespace WebApi.Entities
         public static List<Usuario> getAllUsers()
         {
             string sqlCommand = " select id_usuario, nombre, nombrel, tipodoc, nrodoc, f_alta, f_baja, clave, clave_web, email, adusuario, Ambito, " +
-                                " usrrol, idioma, sistema from usuarios where clave_web is not null";
+                                " usrrol, idioma, sistema from usuarios where clave_web is not null and clave_web != ''";
 
             List<Usuario> col = new List<Usuario>();
             Usuario user;
@@ -195,22 +195,57 @@ namespace WebApi.Entities
 
         public bool deleteUser()
         {
-            string sql = "delete from usuarios where id_usuario = " + Id_usuario.ToString();
+            string sql = "";
 
-            if (Id_usuario != 0)
+            if (esUserTrafico(Id_usuario) == true)
             {
-                try
-                {
-                    DB.Execute(sql);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                    return false;
-                }
+                sql = "update usuarios set clave_web = '' where id_usuario = @id_usuario";
+            }
+            else
+            {
+                sql = "update usuarios set nombre = '', clave_web = '' where id_usuario = @id_usuario";
+            }
+                
+            List<SqlParameter> parametros = new List<SqlParameter>()
+            {
+                new SqlParameter()
+                { ParameterName="@id_usuario", SqlDbType = SqlDbType.Int, Value = Id_usuario }
+            };
+            try
+            {
+                DB.Execute(sql, parametros);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
             }
             return true;
         }
+
+        //public bool deleteUser()
+        //{
+        //    string sp = "eliminar_usuario";
+
+        //    List<SqlParameter> parametros = new List<SqlParameter>()
+        //    {
+        //        new SqlParameter()
+        //        { ParameterName="@id_us", SqlDbType = SqlDbType.Int, Value = Id_usuario }
+        //    };
+        //    if (Id_usuario != 0)
+        //    {
+        //        try
+        //        {
+        //            DB.ExecuteSp(sp, parametros);
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            Console.WriteLine(ex.Message);
+        //            return false;
+        //        }
+        //    }
+        //    return true;
+        //}
 
         public static bool cantMaxUsers()
         {
@@ -225,6 +260,26 @@ namespace WebApi.Entities
                 cant = DB.DInt(t.Rows[0]["cant"].ToString());
 
                 if (cant > 19)
+                {
+                    resultado = true;
+                }
+            }
+            return resultado;
+        }
+
+        public static bool esUserTrafico(int idUser)
+        {
+            string sqlCommand = "select clave from usuarios where id_usuario = " + idUser.ToString();
+            bool resultado = false;
+            string clave = "";
+
+            DataTable t = DB.Select(sqlCommand);
+
+            if (t.Rows.Count == 1)
+            {
+                clave = t.Rows[0]["clave"].ToString();
+
+                if (clave != "")
                 {
                     resultado = true;
                 }
