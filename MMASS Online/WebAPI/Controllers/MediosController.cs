@@ -145,5 +145,12 @@ namespace WebApi.Controllers
             return Ok(fu);
         }
 
+        [HttpPost("getAllConceptos")]
+        public IActionResult getAllConceptos()
+        {
+            var conceptos = _medioService.getAllConceptos();
+            return Ok(conceptos);
+        }
+
     }
 }

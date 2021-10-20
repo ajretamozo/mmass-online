@@ -34,6 +34,7 @@ namespace WebApi.Services
         bool deleteRed(Dg_red_GAM miobj);
         bool saveRed(Dg_red_GAM miobj);
         IEnumerable<Dg_red_GAM> filterRedes(List<Parametro> parametros);
+        IEnumerable<Concepto_Negocio> getAllConceptos();
     }
 
     public class MedioService : IMedioService
@@ -127,6 +128,11 @@ namespace WebApi.Services
         public IEnumerable<Dg_red_GAM> filterRedes(List<Parametro> parametros)
         {
             return Dg_red_GAM.filter(parametros);
+        }
+
+        public IEnumerable<Concepto_Negocio> getAllConceptos()
+        {
+            return Concepto_Negocio.getAll();
         }
 
     }

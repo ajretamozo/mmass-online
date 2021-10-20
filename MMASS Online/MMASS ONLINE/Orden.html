@@ -477,23 +477,15 @@
                                 </div>
                                 <div class="col-lg-4">
                                     <div class="row">
-                                        <div class="col-lg-8" style="padding-right: 0px;">
-                                            <label for="inpDescConvenio">Convenio</label>
-                                            <input type="text" class="form-control" id="inpDescConvenio" disabled="disabled">
+                                        <div class="col-lg-6">
+                                            <label>Es facturada</label>
+                                            <div class="input-group"> <input type="text" disabled id="inpEsFacturada" class="form-control col text-center" value="NO"> </div>
                                         </div>
-                                        <div class="col-lg-2" style="padding-right: 15px;padding-left: 30px;padding-top: 4px;">
-                                            <label for="bConvenios" class="invisible">Convenios</label>
-                                            <button type="button" data-id="convenios" id="bConvenios" class="btn actions btn-outline-dark btn-sm mr-1" onclick="getConvenios()" style="width: 33px;" disabled="disabled">
-                                                <span class="fa fa-handshake-o" id="brow" title="Buscar Convenios"></span>
-                                            </button>
+                                        <div class="col-lg-6">
+                                            <label>Fecha Alta</label>
+                                            <div class="input-group"> <input type="text" disabled id="inpFechaAlta" class="form-control  col text-center" value=""> </div>
                                         </div>
-                                        <div class="col-lg-2" style="padding-right: 15px;padding-left: 5px;padding-top: 4px;">
-                                            <label for="bBorrConvenios" class="invisible">Convenios</label>
-                                            <button type="button" data-id="borrConvenios" id="bBorrConvenios" class="btn actions btn-outline-dark btn-sm mr-1" disabled="disabled" onclick="nuevaOrden()" style="width: 33px;">
-                                                <span class="fa fa-remove" id="brow" title="Quitar Convenio"></span>
-                                            </button>
-                                        </div>
-                                    </div>
+                                    </div>                     
                                 </div>
                             </div>
                             <!-- FILA 2 -->
@@ -507,10 +499,24 @@
                                     <select class="form-control" id="selOrdenRelacionada" onchange="enableConf()"></select>
                                 </div>
                                 <div class="col-lg-4">
-                                    <div class="col-lg-5 px-0">
-                                        <label>Fecha Alta</label>
-                                        <div class="input-group"> <input type="text" disabled id="inpFechaAlta" class="form-control  col text-center" value=""> </div>
-                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-9" style="padding-right: 0px;">
+                                            <label for="inpDescConvenio">Convenio</label>
+                                            <input type="text" class="form-control" id="inpDescConvenio" disabled="disabled">
+                                        </div>
+                                        <div class="col-lg-1" style="padding-right: 20px;padding-left: 20px;padding-top: 4px;">
+                                            <label for="bConvenios" class="invisible">Convenios</label>
+                                            <button type="button" data-id="convenios" id="bConvenios" class="btn actions btn-outline-dark btn-sm mr-1" onclick="getConvenios()" style="width: 33px;" disabled="disabled">
+                                                <span class="fa fa-handshake-o" id="brow" title="Buscar Convenios"></span>
+                                            </button>
+                                        </div>
+                                        <div class="col-lg-1" style="padding-right: 15px;padding-left: 23px;padding-top: 4px;">
+                                            <label for="bBorrConvenios" class="invisible">Convenios</label>
+                                            <button type="button" data-id="borrConvenios" id="bBorrConvenios" class="btn actions btn-outline-dark btn-sm mr-1" disabled="disabled" onclick="nuevaOrden()" style="width: 33px;">
+                                                <span class="fa fa-remove" id="brow" title="Quitar Convenio"></span>
+                                            </button>
+                                        </div>
+                                    </div>                 
                                 </div>
                             </div>
                             <!-- FILA 3 -->
@@ -532,10 +538,8 @@
                                     <select class="form-control" id="selEmpresa"></select>
                                 </div>
                                 <div class="col-lg-4">
-                                    <div class="col-lg-5 px-0">
-                                        <label>Es facturada</label>
-                                        <div class="input-group"> <input type="text" disabled id="inpEsFacturada" class="form-control col text-center" value="NO"> </div>
-                                    </div>
+                                    <label>Concepto de Negocio</label>
+                                    <select class="form-control" id="selConceptoN"></select>
                                 </div>
                             </div>
                             <!-- GRUPO 2 -->
@@ -1096,6 +1100,8 @@
                 callWS("medios", "GetConvenioById", JSON.stringify(idConvenio), function (data) { $('#inpDescConvenio').val(data.desc_convenio); });
             }
 
+            $("#selConceptoN option[value=" + data.id_concepto_negocio + "]").attr("selected", "selected");
+
             //data.Id_condpagoap = 1; //Arreglar
 
             //data.idEjecutivo = "4";
@@ -1236,6 +1242,7 @@
             data.Nro_orden_ag = $("#inpOrderNumberClient").val();
             data.empresa = {};
             data.empresa.Id_empresa = $("#selEmpresa").val();
+            data.id_concepto_negocio = $("#selConceptoN").val();
             data.Fecha = dateToSqlFormat($("#fechaDesde").val());
             data.Fecha_expiracion = dateToSqlFormat($("#fechaHasta").val());
             data.agencia = {};
@@ -2747,7 +2754,8 @@
                 callWS("contactos", "getEjecutivos", '', function (data) { onPopulateSelectDone(data, 'selEjecutivo', 'id', 'razonSocial'); }),
                 //callWS("archivos", "getArchivosPorOP", id_op , function (data) { populateFilesTable(data); }),
                 callWS("forma_pagos", "getAll", '', function (data) { onPopulateSelectDone(data, 'selFPago', 'id_formapago', 'desc_formapago'); }),
-                callWS("medios", "getAllRedes", '', function (data) { onCargarSelect(data, 'selRedes', 'id_red', 'descripcion', 'codigo_red'); })
+                callWS("medios", "getAllRedes", '', function (data) { onCargarSelect(data, 'selRedes', 'id_red', 'descripcion', 'codigo_red'); }),
+                callWS("medios", "getAllConceptos", '', function (data) { onPopulateSelectDone(data, 'selConceptoN', 'id_concepto_negocio', 'desc_concepto_negocio'); })
             ).then(function () { checkParameters(); }, function (data1, data2, data3, data4, data5, data6) {
                 console.log("Agencias: " + data1[2].statusText + "; Anunciantes " + data2[2].statusText + "empresas: " + data3[2].statusText + ";" + "ejecutivos: " + data4[2].statusText + ";" + "ejecutivos: " + data5[2].statusText + ";" + "ejecutivos: " + data6[2].statusText + ";");
                 showMessage("Se produjo un error al cargar los campos, intentelo nuevamente", type = "alert");

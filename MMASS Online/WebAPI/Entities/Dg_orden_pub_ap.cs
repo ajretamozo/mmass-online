@@ -468,7 +468,7 @@ namespace WebApi.Entities
                 Anio = Fecha.Value.Year ;
                 Mes = Fecha.Value.Month ;                
                 Id_moneda = 1;
-                Id_concepto_negocio = 2;//Orden Digitales
+                /*Id_concepto_negocio = 2;*///Orden Digitales
                 Id_cond_iva = getCondicionIva();
                 // Si es nuevo va insert, sino update
                 if (Id_op_dg == 0)

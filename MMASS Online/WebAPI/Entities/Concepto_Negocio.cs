@@ -35,7 +35,7 @@ namespace WebApi.Entities
         public static List<Concepto_Negocio> getAll()
         {
             string sqlCommand = " select id_concepto_negocio, id_linea_negocio, desc_concepto_negocio, es_borrado " +
-                                " from concepto_negocios";
+                                " from concepto_negocios where es_borrado=0";
 
             List<Concepto_Negocio> col = new List<Concepto_Negocio>();
             Concepto_Negocio elem;
