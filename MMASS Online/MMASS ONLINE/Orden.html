@@ -3,6 +3,7 @@
 <head runat="server">
     <title>MMASS Online - Orden Publicitaria</title>
 
+    <link rel="shortcut icon" href="favicon.png">
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
@@ -643,9 +644,9 @@
                                         <div class="col-lg-6">
                                             <label>Vigencia</label>
                                             <div class="input-group input-daterange">
-                                                <input type="text" class="form-control" id="fechaDesdeD" data-toggle="datetimepicker" data-target="#fechaDesdeD" value="01/08/2019" />
+                                                <input type="text" class="form-control" id="fechaDesdeD" data-toggle="datetimepicker" data-target="#fechaDesdeD" value="01/08/2019" onchange="calcularNetoD()"/>
                                                 <span class="input-group-addon">hasta</span>
-                                                <input type="text" class="form-control" id="fechaHastaD" data-toggle="datetimepicker" data-target="#fechaHastaD" value="02/09/2019" />
+                                                <input type="text" class="form-control" id="fechaHastaD" data-toggle="datetimepicker" data-target="#fechaHastaD" value="02/09/2019" onchange="calcularNetoD()"/>
                                             </div>
                                         </div>
                                         <div class="col-lg-1"></div>
@@ -733,7 +734,7 @@
                                             </div>
                                         </div>
                                         <div class="col-lg-3">
-                                            <label>Cantidad</label>
+                                            <label id="cantidadL">Cantidad</label>
                                             <div id="divCantD">
                                                 <input type="number" id="cantidadD" class="form-control" onchange="calcularNetoD(this)">
                                             </div>
@@ -1749,12 +1750,14 @@
         //AGREGUE (cantidad=1 al seleccionar CPD Sponsor):
         function filterTarifas() {
             if ($('#selTipoTarifaD').val() == 1) {
-                $("#cantidadD").val(1);
-                $("#cantidadD").attr("disabled", true);
+                $("#cantidadL").text("Cantidad (% del total de impr)");
+                $("#cantidadD").val(100);
+                //$("#cantidadD").attr("disabled", true);
             }
             else {
                 //$("#cantidadD").val("");
                 $("#cantidadD").attr("disabled", false);
+                $("#cantidadL").text("Cantidad");
             }
 
             var parametros = {};
@@ -1893,6 +1896,10 @@
                 showMessage("Debe realizar la distribución de porcentajes de RON", "info")
                 return;
             }
+            if ($('#selTipoTarifaD').val() == 1 && ($('#cantidadD').val() < 1 || $('#cantidadD').val() > 100)) {
+                showMessage("Introduzca un valor de porcentaje entre 1 y 100", "info");
+                return;
+            }
 
             var rDetalle = {};
 
@@ -2009,6 +2016,7 @@
                 rDetalle.id_det_conv = $('#selDetConvenio').val();
             }
 
+
             if (validarDetalle(rDetalle) && validarFechas()) {
                 $('#divDetailsRows').show();
                 $('#divAddRow').hide();
@@ -2054,7 +2062,6 @@
             //if (rDetalle.medidas.length == 0) return false;
 
             if (rDetalle.tipo_tarifa == null) return false;
-
             if (rDetalle.descripcion == "") return false;
             if (isNaN(rDetalle.importe_unitario)) return false;
             if (isNaN(rDetalle.cantidad)) return false;
@@ -2177,6 +2184,15 @@
             if ($("#selTipoTarifaD option:selected").text() == "CPM") {
                 divD = 1000;
             }
+ 
+            if ($('#selTipoTarifaD').val() == 1) {
+                var day1 = new Date(dateToSqlFormat($('#fechaDesdeD').val())); 
+                var day2 = new Date(dateToSqlFormat($('#fechaHastaD').val()));
+
+                var difference= Math.abs(day2-day1);
+                cantD = difference / (1000 * 3600 * 24);
+            }
+
             brutoD = resultD * (cantD / divD)
 
             resultD = brutoD - (brutoD * descD / 100);
@@ -2338,8 +2354,13 @@
 
         //AGREGUE:
         function enviarOrdenAddServer() {
-            var idOrden = $("#inpOrderNumber").attr("id_op_dg");
-            callWS("googleAdManager", "createOrder", JSON.stringify(idOrden), function (data) { onSendOrder(data); });
+            if ($('#selRedes').val() > 0) {
+                var idOrden = $("#inpOrderNumber").attr("id_op_dg");
+                callWS("googleAdManager", "createOrder", JSON.stringify(idOrden), function (data) { onSendOrder(data); });
+            }
+            else {
+                showMessage('Debe seleccionar una red AdServer','info')
+            }
         }
         //AGREGUE:
         function enviarLineaAddServer(r) {

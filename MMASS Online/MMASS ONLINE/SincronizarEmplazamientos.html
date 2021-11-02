@@ -3,6 +3,8 @@
 <head runat="server">
     <title>MMASS Online - Sinc Emplazamientos</title>
 
+    <link rel="shortcut icon" href="favicon.png">
+
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
@@ -110,7 +112,12 @@
                     <label>Red AdServer</label>
                 </div>
                 <div class="col-lg-3" style="padding-left: 0px;">
-                    <select class="form-control" id="selRedes" onchange="onRedSelected()"></select>
+                    <select class="form-control" id="selRedes"></select>
+                </div>
+                <div class="col-md-4" style="top: 4px;">
+                    <button type="button" class="btn btn-dark btn-sm mx-1" onclick="onRedSelected()">
+                        <span class="fa fa-search"></span> Buscar
+                    </button>
                 </div>
             </div>
                 <div class="row">
@@ -164,7 +171,7 @@
         $(function () {
             $("#divMessage").on("click", function () { $("#divMessage").hide(); });
             getRedesGAM();
-            getRedActual();
+            //getRedActual();
             //getEmplazamientosGAM();
             //getEmplazamientosMMASS();
 
@@ -193,34 +200,34 @@
             $("#" + idSelect).append(listitems);
          }
 
-        function getRedActual() {
-           callWS("googleAdManager", "getRedActual", '', function (data) { obtenerIdRed(data); });
-        }
+        //function getRedActual() {
+        //   callWS("googleAdManager", "getRedActual", '', function (data) { obtenerIdRed(data); });
+        //}
 
         
-        function obtenerIdRed(data) {
-            codRed = data;
-            if (codRed == 0) {
-                codRed = $('#selRedes>option:selected').attr("codigo_red");
-                if (codRed != undefined) {
-                     callWS("googleAdManager", "cambiarRed", codRed);
-                     idRed = $('#selRedes').val();
-                     //getEmplazamientosMMASS(idRed);
-                     getEmplazamientosGAM(idRed);
-                }             
-            }
-            else {
-                callWS("medios", "getRedByCodigo", JSON.stringify(codRed), function (data2) { cargarRedAnterior(data2); });
-            }
+        //function obtenerIdRed(data) {
+        //    codRed = data;
+        //    if (codRed == 0) {
+        //        codRed = $('#selRedes>option:selected').attr("codigo_red");
+        //        if (codRed != undefined) {
+        //             callWS("googleAdManager", "cambiarRed", codRed);
+        //             idRed = $('#selRedes').val();
+        //             //getEmplazamientosMMASS(idRed);
+        //             getEmplazamientosGAM(idRed);
+        //        }             
+        //    }
+        //    else {
+        //        callWS("medios", "getRedByCodigo", JSON.stringify(codRed), function (data2) { cargarRedAnterior(data2); });
+        //    }
             
-        }
+        //}
 
-         function cargarRedAnterior(data) {
-             idRed = data.id_red;
-             $("#selRedes option[value=" + idRed + "]").attr("selected", "selected");
-             //getEmplazamientosMMASS(idRed);
-             getEmplazamientosGAM(idRed);
-         }
+        // function cargarRedAnterior(data) {
+        //     idRed = data.id_red;
+        //     $("#selRedes option[value=" + idRed + "]").attr("selected", "selected");
+        //     //getEmplazamientosMMASS(idRed);
+        //     getEmplazamientosGAM(idRed);
+        // }
 
          function getEmplazamientosMMASS(idRed) {
             callWS("medios", "getAllE", JSON.stringify(idRed), function (data) { onCargarTabla('TableMMASS', data); });
