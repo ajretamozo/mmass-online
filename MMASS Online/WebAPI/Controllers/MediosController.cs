@@ -24,6 +24,13 @@ namespace WebApi.Controllers
             return Ok(medios);
         }
 
+        [HttpPost("getPorEmpresa")]
+        public IActionResult getPorEmpresa([FromBody] int idEmp)
+        {
+            var medios = _medioService.getPorEmpresa(idEmp);
+            return Ok(medios);
+        }
+
         //AGREGUE (getallm, getalla, getalle):
         [HttpPost("getAllM")]
         public IActionResult getAllM()

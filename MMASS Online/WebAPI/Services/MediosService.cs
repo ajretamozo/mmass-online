@@ -16,6 +16,7 @@ namespace WebApi.Services
     {
         //Contacto GetAgencia(string username, string password);
         IEnumerable<Medio> getAll();
+        IEnumerable<Medio> getPorEmpresa(int idEmp);
         //AGREGUE (getallm, getalla, getalle):
         IEnumerable<Dg_medidas> getAllM();
         IEnumerable<Dg_areas_geo> getAllA();
@@ -43,6 +44,11 @@ namespace WebApi.Services
         public IEnumerable<Medio> getAll()
         {
             return Medio.getAll();
+        }
+
+        public IEnumerable<Medio> getPorEmpresa(int idEmp)
+        {
+            return Medio.getPorEmpresa(idEmp);
         }
 
         //AGREGUE (getallm, getalla, getalle):

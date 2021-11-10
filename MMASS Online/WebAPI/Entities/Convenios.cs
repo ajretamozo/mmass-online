@@ -15,6 +15,7 @@ namespace WebApi.Entities
         public int Id_formapago { get; set; }
         public int Id_agencia { get; set; }
         public int Id_anunciante { get; set; }
+        public int Id_empresa { get; set; }
         public bool Es_borrado { get; set; }
         public float Importe_total { get; set; }
         public DateTime? Fecha_desde { get; set; }
@@ -72,7 +73,7 @@ namespace WebApi.Entities
         public static Convenios getById(int id_convenio)
         {
             string sqlCommand = @"select c.id_convenio, c.desc_convenio, c.id_formapago, c.id_agencia, c.id_anunciante, c.importe_total,
-                                    c.fecha_desde, c.fecha_hasta, c.estado, c.observaciones, c.facturar_a,
+                                    c.fecha_desde, c.fecha_hasta, c.estado, c.observaciones, c.facturar_a, c.id_empresa,
                                     ag.razon_social as agencia_nombre, an.razon_social as anunciante_nombre, fp.desc_formapago as formapago_nombre
                                     from convenio_anual_precios c
                                     left outer join contactos ag on ag.id_contacto = c.id_agencia
@@ -98,6 +99,7 @@ namespace WebApi.Entities
                 resultado.Fecha_hasta = DateTime.Parse(t.Rows[0]["fecha_hasta"].ToString());
                 resultado.Estado = int.Parse(t.Rows[0]["estado"].ToString());
                 resultado.Observaciones = t.Rows[0]["observaciones"].ToString();
+                resultado.Id_empresa = int.Parse(t.Rows[0]["id_empresa"].ToString());
                 if (t.Rows[0]["facturar_a"].ToString() != "")
                 {
                     resultado.Facturar_a = int.Parse(t.Rows[0]["facturar_a"].ToString());

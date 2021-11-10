@@ -204,5 +204,24 @@ namespace WebApi.Entities
             }
             return col;
         }
+
+        public static List<Medio> getPorEmpresa(int idEmpresa)
+        {
+            string sql = @"select id_medio, desc_medio, abreviatura, hrini_lunes, hrini_martes, hrini_miercoles,
+                                hrini_jueves, hrini_viernes, hrini_sabado, hrini_domingo, es_borrado, id_empresa, tope_legal,
+                                id_banda, id_localidad, id_region, ubic_export, prefijo_export, observa, opcion1, opcion2, opcion3, agrupainterior,
+                                rut_24, rut_upd_dyn_prg, rut_upd_dyn_block, rut_copy_mat_prg, aux1, repetidora, id_repetidora, tipo_medio 
+                                from medios where es_borrado = 0 and tipo_medio = 2 and id_empresa= " + idEmpresa.ToString();
+            List<Medio> col = new List<Medio>();
+            Medio elem;
+            DataTable t = DB.Select(sql);
+            
+            foreach (DataRow item in t.Rows)
+            {
+                elem = getMedio(item);
+                col.Add(elem);
+            }
+            return col;
+        }
     }
 }

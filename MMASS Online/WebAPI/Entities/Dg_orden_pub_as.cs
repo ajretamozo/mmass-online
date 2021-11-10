@@ -540,29 +540,44 @@ namespace WebApi.Entities
         //AGREGUE:
         public static List<Dg_orden_pub_as> getSponsorsPorFecha(Dg_orden_pub_as det)
         {
-            string sqlCommand = @"SELECT fecha_desde FROM dg_orden_pub_as 
-                                   WHERE tipo_tarifa = 1 AND (fecha_desde BETWEEN @fechaD AND @fechaH) 
-                                   ORDER BY fecha_desde";
-
-            List<SqlParameter> parametros = new List<SqlParameter>()
-                        {
-                                new SqlParameter()
-                                { ParameterName="@fechaD",SqlDbType = SqlDbType.DateTime, Value = det.Fecha_desde },
-                                 new SqlParameter()
-                                { ParameterName="@fechaH",SqlDbType = SqlDbType.DateTime, Value = det.Fecha_hasta }
-                        };
- 
             List<Dg_orden_pub_as> col = new List<Dg_orden_pub_as>();
             Dg_orden_pub_as elem;
-            DataTable t = DB.Select(sqlCommand, parametros);
 
-            foreach (DataRow item in t.Rows)
+            foreach (Dg_orden_pub_emplazamientos emp in det.Emplazamientos)
             {
-                elem = new Dg_orden_pub_as
+                string sqlCommand = @"SELECT o.fecha_desde, o.fecha_hasta, e.descripcion FROM dg_orden_pub_as o 
+                                      INNER JOIN dg_orden_pub_emplazamientos e on o.id_op_dg=e.id_op_dg and o.id_detalle=e.id_detalle 
+                                      WHERE o.tipo_tarifa = 1 
+								      AND (o.fecha_desde <= @fechaH AND o.fecha_hasta >= @fechaD) 
+								      AND e.id_emplazamiento = @emplaza
+                                      ORDER BY o.fecha_desde";
+
+                List<SqlParameter> parametros = new List<SqlParameter>()
                 {
-                    Fecha_desde = DateTime.Parse(item["fecha_desde"].ToString())
+                    new SqlParameter()
+                    { ParameterName="@fechaD",SqlDbType = SqlDbType.DateTime, Value = det.Fecha_desde },
+                    new SqlParameter()
+                    { ParameterName="@fechaH",SqlDbType = SqlDbType.DateTime, Value = det.Fecha_hasta },
+                     new SqlParameter()
+                    { ParameterName="@emplaza",SqlDbType = SqlDbType.Int, Value = emp.Id_emplazamiento }
                 };
+
+                DataTable t = DB.Select(sqlCommand, parametros);
+
+                foreach (DataRow item in t.Rows)
+                {
+                    Dg_orden_pub_emplazamientos emplaza = new Dg_orden_pub_emplazamientos();
+                    emplaza.Descripcion = item["descripcion"].ToString();
+                    List<Dg_orden_pub_emplazamientos> emplazas = new List<Dg_orden_pub_emplazamientos>();
+                    emplazas.Add(emplaza);
+                    elem = new Dg_orden_pub_as
+                    {
+                        Fecha_desde = DateTime.Parse(item["fecha_desde"].ToString()),
+                        Fecha_hasta = DateTime.Parse(item["fecha_hasta"].ToString()),
+                        Emplazamientos = emplazas
+                    };
                 col.Add(elem);
+                }
             }
             return col;
         }

@@ -138,7 +138,7 @@ namespace WebApi.Entities
         public bool deleteRed()
         {
             string sql = "update dg_red_GAM set es_borrado = 1 where id_red = " + Id_red.ToString() ;
-
+            
             if (Id_red != 0)
             {
                 try

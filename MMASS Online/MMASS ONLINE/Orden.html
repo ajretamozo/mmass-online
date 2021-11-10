@@ -536,7 +536,7 @@
                                 </div>
                                 <div class="col-lg-4">
                                     <label>Empresa</label>
-                                    <select class="form-control" id="selEmpresa"></select>
+                                    <select class="form-control" id="selEmpresa" onchange="onEmpresaSelected()"></select>
                                 </div>
                                 <div class="col-lg-4">
                                     <label>Concepto de Negocio</label>
@@ -1703,6 +1703,7 @@
                 return 0;
             }
             idRed = $('#selRedes').val();
+            idEmpresa = $('#selEmpresa').val();
 
             $("#selDetConvenio").attr("disabled", false);
             $('#divDetailsRows').hide(); $('#divAddRow').show();
@@ -1723,7 +1724,8 @@
             $("#cantidadD").attr("disabled", false);
             $('#descuentoD').val(0);
             $('#totalD').val("");
-            callWS("medios", "getAll", '', function (data) { onPopulateSelectDone(data, 'selMediosD', 'id_medio', 'desc_medio'); });
+            //callWS("medios", "getAll", '', function (data) { onPopulateSelectDone(data, 'selMediosD', 'id_medio', 'desc_medio'); });
+            callWS("medios", "getPorEmpresa", JSON.stringify(idEmpresa), function (data) { onPopulateSelectDone(data, 'selMediosD', 'id_medio', 'desc_medio'); });
             callWS("tarifas", "getFormasUsoAll", '', function (data) { onPopulateSelectDone(data, 'selTipoTarifaD', 'id', 'descripcion'); })
             callWS("Tipos_avisos", "getAll", '', function (data) { onTipoAvisoGetAll(data, 'selTipoAvisoD', 'Id_tipo_aviso_dg', 'descripcion', 'Permite_envio_ads'); })
             //AGREGUE (callws getall medidas, getall areasgeo, getall emplaza):
@@ -1845,12 +1847,21 @@
         //Modifica o agrega un renglon segun el id
         function prevAddRenglon(id) {
             //AGREGUE:
-            var detFechas = {};
-            detFechas.fecha_desde = dateToSqlFormat($('#fechaDesdeD').val());
-            detFechas.fecha_hasta = dateToSqlFormat($('#fechaHastaD').val());
+            var detalle = {};
+            detalle.fecha_desde = dateToSqlFormat($('#fechaDesdeD').val());
+            detalle.fecha_hasta = dateToSqlFormat($('#fechaHastaD').val());
+            detalle.emplazamientos = selectToJson('selEmplazaD', 'id_emplazamiento');
+            detalle.emplazamientos.forEach(emplaza => {
+                $('#selEmplazaD option:selected').each(function () {
+                    if ($(this).val() == emplaza.id_emplazamiento) {
+                        emplaza.codigo_emplazamiento = $(this).attr("codigo_emplazamiento");
+                        emplaza.descripcion = $(this).text();
+                    }
+                });
+            });
 
             if ($('#selTipoAvisoD>option:selected').text() == 'Banner') {
-                callWS("dg_orden_pub_aps", "getSponsorsPorFecha", JSON.stringify(detFechas), function (data) { onGetSponsor(data, id); });
+                callWS("dg_orden_pub_aps", "getSponsorsPorFecha", JSON.stringify(detalle), function (data) { onGetSponsor(data, id); });
             }
             else {
                 addRenglon(id);
@@ -1863,7 +1874,7 @@
             if (data.length > 0) {
                 var strBody = "<div class='d-flex justify-content-center'>Las siguientes fechas están reservadas por Sponsors:</div>";
                 var str = "";
-                data.forEach(detFecha => str += "<div class='d-flex justify-content-center'><b>" + dateToFieldFormat(detFecha.fecha_desde) + "</b></div>");
+                data.forEach(detalle => detalle.emplazamientos.forEach(emplazamiento => str += "<div class='d-flex justify-content-center'>Desde: " + "<b>" + dateToFieldFormat(detalle.fecha_desde) + "</b>" + " Hasta: " + "<b>" + dateToFieldFormat(detalle.fecha_hasta) + "</b>" + "-" + "<b>" + emplazamiento.descripcion + "</b>" + "</b></div>"));
 
                 strBody = strBody + str;
 
@@ -2207,6 +2218,8 @@
             $('#selProductoD').empty();
             $('#selProductoD').append($options);
             $('#selProductoD').val = $('#selProducto').val();
+            idEmpresa = $('#selEmpresa').val();
+
             //nuev
             if (idConvenio != 0) {
                 callWS("medios", "GetDetConveniosByIdConv", JSON.stringify(idConvenio), function (data) { onPopulateSelectDetConv(data, 'selDetConvenio', 'id_det_conv', 'descripcion', 'id_detalle'); });
@@ -2218,7 +2231,8 @@
             idRed = $('#selRedes').val();
 
             $.when(
-                callWS("medios", "getAll", '', function (data) { onPopulateSelectDone(data, 'selMediosD', 'id_medio', 'desc_medio'); }),
+                //callWS("medios", "getAll", '', function (data) { onPopulateSelectDone(data, 'selMediosD', 'id_medio', 'desc_medio'); }),
+                callWS("medios", "getPorEmpresa", JSON.stringify(idEmpresa), function (data) { onPopulateSelectDone(data, 'selMediosD', 'id_medio', 'desc_medio'); }),
                 callWS("tarifas", "getFormasUsoAll", '', function (data) { onPopulateSelectDone(data, 'selTipoTarifaD', 'id', 'descripcion'); }),
                 //AGREGUE callws medidas, areasgeo, emplaza:
                 callWS("medios", "getAllM", '', function (data) { onPopulateSelectMedidas(data, 'selMedidasD', 'id_medidadigital', 'ancho', 'alto'); }),
@@ -2524,6 +2538,7 @@
 
             $("#selAgencia option[value=" + data.id_agencia + "]").attr("selected", "selected");
             $("#selAnunciante option[value=" + data.id_anunciante + "]").attr("selected", "selected");
+            $("#selEmpresa option[value=" + data.id_empresa + "]").attr("selected", "selected");
 
             an = data.id_anunciante;
 
@@ -2601,9 +2616,11 @@
 
         function LimpiarSelectMultiples() {
             idRed = $('#selRedes').val();
+            idEmpresa = $('#selEmpresa').val();
             callWS("medios", "getAllM", '', function (data) { onPopulateSelectMedidas(data, 'selMedidasD', 'id_medidadigital', 'ancho', 'alto'); });
             callWS("medios", "getAllE", JSON.stringify(idRed), function (data) { onPopulateSelectEmplaza(data, 'selEmplazaD', 'id_emplazamiento', 'descripcion', 'codigo_emplazamiento'); });
-            callWS("medios", "getAll", '', function (data) { onPopulateSelectDone(data, 'selMediosD', 'id_medio', 'desc_medio'); });
+            //callWS("medios", "getAll", '', function (data) { onPopulateSelectDone(data, 'selMediosD', 'id_medio', 'desc_medio'); });
+             callWS("medios", "getPorEmpresa", JSON.stringify(idEmpresa), function (data) { onPopulateSelectDone(data, 'selMediosD', 'id_medio', 'desc_medio'); });
         }
 
         function seleccionarDetConvenio() {
@@ -3117,6 +3134,11 @@
 
             //recargar emplazamientos
             callWS("medios", "getAllE", JSON.stringify(idRed), function (data) { onPopulateSelectEmplaza(data, 'selEmplazaD', 'id_emplazamiento', 'descripcion', 'codigo_emplazamiento'); });
+        }
+
+        function onEmpresaSelected() {
+            idEmpresa = $('#selEmpresa').val();
+            callWS("medios", "getPorEmpresa", JSON.stringify(idEmpresa), function (data) { onPopulateSelectDone(data, 'selMediosD', 'id_medio', 'desc_medio'); });
         }
 
     </script>
