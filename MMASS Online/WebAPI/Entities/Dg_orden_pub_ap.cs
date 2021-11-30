@@ -864,14 +864,13 @@ namespace WebApi.Entities
 
             sql = "UPDATE dg_orden_pub_ap SET id_google_ad_manager = @idgam WHERE id_op_dg = @id_op_dg ";
    
-
-        List<SqlParameter> parametrost = new List<SqlParameter>()
-                        {
-                                new SqlParameter()
-                                { ParameterName="@id_op_dg",SqlDbType = SqlDbType.BigInt, Value = idOp },
-                                new SqlParameter()
-                                { ParameterName="@idgam",SqlDbType = SqlDbType.BigInt, Value = idGam }
-                        };
+            List<SqlParameter> parametrost = new List<SqlParameter>()
+            {
+                new SqlParameter()
+                { ParameterName="@id_op_dg",SqlDbType = SqlDbType.BigInt, Value = idOp },
+                new SqlParameter()
+                { ParameterName="@idgam",SqlDbType = SqlDbType.BigInt, Value = idGam }
+            };
             try
             {
                 DB.Execute(sql, parametrost);
@@ -880,6 +879,28 @@ namespace WebApi.Entities
             {
                 Console.WriteLine(ex.Message);
             }
+        }
+
+        public static bool existeOpGAMenBD(long idOpGAM, int idRed)
+        {
+            bool existe = false;
+            string sqlCommand = "SELECT id_op_dg FROM dg_orden_pub_ap WHERE id_google_ad_manager=@idgam and id_red=@idRed";
+
+            List<SqlParameter> parametros = new List<SqlParameter>()
+            {
+                new SqlParameter()
+                { ParameterName="@idgam",SqlDbType = SqlDbType.BigInt, Value = idOpGAM },
+                 new SqlParameter()
+                { ParameterName="@idRed",SqlDbType = SqlDbType.BigInt, Value = idRed }
+            };
+
+            DataTable t = DB.Select(sqlCommand, parametros);
+            if (t.Rows.Count == 1)
+            {
+                //idRed = DB.DInt(t.Rows[0]["id_red"].ToString());
+                existe = true;
+            }
+            return existe;
         }
   
     }

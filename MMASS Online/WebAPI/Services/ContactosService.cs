@@ -21,6 +21,7 @@ namespace WebApi.Services
         IEnumerable<Contacto> GetAgenciasPorAnunciante(int IdAnunciante);
         IEnumerable<Contacto> GetAnunciantesPorProducto(int IdProducto);
         bool saveASRelation(int Id_contacto, string Id_ContactoDigital, int Id_Red);
+        Contacto getContactoByIdGAMyRed(string idGam, int idRed);
     }
 
     public class ContactoService : IContactoService
@@ -59,6 +60,11 @@ namespace WebApi.Services
         public bool saveASRelation(int Id_contacto, string Id_ContactoDigital, int Id_Red)
         {
             return Contacto.saveASRelation(Id_contacto, Id_ContactoDigital, Id_Red);
+        }
+
+        public Contacto getContactoByIdGAMyRed(string idGam, int idRed)
+        {
+            return Contacto.getContactoByIdGAMyRed(idGam, idRed);
         }
     }
 }

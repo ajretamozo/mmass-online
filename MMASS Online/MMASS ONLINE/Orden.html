@@ -982,14 +982,29 @@
         };
 
         function checkParameters() {
-
+            //si la OP viene de OrdenList
             var op = getUrlParameter("orderId")
             var data = {};
             data.Id_op_dg = op;
             if (op != undefined) {
                 callWS("dg_orden_pub_aps", "getById", JSON.stringify(data), onGetOrder);
             }
+
+            //si la OP viene de SincronizarOP
+            var op1 = getUrlParameter("orderAdServer")
+            if (op1 != undefined) {
+                arr = op1.split(",");
+                var Id_op_gam = arr[0];
+                var codRed = arr[1];
+
+                 $.when(callWS("googleAdManager", "cambiarRed", codRed)
+                 ).then( getOrdenGAM(Id_op_gam));
+            }
         }
+
+         function getOrdenGAM(IdOpGam) {
+            callWS("googleAdManager", "getOrderById", JSON.stringify(IdOpGam), onGetOrder);
+         }
 
         function onSelTipoD(sel) {
             var optionsBanner = {
@@ -1050,21 +1065,27 @@
             $("#inpOrderMonth").val(data.mes);
             $("#inpOrderYear").val(data.anio);
 
+            if (data.fecha_alta != null) {
+                $("#inpFechaAlta").val(dateToFieldFormat(data.fecha_alta));
+            } 
 
-            $("#inpFechaAlta").val(dateToFieldFormat(data.fecha_alta));
+            if (data.empresa != null) {
+                $("#selEmpresa option[value=" + data.empresa.id_empresa + "]").attr("selected", "selected");
+            }
 
-            $("#selEmpresa option[value=" + data.empresa.id_empresa + "]").attr("selected", "selected");
-
-
+            //if (data.facturar_a != null) {
+            //    $("#selFacturar option[value=" + data.facturar_a + "]").attr("selected", "selected");
+            //}
             $("#selFacturar option[value=" + data.facturar_a + "]").attr("selected", "selected");
 
-            $("#selAgencia option[value=" + data.agencia.id_contacto + "]").attr("selected", "selected");
+            if (data.agencia != null) {
+                $("#selAgencia option[value=" + data.agencia.id_contacto + "]").attr("selected", "selected");
+                cargarProductosyOPRelacionada(data.agencia.id_contacto, data.anunciante.id_contacto, data.producto.id_producto, data.id_op_relacionada);
+            }
+
             $("#selAnunciante option[value=" + data.anunciante.id_contacto + "]").attr("selected", "selected");
             //$("#selAnunciante").change(); //para que cargue los productos
-            cargarProductosyOPRelacionada(data.agencia.id_contacto, data.anunciante.id_contacto, data.producto.id_producto, data.id_op_relacionada);
-
-
-
+    
             $("#inpOrderNumberClient").val(data.nro_orden_ag);
             $("#inpOrderNumber").val(data.nro_orden);
             $("#inpOrderNumber").attr("id_op_dg", data.id_op_dg);

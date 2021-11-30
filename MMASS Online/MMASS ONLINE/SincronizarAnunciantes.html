@@ -184,6 +184,8 @@
 
         function getAnunciantes(anunciantesGAM) {
             idRed = $('#selRedes').val();
+            $("#pleaseWaitDialog").modal();
+            //beginWait();
             callWS("contactos", "getAnunciantes", '', function (data) { onCargarTabla(data, anunciantesGAM, idRed); });
         }
         function llenarStrOption(anunciantes) {
@@ -251,7 +253,7 @@
             $("#TableRenglones tr").remove()
             var strCabeceraOption = ' <select class="form-control-sm " ';
             var strOption = llenarStrOption(data);
-            showPleaseWait();
+            //showPleaseWait();
             
             $.each(anunciantesGAM, function (it, anuncianteGAM) {
                 var str = '';
@@ -274,7 +276,8 @@
                     $(idButton).css("background-color", "#c3e6cb");
                 }     
             });
-            hidePleaseWait();
+            //hidePleaseWait();
+            $("#pleaseWaitDialog").modal('hide');
         }
 
         function test() {
@@ -297,9 +300,6 @@
                 showMessage("No se enontraron Anunciantes", "info");
             }
         }
-
-
- 
 
     </script>
 </body>

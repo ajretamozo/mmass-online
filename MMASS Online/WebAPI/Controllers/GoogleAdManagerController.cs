@@ -35,11 +35,18 @@ namespace WebApi.Controllers
             return Ok(JsonConvert.SerializeObject(res));
         }
 
-        [HttpPost("getOrder")]
-        public IActionResult GetOrder([FromBody] long idGAM)
+        //[HttpPost("getOrder")]
+        //public IActionResult GetOrder([FromBody] long idGAM)
+        //{
+        //    var res = _GoogleAdManagerService.GetOrder(idGAM);
+        //    return Ok(JsonConvert.SerializeObject(res));
+        //}
+
+        [HttpPost("getOrderById")]
+        public IActionResult GetOrderById([FromBody] long idGAM)
         {
-            var res = _GoogleAdManagerService.GetOrder(idGAM);
-            return Ok(JsonConvert.SerializeObject(res));
+            var res = _GoogleAdManagerService.GetOrderById(idGAM);
+            return Ok(res);
         }
 
         [HttpPost("getOrderListDetails2")]
@@ -132,6 +139,13 @@ namespace WebApi.Controllers
         {
             var cod = _GoogleAdManagerService.GetRedActual();
             return Ok(cod);
+        }
+
+        [HttpPost("getOpNuevas")]
+        public IActionResult getOpNuevas()
+        {
+            var ordenes = _GoogleAdManagerService.GetOpNuevas();
+            return Ok(ordenes);
         }
     }
 }

@@ -4,12 +4,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using WebApi.Entities;
 using Google.Api.Ads.AdManager.Lib;
-using Google.Api.Ads.AdManager.Util.v202105;
-using Google.Api.Ads.AdManager.v202105;
+//using Google.Api.Ads.AdManager.Util.v202105;
+//using Google.Api.Ads.AdManager.v202105;
+using Google.Api.Ads.AdManager.Util.v202111;
+using Google.Api.Ads.AdManager.v202111;
 using Google.Api.Ads.Common.Util.Reports;
 using System.Diagnostics;
 using System.Configuration;
-using User = Google.Api.Ads.AdManager.v202105.User;
+using User = Google.Api.Ads.AdManager.v202111.User;
 
 namespace WebApi.Helpers
 {
@@ -162,13 +164,83 @@ namespace WebApi.Helpers
             return Anunciantes;
         }
 
+        public static Order GetOrderById(long orderId)
+        {
+            Order result = new Order();
+            using (OrderService orderService = user.GetService<OrderService>())
+            {
+                // Create a statement to select orders.             
+                int pageSize = StatementBuilder.SUGGESTED_PAGE_LIMIT;
+                StatementBuilder statementBuilder =
+                    new StatementBuilder().Where("id = :oID").OrderBy("id ASC").Limit(pageSize).AddValue("oID", orderId);
+
+                // Retrieve a small amount of orders at a time, paging through until all
+                // orders have been retrieved.
+                int totalResultSetSize = 0;
+
+                OrderPage page = orderService.getOrdersByStatement(statementBuilder.ToStatement());
+
+                // Print out some information for each order.
+                if (page.results != null)
+                {
+                    totalResultSetSize = page.totalResultSetSize;
+                    int i = page.startIndex;
+                    foreach (Order order in page.results)
+                    {
+                        Debug.WriteLine("{0}) Order with ID {1} and name \"{2}\" was found.",
+                            i++, order.id, order.name);
+                        result = order;
+                    }
+                } else
+                {
+                    result = null;
+                }
+                statementBuilder.IncreaseOffsetBy(pageSize);
+            }
+            return result;
+        }
+
+        public static List<LineItem> getLineItemsByOrder(long idOrder)
+        {
+            List<LineItem> Lineas = new List<LineItem>();
+
+            using (LineItemService lineItemService = user.GetService<LineItemService>())
+            {
+                // Create a statement to select placements.
+                int pageSize = StatementBuilder.SUGGESTED_PAGE_LIMIT;
+                StatementBuilder statementBuilder = new StatementBuilder()
+                   .Where("OrderId = :oID").OrderBy("id ASC")
+                   .Limit(pageSize)
+                   .AddValue("oID", idOrder);
+
+                // Retrieve a small amount of placements at a time, paging through until all
+                // placements have been retrieved.
+                int totalResultSetSize = 0;
+                do
+                {
+                    LineItemPage page =
+                        lineItemService.getLineItemsByStatement(statementBuilder.ToStatement());
+
+                    // Print out some information for each placement.
+                    if (page.results != null)
+                    {
+                        totalResultSetSize = page.totalResultSetSize;
+                        int i = page.startIndex;
+                        foreach (LineItem lineItem in page.results)
+                        {
+                            Lineas.Add(lineItem);
+                        }
+                    }
+
+                    statementBuilder.IncreaseOffsetBy(pageSize);
+                } while (statementBuilder.GetOffset() < totalResultSetSize);
+
+            }
+            return Lineas;
+        }
+
         public static Order GetOrder(long orderId)
         {
-            //if (user == null)
-            //{
-            //    user = new AdManagerUser();
-            //}
-
             using (OrderService orderService = user.GetService<OrderService>())
             {
                 // Create a statement to select orders.
@@ -194,7 +266,8 @@ namespace WebApi.Helpers
                             i++, order.id, order.name);
 
                     }
-                } else
+                }
+                else
                 {
                     return null;
                 }
@@ -311,53 +384,6 @@ namespace WebApi.Helpers
 
             }
         }
-
-        //public static long CreateOrder(String name, long advertiserId)
-        //{
-        //    long result = -1;
-        //    AdManagerUser user = new AdManagerUser();
-        //    using (OrderService orderService = user.GetService<OrderService>())
-        //    {
-        //        Order[] orders = new Order[1];
-        //        // Create an array to store local order objects.                              
-        //        Order order = new Order();
-        //        order.name = name;//string.Format("Order #{0}", i);
-        //        order.advertiserId = advertiserId;//advertiserId - 4747697929; 
-        //        //order.startDateTime = DateTimeUtilities.FromDateTime(inicio, "America/Buenos_Aires");
-        //        //order.endDateTime = DateTimeUtilities.FromDateTime(fin, "America/Buenos_Aires");
-
-        //        order.traffickerId = long.Parse( ConfigurationManager.AppSettings["traffickerId"]);// traffickerId  - User;
-        //        //order.traffickerId = 245442393;// traffickerId  - User;
-        //        Debug.WriteLine("user client id:" + user.Config.OAuth2ClientId.ToString());
-        //        orders[0] = order;
-
-        //        try
-        //        {
-        //            // Create the orders on the server.
-        //            orders = orderService.createOrders(orders);
-
-        //            if (orders != null)
-        //            {
-        //                foreach (Order op in orders)
-        //                {
-        //                    Debug.WriteLine(
-        //                        "An order with ID ='{0}' and named '{1}' was created.", op.id,
-        //                        op.name);
-        //                    result = op.id;
-        //                }
-        //            }
-        //            else
-        //            {
-        //                Debug.WriteLine("No orders created.");
-        //            }
-        //        }
-        //        catch (Exception e)
-        //        {
-        //            Debug.WriteLine("Failed to create orders. Exception says \"{0}\"", e.Message);
-        //        }
-        //    }
-        //    return result;
-        //}
 
         //AGREGUE:
         public static long CreateOrder(String name, long advertiserId)
@@ -1240,6 +1266,93 @@ namespace WebApi.Helpers
                         e.Message);
                 }
             }
+            return result;
+        }
+
+        public static List<Order> GetAllOrders()
+        {
+            List<Order> OrdenesGAM = new List<Order>();
+
+            using (OrderService orderService = user.GetService<OrderService>())
+            {
+                // Create a statement to select orders.
+                int pageSize = StatementBuilder.SUGGESTED_PAGE_LIMIT;
+                StatementBuilder statementBuilder = new StatementBuilder()
+                    .Where("endDateTime >= :now") 
+                    .OrderBy("id ASC").Limit(pageSize)
+                    .AddValue("now", DateTimeUtilities.FromDateTime(System.DateTime.Now, "America/Argentina/Buenos_Aires"));
+                // Retrieve a small amount of orders at a time, paging through until all
+                // orders have been retrieved.
+                int totalResultSetSize = 0;
+                do
+                {
+                    OrderPage page =
+                        orderService.getOrdersByStatement(statementBuilder.ToStatement());
+
+                    // Print out some information for each order.
+                    if (page.results != null)
+                    {
+                        totalResultSetSize = page.totalResultSetSize;
+                        int i = page.startIndex;
+                        foreach (Order order in page.results)
+                        {
+                            Console.WriteLine("{0}) Order with ID {1} and name \"{2}\" was found.",
+                                i++, order.id, order.name);
+                            OrdenesGAM.Add(order);
+                        }
+                    }
+                    
+                    statementBuilder.IncreaseOffsetBy(pageSize);
+                } while (statementBuilder.GetOffset() < totalResultSetSize);
+
+                Console.WriteLine("Number of results found: {0}", totalResultSetSize);
+            }
+            return OrdenesGAM;
+        }
+
+        public static string GetAnunciantePorId(long anunId)
+        {
+            string result = "";
+
+            using (CompanyService companyService = user.GetService<CompanyService>())
+            {
+                // Create a statement to select companies.
+                int pageSize = StatementBuilder.SUGGESTED_PAGE_LIMIT;
+                StatementBuilder statementBuilder = new StatementBuilder()
+                    .Where("type = :type and id = :aID")
+                    .OrderBy("id ASC")
+                    .Limit(pageSize)
+                    .AddValue("type", CompanyType.ADVERTISER.ToString())
+                    .AddValue("aID", anunId);
+
+                // Retrieve a small amount of companies at a time, paging through until all
+                // companies have been retrieved.
+                int totalResultSetSize = 0;
+                do
+                {
+                    CompanyPage page =
+                        companyService.getCompaniesByStatement(statementBuilder.ToStatement());
+
+                    // Print out some information for each company.
+                    if (page.results != null)
+                    {
+                        totalResultSetSize = page.totalResultSetSize;
+                        int i = page.startIndex;
+                        foreach (Company company in page.results)
+                        {
+                            Console.WriteLine(
+                                "{0}) Company with ID {1}, name \"{2}\", and type \"{3}\" was " +
+                                "found.",
+                                i++, company.id, company.name, company.type);
+                            result = company.name;
+                        }
+                    }
+                    statementBuilder.IncreaseOffsetBy(pageSize);
+                } while (statementBuilder.GetOffset() < totalResultSetSize);
+
+                Console.WriteLine("Number of results found: {0}", totalResultSetSize);
+            }
+
             return result;
         }
 
