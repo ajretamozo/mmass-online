@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using WebApi.Helpers;
 using System.Data.SqlClient;
+using System.Configuration;
 
 namespace WebApi.Entities
 {
@@ -112,32 +113,23 @@ namespace WebApi.Entities
             return col;
         }
 
-        //public static List<Contacto> GetContactosPorAgencia(int idAgencia)
-        //{
-        //    string sqlCommand = "Select c.id_contacto, c.razon_social,id_contactodigital from contactos c , roles r, vinculos v where r.id_contacto = c.id_contacto  and es_borrado = 0 and r.id_tipo_rol = 1 and c.id_contacto = v.id_contacto and v.id_tipo_rol_padre= 0 and v.id_contacto_padre=" + idAgencia.ToString()+" order by razon_social ";
-        //    List<Contacto> col = new List<Contacto>();
-        //    Contacto contact;
-        //    DataTable t = DB.Select(sqlCommand);
-
-        //    foreach (DataRow item in t.Rows)
-        //    {
-        //        contact = new Contacto
-        //        {
-        //            Id = int.Parse(item["id_contacto"].ToString()),
-        //            RazonSocial = item["razon_social"].ToString(),
-        //            Id_contacto = int.Parse(item["id_contacto"].ToString()),
-        //            IdContactoDigital = item["id_contactodigital"].ToString()
-        //        };
-        //        col.Add(contact);
-        //    }
-        //    return col;
-        //}
-
-
         public static List<Contacto> GetContactosPorAgencia(int idAgencia)
         {
-            string sqlCommand = @"Select c.id_contacto, c.razon_social from contactos c , roles r, vinculos v where r.id_contacto = c.id_contacto  and es_borrado = 0 and r.tipo_rol = 1 
-                                  and c.id_contacto = v.id_contacto and v.tipo_rol_padre= 0 and v.id_contacto_padre=" + idAgencia.ToString() + " order by razon_social ";
+            string sqlCommand = "";
+            int BD = int.Parse(ConfigurationManager.AppSettings["Base"]);
+            if (BD == 1)
+            {
+                sqlCommand = @"Select c.id_contacto, c.razon_social from contactos c , roles r, vinculos v where r.id_contacto = c.id_contacto  and es_borrado = 0 
+                                      and r.tipo_rol = 1 and c.id_contacto = v.id_contacto and v.tipo_rol_padre= 0 
+                                      and v.id_contacto_padre=" + idAgencia.ToString() + " order by razon_social "; 
+            }
+            else if (BD == 2)
+            {
+                sqlCommand = @"Select c.id_contacto, c.razon_social from contactos c , roles r, vinculos v where r.id_contacto = c.id_contacto  and es_borrado = 0 
+                                      and r.id_tipo_rol = 1 and c.id_contacto = v.id_contacto and v.id_tipo_rol_padre= 0 
+                                      and v.id_contacto_padre=" + idAgencia.ToString() + " order by razon_social ";
+            }
+
             List<Contacto> col = new List<Contacto>();
             Contacto contact;
             DataTable t = DB.Select(sqlCommand);
@@ -177,56 +169,27 @@ namespace WebApi.Entities
             return col;
         }
 
-        //public static List<Contacto> GetContactosPorTipo(string tipo)
-        //{
-        //    string sqlCommand = "Select c.id_contacto, razon_social,id_contactodigital from contactos c , roles r where r.id_contacto = c.id_contacto  and es_borrado = 0 and r.id_tipo_rol = " + tipo + " order by razon_social ";
-        //    List<Contacto> col = new List<Contacto>();
-        //    Contacto contact;
-        //    DataTable t = DB.Select(sqlCommand);
-
-        //    foreach (DataRow item in t.Rows)
-        //    {
-        //        contact = new Contacto
-        //        {
-        //            Id = int.Parse(item["id_contacto"].ToString()),
-        //            RazonSocial = item["razon_social"].ToString(),
-        //            Id_contacto = int.Parse(item["id_contacto"].ToString()),
-        //            IdContactoDigital = item["id_contactodigital"].ToString()
-        //        };
-        //        col.Add(contact);
-        //    }
-        //    return col;
-        //}
-
-        //public static List<Contacto> GetContactosPorTipo(string tipo)
-        //{
-        //    string sqlCommand = "Select c.id_contacto, razon_social from contactos c , roles r where r.id_contacto = c.id_contacto  and es_borrado = 0 and r.tipo_rol = " + tipo + " order by razon_social ";
-        //    List<Contacto> col = new List<Contacto>();
-        //    Contacto contact;
-        //    DataTable t = DB.Select(sqlCommand);
-
-        //    foreach (DataRow item in t.Rows)
-        //    {
-        //        contact = new Contacto
-        //        {
-        //            Id = int.Parse(item["id_contacto"].ToString()),
-        //            RazonSocial = item["razon_social"].ToString(),
-        //            Id_contacto = int.Parse(item["id_contacto"].ToString())
-        //            //IdContactoDigital = item["id_contactodigital"].ToString()
-        //        };
-        //        col.Add(contact);
-        //    }
-        //    return col;
-        //}
-
         public static List<Contacto> GetContactosPorTipo(string tipo)
         {
-            string sqlCommand = @"Select c.id_contacto, razon_social, g.id_contactodigital from contactos c
+            string sqlCommand = "";
+            int BD = int.Parse(ConfigurationManager.AppSettings["Base"]);
+            if (BD == 1)
+            {
+                sqlCommand = @"Select c.id_contacto, razon_social, g.id_contactodigital from contactos c
                                     inner join roles r on r.id_contacto = c.id_contacto
                                     left join  dg_contacto_red_GAM g on g.id_contacto = c.id_contacto
                                     where r.id_contacto = c.id_contacto
-                                    and es_borrado = 0 and r.tipo_rol = " + tipo +
-                                    " order by razon_social";
+                                    and es_borrado = 0 and r.tipo_rol = " + tipo + " order by razon_social";
+            }
+            else if (BD == 2)
+            {
+                sqlCommand = @"Select c.id_contacto, razon_social, g.id_contactodigital from contactos c
+                                    inner join roles r on r.id_contacto = c.id_contacto
+                                    left join  dg_contacto_red_GAM g on g.id_contacto = c.id_contacto
+                                    where r.id_contacto = c.id_contacto
+                                    and es_borrado = 0 and r.id_tipo_rol = " + tipo + " order by razon_social";
+            }
+
             List<Contacto> col = new List<Contacto>();
             Contacto contact;
             DataTable t = DB.Select(sqlCommand);
@@ -267,27 +230,6 @@ namespace WebApi.Entities
             return col;
         }
 
-        //public static bool saveASRelation(int Id_contacto, string Id_ContactoDigital)
-        //{
-        //    string sql = "";
-        //    if ((Id_contacto != 0) && (Id_ContactoDigital != ""))
-        //    {
-        //        sql = "update contactos set id_contactodigital = " + Id_ContactoDigital + " where id_contacto = " + Id_contacto.ToString();
-        //        try
-        //        {
-        //            DB.Execute(sql);
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            Console.WriteLine(ex.Message);
-        //            return false;
-        //        }
-        //        return true;
-        //    }
-        //    else return false;
-
-        //}
-
         public static bool saveASRelation(int Id_contacto, string Id_ContactoDigital, int Id_Red)
         {
             string sql = "";
@@ -318,22 +260,6 @@ namespace WebApi.Entities
             }
             else return false;
         }
-
-        //public static string getContactoByIdGAMyRed(long IdGam, int idRed)
-        //{
-        //    string sqlCommand = @"Select razon_social from contactos c
-        //                          inner join dg_contacto_red_GAM g on c.id_contacto = g.id_contacto
-        //                          where g.id_contactodigital = " + IdGam.ToString() + " and g.id_red = " + idRed.ToString();
-
-        //    string agencia = "";
-        //    DataTable t = DB.Select(sqlCommand);
-
-        //    foreach (DataRow item in t.Rows)
-        //    {
-        //        agencia = item["razon_social"].ToString();
-        //    }
-        //    return agencia;
-        //}
 
     }
 }

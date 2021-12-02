@@ -171,20 +171,7 @@
         $(function () {
             $("#divMessage").on("click", function () { $("#divMessage").hide(); });
             getRedesGAM();
-            //getRedActual();
-            //getEmplazamientosGAM();
-            //getEmplazamientosMMASS();
-
-            //$(".enterSearch").on("keydown", function (e) {
-            //    if (event.which == 13) {
-            //        filter();
-            //    }
-            //});
-
         });
-
-        //var redActual = 0;
-        //var idRed = 0;
 
          function getRedesGAM() {
             callWS("medios", "getAllRedes", '', function (data) { onCargarSelect(data, 'selRedes', 'id_red', 'descripcion', 'codigo_red'); });
@@ -200,46 +187,11 @@
             $("#" + idSelect).append(listitems);
          }
 
-        //function getRedActual() {
-        //   callWS("googleAdManager", "getRedActual", '', function (data) { obtenerIdRed(data); });
-        //}
-
-        
-        //function obtenerIdRed(data) {
-        //    codRed = data;
-        //    if (codRed == 0) {
-        //        codRed = $('#selRedes>option:selected').attr("codigo_red");
-        //        if (codRed != undefined) {
-        //             callWS("googleAdManager", "cambiarRed", codRed);
-        //             idRed = $('#selRedes').val();
-        //             //getEmplazamientosMMASS(idRed);
-        //             getEmplazamientosGAM(idRed);
-        //        }             
-        //    }
-        //    else {
-        //        callWS("medios", "getRedByCodigo", JSON.stringify(codRed), function (data2) { cargarRedAnterior(data2); });
-        //    }
-            
-        //}
-
-        // function cargarRedAnterior(data) {
-        //     idRed = data.id_red;
-        //     $("#selRedes option[value=" + idRed + "]").attr("selected", "selected");
-        //     //getEmplazamientosMMASS(idRed);
-        //     getEmplazamientosGAM(idRed);
-        // }
-
          function getEmplazamientosMMASS(idRed) {
             callWS("medios", "getAllE", JSON.stringify(idRed), function (data) { onCargarTabla('TableMMASS', data); });
-            //getEmplazamientosGAM();
          }
 
         function getEmplazamientosGAM(idRed) {
-             //callWS("googleAdManager", "getEmplazamientos", '', function (data) { onGetEmplazaGAM(data, idRed); });
-             //callWS("googleAdManager", "getEmplazamientos", '', function (data) { onCargarTabla('TableGAM', data); });
-             //getEmplazamientosMMASS(idRed);
-            //onGetEmplazaGAM(idRed);
-
              $.when(
                 callWS("googleAdManager", "getEmplazamientos", '', function (data) { onCargarTabla('TableGAM', data); })
             ).then( onGetEmplazaGAM(idRed));
@@ -255,36 +207,16 @@
         function onRedSelected() {
             idRed = $('#selRedes').val();
             codRed = $('#selRedes>option:selected').attr("codigo_red");
-            //callWS("googleAdManager", "cambiarRed", codRed, function () { getEmplazamientosMMASS(idRed); });
-            //callWS("googleAdManager", "cambiarRed", codRed);
-            //getEmplazamientosMMASS(idRed);
-            //getEmplazamientosGAM(idRed);
-            //$.when(callWS("googleAdManager", "cambiarRed", codRed)).then(function () { getEmplazamientosMMASS(idRed); })
 
             $.when(
                 callWS("googleAdManager", "cambiarRed", codRed)
             ).then( getEmplazamientosGAM(idRed));
         }
 
-        //function getEmplazamientosGAM(codRed) {
-        //    callWS("googleAdManager", "getEmplazamientos", codRed, function (data) { onCargarTabla('TableGAM', data); });
-        //}
-
         function sincronizar() {
-            //idRed = $('#selRedes').val();
-            //codRed = $('#selRedes>option:selected').attr("codigo_red");
-            //callWS("googleAdManager", "getEmplazamientos", codRed, function (data) { onSincronizar(data, idRed); });
-            //getEmplazamientosGAM(codRed);
             callWS("googleAdManager", "getEmplazamientos", '', function (data) { onSincronizar(data); });
             callWS("googleAdManager", "getEmplazamientos", '', function (data) { onCargarTabla('TableGAM', data); });
         }
-
-        //function onSincronizar(data, idRed) {
-        //    var EmplazamientoList = {};
-
-        //    data.forEach(emplaza => {
-        //        emplaza.id_red = idRed;
-        //    });
 
         function onSincronizar(data) {
             var EmplazamientoList = {};
@@ -298,7 +230,6 @@
             callWS("medios", "saveE", JSON.stringify(EmplazamientoList), function (data2){
                 if (data2 == true) {
                     RecargarTablas(idRed);
-                    //RecargarTablas();
                 }
             });
         }
@@ -309,13 +240,6 @@
 
             showMessage("Emplazamientos actualizados", "info");
         }
-
-        //function RecargarTablas() {
-        //    $("#TableMMASS").empty();
-        //    callWS("medios", "getAllE", idRed, function (data) { onCargarTabla('TableMMASS', data); });
-
-        //    showMessage("Emplazamientos actualizados", "info");
-        //}
 
         function onCargarTabla(tablaID, data) {
             rowHTML = ''
@@ -336,13 +260,7 @@
         }
 
         function GetData() {
-            //idRed = $('#selRedes').val();
-            //codRed = $('#selRedes>option:selected').attr("codigo_red");
-            //getEmplazamientosGAM(codRed);
-            //getEmplazamientosMMASS(idRed);
             idRed = $('#selRedes').val();
-            //getEmplazamientosGAM();
-            //getEmplazamientosMMASS(idRed);
             getEmplazamientosGAM(idRed);
         }
 

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Data;
 using WebApi.Helpers;
 using System.Data.SqlClient;
+using System.Configuration;
 
 namespace WebApi.Entities
 {
@@ -47,74 +48,49 @@ namespace WebApi.Entities
         public bool Es_agente_percepcion { get; set; }
         public bool Usa_certif { get; set; }
 
-        //public static Empresa getById(int Id)
-        //{
-        //    string sqlCommand = "select id_empresa,nombre,razon_social,cuit,dgr,inicio,domicilio,localidad,provincia,pais,telefono,fax,email,web," +
-        //            "ingreso,cliente,ciemail,citel,cifax,ciweb,version,denom,minutos_hora,es_borrado,kla,installdate,lastaccessdate," +
-        //         "cod_sociedad_sap,direc_exten,id_cond_iva,id_localidad,Id_cond_ib,logo_url,cod_cbl,es_agente_percepcion,usa_certif from empresa " +
-        //            "where id_empresa = " + Id.ToString();
-
-        //    Empresa resultado;
-        //    resultado = new Empresa();
-        //    DataTable t = DB.Select(sqlCommand);
-
-        //    if (t.Rows.Count == 1)
-        //    {
-        //        resultado.Id_empresa = DB.DInt(t.Rows[0]["id_empresa"].ToString());
-        //        resultado.Nombre = t.Rows[0]["nombre"].ToString();
-        //        resultado.Razon_social = t.Rows[0]["razon_social"].ToString();
-        //        resultado.Cuit = t.Rows[0]["cuit"].ToString();
-        //        resultado.Dgr = t.Rows[0]["dgr"].ToString();
-        //        resultado.Inicio = DB.DFecha(t.Rows[0]["inicio"].ToString());
-        //        resultado.Domicilio = t.Rows[0]["domicilio"].ToString();
-        //        resultado.Localidad = t.Rows[0]["localidad"].ToString();
-        //        resultado.Provincia = t.Rows[0]["provincia"].ToString();
-        //        resultado.Pais = t.Rows[0]["pais"].ToString();
-        //        resultado.Telefono = t.Rows[0]["telefono"].ToString();
-        //        resultado.Fax = t.Rows[0]["fax"].ToString();
-        //        resultado.Email = t.Rows[0]["email"].ToString();
-        //        resultado.Web = t.Rows[0]["web"].ToString();
-        //        resultado.Ingreso = DB.DFecha(t.Rows[0]["ingreso"].ToString());
-        //        resultado.Cliente = t.Rows[0]["cliente"].ToString();
-        //        resultado.Ciemail= t.Rows[0]["ciemail"].ToString();
-        //        resultado.Citel = t.Rows[0]["citel"].ToString();
-        //        resultado.Cifax = t.Rows[0]["cifax"].ToString();
-        //        resultado.Ciweb = t.Rows[0]["ciweb"].ToString();
-        //        resultado.Version = t.Rows[0]["version"].ToString();
-        //        resultado.Denom = t.Rows[0]["denom"].ToString();
-        //        resultado.Minutos_hora = DB.DInt(t.Rows[0]["minutos_hora"].ToString());
-        //        resultado.Es_borrado = (t.Rows[0]["es_borrado"].ToString() == "1");
-        //        resultado.Kla = t.Rows[0]["kla"].ToString();
-        //        resultado.Installdate = (t.Rows[0]["installdate"].ToString());
-        //        resultado.Lastaccessdate = (t.Rows[0]["lastaccessdate"].ToString());
-        //        resultado.Cod_sociedad_sap = t.Rows[0]["cod_sociedad_sap"].ToString();
-        //        resultado.Direc_exten = t.Rows[0]["direc_exten"].ToString();
-        //        resultado.Id_cond_iva = DB.DInt(t.Rows[0]["id_cond_iva"].ToString());
-        //        resultado.Id_localidad = DB.DInt(t.Rows[0]["id_localidad"].ToString());
-        //        resultado.Id_cond_ib = DB.DInt(t.Rows[0]["Id_cond_ib"].ToString());
-        //        resultado.Es_agente_percepcion = (t.Rows[0]["es_agente_percepcion"].ToString() == "1");
-        //        resultado.Logo_url = t.Rows[0]["logo_url"].ToString();
-        //        resultado.Cod_cbl = t.Rows[0]["cod_cbl"].ToString();
-        //        resultado.Usa_certif = (t.Rows[0]["usa_certif"].ToString() == "1");
-        //    }
-        //    return resultado;
-        //}
 
         public static Empresa getById(int Id)
         {
-            string sqlCommand = @"select codigo,nombre,razon,cuit,dgr,inicio,domicilio,localidad,provincia,pais,telefono,fax,email,web,
+            string sqlCommand = "";
+            int BD = int.Parse(ConfigurationManager.AppSettings["Base"]);
+            if (BD == 1)
+            {
+                sqlCommand = @"select codigo,nombre,razon,cuit,dgr,inicio,domicilio,localidad,provincia,pais,telefono,fax,email,web,
                     ingreso,cliente,ciemail,citel,cifax,ciweb,version,denom,minutos_hora,es_borrado,kla,installdate,lastaccessdate,
 	                cod_sociedad_sap,direc_exten,cond_iva,id_localidad,Id_cond_ib,logo,usa_certif from empresa
                     where codigo = " + Id.ToString();
+            }
+            else if (BD == 2)
+            {
+                sqlCommand = @"select id_empresa,nombre,razon_social,cuit,dgr,inicio,domicilio,localidad,provincia,pais,telefono,fax,email,web,
+                    ingreso,cliente,ciemail,citel,cifax,ciweb,version,denom,minutos_hora,es_borrado,kla,installdate,lastaccessdate,
+	                cod_sociedad_sap,direc_exten,id_cond_iva,id_localidad,Id_cond_ib,logo,usa_certif from empresa
+                    where id_empresa = " + Id.ToString();
+            }
+
             Empresa resultado;
             resultado = new Empresa();
             DataTable t = DB.Select(sqlCommand);
 
             if (t.Rows.Count == 1)
             {
-                resultado.Id_empresa = DB.DInt(t.Rows[0]["codigo"].ToString());
+                if (BD == 1)
+                {
+                    resultado.Id_empresa = DB.DInt(t.Rows[0]["codigo"].ToString());
+                }
+                else if (BD == 2)
+                {
+                    resultado.Id_empresa = DB.DInt(t.Rows[0]["id_empresa"].ToString());
+                }             
                 resultado.Nombre = t.Rows[0]["nombre"].ToString();
-                resultado.Razon_social = t.Rows[0]["razon"].ToString();
+                if (BD == 1)
+                {
+                    resultado.Razon_social = t.Rows[0]["razon"].ToString();
+                }
+                else if (BD == 2)
+                {
+                    resultado.Razon_social = t.Rows[0]["razon_social"].ToString();
+                }
                 resultado.Cuit = t.Rows[0]["cuit"].ToString();
                 resultado.Dgr = t.Rows[0]["dgr"].ToString();
                 resultado.Inicio = DB.DFecha(t.Rows[0]["inicio"].ToString());
@@ -141,7 +117,14 @@ namespace WebApi.Entities
                 resultado.Lastaccessdate = (t.Rows[0]["lastaccessdate"].ToString());
                 resultado.Cod_sociedad_sap = t.Rows[0]["cod_sociedad_sap"].ToString();
                 resultado.Direc_exten = t.Rows[0]["direc_exten"].ToString();
-                resultado.Id_cond_iva = DB.DInt(t.Rows[0]["cond_iva"].ToString());
+                if (BD == 1)
+                {
+                    resultado.Id_cond_iva = DB.DInt(t.Rows[0]["cond_iva"].ToString());
+                }
+                else if (BD == 2)
+                {
+                    resultado.Id_cond_iva = DB.DInt(t.Rows[0]["id_cond_iva"].ToString());
+                }
                 resultado.Id_localidad = DB.DInt(t.Rows[0]["id_localidad"].ToString());
                 resultado.Id_cond_ib = DB.DInt(t.Rows[0]["Id_cond_ib"].ToString());
                 resultado.Logo_url = t.Rows[0]["logo"].ToString();
@@ -265,51 +248,7 @@ namespace WebApi.Entities
             return true;
         }
 
-        //private static Empresa getEmpresa(DataRow item)
-        //{
-        //    Empresa miEmpresa = new Empresa
-        //    {
-        //        Id_empresa = int.Parse(item["id_empresa"].ToString()),
-        //        Nombre = item["nombre"].ToString(),
-        //        Razon_social = item["razon_social"].ToString(),
-        //        Cuit = item["cuit"].ToString(),
-        //        Dgr = item["dgr"].ToString(),
-        //        Inicio = DB.DFecha(item["inicio"].ToString()),
-        //        Domicilio = item["domicilio"].ToString(),
-        //        Localidad = item["localidad"].ToString(),
-        //        Provincia = item["provincia"].ToString(),
-        //        Pais = item["pais"].ToString(),
-        //        Telefono = item["telefono"].ToString(),
-        //        Fax = item["fax"].ToString(),
-        //        Email = item["email"].ToString(),
-        //        Web = item["web"].ToString(),
-        //        Ingreso = DB.DFecha(item["ingreso"].ToString()),
-        //        Cliente = item["cliente"].ToString(),
-        //        Ciemail = item["ciemail"].ToString(),
-        //        Citel = item["citel"].ToString(),
-        //        Cifax = item["cifax"].ToString(),
-        //        Ciweb = item["ciweb"].ToString(),
-        //        Version = item["version"].ToString(),
-        //        Denom = item["denom"].ToString(),
-        //        Minutos_hora = DB.DInt(item["minutos_hora"].ToString()),
-        //        Es_borrado = (item["es_borrado"].ToString() == "1"),
-        //        Kla = item["kla"].ToString(),
-        //        Installdate = item["installdate"].ToString(),
-        //        Lastaccessdate = item["lastaccessdate"].ToString(),
-        //        Cod_sociedad_sap = item["cod_sociedad_sap"].ToString(),
-        //        Direc_exten = item["direc_exten"].ToString(),
-        //        Id_cond_iva = DB.DInt(item["id_cond_iva"].ToString()),
-        //        Id_localidad = DB.DInt(item["id_localidad"].ToString()),
-        //        Id_cond_ib = DB.DInt(item["Id_cond_ib"].ToString()),
-        //        Es_agente_percepcion = (item["es_agente_percepcion"].ToString() == "1"),
-        //        Logo_url = item["logo_url"].ToString(),
-        //        Cod_cbl = item["cod_cbl"].ToString(),
-        //        Usa_certif = (item["usa_certif"].ToString() == "1")
-        //    };
-        //    return miEmpresa;
-        //}
-
-        private static Empresa getEmpresa(DataRow item)
+        private static Empresa getEmpresa1(DataRow item)
         {
             Empresa miEmpresa = new Empresa
             {
@@ -351,29 +290,64 @@ namespace WebApi.Entities
             return miEmpresa;
         }
 
-        //public static List<Empresa> getAll()
-        //{
-        //    string sqlCommand = " select id_empresa,nombre,razon_social,cuit,dgr,inicio,domicilio,localidad,provincia,pais,telefono,fax,email,web," +
-        //            "ingreso,cliente,ciemail,citel,cifax,ciweb,version,denom,minutos_hora,es_borrado,kla,installdate,lastaccessdate," +
-        //            "cod_sociedad_sap,direc_exten,id_cond_iva,id_localidad,Id_cond_ib,logo_url,cod_cbl,es_agente_percepcion,usa_certif from empresa " ;
-
-        //    List<Empresa> col = new List<Empresa>();
-        //    Empresa elem;
-        //    DataTable t = DB.Select(sqlCommand);
-
-        //    foreach (DataRow item in t.Rows)
-        //    {
-        //        elem = getEmpresa(item);
-        //        col.Add(elem);
-        //    }
-        //    return col;
-        //}
+        private static Empresa getEmpresa2(DataRow item)
+        {
+            Empresa miEmpresa = new Empresa
+            {
+                Id_empresa = int.Parse(item["id_empresa"].ToString()),
+                Nombre = item["nombre"].ToString(),
+                Razon_social = item["razon_social"].ToString(),
+                Cuit = item["cuit"].ToString(),
+                Dgr = item["dgr"].ToString(),
+                Inicio = DB.DFecha(item["inicio"].ToString()),
+                Domicilio = item["domicilio"].ToString(),
+                Localidad = item["localidad"].ToString(),
+                Provincia = item["provincia"].ToString(),
+                Pais = item["pais"].ToString(),
+                Telefono = item["telefono"].ToString(),
+                Fax = item["fax"].ToString(),
+                Email = item["email"].ToString(),
+                Web = item["web"].ToString(),
+                Ingreso = DB.DFecha(item["ingreso"].ToString()),
+                Cliente = item["cliente"].ToString(),
+                Ciemail = item["ciemail"].ToString(),
+                Citel = item["citel"].ToString(),
+                Cifax = item["cifax"].ToString(),
+                Ciweb = item["ciweb"].ToString(),
+                Version = item["version"].ToString(),
+                Denom = item["denom"].ToString(),
+                Minutos_hora = DB.DInt(item["minutos_hora"].ToString()),
+                Es_borrado = (item["es_borrado"].ToString() == "1"),
+                Kla = item["kla"].ToString(),
+                Installdate = item["installdate"].ToString(),
+                Lastaccessdate = item["lastaccessdate"].ToString(),
+                Cod_sociedad_sap = item["cod_sociedad_sap"].ToString(),
+                Direc_exten = item["direc_exten"].ToString(),
+                Id_cond_iva = DB.DInt(item["id_cond_iva"].ToString()),
+                Id_localidad = DB.DInt(item["id_localidad"].ToString()),
+                Id_cond_ib = DB.DInt(item["Id_cond_ib"].ToString()),
+                Logo_url = item["logo_url"].ToString(),
+                Usa_certif = (item["usa_certif"].ToString() == "1")
+            };
+            return miEmpresa;
+        }
 
         public static List<Empresa> getAll()
         {
-            string sqlCommand = @"select codigo,nombre,razon,cuit,dgr,inicio,domicilio,localidad,provincia,pais,telefono,fax,email,web,
-                    ingreso,cliente,ciemail,citel,cifax,ciweb,version,denom,minutos_hora,es_borrado,kla,installdate,lastaccessdate,
-	                cod_sociedad_sap,direc_exten,cond_iva,id_localidad,Id_cond_ib,logo,usa_certif from empresa";
+            string sqlCommand = "";
+            int BD = int.Parse(ConfigurationManager.AppSettings["Base"]);
+            if (BD == 1)
+            {
+                sqlCommand = @"select codigo,nombre,razon,cuit,dgr,inicio,domicilio,localidad,provincia,pais,telefono,fax,email,web,
+                             ingreso,cliente,ciemail,citel,cifax,ciweb,version,denom,minutos_hora,es_borrado,kla,installdate,lastaccessdate,
+	                         cod_sociedad_sap,direc_exten,cond_iva,id_localidad,Id_cond_ib,logo,usa_certif from empresa";
+            }
+            else if (BD == 2)
+            {
+                sqlCommand = " select id_empresa,nombre,razon_social,cuit,dgr,inicio,domicilio,localidad,provincia,pais,telefono,fax,email,web," +
+                             " ingreso,cliente,ciemail,citel,cifax,ciweb,version,denom,minutos_hora,es_borrado,kla,installdate,lastaccessdate," +
+                             " cod_sociedad_sap,direc_exten,id_cond_iva,id_localidad,Id_cond_ib,logo_url,usa_certif from empresa " ;
+            }
 
             List<Empresa> col = new List<Empresa>();
             Empresa elem;
@@ -381,8 +355,16 @@ namespace WebApi.Entities
 
             foreach (DataRow item in t.Rows)
             {
-                elem = getEmpresa(item);
-                col.Add(elem);
+                if (BD == 1)
+                {
+                    elem = getEmpresa1(item);
+                    col.Add(elem);
+                }
+                else if (BD == 2)
+                {
+                    elem = getEmpresa2(item);
+                    col.Add(elem);
+                }
             }
             return col;
         }

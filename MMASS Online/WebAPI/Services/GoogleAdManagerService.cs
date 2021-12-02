@@ -8,7 +8,6 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using WebApi.Entities;
 using WebApi.Helpers;
-//using Google.Api.Ads.AdManager.v202105;
 using Google.Api.Ads.AdManager.Util.v202111;
 using Google.Api.Ads.AdManager.v202111;
 

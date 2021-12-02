@@ -153,16 +153,9 @@
             rowHTML = ''
             $.each(listRedes, function (it, ired) {
                 rowHTML += "<tr id-tar=\"" + ired.id_red + "\">"
-                //rowHTML += "<tr onclick='openTarifa(this)'>"
                 rowHTML += "<td class='col-xs-1' align='center'>" + ired.id_red + "</td>";
                 rowHTML += "<td class='col-xs-1' align='center'>" + ired.descripcion + "</td>";
                 rowHTML += "<td class='col-xs-1' align='center'>" + ired.codigo_red + "</td>";
-                //if (itipo.permite_envio_ads) {
-                //    rowHTML += "<td class='col-xs-1' align='center'> Si </td>";
-                //} else {
-                //    rowHTML += "<td class='col-xs-1' align='center'> No </td>";
-                //}
-                //Acciones
                 rowHTML += "<td id='colAcciones' class='col-xs-2 d-flex justify-content-center'>"
                 rowHTML += "<button type='button' title='Ver' class='btn btn-outline-dark btn-sm mx-1' onclick=\"openRed(" + ired.id_red + ",'view')\"><span class='fa fa-eye'></span> </button>"
                 rowHTML += "<button type='button' title='Editar' class='btn btn-outline-dark btn-sm mx-1' onclick=\"openRed(" + ired.id_red + ",'edit')\"><span class='fa fa-edit'></span> </button>"

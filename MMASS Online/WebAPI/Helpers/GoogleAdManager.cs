@@ -4,8 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using WebApi.Entities;
 using Google.Api.Ads.AdManager.Lib;
-//using Google.Api.Ads.AdManager.Util.v202105;
-//using Google.Api.Ads.AdManager.v202105;
 using Google.Api.Ads.AdManager.Util.v202111;
 using Google.Api.Ads.AdManager.v202111;
 using Google.Api.Ads.Common.Util.Reports;
@@ -19,14 +17,6 @@ namespace WebApi.Helpers
     {
         //Parámretro global para mantener el usuario GAM
         public static AdManagerUser user = new AdManagerUser();
-
-        //public static AdManagerUser CambiarRed(string netCode)
-        //{
-        //    AdManagerUser user = new AdManagerUser();
-        //    AdManagerAppConfig config = (AdManagerAppConfig)user.Config;
-        //    config.NetworkCode = netCode;
-        //    return user;
-        //}
 
         public static void CambiarRed(string netCode)
         {

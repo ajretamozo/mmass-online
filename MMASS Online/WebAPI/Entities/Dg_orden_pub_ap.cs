@@ -724,7 +724,7 @@ namespace WebApi.Entities
             string sqlCommand = " select id_op," +
                     " CAST(anio as VARCHAR(4)) + '-' + RIGHT('00' + CAST(mes AS VARCHAR(2)), 2) + '-' + RIGHT('0000' + CAST(nro_orden AS VARCHAR(4)), 4) " +
                     " + ' (' + productos.desc_producto + ') - Ord.Ag.: ' + IsNull(nro_orden_ag, 'No Especificado') " +
-                    " as nro_orden " +
+                    " COLLATE DATABASE_DEFAULT as nro_orden " +
                     " from orden_pub_ap " +
                     " inner join productos on productos.id_producto = orden_pub_ap.id_producto " +
                     " where es_anulada = 0 " +
