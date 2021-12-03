@@ -174,11 +174,6 @@ namespace WebApi.Entities
                 sql = "INSERT INTO dg_tarifas (descripcion, fecha_desde, fecha_hasta, forma_uso, precio_unitario, es_borrado, id_red) " +
                     " values (@descripcion, @fecha_desde, @fecha_hasta, @forma_uso, @precio_unitario, 0, @id_red) " +
                     " SELECT SCOPE_IDENTITY(); ";
-                DataTable t = DB.Select("SELECT IDENT_CURRENT('dg_tarifas') AS ULTIMO ");
-                if (t.Rows.Count == 1)
-                {
-                    Id_tarifa_dg = int.Parse(t.Rows[0]["ULTIMO"].ToString()) + 1;
-                }
             }
             else
             {
@@ -209,6 +204,15 @@ namespace WebApi.Entities
                 {
                     // Grabo la Tarifa (Cabecera)
                     DB.Execute(sql, parametros);
+                    //Obtengo el ID
+                    if (Id_tarifa_dg == 0)
+                    {
+                            DataTable t = DB.Select("select max(id_tarifa_dg) as ULTIMO from dg_tarifas ");
+                            if (t.Rows.Count == 1)
+                            {
+                                Id_tarifa_dg = int.Parse(t.Rows[0]["ULTIMO"].ToString());
+                            }
+                    }
                     // Grabo los Medios relacionados...
                     DB.Execute("delete from dg_tarifas_medios where Id_tarifa_dg = " + Id_tarifa_dg.ToString());
                     foreach (Medio elem in Medios)
