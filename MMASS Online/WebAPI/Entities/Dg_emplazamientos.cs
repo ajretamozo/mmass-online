@@ -96,17 +96,32 @@ namespace WebApi.Entities
             }
         }
 
-        public static bool getByCodigo(long codigo)
-        { 
+        public static bool getByCodigo(long codigo, int idRed)
+        {
             bool resultado = false;
             string sqlCommand = " select id_emplazamiento, descripcion, codigo_emplazamiento, es_borrado, id_red from dg_emplazamientos" +
-                                " where codigo_emplazamiento = " + codigo.ToString();
-           
+                                " where codigo_emplazamiento = " + codigo.ToString() + " and id_red = " + idRed.ToString();
+
             DataTable t = DB.Select(sqlCommand);
 
             if (t.Rows.Count == 1)
             {
                 resultado = true;
+            }
+            return resultado;
+        }
+
+        public static Dg_emplazamientos getByCodigo2(long codigo, int idRed)
+        {
+            string sqlCommand = " select id_emplazamiento, descripcion, codigo_emplazamiento, es_borrado, id_red from dg_emplazamientos" +
+                                " where codigo_emplazamiento = " + codigo.ToString() + " and id_red = " + idRed.ToString();
+
+            Dg_emplazamientos resultado = new Dg_emplazamientos();
+            DataTable t = DB.Select(sqlCommand);
+
+            if (t.Rows.Count == 1)
+            {
+                resultado = getDg_emplazamientos(t.Rows[0]);
             }
             return resultado;
         }

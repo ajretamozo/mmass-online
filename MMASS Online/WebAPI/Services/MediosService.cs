@@ -36,6 +36,7 @@ namespace WebApi.Services
         bool saveRed(Dg_red_GAM miobj);
         IEnumerable<Dg_red_GAM> filterRedes(List<Parametro> parametros);
         IEnumerable<Concepto_Negocio> getAllConceptos();
+        Dg_emplazamientos getEmplazaByCodigo(long cod, int idRed);
     }
 
     public class MedioService : IMedioService
@@ -139,6 +140,11 @@ namespace WebApi.Services
         public IEnumerable<Concepto_Negocio> getAllConceptos()
         {
             return Concepto_Negocio.getAll();
+        }
+
+        public Dg_emplazamientos getEmplazaByCodigo(long cod, int idRed)
+        {
+            return Dg_emplazamientos.getByCodigo2(cod, idRed);
         }
 
     }

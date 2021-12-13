@@ -62,6 +62,7 @@ namespace WebApi.Services
             red = Dg_red_GAM.getByCodigo(codRed);
             List<Dg_orden_pub_ejecutivos> ejecutivos = new List<Dg_orden_pub_ejecutivos>();
             List<Dg_orden_pub_pagos> formasPago = new List<Dg_orden_pub_pagos>();
+            List<Dg_orden_pub_as> detalles = new List<Dg_orden_pub_as>();
 
             ordenNueva.Id_red = red.Id_red;
             ordenNueva.Id_Google_Ad_Manager = ordenGam.id;
@@ -86,10 +87,69 @@ namespace WebApi.Services
             Dg_orden_pub_as detalle = new Dg_orden_pub_as();
             List<LineItem> lineasGAM = new List<LineItem>();
             lineasGAM = GoogleAdManager.getLineItemsByOrder(idGAM);
-            foreach(LineItem linea in lineasGAM)
+            List<Dg_orden_pub_emplazamientos> emplazamientos = new List<Dg_orden_pub_emplazamientos>();
+            List<Dg_orden_pub_medidas> medidas = new List<Dg_orden_pub_medidas>();
+            int contId = 0;
+
+            foreach (LineItem linea in lineasGAM)
             {
-                //SEGUIR: traer los datos necesarios de las lineas para completar el detalle en la orden
+                detalle.Id_detalle = contId;
+                detalle.Id_Google_Ad_Manager = linea.id;
+                detalle.Descripcion = linea.name;
+                switch (linea.costType)
+                {
+                    case CostType.CPM:
+                        detalle.Tipo_tarifa = 0;
+                        break;
+                    case CostType.CPD:
+                        detalle.Tipo_tarifa = 1;
+                        break;
+                    case CostType.CPC:
+                        detalle.Tipo_tarifa = 3;
+                        break;
+                    case CostType.CPA:
+                        detalle.Tipo_tarifa = 4;
+                        break;
+                }
+                Dg_orden_pub_emplazamientos emplaza = new Dg_orden_pub_emplazamientos();
+                foreach(long idEmpla in linea.targeting.inventoryTargeting.targetedPlacementIds)
+                {
+                    emplaza.Codigo_emplazamiento = idEmpla;
+                    emplaza.Id_emplazamiento = Dg_emplazamientos.getByCodigo2(idEmpla, red.Id_red).Id_emplazamiento;
+                    emplazamientos.Add(emplaza);
+                }
+                detalle.Emplazamientos = emplazamientos;
+                Dg_orden_pub_medidas medida = new Dg_orden_pub_medidas();
+                foreach(CreativePlaceholder cph in linea.creativePlaceholders)
+                {
+                    string desc = cph.size.width.ToString() + "x" + cph.size.height.ToString();
+                    medida.Id_medidadigital = Dg_medidas.getByDescripcion(desc).Id_medidadigital;
+                    medida.Ancho = cph.size.width;
+                    medida.Alto = cph.size.height;
+                    medidas.Add(medida);
+                }
+                detalle.Medidas = medidas;
+                detalle.Tarifa_manual = 1;
+                detalle.Importe_unitario = (linea.costPerUnit.microAmount) / 1000000;
+                detalle.Porc_dto = (float)linea.discount;
+                detalle.Cantidad = (int)linea.primaryGoal.units;
+                detalle.Monto_neto = (linea.budget.microAmount) / 1000000;
+                string startD = DateTimeUtilities.ToString(linea.startDateTime, "yyyy/MM/dd");
+                string endD = DateTimeUtilities.ToString(linea.endDateTime, "yyyy/MM/dd");
+
+                if (startD != "0")
+                {
+                    detalle.Fecha_desde = System.DateTime.Parse(startD);
+                }
+                if (endD != "0")
+                {
+                    detalle.Fecha_hasta = System.DateTime.Parse(endD);
+                }
+
+                detalles.Add(detalle);
+                contId++;
             }
+            ordenNueva.Detalles = detalles;
 
             return ordenNueva;
         }

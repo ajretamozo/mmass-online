@@ -2146,13 +2146,27 @@
             var str = "<tr  id='row" + id + "' data-id='row" + id + "' descripcion= '" + det.descripcion + "' IdAdMgr='0' idAnunciante='" + $("#selAnunciante").val() + "'>";
             str = str + "<td class='col-xs-3' > " + det.descripcion + "</td > ";
             str = str + "<td  class='col-xs-2' dataid='" + id + "'>" + dateToFieldFormat(det.fecha_desde) + " - " + dateToFieldFormat(det.fecha_hasta) + "</td>";
-            str = str + " <td class='col-xs-2' dataid = '" + det.tipo_aviso_dg.id_tipo_aviso_dg + "' > " + det.tipo_aviso_dg.descripcion + "</td > ";
-            //nuev
-            if (det.tarifa_dg.id_tarifa_dg == "" || det.tarifa_dg.id_tarifa_dg == undefined || det.tarifa_dg.id_tarifa_dg == null) {
-                str = str + "<td class='col-xs-1'> Custom </td>";
+            if (det.tipo_aviso_dg == "" || det.tipo_aviso_dg == undefined || det.tipo_aviso_dg == null) {
+                str = str + "<td class='col-xs-1'> Por definir </td>";
             }
             else {
-                str = str + "<td class='col-xs-1' dataid = '" + det.tarifa_dg.id_tarifa_dg + "' > " + det.tarifa_dg.descripcion + "</td>";
+                str = str + " <td class='col-xs-2' dataid = '" + det.tipo_aviso_dg.id_tipo_aviso_dg + "' > " + det.tipo_aviso_dg.descripcion + "</td > ";
+            }
+            //str = str + " <td class='col-xs-2' dataid = '" + det.tipo_aviso_dg.id_tipo_aviso_dg + "' > " + det.tipo_aviso_dg.descripcion + "</td > ";
+            //nuev
+            //if (det.tarifa_dg.id_tarifa_dg == "" || det.tarifa_dg.id_tarifa_dg == undefined || det.tarifa_dg.id_tarifa_dg == null) {
+            //    str = str + "<td class='col-xs-1'> Custom </td>";
+            //}
+            if (det.tarifa_dg == "" || det.tarifa_dg == undefined || det.tarifa_dg == null) {
+                str = str + "<td class='col-xs-1'> Por definir </td>";
+            }
+            else {
+                if (det.tarifa_dg.id_tarifa_dg == "" || det.tarifa_dg.id_tarifa_dg == undefined || det.tarifa_dg.id_tarifa_dg == null) {
+                    str = str + "<td class='col-xs-1'> Custom </td>";
+                }
+                else {
+                    str = str + "<td class='col-xs-1' dataid = '" + det.tarifa_dg.id_tarifa_dg + "' > " + det.tarifa_dg.descripcion + "</td>";
+                }
             }
 
             str = str + "<td class='col-xs-1'>" + det.cantidad + "</td>";
@@ -2160,11 +2174,22 @@
             str = str + "<td class='col-xs-2 pr-0 actions d-flex justify-content-center align-content-start'>";
             $('.disableOnEdit').attr("disabled", false);
             //  Botón enviar renglon a AdServer
-            if ((det.tipo_aviso_dg.permite_envio_ads === true || det.tipo_aviso_dg.permite_envio_ads == "true") && (det.id_op_dg != 0) && ($('#inpIdOrdenAdServer').val() !== 0 && $('#inpIdOrdenAdServer').val() !== "")) {
-                str = str + " <button type='button' data-id='" + id + "'  id='bSendAddServer" + id + "' class='btn actions btn-outline-dark btn-sm mr-1' onclick='enviarLineaAddServer(this)' > <span class='fa fa-cloud ' id='brow" + id + "' title='Enviar AddServer''></span></button>";
-            } else {
+            if (det.tipo_aviso_dg == "" || det.tipo_aviso_dg == undefined || det.tipo_aviso_dg == null) {
                 str = str + " <button type='button' data-id='" + id + "' disabled id='bSendAddServer" + id + "' class='btn actions btn-outline-dark btn-sm mr-1' onclick='enviarLineaAddServer(this)' > <span class='fa fa-cloud ' id='brow" + id + "' title='Enviar AddServer''></span></button>";
             }
+            else {
+                if ((det.tipo_aviso_dg.permite_envio_ads === true || det.tipo_aviso_dg.permite_envio_ads == "true") && (det.id_op_dg != 0) && ($('#inpIdOrdenAdServer').val() !== 0 && $('#inpIdOrdenAdServer').val() !== "")) {
+                str = str + " <button type='button' data-id='" + id + "'  id='bSendAddServer" + id + "' class='btn actions btn-outline-dark btn-sm mr-1' onclick='enviarLineaAddServer(this)' > <span class='fa fa-cloud ' id='brow" + id + "' title='Enviar AddServer''></span></button>";
+                }
+                else {
+                str = str + " <button type='button' data-id='" + id + "' disabled id='bSendAddServer" + id + "' class='btn actions btn-outline-dark btn-sm mr-1' onclick='enviarLineaAddServer(this)' > <span class='fa fa-cloud ' id='brow" + id + "' title='Enviar AddServer''></span></button>";
+                }
+            }
+            //if ((det.tipo_aviso_dg.permite_envio_ads === true || det.tipo_aviso_dg.permite_envio_ads == "true") && (det.id_op_dg != 0) && ($('#inpIdOrdenAdServer').val() !== 0 && $('#inpIdOrdenAdServer').val() !== "")) {
+            //    str = str + " <button type='button' data-id='" + id + "'  id='bSendAddServer" + id + "' class='btn actions btn-outline-dark btn-sm mr-1' onclick='enviarLineaAddServer(this)' > <span class='fa fa-cloud ' id='brow" + id + "' title='Enviar AddServer''></span></button>";
+            //} else {
+            //    str = str + " <button type='button' data-id='" + id + "' disabled id='bSendAddServer" + id + "' class='btn actions btn-outline-dark btn-sm mr-1' onclick='enviarLineaAddServer(this)' > <span class='fa fa-cloud ' id='brow" + id + "' title='Enviar AddServer''></span></button>";
+            //}
             //  Botón eliminar renglon
             str = str + " <button type='button' data-id='" + id + "' class='btn actions btn-outline-dark btn-sm mr-1'  onclick='deleteRenglon(this, " + det.id_Google_Ad_Manager + ")'> <span class='fa fa-remove' title='Eliminar Renglon'></span></button>";
             //  Botón modificar renglon
@@ -2284,7 +2309,8 @@
             //CARGA Medios
             var medios = rDetalle.medios;
             var viewListMedios = "<ul class=\"list-group\">"
-            if (medios.length > 0) {
+            if (medios != undefined) {
+                            if (medios.length > 0) {
                 var porcHTML = '';
                 medios.forEach(function (medio) {
                     $("#selMediosD option[value=" + medio.id_medio + "]").attr("selected", "selected");
@@ -2297,6 +2323,20 @@
             } else {
                 viewListMedios += "<li class=\"list-group-item\">(Todos)</li>";
             };
+            }
+            //if (medios.length > 0) {
+            //    var porcHTML = '';
+            //    medios.forEach(function (medio) {
+            //        $("#selMediosD option[value=" + medio.id_medio + "]").attr("selected", "selected");
+            //        var desc = $("#selMediosD option[value=" + medio.id_medio + "]").text();
+            //        porcHTML += "<tr id='ronRow_" + medio.id_medio + "'><td>" + desc + "</td>" + "<td><input type='number' class='form-control inpRon' id='inpRonRow_" + medio.id_medio + "' value='" + medio.porcentaje + "' onchange=\"$(this).attr('value',$(this).val())\" /></td></tr>"
+            //        //viewListMedios += "<li class=\"list-group-item\">" + $("#selMediosD option[value='" + medio.id_medio + "']").text() + "</li>";
+            //    });
+            //    $("#porcRon").html(porcHTML);
+            //    enableRon();
+            //} else {
+            //    viewListMedios += "<li class=\"list-group-item\">(Todos)</li>";
+            //};
             viewListMedios += "</ul>"
             $("#selMediosD").after(viewListMedios);
             cMultiSelect.bootstrapDualListbox('refresh');
@@ -2312,11 +2352,17 @@
 
             //Carga Tipo Aviso
             tipo_aviso = rDetalle.tipo_aviso_dg;
-            $("#selTipoAvisoD option[value=" + tipo_aviso.id_tipo_aviso_dg + "]").attr("selected", "selected");
+            if (tipo_aviso != undefined) {
+                $("#selTipoAvisoD option[value=" + tipo_aviso.id_tipo_aviso_dg + "]").attr("selected", "selected");
+            }
+            //$("#selTipoAvisoD option[value=" + tipo_aviso.id_tipo_aviso_dg + "]").attr("selected", "selected");
 
             //AGREGUE:
             //Carga areasGeo
-            $("#selAreasGeo option[value=" + rDetalle.areaGeo.id_area + "]").attr("selected", "selected");
+            if (rDetalle.areaGeo != null) {
+                $("#selAreasGeo option[value=" + rDetalle.areaGeo.id_area + "]").attr("selected", "selected");
+            }
+            //$("#selAreasGeo option[value=" + rDetalle.areaGeo.id_area + "]").attr("selected", "selected");
 
             //AGREGUE:
             //Carga Medidas
@@ -2352,7 +2398,13 @@
 
             $("#selProductoD option[value=" + rDetalle.id_producto + "]").attr("selected", "selected");
             //Carga Tarifa
-            $.when(filterTarifas()).then(function () {
+            //if (rDetalle.tarifa_manual == 2) {
+            //   $("#checkTarifaManualD")[0].checked = true;
+            //   $("#checkTarifaManualD").change();
+            //   $("#precioUnitarioD").val(rDetalle.importe_unitario);
+            //}
+            if (rDetalle.tarifa_dg != null) {
+                $.when(filterTarifas()).then(function () {
                 $("#selTarifaD option[value=" + rDetalle.tarifa_dg.id_tarifa_dg + "]").attr("selected", "selected");
                 if (rDetalle.tarifa_manual) {
                     $("#checkTarifaManualD")[0].checked = true;
@@ -2361,6 +2413,16 @@
                     $("#precioUnitarioD").change();
                 }
             }, function data() { });
+            }
+            //$.when(filterTarifas()).then(function () {
+            //    $("#selTarifaD option[value=" + rDetalle.tarifa_dg.id_tarifa_dg + "]").attr("selected", "selected");
+            //    if (rDetalle.tarifa_manual) {
+            //        $("#checkTarifaManualD")[0].checked = true;
+            //        $("#checkTarifaManualD").change();
+            //        $("#precioUnitarioD").val(rDetalle.importe_unitario);
+            //        $("#precioUnitarioD").change();
+            //    }
+            //}, function data() { });
 
             //AGREGUE:
             if (rDetalle.id_Google_Ad_Manager != 0 && rDetalle.id_Google_Ad_Manager != null) {

@@ -20,7 +20,7 @@ namespace WebApi.Entities
             //DB.Execute("update dg_emplazamientos set es_borrado = 1");
             foreach (Dg_emplazamientos emp in Emplazamientos)
             {
-                if (Dg_emplazamientos.getByCodigo(emp.Codigo_emplazamiento) == false)
+                if (Dg_emplazamientos.getByCodigo(emp.Codigo_emplazamiento, idRed) == false)
                 {
                     emp.save();
                 }

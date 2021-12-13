@@ -159,5 +159,12 @@ namespace WebApi.Controllers
             return Ok(conceptos);
         }
 
+        [HttpPost("getEmplazaByCodigo")]
+        public IActionResult getEmplazaByCodigo(Dg_emplazamientos emplaza)
+        {
+            var emplazamiento = _medioService.getEmplazaByCodigo(emplaza.Codigo_emplazamiento, emplaza.Id_red);
+            return Ok(emplazamiento);
+        }
+
     }
 }

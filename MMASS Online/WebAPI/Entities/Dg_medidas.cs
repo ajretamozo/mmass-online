@@ -144,5 +144,19 @@ namespace WebApi.Entities
             }
             return ret;
         }
+
+        public static Dg_medidas getByDescripcion(string desc)
+        {
+            string sqlCommand = " select id_medidadigital, descripcion, ancho, alto, tipo from dg_medidas" +
+                                " where descripcion = '" + desc + "'";
+            Dg_medidas resultado = new Dg_medidas();
+            DataTable t = DB.Select(sqlCommand);
+
+            if (t.Rows.Count == 1)
+            {
+                resultado = getDg_medidas(t.Rows[0]);
+            }
+            return resultado;
+        }
     }
 }
