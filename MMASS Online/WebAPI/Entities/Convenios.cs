@@ -15,6 +15,7 @@ namespace WebApi.Entities
         public int Id_formapago { get; set; }
         public int Id_agencia { get; set; }
         public int Id_anunciante { get; set; }
+        public int Id_producto { get; set; }
         public int Id_empresa { get; set; }
         public bool Es_borrado { get; set; }
         public float Importe_total { get; set; }
@@ -72,14 +73,16 @@ namespace WebApi.Entities
 
         public static Convenios getById(int id_convenio)
         {
-            string sqlCommand = @"select c.id_convenio, c.desc_convenio, c.id_formapago, c.id_agencia, c.id_anunciante, c.importe_total,
+            string sqlCommand = @"select c.id_convenio, c.desc_convenio, cpa.id_formapago, c.id_agencia, c.id_anunciante, cp.id_producto, c.importe_total,
                                     c.fecha_desde, c.fecha_hasta, c.estado, c.observaciones, c.facturar_a, c.id_empresa,
                                     ag.razon_social as agencia_nombre, an.razon_social as anunciante_nombre, fp.desc_formapago as formapago_nombre
                                     from convenio_anual_precios c
                                     left outer join contactos ag on ag.id_contacto = c.id_agencia
                                     left outer join contactos an on an.id_contacto = c.id_anunciante
-								    left outer join formas_pago fp on fp.id_formapago = c.id_formapago
-                                    where c.id_convenio = " + id_convenio.ToString() + " and c.es_borrado = 0";
+									left outer join convenios_pagos cpa on cpa.id_convenio = c.id_convenio
+									left outer join formas_pago fp on fp.id_formapago = cpa.id_formapago
+                                    left outer join dg_conv_dg_detalle_productos cp on cp.id_convenio = c.id_convenio
+                                    where c.id_convenio = " + id_convenio.ToString() + " and c.es_borrado = 0 and cp.id_detalle=1";
 
             Convenios resultado = new Convenios();
             DataTable t = DB.Select(sqlCommand);
@@ -94,6 +97,7 @@ namespace WebApi.Entities
                 }
                 resultado.Id_agencia = int.Parse(t.Rows[0]["id_agencia"].ToString());
                 resultado.Id_anunciante = int.Parse(t.Rows[0]["id_anunciante"].ToString());
+                resultado.Id_producto = int.Parse(t.Rows[0]["id_producto"].ToString());
                 resultado.Importe_total = float.Parse(t.Rows[0]["importe_total"].ToString());
                 resultado.Fecha_desde = DateTime.Parse(t.Rows[0]["fecha_desde"].ToString());
                 resultado.Fecha_hasta = DateTime.Parse(t.Rows[0]["fecha_hasta"].ToString());
@@ -160,13 +164,17 @@ namespace WebApi.Entities
 
         public static List<Convenios> getAll()
         {
-            string sqlCommand = @"select c.id_convenio, c.desc_convenio, c.id_formapago, c.id_agencia, c.id_anunciante, c.importe_total,
-                                    c.fecha_desde, c.fecha_hasta, c.estado, c.observaciones, c.facturar_a,
+            string sqlCommand = @"declare @fechaActual date = getdate()
+                                    select c.id_convenio, c.desc_convenio, cpa.id_formapago, c.id_agencia, c.id_anunciante, c.importe_total,
+                                    c.fecha_desde, c.fecha_hasta, c.estado, c.observaciones, c.facturar_a, c.id_empresa,
                                     ag.razon_social as agencia_nombre, an.razon_social as anunciante_nombre, fp.desc_formapago as formapago_nombre
                                     from convenio_anual_precios c
                                     left outer join contactos ag on ag.id_contacto = c.id_agencia
                                     left outer join contactos an on an.id_contacto = c.id_anunciante
-								    left outer join formas_pago fp on fp.id_formapago = c.id_formapago";
+									left outer join convenios_pagos cpa on cpa.id_convenio = c.id_convenio
+									left outer join formas_pago fp on fp.id_formapago = cpa.id_formapago
+                                    where c.es_borrado = 0 and (@fechaActual >= c.fecha_desde and @fechaActual <= c.fecha_hasta)
+									and exists (select id_convenio from conv_dg_detalle where id_convenio=c.id_convenio)";
 
             List<Convenios> col = new List<Convenios>();
             Convenios elem;
@@ -277,20 +285,25 @@ namespace WebApi.Entities
 
         public static List<Convenios> filter(List<Parametro> parametros)
         {
-            string sqlCommand = @"select c.id_convenio, c.desc_convenio, c.id_formapago, c.id_agencia, c.id_anunciante, c.importe_total,
-                                    c.fecha_desde, c.fecha_hasta, c.estado, c.observaciones, c.facturar_a,
+            string sqlCommand = @"declare @fechaActual date = getdate()
+select c.id_convenio, c.desc_convenio, cpa.id_formapago, c.id_agencia, c.id_anunciante, c.importe_total,
+                                    c.fecha_desde, c.fecha_hasta, c.estado, c.observaciones, c.facturar_a, c.id_empresa,
                                     ag.razon_social as agencia_nombre, an.razon_social as anunciante_nombre, fp.desc_formapago as formapago_nombre
                                     from convenio_anual_precios c
                                     left outer join contactos ag on ag.id_contacto = c.id_agencia
                                     left outer join contactos an on an.id_contacto = c.id_anunciante
-            left outer join formas_pago fp on fp.id_formapago = c.id_formapago
-                                    where c.es_borrado = 0 ";
+									left outer join convenios_pagos cpa on cpa.id_convenio = c.id_convenio
+									left outer join formas_pago fp on fp.id_formapago = cpa.id_formapago
+                                    where c.es_borrado = 0 and (@fechaActual >= c.fecha_desde and @fechaActual <= c.fecha_hasta)
+									and exists (select id_convenio from conv_dg_detalle where id_convenio=c.id_convenio) ";
             string mifiltro = "";
 
             foreach (Parametro p in parametros)
             {
                 if (p.Value.ToString() != "")
                 {
+                    if ((p.ParameterName == "id_empresa") && (p.Value.ToString() != ""))
+                        mifiltro = mifiltro + " and c.id_empresa =" + p.Value;
                     if ((p.ParameterName == "desc_convenio") && (p.Value.ToString() != ""))
                         mifiltro = mifiltro + " and c.desc_convenio like '%" + p.Value + "%'";
                     if ((p.ParameterName == "fecha_desde") && (p.Value.ToString() != ""))
