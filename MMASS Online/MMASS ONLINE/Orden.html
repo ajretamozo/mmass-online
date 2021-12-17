@@ -1096,7 +1096,7 @@
             }
 
             $("#selAnunciante option[value=" + data.anunciante.id_contacto + "]").attr("selected", "selected");
-            //$("#selAnunciante").change(); //para que cargue los productos
+            $("#selAnunciante").change(); //para que cargue los productos
     
             $("#inpOrderNumberClient").val(data.nro_orden_ag);
             $("#inpOrderNumber").val(data.nro_orden);
@@ -1153,10 +1153,11 @@
             Detalles = data.detalles;
             $("#TableRenglones").empty();
             if (Detalles.length > 0) {
-                $("#selAgencia").attr("disabled", true);
                 $("#selAnunciante").attr("disabled", true);
                 $("#botLimpiar").attr("disabled", true);
                 $("#botLimpiar").attr("title", "No es posible limpiar Agencia - Anunciante si existen campañas cargadas");
+            if(data.nro_orden > 0)
+                $("#selAgencia").attr("disabled", true);
             }
             Detalles.forEach(generarTablaDetalles);
             getArchivos(data.id_op_dg.toString());
@@ -2633,7 +2634,12 @@
 
             $("#selAgencia option[value=" + data.id_agencia + "]").attr("selected", "selected");
             $("#selAnunciante option[value=" + data.id_anunciante + "]").attr("selected", "selected");
-            $("#selProducto option[value=" + data.id_producto + "]").attr("selected", "selected");
+            if (data.id_producto != null) {
+                $("#selProducto option[value=" + data.id_producto + "]").attr("selected", "selected");
+            }
+            else {
+                $("#selAnunciante").change(); //para que cargue los productos
+            }
             $("#selEmpresa option[value=" + data.id_empresa + "]").attr("selected", "selected");
 
             an = data.id_anunciante;
