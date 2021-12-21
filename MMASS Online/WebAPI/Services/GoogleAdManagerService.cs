@@ -84,15 +84,19 @@ namespace WebApi.Services
             }
 
             //Se traen las Lineas de Pedido
-            Dg_orden_pub_as detalle = new Dg_orden_pub_as();
+            //Dg_orden_pub_as detalle = new Dg_orden_pub_as();
             List<LineItem> lineasGAM = new List<LineItem>();
             lineasGAM = GoogleAdManager.getLineItemsByOrder(idGAM);
-            List<Dg_orden_pub_emplazamientos> emplazamientos = new List<Dg_orden_pub_emplazamientos>();
-            List<Dg_orden_pub_medidas> medidas = new List<Dg_orden_pub_medidas>();
+            //List<Dg_orden_pub_emplazamientos> emplazamientos = new List<Dg_orden_pub_emplazamientos>();
+            //List<Dg_orden_pub_medidas> medidas = new List<Dg_orden_pub_medidas>();
             int contId = 0;
 
             foreach (LineItem linea in lineasGAM)
             {
+                Dg_orden_pub_as detalle = new Dg_orden_pub_as();
+                List<Dg_orden_pub_emplazamientos> emplazamientos = new List<Dg_orden_pub_emplazamientos>();
+                List<Dg_orden_pub_medidas> medidas = new List<Dg_orden_pub_medidas>();
+
                 detalle.Id_detalle = contId;
                 detalle.Id_Google_Ad_Manager = linea.id;
                 detalle.Descripcion = linea.name;
@@ -111,14 +115,25 @@ namespace WebApi.Services
                         detalle.Tipo_tarifa = 4;
                         break;
                 }
-                Dg_orden_pub_emplazamientos emplaza = new Dg_orden_pub_emplazamientos();
-                foreach(long idEmpla in linea.targeting.inventoryTargeting.targetedPlacementIds)
+                if (linea.targeting.inventoryTargeting.targetedPlacementIds != null)
                 {
-                    emplaza.Codigo_emplazamiento = idEmpla;
-                    emplaza.Id_emplazamiento = Dg_emplazamientos.getByCodigo2(idEmpla, red.Id_red).Id_emplazamiento;
-                    emplazamientos.Add(emplaza);
+                    Dg_orden_pub_emplazamientos emplaza = new Dg_orden_pub_emplazamientos();
+                    foreach (long idEmpla in linea.targeting.inventoryTargeting.targetedPlacementIds)
+                    {
+                        emplaza.Codigo_emplazamiento = idEmpla;
+                        emplaza.Id_emplazamiento = Dg_emplazamientos.getByCodigo2(idEmpla, red.Id_red).Id_emplazamiento;
+                        emplazamientos.Add(emplaza);
+                    }
+                    detalle.Emplazamientos = emplazamientos;
                 }
-                detalle.Emplazamientos = emplazamientos;
+                //Dg_orden_pub_emplazamientos emplaza = new Dg_orden_pub_emplazamientos();
+                //foreach(long idEmpla in linea.targeting.inventoryTargeting.targetedPlacementIds)
+                //{
+                //    emplaza.Codigo_emplazamiento = idEmpla;
+                //    emplaza.Id_emplazamiento = Dg_emplazamientos.getByCodigo2(idEmpla, red.Id_red).Id_emplazamiento;
+                //    emplazamientos.Add(emplaza);
+                //}
+                //detalle.Emplazamientos = emplazamientos;
                 Dg_orden_pub_medidas medida = new Dg_orden_pub_medidas();
                 foreach(CreativePlaceholder cph in linea.creativePlaceholders)
                 {
@@ -320,13 +335,17 @@ namespace WebApi.Services
                     ordenNueva.anunciante = anun;
                     ordenNueva.Seg_neto = (order.totalBudget.microAmount)/1000000;
                     string start = DateTimeUtilities.ToString(order.startDateTime, "yyyy/MM/dd");
-                    string end = DateTimeUtilities.ToString(order.endDateTime, "yyyy/MM/dd");
+                    string end = "";
+                    if (order.endDateTime != null)
+                    {
+                        end = DateTimeUtilities.ToString(order.endDateTime, "yyyy/MM/dd");
+                    }
 
                     if (start != "0")
                     {
                         ordenNueva.Fecha = System.DateTime.Parse(start);
                     }
-                    if (end != "0")
+                    if (end != "")
                     {
                         ordenNueva.Fecha_expiracion = System.DateTime.Parse(end);
                     }

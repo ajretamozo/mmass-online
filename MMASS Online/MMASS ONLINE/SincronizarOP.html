@@ -169,11 +169,6 @@
             $("#" + idSelect).append(listitems);
          }
 
-
-         function getEmplazamientosMMASS(idRed) {
-            callWS("medios", "getAllE", JSON.stringify(idRed), function (data) { onCargarTabla('TableMMASS', data); });
-         }
-
         function getOrdenesGAM(codRed) {
             callWS("googleAdManager", "getOpNuevas", '', function (data) { onCargarTabla('TableRenglones', data, codRed); });
         }
@@ -185,34 +180,6 @@
             $.when(
                 callWS("googleAdManager", "cambiarRed", codRed)
             ).then( getOrdenesGAM());
-        }
-
-        function sincronizar() {
-            callWS("googleAdManager", "getEmplazamientos", '', function (data) { onSincronizar(data); });
-            callWS("googleAdManager", "getEmplazamientos", '', function (data) { onCargarTabla('TableRenglones', data); });
-        }
-
-        function onSincronizar(data) {
-            var EmplazamientoList = {};
-
-            data.forEach(emplaza => {
-                emplaza.id_red = idRed;
-            });
-
-            EmplazamientoList.Emplazamientos = data;
-
-            callWS("medios", "saveE", JSON.stringify(EmplazamientoList), function (data2){
-                if (data2 == true) {
-                    RecargarTablas(idRed);
-                }
-            });
-        }
-
-        function RecargarTablas(idRed) {
-            $("#TableMMASS").empty();
-            callWS("medios", "getAllE", JSON.stringify(idRed), function (data) { onCargarTabla('TableMMASS', data); });
-
-            showMessage("Emplazamientos actualizados", "info");
         }
 
         function onCargarTabla(tablaID, data) {
@@ -264,10 +231,15 @@
         }
 
         function dateToFieldFormat(date) {
-           date = date.split('T')[0];
-           arr = date.split("-");
-           fieldFormatDate = '';
-           fieldFormatDate = arr[2] + '/' + arr[1] + '/' + arr[0];
+            if (date != null) {
+                date = date.split('T')[0];
+                arr = date.split("-");
+                fieldFormatDate = '';
+                fieldFormatDate = arr[2] + '/' + arr[1] + '/' + arr[0];
+            }
+            else {
+                fieldFormatDate = '';
+            }
            return fieldFormatDate;
         }
 
