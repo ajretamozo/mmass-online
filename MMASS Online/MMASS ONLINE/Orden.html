@@ -899,14 +899,13 @@
         $("#divNavBar").load("navBar.html");
 
         var cMultiSelect = $('.custom-select').bootstrapDualListbox({
-            infoText: '',
-            filterTextClear: '',
             filterPlaceHolder: 'Filtrar'
         });
         $(".moveall").hide();
         $(".removeall").hide();
-        $(".filter").hide();
+        //$(".filter").hide();
         $(".btn-group").hide();
+
         //ONLOAD se ejecuta cuando se termina de cargar la pagina DatePickers Inicializacion
         $(function () {
             includeImgs();
@@ -3283,6 +3282,32 @@
         function onEmpresaSelected() {
             idEmpresa = $('#selEmpresa').val();
             callWS("medios", "getPorEmpresa", JSON.stringify(idEmpresa), function (data) { onPopulateSelectDone(data, 'selMediosD', 'id_medio', 'desc_medio'); });
+        }
+
+                        function agregarIconos() {
+            var dualListContainer = $('select[name="dlcMedios"]').bootstrapDualListbox('getContainer');
+dualListContainer.find('.moveall i').removeClass().addClass('fa fa-chevron-right');
+dualListContainer.find('.removeall i').removeClass().addClass('fa fa-chevron-left');
+dualListContainer.find('.move i').removeClass().addClass('fa fa-chevron-right');
+dualListContainer.find('.remove i').removeClass().addClass('fa fa-chevron-left');
+
+                                var dualListContainer = $('select[name="dlcTipos"]').bootstrapDualListbox('getContainer');
+dualListContainer.find('.moveall i').removeClass().addClass('fa fa-chevron-right');
+dualListContainer.find('.removeall i').removeClass().addClass('fa fa-chevron-left');
+dualListContainer.find('.move i').removeClass().addClass('fa fa-chevron-right');
+dualListContainer.find('.remove i').removeClass().addClass('fa fa-chevron-left');
+
+                                var dualListContainer = $('select[name="dlcTamaños"]').bootstrapDualListbox('getContainer');
+dualListContainer.find('.moveall i').removeClass().addClass('fa fa-chevron-right');
+dualListContainer.find('.removeall i').removeClass().addClass('fa fa-chevron-left');
+dualListContainer.find('.move i').removeClass().addClass('fa fa-chevron-right');
+dualListContainer.find('.remove i').removeClass().addClass('fa fa-chevron-left');
+
+                                var dualListContainer = $('select[name="dlcEmplaza"]').bootstrapDualListbox('getContainer');
+dualListContainer.find('.moveall i').removeClass().addClass('fa fa-chevron-right');
+dualListContainer.find('.removeall i').removeClass().addClass('fa fa-chevron-left');
+dualListContainer.find('.move i').removeClass().addClass('fa fa-chevron-right');
+dualListContainer.find('.remove i').removeClass().addClass('fa fa-chevron-left');
         }
 
     </script>

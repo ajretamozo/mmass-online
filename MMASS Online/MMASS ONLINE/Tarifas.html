@@ -165,21 +165,21 @@
                 <div class="row">
                     <div class="col-lg-6">
                         <label for="selMedios"> Medios</label>
-                        <select id="selMedios" class="custom-select" style="display:none" multiple></select>
+                        <select id="selMedios" class="custom-select" name="dlcMedios" style="display:none" multiple></select>
                     </div>
                     <div class="col-lg-6">
                         <label for="selTipoPublicidad"> Tipo de publicidad</label>
-                        <select id="selTipoPublicidad" class="custom-select" style="display:none" multiple></select>
+                        <select id="selTipoPublicidad" class="custom-select" name="dlcTipos" style="display:none" multiple></select>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-lg-6">
                         <label for="selMedidas"> Tamaños</label>
-                        <select id="selMedidas" class="custom-select" style="display:none" multiple></select>
+                        <select id="selMedidas" class="custom-select" name="dlcTamaños" style="display:none" multiple></select>
                     </div>
                     <div class="col-lg-6">
                         <label for="selEmplaza"> Emplazamientos</label>
-                        <select id="selEmplaza" class="custom-select" style="display:none" multiple></select>
+                        <select id="selEmplaza" class="custom-select" name="dlcEmplaza" style="display:none" multiple></select>
                     </div>
                 </div>
             </div>
@@ -215,6 +215,7 @@
         $(function () {
             $('input[type=text]').attr('autocomplete', 'off');
             formatMultipleSelects();
+            agregarIconos();
             $('#fechaDesde').datetimepicker({ format: 'L', locale: 'es' });
             $('#fechaHasta').datetimepicker({ format: 'L', locale: 'es' });
             $("#divNavBar").load("navBar.html");
@@ -223,29 +224,47 @@
             $("input[type=number]").attr("min","0");
             //autentificar();
  
-            callWS("medios", "getAllRedes", '', function (data) { onCargarSelectRedes(data, 'selRedes', 'id_red', 'descripcion', 'codigo_red'); });
-                    
+            callWS("medios", "getAllRedes", '', function (data) { onCargarSelectRedes(data, 'selRedes', 'id_red', 'descripcion', 'codigo_red'); });                  
             
         });
 
         function formatMultipleSelects() {
-            var demo1 = $('.custom-select').bootstrapDualListbox({
-                infoText: '',
-                filterTextClear: '',
-                filterPlaceHolder: 'Filtrar'
-            });
-            $(".moveall").hide();
-            $(".removeall").hide();
-            $(".filter").hide();
-            $(".btn-group").hide();
 
-        }
-        var demo1 = $('.custom-select').bootstrapDualListbox({
-            infoText: '',
-            filterTextClear: '',
+            var demo1 = $('.custom-select').bootstrapDualListbox({
             filterPlaceHolder: 'Filtrar'
         });
+        }
 
+                function agregarIconos() {
+            var dualListContainer = $('select[name="dlcMedios"]').bootstrapDualListbox('getContainer');
+dualListContainer.find('.moveall i').removeClass().addClass('fa fa-chevron-right');
+dualListContainer.find('.removeall i').removeClass().addClass('fa fa-chevron-left');
+dualListContainer.find('.move i').removeClass().addClass('fa fa-chevron-right');
+dualListContainer.find('.remove i').removeClass().addClass('fa fa-chevron-left');
+
+                                var dualListContainer = $('select[name="dlcTipos"]').bootstrapDualListbox('getContainer');
+dualListContainer.find('.moveall i').removeClass().addClass('fa fa-chevron-right');
+dualListContainer.find('.removeall i').removeClass().addClass('fa fa-chevron-left');
+dualListContainer.find('.move i').removeClass().addClass('fa fa-chevron-right');
+dualListContainer.find('.remove i').removeClass().addClass('fa fa-chevron-left');
+
+                                var dualListContainer = $('select[name="dlcTamaños"]').bootstrapDualListbox('getContainer');
+dualListContainer.find('.moveall i').removeClass().addClass('fa fa-chevron-right');
+dualListContainer.find('.removeall i').removeClass().addClass('fa fa-chevron-left');
+dualListContainer.find('.move i').removeClass().addClass('fa fa-chevron-right');
+dualListContainer.find('.remove i').removeClass().addClass('fa fa-chevron-left');
+
+                                var dualListContainer = $('select[name="dlcEmplaza"]').bootstrapDualListbox('getContainer');
+dualListContainer.find('.moveall i').removeClass().addClass('fa fa-chevron-right');
+dualListContainer.find('.removeall i').removeClass().addClass('fa fa-chevron-left');
+dualListContainer.find('.move i').removeClass().addClass('fa fa-chevron-right');
+dualListContainer.find('.remove i').removeClass().addClass('fa fa-chevron-left');
+        }
+
+
+        var demo1 = $('.custom-select').bootstrapDualListbox({
+            filterPlaceHolder: 'Filtrar'
+        });
 
 
         function setMode(mode) {
@@ -320,7 +339,7 @@
                     viewListMedios += "<li class=\"list-group-item\" style='display:none'>" + medio.desc_medio + "</li>";
                 });
             } else {
-                viewListMedios += "<li class=\"list-group-item\" style='display:none'>(Todos)</li>";
+                viewListMedios += "<li class=\"list-group-item\" style='display:none'>(Ninguno)</li>";
             };
             viewListMedios += "</ul>"
             $("#selMedios").after(viewListMedios);
@@ -333,7 +352,7 @@
                     viewListTipos += "<li class=\"list-group-item\" style='display:none'>" + tipo_aviso.descripcion + "</li>";
                 });
             } else {
-                viewListTipos += "<li class=\"list-group-item\" style='display:none'>(Todos)</li>";
+                viewListTipos += "<li class=\"list-group-item\" style='display:none'>(Ninguno)</li>";
             };
             viewListTipos += "</ul>"
             demo1.bootstrapDualListbox('refresh');
@@ -348,7 +367,7 @@
                     viewListEmplaza += "<li class=\"list-group-item\" style='display:none'>" + emplaza.descripcion + "</li>";
                 });
             } else {
-                viewListEmplaza += "<li class=\"list-group-item\" style='display:none'>(Todos)</li>";
+                viewListEmplaza += "<li class=\"list-group-item\" style='display:none'>(Ninguno)</li>";
             };
             viewListEmplaza += "</ul>"
             $("#selEmplaza").after(viewListEmplaza);
@@ -363,7 +382,7 @@
                     viewListMedidas += "<li class=\"list-group-item\" style='display:none'>" + medida.ancho + 'x' + medida.alto + "</li>";
                 });
             } else {
-                viewListMedidas += "<li class=\"list-group-item\" style='display:none'>(Todos)</li>";
+                viewListMedidas += "<li class=\"list-group-item\" style='display:none'>(Ninguna)</li>";
             };
             viewListMedidas += "</ul>"
             $("#selMedidas").after(viewListMedidas);
