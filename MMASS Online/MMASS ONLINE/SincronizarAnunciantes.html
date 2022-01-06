@@ -1,7 +1,7 @@
 ﻿<!DOCTYPE html>
 <html>
 <head runat="server">
-    <title>MMASS Online - Orden Publicitaria</title>
+    <title>MMASS Online - Sinc Órdenes</title>
 
     <link rel="shortcut icon" href="favicon.png">
 
@@ -237,12 +237,13 @@
             desc = $("#descFiltro").val();
             red = $("#selRedes").val();
 
-            if (desc != '' && (red != 0 && red != null)) {
-                callWS("googleAdManager", "getAnunciantes", JSON.stringify(desc), onGetAnuncianteGAM);
-            }
-            else if (red != 0 && red != null) {
-                //ver forma de que me acepte no pasar parametros (y modificar el metodo getAnunciantes en GAM)
-                callWS("googleAdManager", "getAnunciantes", JSON.stringify("772771779"), onGetAnuncianteGAM);
+            if (red != 0 && red != null) {
+                var objParametro = {};
+              
+                objParametro.ParameterName = "nombre";
+                objParametro.Value = desc;
+
+                callWS("googleAdManager", "getAnunciantes", JSON.stringify(objParametro), onGetAnuncianteGAM);
             }
             else {
                 showMessage("Seleccione una Red AdServer", "alert");

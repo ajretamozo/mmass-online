@@ -112,37 +112,84 @@
         </div>
         <div id="divMessage" class="alert" style="display:none;cursor:pointer;z-index:10000;" title="Click para cerrar"> </div>
         <div class="jumbotron" id="divGeneral">
-            <div class="row">
-                <div class="col-lg-2" style="padding-right: 0px;">
-                    <label>Red AdServer</label>
+            <!-- TABS -->
+            <nav class="nav nav-tabs mb-3">
+                <a class="nav-link active" id="principal-tab" data-toggle="tab" href="#principal" role="tab" aria-controls="principal" aria-selected="true">OP Nuevas</a>
+                <!--<a class="nav-link" id="archivos-tab" data-toggle="tab" href="#archivos" role="tab" aria-controls="archivos" aria-selected="false">OP Modificadas</a>-->
+            </nav>
+            <div class="tab-content" id="tabsContent">
+                <!--ORDENES NUEVAS-->
+                <div class="tab-pane fade show active" id="principal" role="tabpanel" aria-labelledby="principal-tab">
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label for="descFiltro">Descripción OP: </label>
+                            <div class="input-group enterSearch"> <input type="text" id="descFiltro" class="form-control"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="descFiltro">Red AdServer: </label>
+                            <select class="form-control enterSearch" id="selRedes" onchange="onRedSelected()"></select>
+                        </div>
+                        <div class="col-md-4 d-flex justify-content-end align-items-end">
+                            <button type="button" class="btn btn-dark btn-sm mx-1" onclick="filter()">
+                                <span class="fa fa-search"></span> Buscar
+                            </button>
+                        </div>
+                    </div>
+                    <div class="table-responsive mt-2">
+                        <table class="table table-hover table-sm " id="tablaOPGAM">
+                            <thead>
+                                <tr id="header">
+                                    <th class="col-xs-3">ID AdServer</th>
+                                    <th class="col-xs-9">Nombre</th>
+                                    <th class="col-xs-9">Anunciante</th>
+                                    <th class="col-xs-9">Fecha Desde</th>
+                                    <th class="col-xs-9">Fecha Hasta</th>
+                                    <th class="col-xs-9">Neto</th>
+                                </tr>
+                            </thead>
+                            <tbody id="TableRenglones" class="small"></tbody>
+                        </table>
+                    </div>
                 </div>
-                <div class="col-lg-3" style="padding-left: 0px;">
-                    <select class="form-control" id="selRedes"></select>
+                <!-- TAB CERTIFICACION -->
+                <div class="tab-pane fade" id="archivos" role="tabpanel" aria-labelledby="archivos-tab">
                 </div>
-                <div class="col-md-4" style="top: 4px;">
-                    <button type="button" class="btn btn-dark btn-sm mx-1" onclick="onRedSelected()">
-                        <span class="fa fa-search"></span> Buscar
-                    </button>
-                </div>
-            </div>
-            <div class="table-responsive mt-2">
-                <table class="table table-hover table-sm " id="tablaOPGAM">
-                    <thead>
-                        <tr id="header">
-                            <th class="col-xs-3">ID AdServer</th>
-                            <th class="col-xs-9">Nombre</th>
-                            <th class="col-xs-9">Anunciante</th>
-                            <th class="col-xs-9">Fecha Desde</th>
-                            <th class="col-xs-9">Fecha Hasta</th>
-                            <th class="col-xs-9">Neto</th>
-                        </tr>
-                    </thead>
-                    <tbody id="TableRenglones" class="small"></tbody>
-                </table>
             </div>
 
+                    <!--<div class="row">
+                        <div class="col-md-4">
+                            <label for="descFiltro">Descripción OP: </label>
+                            <div class="input-group enterSearch"> <input type="text" id="descFiltro" class="form-control"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="descFiltro">Red AdServer: </label>
+                            <select class="form-control enterSearch" id="selRedes" onchange="onRedSelected()"></select>
+                        </div>
+                        <div class="col-md-4 d-flex justify-content-end align-items-end">
+                            <button type="button" class="btn btn-dark btn-sm mx-1" onclick="filter()">
+                                <span class="fa fa-search"></span> Buscar
+                            </button>
+                        </div>
+                    </div>
+                    <div class="table-responsive mt-2">
+                        <table class="table table-hover table-sm " id="tablaOPGAM">
+                            <thead>
+                                <tr id="header">
+                                    <th class="col-xs-3">ID AdServer</th>
+                                    <th class="col-xs-9">Nombre</th>
+                                    <th class="col-xs-9">Anunciante</th>
+                                    <th class="col-xs-9">Fecha Desde</th>
+                                    <th class="col-xs-9">Fecha Hasta</th>
+                                    <th class="col-xs-9">Neto</th>
+                                </tr>
+                            </thead>
+                            <tbody id="TableRenglones" class="small"></tbody>
+                        </table>
+                    </div>-->
+
         </div>
-    </main>
+</main>
 
 
     <!--Scripts-->
@@ -167,19 +214,44 @@
             });
             $("#" + idSelect).empty();
             $("#" + idSelect).append(listitems);
+            $("#" + idSelect).val('');
          }
 
         function getOrdenesGAM(codRed) {
             callWS("googleAdManager", "getOpNuevas", '', function (data) { onCargarTabla('TableRenglones', data, codRed); });
         }
 
-        function onRedSelected() {     
-            $("#pleaseWaitDialog").modal();
-            //idRed = $('#selRedes').val();
+        //function onRedSelected() {     
+        //    $("#pleaseWaitDialog").modal();
+        //    //idRed = $('#selRedes').val();
+        //    codRed = $('#selRedes>option:selected').attr("codigo_red");
+        //    $.when(
+        //        callWS("googleAdManager", "cambiarRed", codRed)
+        //    ).then( getOrdenesGAM());
+        //}
+
+        function onRedSelected() {
+            idRed = $('#selRedes').val();
             codRed = $('#selRedes>option:selected').attr("codigo_red");
-            $.when(
-                callWS("googleAdManager", "cambiarRed", codRed)
-            ).then( getOrdenesGAM());
+            callWS("googleAdManager", "cambiarRed", codRed);
+        }
+
+        function filter() {
+            rows = $("tr").not("#header");
+            desc = $("#descFiltro").val();
+            red = $("#selRedes").val();
+
+            if (red != 0 && red != null) {
+                var objParametro = {};
+              
+                objParametro.ParameterName = "nombre";
+                objParametro.Value = desc;
+
+                callWS("googleAdManager", "getOpNuevas", JSON.stringify(objParametro), function (data) { onCargarTabla('TableRenglones', data, codRed); });
+            }
+            else {
+                showMessage("Seleccione una Red AdServer", "alert");
+            }
         }
 
         function onCargarTabla(tablaID, data) {

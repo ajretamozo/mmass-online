@@ -96,19 +96,19 @@ namespace WebApi.Helpers
             return traffId;
         }
 
-        public static List<Contacto> getAnunciantes(string desc)
+        public static List<Contacto> getAnunciantes(Parametro nombre)
         {
             List<Contacto> Anunciantes = new List<Contacto>();
             Contacto Anunciante = null;
 
             string where = "";
-            if (desc == "772771779")
+            if (nombre.Value == "")
             {
                 where = "type = :type";
             }
             else
             {
-                where = "type = :type and name like '%" + desc + "%'";
+                where = "type = :type and name like '%" + nombre.Value + "%'";
             }
 
             //AdManagerUser user = new AdManagerUser();
@@ -1259,17 +1259,28 @@ namespace WebApi.Helpers
             return result;
         }
 
-        public static List<Order> GetAllOrders()
+        public static List<Order> GetAllOrders(Parametro nombre)
         {
             List<Order> OrdenesGAM = new List<Order>();
+
+            string where = "";
+            if (nombre.Value == "")
+            {
+                where = "endDateTime >= :now";
+            }
+            else
+            {
+                where = "endDateTime >= :now and name like '%" + nombre.Value + "%'";
+            }
 
             using (OrderService orderService = user.GetService<OrderService>())
             {
                 // Create a statement to select orders.
                 int pageSize = StatementBuilder.SUGGESTED_PAGE_LIMIT;
                 StatementBuilder statementBuilder = new StatementBuilder()
-                    .Where("endDateTime >= :now") 
-                    .OrderBy("id ASC").Limit(pageSize)
+                    .Where(where) 
+                    .OrderBy("id ASC")
+                    .Limit(pageSize)
                     .AddValue("now", DateTimeUtilities.FromDateTime(System.DateTime.Now, "America/Argentina/Buenos_Aires"));
                 // Retrieve a small amount of orders at a time, paging through until all
                 // orders have been retrieved.

@@ -721,20 +721,20 @@ namespace WebApi.Entities
 
         public static List<DatoGenerico> getOrdenesRadio(int Id_agencia, int Id_anunciante)
         {
-            string sqlCommand = " select id_op," +
-                    " CAST(anio as VARCHAR(4)) + '-' + RIGHT('00' + CAST(mes AS VARCHAR(2)), 2) + '-' + RIGHT('0000' + CAST(nro_orden AS VARCHAR(4)), 4) " +
-                    " + ' (' + productos.desc_producto + ') - Ord.Ag.: ' + IsNull(nro_orden_ag, 'No Especificado') " +
-                    " COLLATE DATABASE_DEFAULT as nro_orden " +
-                    " from orden_pub_ap " +
-                    " inner join productos on productos.id_producto = orden_pub_ap.id_producto " +
-                    " where es_anulada = 0 " +
-                    " and " +
-                    " ( " +
-                    "   (exists(select id_op from menciones where es_facturada = 0 and menciones.id_op = orden_pub_ap.id_op) and tipo_orden = 0)" +
-                    "     or " +
-                    "   (tipo_orden = 2 and es_facturada = 0) " +
-                    " ) " +
-                    " and id_agencia = " + Id_agencia.ToString() + " and id_anunciante = " + Id_anunciante.ToString();
+            string sqlCommand = @"select id_op,
+                                    CAST(anio as VARCHAR(4)) + '-' + RIGHT('00' + CAST(mes AS VARCHAR(2)), 2) + '-' + RIGHT('0000' + CAST(nro_orden AS VARCHAR(4)), 4)
+                                    + ' (' + productos.desc_producto + ') - Ord.Ag.: ' + IsNull(nro_orden_ag, 'No Especificado')
+                                    COLLATE DATABASE_DEFAULT as nro_orden
+                                    from orden_pub_ap
+                                    inner join productos on productos.id_producto = orden_pub_ap.id_producto
+                                    where tipo_orden<>1
+                                    and es_anulada = 0
+                                    and (
+                                    (tipo_orden = 0 and not exists (select id_op from menciones where es_facturada = 1 and menciones.id_op = orden_pub_ap.id_op))
+                                    or
+                                    (tipo_orden = 2 and es_facturada = 0)
+                                    )
+                                    and id_agencia = " + Id_agencia.ToString() + " and id_anunciante = " + Id_anunciante.ToString();
 
             List<DatoGenerico> col = new List<DatoGenerico>();
             DatoGenerico elem;

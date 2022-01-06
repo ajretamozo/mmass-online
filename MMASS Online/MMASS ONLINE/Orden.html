@@ -1162,6 +1162,9 @@
             getArchivos(data.id_op_dg.toString());
             calculateTotals();
 
+            if (data.id_Google_Ad_Manager > 0 && (data.id_op_dg != undefined && data.id_op_dg != 0)) {
+                comprobarModificaciones(data.id_op_dg, data.id_Google_Ad_Manager);
+            }
         }
 
         function cargarProductosyOPRelacionada(idAgencia, idAnunciante, idProducto, idOpRelacionada) {
@@ -3308,6 +3311,10 @@ dualListContainer.find('.moveall i').removeClass().addClass('fa fa-chevron-right
 dualListContainer.find('.removeall i').removeClass().addClass('fa fa-chevron-left');
 dualListContainer.find('.move i').removeClass().addClass('fa fa-chevron-right');
 dualListContainer.find('.remove i').removeClass().addClass('fa fa-chevron-left');
+        }
+
+        comprobarModificaciones(idOp, idGAM) {
+
         }
 
     </script>

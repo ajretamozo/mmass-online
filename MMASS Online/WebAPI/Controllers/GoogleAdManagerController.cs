@@ -22,9 +22,9 @@ namespace WebApi.Controllers
 
 
         [HttpPost("getAnunciantes")]
-        public IActionResult GetAnunciantes([FromBody] string desc)
+        public IActionResult GetAnunciantes([FromBody] Parametro nombre)
         {
-            var contactos = _GoogleAdManagerService.GetAnunciantes(desc);
+            var contactos = _GoogleAdManagerService.GetAnunciantes(nombre);
             return Ok(contactos);
         }
 
@@ -142,9 +142,9 @@ namespace WebApi.Controllers
         }
 
         [HttpPost("getOpNuevas")]
-        public IActionResult getOpNuevas()
+        public IActionResult getOpNuevas([FromBody] Parametro nombre)
         {
-            var ordenes = _GoogleAdManagerService.GetOpNuevas();
+            var ordenes = _GoogleAdManagerService.GetOpNuevas(nombre);
             return Ok(ordenes);
         }
     }
