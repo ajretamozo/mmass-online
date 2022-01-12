@@ -7,7 +7,8 @@ namespace WebApi.Entities
 {
     public class ListaParametro
     {
-        public List<Parametro> Parametros { get; set; }    
+        public List<Parametro> Parametros { get; set; }
+        public List<ListaParametro> ListaListaParametros { get; set; }
     }
 
     public class Parametro

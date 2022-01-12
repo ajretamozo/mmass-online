@@ -1,0 +1,104 @@
+**HACIENDO**:
+seguir con la comparacion de medidas
+para c9:
+ver como tomo el tipo de publicidad para enviar al gam (como sabe que es banner)
+traer importe del convenio por sobre el de la tarifa seleccionada
+traer producto y forma de pago de convenio
+deshabilitar el combo op relacionada porque lo trabajan con convenio
+
+ver si al seleccionar convenio, trae bien los productos
+seguir con lo de traer bien la tarifa del conv_detalle
+BD MMASS_RADIO10 del 101 (hacer pruebas con convenios)
+
+para c5n:
+En cuanto al resumen de cómo va la campaña, agregar una pestaña que muestre un pantallazo de todas las Ordenes activas y que se fije por fechas. 
+Para ver cual está atrasada o no, como un reporte. Hoy en día generan un reporte desde el Ad Manager con lo que esta pasando.
+Acá les sirve ver si falto una pauta o si algo fallo en un día. Que sea un resumen y un pantallazo ágil, facilitar la visión. Y que se pueda descargar.
+C5N NO USA OP RELACIONADAS
+
+**VERSION**:
+1.5.0
+
+3er num: correccion de error (no modifica la funcionalidad del sist)
+2do num: nueva funcionalidad (no modifica la funcionalidad del sist)
+1er num: nueva funcionalidad (modifica la funcionalidad del sist)
+
+-Agregar validacion de que no exista ya en ad manager el nombre de OP que se quiere enviar
+-Arreglar paneles grises de modulos "sincronizar", están pegados a la barra
+-Hacer control de nombre se usuario ya existe en modulo de crear usuarios
+-Ver si en la carga del detalle de la OP habria que seleccionar una tarifa obligatoriamente (una por defecto) aunque les cambien el monto manualmente
+-Relacionar tarifa con convenio (cargar tarifa desde detalle convenio dg)
+-Ver si hay que unificar dg_tipos_avisos en tabla de tipos_avisos del trafico
+-Hacer mensaje "Guardado con exito" en modulo redes gam, usuarios y los que no lo tengan
+-Hacer modal para sinc contacto cuando se quiere guardar una op o enviar a gam y el contacto no esta sincro.
+-Implementar el "Procesando" de SincAnunciantes en los demas modulos. (arreglar animación)
+-ver como actualizar lineas de pedido y ordenes que se modifican desde GAM
+-Hacer boton de probar conexion en las redes adserver
+-Relacionar las Empresas con RedAdserver, tal vez
+-ADAPTAR A BASE DE DATOS C5N
+-Investigar API funcion "comprobar inventario" que aparece en GAM al momento de elegir inventario en carga de la linea de pedido
+-Mostrar modulo Usuarios solamente a quienes tengan rol de administrador
+-Ver como funciona lo de OP Relacionada (select)
+-traer Concepto de negocio desde el convenio
+-Investigar sobre certificados digitales
+-Hacer abm para que usuarios registrados en mmass de trafico puedan crearse el user de MO
+-Cuando se cambie el producto en cabecera, se cambie tambien en detalle
+-Agregar cuenta de servicio del MO para copiar.
+-Arreglar: cuando se agrega una linea de pedido con sponsor, y solicitamos informe, nos figura 100 en objetivo (es porq en el admanager carga 100% de impresiones como obj)
+consultar como resolver (posible solucion: mostrar aparte linea de sponsors en informe)
+-ver por que a veces carga bien los productos y a veces no al seleccionar el convenio
+-Agregar cantidad/objetivo a detalle de convenio (si es que lo solicitaran)
+-Hacer que quede fija la barra del menu al hacer scroll
+-Agregar programas a medios
+-agregar check "lista para irradiar" o facturar en op
+-Hacer control de distribucion de porcentajes al seleccionar mas de un medio en detalle de op
+ (si no se asigna porcentajes al guardar tira error y no dice por que)
+-Hacer que si se eligen 2 o mas medios, se creen 2 o mas lineas de pedido en gam, de acuerdo al porcentaje que se especifico para c/u. (en duda)
+-Agregar cartel de confirmacion al borrar renglon (aclarar que el borrado se hara efectivo al guardar la orden)
+-Pintar Orden de verde en OrderList si está enviada a GAM (igual que los renglones) 
+
+test network:
+( Please see the following URL for more information: https://developers.google.com/ad-manager/docs/signup
+Test network with network code "22588483953" and display name "XFP sandbox property" created.
+You may now sign in at http://www.google.com/dfp/main?networkCode=22588483953)
+ 
+-Ver como vamos a manejar distintas versiones para distintos clientes
+-Retomar implementacion de programatica
+-Retomar conexiones con facebook e instagram
+-Agregar a las especificaciones tecnicas, como es la conexion entre mo y el sist de trafico, que especificaciones se necesitan
+
+
+PARA C5N
+-ver tema de colorear renglones segun avance (si, se puede a traves del item.deliveryIndicator.expectedDeliveryPercentage
+ o calcular progreso con [% del objetivo de impresiones entregadas] / [% de tiempo transcurrido])
+-ver tema de cargar creatividades (preguntar a mariano) (si, se puede)
+-ver si en la api se pueden importar tamaños de creatividades (si, se puede)
+-ver reporte de inventario (ver chance de link al reporte para hacerlo mas facil) *implemente metodo de api para bajar reporte pero el excel contiene simbolos extraños
+
+ellos ofrecen adunits de sus sitios para que google los subaste y tmb lo hacen con iplanning, tambien deal privados(viene un cliente particular y les ofrece)
+recuperar datos de facturacion de deal privados
+-que nos muestren en gam que reportes usan para disponibilidad de inventario
+usan reporte de inventario de tal fecha a tal fecha (es estimativo)
+
+-ver si se puede recuperar estado de linea de pedido (archivada,activa) // SI SE PUEDE
+-ver como saber si se modificó una linea en GAM, poder saberlo desde online // SI SE PUEDE (usando fecha de ultima modificación)
+
+
+ULTIMA REUNION C5N:
+-les interesa cargar adjuntas las creatividades a las OP (puede ser usando el adjuntar en Certificacion)
+-ver posibilidad de recuperar el historial de cambios en las lineas de pedido
+-investigar integracion con e-planning
+-C5N utiliza 360, ambito otra, radio reg otra, y otra (4 redes)
+-Hacer mail explicando para que usariamos la red de pruebas, y pidiendo que informes puntuales utilizan
+-chequear disponibilidad de inventario (se hace para una nueva linea o para una existente con "GetAvailabilityForecast")
+
+PARA DAR ACCESO A LA API EN UNA RED GAM:
+dentro de la interfaz grafica del GAM, ir a:
+Administrar>Configuración global>Configuración general>Añadir un usuario de cuenta de servicio
+-pegar el mail de la cuenta de servicio de la API y listo.
+-recordar habilitar acceso API con el botón.
+
+
+User with ID 245442393 and name "admanagertest" was found.
+2) User with ID 247272660 and name "MMASS_Online" was found.
+

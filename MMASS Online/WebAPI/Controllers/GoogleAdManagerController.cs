@@ -147,5 +147,12 @@ namespace WebApi.Controllers
             var ordenes = _GoogleAdManagerService.GetOpNuevas(nombre);
             return Ok(ordenes);
         }
+
+        [HttpPost("comprobarModificaciones")]
+        public IActionResult ComprobarModificaciones([FromBody] Dg_orden_pub_ap order)
+        {
+            var res = _GoogleAdManagerService.ComprobarModificaciones(order);
+            return Ok(res);
+        }
     }
 }

@@ -351,9 +351,8 @@
                 </div>
             </div>
         </div>
+        <!--Modal Convenios-->
         <div class="modal fade" id="conveniosModal">
-
-            <!--Modal Convenios-->
             <div class="modal-dialog modal-xl modalConv">
                 <div class="modal-content">
 
@@ -445,6 +444,45 @@
                 </div>
             </div>
         </div>
+        <!--Modal Modificaciones-->
+        <div class="modal fade" id="modifModal">
+            <div class="modal-dialog modal-xl modalConv">
+                <div class="modal-content">
+
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="modifModalTitle">Modificaciones OP</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+
+                    <!-- Modal body -->
+                    <div class="modal-body" id="modifModalBody">
+
+                        <!--Tabla-->
+                        <div class="table-responsive mt-2 tableFixHead">
+                            <table class="table table-fixed table-striped" id="tModifCabecera">
+                                <thead class="thead-dark">
+                                    <tr>
+                                        <th class="col-xs-3" style="text-align: center;">Campo</th>
+                                        <th class="col-xs-2" style="text-align: center;">Valores Anteriores</th>
+                                        <th class="col-xs-2" style="text-align: center;">Valores Nuevos</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="TableConvenios"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" onclick="ActualizarOrden()">Aplicar cambios</button>
+                        <!--<button type="button" class="btn btn-danger" data-dismiss="modal">Aplicar cambios</button>-->
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Descartar cambios</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
         <div id="divMessage" class="alert" style="display:none;cursor:pointer;z-index:10000;" title="Click para cerrar"> </div>
         <div class="jumbotron mt-4 py-4" id="divOrderMain">
             <!-- TABS -->
@@ -479,7 +517,7 @@
 ">
                                             <label for="selRedes">Red AdServer</label>
                                             <select class="form-control" id="selRedes" onchange="onRedSelected()"></select>
-                                        </div>                                       
+                                        </div>
                                         <div class="col-lg-2 pt-1">
                                             <label for="bgetOrderASDetais" class="invisible">InfoGAM</label>
                                             <button type="button" data-id="getOrderASDetails" id="bgetOrderASDetais" disabled="disabled" class="btn actions btn-outline-dark btn-sm mr-1" onclick="getOrderDetails()">
@@ -498,7 +536,7 @@
                                             <label>Fecha Alta</label>
                                             <div class="input-group"> <input type="text" disabled id="inpFechaAlta" class="form-control  col text-center" value=""> </div>
                                         </div>
-                                    </div>                     
+                                    </div>
                                 </div>
                             </div>
                             <!-- FILA 2 -->
@@ -529,7 +567,7 @@
                                                 <span class="fa fa-remove" id="brow" title="Quitar Convenio"></span>
                                             </button>
                                         </div>
-                                    </div>                 
+                                    </div>
                                 </div>
                             </div>
                             <!-- FILA 3 -->
@@ -656,9 +694,9 @@
                                         <div class="col-lg-6">
                                             <label>Vigencia</label>
                                             <div class="input-group input-daterange">
-                                                <input type="text" class="form-control" id="fechaDesdeD" data-toggle="datetimepicker" data-target="#fechaDesdeD" value="01/08/2019" onchange="calcularNetoD()"/>
+                                                <input type="text" class="form-control" id="fechaDesdeD" data-toggle="datetimepicker" data-target="#fechaDesdeD" value="01/08/2019" onchange="calcularNetoD()" />
                                                 <span class="input-group-addon">hasta</span>
-                                                <input type="text" class="form-control" id="fechaHastaD" data-toggle="datetimepicker" data-target="#fechaHastaD" value="02/09/2019" onchange="calcularNetoD()"/>
+                                                <input type="text" class="form-control" id="fechaHastaD" data-toggle="datetimepicker" data-target="#fechaHastaD" value="02/09/2019" onchange="calcularNetoD()" />
                                             </div>
                                         </div>
                                         <div class="col-lg-1"></div>
@@ -3287,34 +3325,46 @@
             callWS("medios", "getPorEmpresa", JSON.stringify(idEmpresa), function (data) { onPopulateSelectDone(data, 'selMediosD', 'id_medio', 'desc_medio'); });
         }
 
-                        function agregarIconos() {
+        function agregarIconos() {
             var dualListContainer = $('select[name="dlcMedios"]').bootstrapDualListbox('getContainer');
-dualListContainer.find('.moveall i').removeClass().addClass('fa fa-chevron-right');
-dualListContainer.find('.removeall i').removeClass().addClass('fa fa-chevron-left');
-dualListContainer.find('.move i').removeClass().addClass('fa fa-chevron-right');
-dualListContainer.find('.remove i').removeClass().addClass('fa fa-chevron-left');
+            dualListContainer.find('.moveall i').removeClass().addClass('fa fa-chevron-right');
+            dualListContainer.find('.removeall i').removeClass().addClass('fa fa-chevron-left');
+            dualListContainer.find('.move i').removeClass().addClass('fa fa-chevron-right');
+            dualListContainer.find('.remove i').removeClass().addClass('fa fa-chevron-left');
 
-                                var dualListContainer = $('select[name="dlcTipos"]').bootstrapDualListbox('getContainer');
-dualListContainer.find('.moveall i').removeClass().addClass('fa fa-chevron-right');
-dualListContainer.find('.removeall i').removeClass().addClass('fa fa-chevron-left');
-dualListContainer.find('.move i').removeClass().addClass('fa fa-chevron-right');
-dualListContainer.find('.remove i').removeClass().addClass('fa fa-chevron-left');
+            var dualListContainer = $('select[name="dlcTipos"]').bootstrapDualListbox('getContainer');
+            dualListContainer.find('.moveall i').removeClass().addClass('fa fa-chevron-right');
+            dualListContainer.find('.removeall i').removeClass().addClass('fa fa-chevron-left');
+            dualListContainer.find('.move i').removeClass().addClass('fa fa-chevron-right');
+            dualListContainer.find('.remove i').removeClass().addClass('fa fa-chevron-left');
 
-                                var dualListContainer = $('select[name="dlcTamaños"]').bootstrapDualListbox('getContainer');
-dualListContainer.find('.moveall i').removeClass().addClass('fa fa-chevron-right');
-dualListContainer.find('.removeall i').removeClass().addClass('fa fa-chevron-left');
-dualListContainer.find('.move i').removeClass().addClass('fa fa-chevron-right');
-dualListContainer.find('.remove i').removeClass().addClass('fa fa-chevron-left');
+            var dualListContainer = $('select[name="dlcTamaños"]').bootstrapDualListbox('getContainer');
+            dualListContainer.find('.moveall i').removeClass().addClass('fa fa-chevron-right');
+            dualListContainer.find('.removeall i').removeClass().addClass('fa fa-chevron-left');
+            dualListContainer.find('.move i').removeClass().addClass('fa fa-chevron-right');
+            dualListContainer.find('.remove i').removeClass().addClass('fa fa-chevron-left');
 
-                                var dualListContainer = $('select[name="dlcEmplaza"]').bootstrapDualListbox('getContainer');
-dualListContainer.find('.moveall i').removeClass().addClass('fa fa-chevron-right');
-dualListContainer.find('.removeall i').removeClass().addClass('fa fa-chevron-left');
-dualListContainer.find('.move i').removeClass().addClass('fa fa-chevron-right');
-dualListContainer.find('.remove i').removeClass().addClass('fa fa-chevron-left');
+            var dualListContainer = $('select[name="dlcEmplaza"]').bootstrapDualListbox('getContainer');
+            dualListContainer.find('.moveall i').removeClass().addClass('fa fa-chevron-right');
+            dualListContainer.find('.removeall i').removeClass().addClass('fa fa-chevron-left');
+            dualListContainer.find('.move i').removeClass().addClass('fa fa-chevron-right');
+            dualListContainer.find('.remove i').removeClass().addClass('fa fa-chevron-left');
         }
 
-        comprobarModificaciones(idOp, idGAM) {
+        function comprobarModificaciones(idOp, idGAM) {
+            var data = {};
+            data.id_op_dg = idOp;
+            data.id_Google_Ad_Manager = idGAM;
 
+            callWS("googleAdManager", "comprobarModificaciones", JSON.stringify(data), function (data) { onComprobarModificaciones(data); });
+        }
+
+        function onComprobarModificaciones(data) {
+            if (data != null) {
+                //SEGUIR POR ACA, CREANDO TABLA CON TODAS LAS DIFERENCIAS QUE SE TRAJERON
+
+                $("#modifModal").modal('show');
+            }
         }
 
     </script>
