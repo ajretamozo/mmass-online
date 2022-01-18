@@ -458,19 +458,27 @@
                     <!-- Modal body -->
                     <div class="modal-body" id="modifModalBody">
 
-                        <!--Tabla-->
-                        <div class="table-responsive mt-2 tableFixHead">
-                            <table class="table table-fixed table-striped" id="tModifCabecera">
-                                <thead class="thead-dark">
-                                    <tr>
-                                        <th class="col-xs-3" style="text-align: center;">Campo</th>
-                                        <th class="col-xs-2" style="text-align: center;">Valores Anteriores</th>
-                                        <th class="col-xs-2" style="text-align: center;">Valores Nuevos</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="TableConvenios"></tbody>
-                            </table>
+                        <div class="row">
+                            <!--Tabla Dif Cabecera-->
+                            <div class="table-responsive mt-2 tableFixHead">
+                                <table class="table table-fixed table-striped" id="tModifCabecera">
+                                    <thead class="thead-dark">
+                                        <tr>
+                                            <th class="col-xs-3" style="text-align: center;">Campo</th>
+                                            <th class="col-xs-2" style="text-align: center;">Valores Anteriores</th>
+                                            <th class="col-xs-2" style="text-align: center;">Valores Nuevos</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="TableDifCabecera"></tbody>
+                                </table>
+                            </div>
                         </div>
+
+                        <hr>
+                        <div class="row" id="rowTabDifDet">
+                            <!--Tablas Dif Detalles-->
+                        </div>
+
                     </div>
 
                     <!-- Modal footer -->
@@ -3361,10 +3369,44 @@
 
         function onComprobarModificaciones(data) {
             if (data != null) {
-                //SEGUIR POR ACA, CREANDO TABLA CON TODAS LAS DIFERENCIAS QUE SE TRAJERON
+                //data.Parametros.forEach(onPopulateTablaDifCabecera);
+                onPopulateTablasDif(data);
 
-                $("#modifModal").modal('show');
+                //$("#modifModal").modal('show');
             }
+        }
+
+        function onPopulateTablasDif(data) {
+            rowHTML = ''
+
+            $.each(data.parametros, function (it, parametro) {
+                arr = parametro.value.split("@@@");
+                valViejo = arr[0];
+                valNuevo = arr[1];
+
+                rowHTML += "<tr>";
+                rowHTML += "<td class='col-xs-1' style='text-align: center;'> " + parametro.parameterName + "</td > ";
+                rowHTML += "<td class='col-xs-1' style='text-align: center;'> " + valViejo + "</td >";
+                rowHTML += "<td class='col-xs-1' style='text-align: center;'> " + valNuevo + "</td >";
+                rowHTML += "</tr>";
+
+            });
+            //SEGUIR POR ACA CON LOS DETALLES
+            $.each(data.listaListaParametros, function (it, listaParametro) {
+                arr = parametro.value.split("@@@");
+                valViejo = arr[0];
+                valNuevo = arr[1];
+
+                rowHTML += "<tr>";
+                rowHTML += "<td class='col-xs-1' style='text-align: center;'> " + parametro.parameterName + "</td > ";
+                rowHTML += "<td class='col-xs-1' style='text-align: center;'> " + valViejo + "</td >";
+                rowHTML += "<td class='col-xs-1' style='text-align: center;'> " + valNuevo + "</td >";
+                rowHTML += "</tr>";
+
+            });
+
+            $("#TableDifCabecera").html(rowHTML);
+            $("#modifModal").modal('show');
         }
 
     </script>

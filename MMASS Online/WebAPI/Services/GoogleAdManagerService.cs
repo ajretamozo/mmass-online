@@ -436,7 +436,9 @@ namespace WebApi.Services
 
         public ListaParametro ComprobarModificaciones(Dg_orden_pub_ap order)
         {
-            ListaParametro cambios = new ListaParametro();
+            ListaParametro ordYdet = new ListaParametro();
+            ordYdet.Parametros = new List<Parametro>();
+            ordYdet.ListaListaParametros = new List<ListaParametro>();
             Order ordenGam = new Order();
             ordenGam = GoogleAdManager.GetOrderById(order.Id_Google_Ad_Manager);
             Dg_orden_pub_ap orden = new Dg_orden_pub_ap();
@@ -452,33 +454,35 @@ namespace WebApi.Services
             if (long.Parse(orden.anunciante.IdContactoDigital) != ordenGam.advertiserId)
             {
                 Parametro cambioAnun = new Parametro();
-                cambioAnun.ParameterName = "anunciante";
+                cambioAnun.ParameterName = "Anunciante";
                 cambioAnun.Value = orden.Anunciante_nombre + "@@@" + Contacto.getContactoByIdGAMyRed(ordenGam.advertiserId.ToString(), red.Id_red).RazonSocial;
-                cambios.Parametros.Add(cambioAnun);
+                ordYdet.Parametros.Add(cambioAnun);
             }
 
             if (ordenGam.totalBudget.microAmount / 1000000 != orden.Seg_neto)
             {
                 Parametro cambioTotal = new Parametro();
-                cambioTotal.ParameterName = "total";
+                cambioTotal.ParameterName = "Seg Neto";
                 cambioTotal.Value = orden.Seg_neto.ToString() + "@@@" + (ordenGam.totalBudget.microAmount / 1000000).ToString();
-                cambios.Parametros.Add(cambioTotal);
+                ordYdet.Parametros.Add(cambioTotal);
             }
 
             if (System.DateTime.Parse(DateTimeUtilities.ToString(ordenGam.startDateTime, "yyyy/MM/dd")) != orden.Fecha)
             {
                 Parametro cambioDesde = new Parametro();
-                cambioDesde.ParameterName = "fecha_desde";
-                cambioDesde.Value = orden.Fecha.ToString() + "@@@" + DateTimeUtilities.ToString(ordenGam.startDateTime, "dd/MM/yyyy");
-                cambios.Parametros.Add(cambioDesde);
+                cambioDesde.ParameterName = "Vigencia Desde";
+                string fechaFormat = formatFecha(orden.Fecha.ToString());
+                cambioDesde.Value = fechaFormat + "@@@" + DateTimeUtilities.ToString(ordenGam.startDateTime, "dd/MM/yyyy");
+                ordYdet.Parametros.Add(cambioDesde);
             }
 
             if (System.DateTime.Parse(DateTimeUtilities.ToString(ordenGam.endDateTime, "yyyy/MM/dd")) != orden.Fecha_expiracion)
             {
                 Parametro cambioHasta = new Parametro();
-                cambioHasta.ParameterName = "fecha_hasta";
-                cambioHasta.Value = orden.Fecha_expiracion.ToString() + "@@@" + DateTimeUtilities.ToString(ordenGam.endDateTime, "dd/MM/yyyy");
-                cambios.Parametros.Add(cambioHasta);
+                cambioHasta.ParameterName = "Vigencia Hasta";
+                string fechaFormat = formatFecha(orden.Fecha_expiracion.ToString());
+                cambioHasta.Value = fechaFormat + "@@@" + DateTimeUtilities.ToString(ordenGam.endDateTime, "dd/MM/yyyy");
+                ordYdet.Parametros.Add(cambioHasta);
             }
 
             //Se comparan las Lineas de Pedido
@@ -497,16 +501,16 @@ namespace WebApi.Services
                 {
                     foreach (LineItem linea in lineasGAM)
                     {
-                        while (linea.id == detalle.Id_Google_Ad_Manager)
+                        if (linea.id == detalle.Id_Google_Ad_Manager)
                         {
-                            ListaParametro cambiosLinea = new ListaParametro();
+                            cambiosL.Parametros = new List<Parametro>();
                             switch (detalle.Tipo_tarifa)
                             {
                                 case 0:
                                     if (linea.costType != CostType.CPM)
                                     {
                                         Parametro cambioLTipoTar = new Parametro();
-                                        cambioLTipoTar.ParameterName = "tipoTarifa";
+                                        cambioLTipoTar.ParameterName = "Tipo Tarifa";
                                         cambioLTipoTar.Value = "CPM" + "@@@" + linea.costType.ToString();
                                         cambiosL.Parametros.Add(cambioLTipoTar);
                                     }
@@ -515,7 +519,7 @@ namespace WebApi.Services
                                     if (linea.costType != CostType.CPD)
                                     {
                                         Parametro cambioLTipoTar = new Parametro();
-                                        cambioLTipoTar.ParameterName = "tipoTarifa";
+                                        cambioLTipoTar.ParameterName = "Tipo Tarifa";
                                         cambioLTipoTar.Value = "CPD" + "@@@" + linea.costType.ToString();
                                         cambiosL.Parametros.Add(cambioLTipoTar);
                                     }
@@ -523,7 +527,7 @@ namespace WebApi.Services
                                 case 2:
                                     {
                                         Parametro cambioLTipoTar = new Parametro();
-                                        cambioLTipoTar.ParameterName = "tipoTarifa";
+                                        cambioLTipoTar.ParameterName = "Tipo Tarifa";
                                         cambioLTipoTar.Value = "Posteo" + "@@@" + linea.costType.ToString();
                                         cambiosL.Parametros.Add(cambioLTipoTar);
                                     }                                                 
@@ -532,7 +536,7 @@ namespace WebApi.Services
                                     if (linea.costType != CostType.CPC)
                                     {
                                         Parametro cambioLTipoTar = new Parametro();
-                                        cambioLTipoTar.ParameterName = "tipoTarifa";
+                                        cambioLTipoTar.ParameterName = "Tipo Tarifa";
                                         cambioLTipoTar.Value = "CPC" + "@@@" + linea.costType.ToString();
                                         cambiosL.Parametros.Add(cambioLTipoTar);
                                     }
@@ -541,7 +545,7 @@ namespace WebApi.Services
                                     if (linea.costType != CostType.CPA)
                                     {
                                         Parametro cambioLTipoTar = new Parametro();
-                                        cambioLTipoTar.ParameterName = "tipoTarifa";
+                                        cambioLTipoTar.ParameterName = "Tipo Tarifa";
                                         cambioLTipoTar.Value = "CPA" + "@@@" + linea.costType.ToString();
                                         cambiosL.Parametros.Add(cambioLTipoTar);
                                     }
@@ -551,13 +555,18 @@ namespace WebApi.Services
                             if (linea.name != detalle.Descripcion)
                             {
                                 Parametro cambioLDesc = new Parametro();
-                                cambioLDesc.ParameterName = "nombre";
+                                cambioLDesc.ParameterName = "Descripción";
                                 cambioLDesc.Value = detalle.Descripcion + "@@@" + linea.name;
                                 cambiosL.Parametros.Add(cambioLDesc);
                             }
 
                             //Se comparan emplazamientos
-                            if (linea.targeting.inventoryTargeting.targetedPlacementIds.Length != detalle.Emplazamientos.Count)
+                            int cantEmpGam = 0;
+                            if (linea.targeting.inventoryTargeting.targetedPlacementIds != null)
+                            {
+                                cantEmpGam = linea.targeting.inventoryTargeting.targetedPlacementIds.Length;
+                            }
+                            if (cantEmpGam != detalle.Emplazamientos.Count)
                             {
                                 cambiosL.Parametros.Add(ImprimirEmplazas(detalle.Emplazamientos, linea.targeting.inventoryTargeting.targetedPlacementIds, red.Id_red));
                             }
@@ -577,7 +586,7 @@ namespace WebApi.Services
                                     {
                                         cambiosL.Parametros.Add(ImprimirEmplazas(detalle.Emplazamientos, linea.targeting.inventoryTargeting.targetedPlacementIds, red.Id_red));
                                     }
-                                break;
+                                    break;
                                 }
                             }
 
@@ -606,14 +615,14 @@ namespace WebApi.Services
                                     {
                                         cambiosL.Parametros.Add(ImprimirMedidas(detalle.Medidas, linea.creativePlaceholders));
                                     }
-                                break;
+                                    break;
                                 }
                             }
 
                             if ((linea.costPerUnit.microAmount / 1000000) != detalle.Importe_unitario)
                             {
                                 Parametro cambioLImpUni = new Parametro();
-                                cambioLImpUni.ParameterName = "importeUni";
+                                cambioLImpUni.ParameterName = "Precio Unitario";
                                 cambioLImpUni.Value = detalle.Importe_unitario.ToString() + "@@@" + (linea.costPerUnit.microAmount / 1000000).ToString();
                                 cambiosL.Parametros.Add(cambioLImpUni);
                             }
@@ -621,7 +630,7 @@ namespace WebApi.Services
                             if ((float)linea.discount != detalle.Porc_dto)
                             {
                                 Parametro cambioLDesc = new Parametro();
-                                cambioLDesc.ParameterName = "descuento";
+                                cambioLDesc.ParameterName = "Descuento";
                                 cambioLDesc.Value = detalle.Porc_dto.ToString() + "@@@" + ((float)linea.discount).ToString();
                                 cambiosL.Parametros.Add(cambioLDesc);
                             }
@@ -629,7 +638,7 @@ namespace WebApi.Services
                             if ((int)linea.primaryGoal.units != detalle.Cantidad)
                             {
                                 Parametro cambioLCant = new Parametro();
-                                cambioLCant.ParameterName = "cantidad";
+                                cambioLCant.ParameterName = "Cantidad";
                                 cambioLCant.Value = detalle.Cantidad.ToString() + "@@@" + ((int)linea.primaryGoal.units).ToString();
                                 cambiosL.Parametros.Add(cambioLCant);
                             }
@@ -637,7 +646,7 @@ namespace WebApi.Services
                             if ((linea.budget.microAmount / 1000000) != detalle.Monto_neto)
                             {
                                 Parametro cambioLImpTotal = new Parametro();
-                                cambioLImpTotal.ParameterName = "importeTotal";
+                                cambioLImpTotal.ParameterName = "Total";
                                 cambioLImpTotal.Value = detalle.Monto_neto.ToString() + "@@@" + (linea.budget.microAmount / 1000000).ToString();
                                 cambiosL.Parametros.Add(cambioLImpTotal);
                             }
@@ -645,23 +654,25 @@ namespace WebApi.Services
                             if (System.DateTime.Parse(DateTimeUtilities.ToString(linea.startDateTime, "yyyy/MM/dd")) != detalle.Fecha_desde)
                             {
                                 Parametro cambioLDesde = new Parametro();
-                                cambioLDesde.ParameterName = "fecha_desde";
-                                cambioLDesde.Value = detalle.Fecha_desde.ToString() + "@@@" + DateTimeUtilities.ToString(linea.startDateTime, "dd/MM/yyyy");
+                                cambioLDesde.ParameterName = "Vigencia Desde";
+                                string fechaFormat = formatFecha(detalle.Fecha_desde.ToString());
+                                cambioLDesde.Value = fechaFormat + "@@@" + DateTimeUtilities.ToString(linea.startDateTime, "dd/MM/yyyy");
                                 cambiosL.Parametros.Add(cambioLDesde);
                             }
                             if (System.DateTime.Parse(DateTimeUtilities.ToString(linea.endDateTime, "yyyy/MM/dd")) != detalle.Fecha_hasta)
                             {
                                 Parametro cambioLHasta = new Parametro();
-                                cambioLHasta.ParameterName = "fecha_hasta";
-                                cambioLHasta.Value = detalle.Fecha_hasta.ToString() + "@@@" + DateTimeUtilities.ToString(linea.endDateTime, "dd/MM/yyyy");
+                                cambioLHasta.ParameterName = "Vigencia Hasta";
+                                string fechaFormat = formatFecha(detalle.Fecha_hasta.ToString());
+                                cambioLHasta.Value = fechaFormat + "@@@" + DateTimeUtilities.ToString(linea.endDateTime, "dd/MM/yyyy");
                                 cambiosL.Parametros.Add(cambioLHasta);
                             }
                         }
                     }
+                    ordYdet.ListaListaParametros.Add(cambiosL);
                 }
-                cambios.ListaListaParametros.Add(cambiosL);
 
-            return cambios;
+            return ordYdet;
         }
 
         private Dg_orden_pub_ap OrderGamAOrdenAp(Order ordenGam)
@@ -771,7 +782,7 @@ namespace WebApi.Services
         public Parametro ImprimirEmplazas(List<Dg_orden_pub_emplazamientos> emplazaBD, long[] emplazaGam, int idRed)
         {
             Parametro cambioLEmplaza = new Parametro();
-            cambioLEmplaza.ParameterName = "emplazamientos";
+            cambioLEmplaza.ParameterName = "Emplazamientos";
             string empBD = "";
             string empGam = "";
 
@@ -807,7 +818,7 @@ namespace WebApi.Services
         public Parametro ImprimirMedidas(List<Dg_orden_pub_medidas> medidasBD, CreativePlaceholder[] medidasGam)
         {
             Parametro cambioLMed = new Parametro();
-            cambioLMed.ParameterName = "medidas";
+            cambioLMed.ParameterName = "Medidas";
             string medBD = "";
             string medGam = "";
 
@@ -836,6 +847,14 @@ namespace WebApi.Services
 
             cambioLMed.Value = medBD + "@@@" + medGam;
             return cambioLMed;
+        }
+
+        public string formatFecha(string fecha)
+        {
+            string fechaFormat = "";
+            string[] arrFecha = fecha.Split(" ");
+            fechaFormat = arrFecha[0];
+            return fechaFormat;
         }
 
     }
