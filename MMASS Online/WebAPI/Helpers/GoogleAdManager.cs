@@ -1146,9 +1146,11 @@ namespace WebApi.Helpers
                     lineItem.endDateTime = DateTimeUtilities.FromDateTime((System.DateTime)fechaHasta, "America/Argentina/Buenos_Aires");
 
                     // Costos
+                    int divD = 1;
                     if (tipoTarifa == 0)
                     {
                         lineItem.costType = CostType.CPM;
+                        divD = 1000;
                     }
                     else if (tipoTarifa == 1)
                     {
@@ -1165,6 +1167,10 @@ namespace WebApi.Helpers
                     lineItem.discountType = LineItemDiscountType.PERCENTAGE;
                     lineItem.discount = discount;
 
+                    float brutoD = cost * (units / divD);
+                    double total = brutoD - (brutoD * discount / 100);
+                    lineItem.budget.microAmount = (long)(total * 1000000);
+
                     // Cantidad de impresiones objetivo
                     Goal goal = new Goal();
 
@@ -1178,7 +1184,7 @@ namespace WebApi.Helpers
                     {
                         goal.goalType = GoalType.DAILY;
                         goal.unitType = UnitType.IMPRESSIONS;
-                        goal.units = 100;
+                        goal.units = units;
                     }
                     if (tipoTarifa == 3)
                     {

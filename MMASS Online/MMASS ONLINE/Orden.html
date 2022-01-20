@@ -1831,11 +1831,15 @@
 
         }
 
-        //AGREGUE (cantidad=1 al seleccionar CPD Sponsor):
+        //AGREGUE (cantidad = días al seleccionar CPD Sponsor):
         function filterTarifas() {
             if ($('#selTipoTarifaD').val() == 1) {
-                $("#cantidadL").text("Cantidad (% del total de impr)");
-                $("#cantidadD").val(100);
+                var day1 = new Date(dateToSqlFormat($('#fechaDesdeD').val())); 
+                var day2 = new Date(dateToSqlFormat($('#fechaHastaD').val()));
+                //var difference = Math.abs(day2 - day1);
+                var cantD = Math.abs(day2 - day1) / (1000 * 3600 * 24);
+                $("#cantidadL").text("Cantidad (días)");
+                $("#cantidadD").val(cantD);
                 //$("#cantidadD").attr("disabled", true);
             }
             else {
@@ -2309,6 +2313,8 @@
 
                 var difference= Math.abs(day2-day1);
                 cantD = difference / (1000 * 3600 * 24);
+
+                $("#cantidadD").val(cantD);
             }
 
             brutoD = resultD * (cantD / divD)
@@ -3377,22 +3383,9 @@
         }
 
         function onPopulateTablasDif(data) {
+            //se genera la tabla diferencias en cabecera
             rowHTML = ''
-
             $.each(data.parametros, function (it, parametro) {
-                arr = parametro.value.split("@@@");
-                valViejo = arr[0];
-                valNuevo = arr[1];
-
-                rowHTML += "<tr>";
-                rowHTML += "<td class='col-xs-1' style='text-align: center;'> " + parametro.parameterName + "</td > ";
-                rowHTML += "<td class='col-xs-1' style='text-align: center;'> " + valViejo + "</td >";
-                rowHTML += "<td class='col-xs-1' style='text-align: center;'> " + valNuevo + "</td >";
-                rowHTML += "</tr>";
-
-            });
-            //SEGUIR POR ACA CON LOS DETALLES
-            $.each(data.listaListaParametros, function (it, listaParametro) {
                 arr = parametro.value.split("@@@");
                 valViejo = arr[0];
                 valNuevo = arr[1];
@@ -3406,6 +3399,47 @@
             });
 
             $("#TableDifCabecera").html(rowHTML);
+
+            //Se generan las tablas diferencias en detalles
+            contDet = 0;
+            rowHTMLd = ''
+            $.each(data.listaListaParametros, function (it, listaParametro) {
+                contDet++;
+                rowHTMLd += "<div class='row'>";
+                rowHTMLd += "<div class='table-responsive mt-2 tableFixHead'>"
+                rowHTMLd += "<table class='table table-fixed table-striped' id='tModifDet" + contDet + "'>"
+                rowHTMLd += "<thead class='thead-dark'>"
+                rowHTMLd += "<div class='row'>";
+                rowHTMLd += "<div class='table-responsive mt-2 tableFixHead'>"
+                rowHTMLd += "<table class='table table-fixed table-striped' id='tModifDet" + contDet + "'>"
+                rowHTMLd += "<thead class='thead-dark'>"
+                rowHTMLd += "<tr>"
+                rowHTMLd += "<th class='col-xs-3' style='text-align: center;'>Campo</th>"
+                rowHTMLd += "<th class='col-xs-2' style='text-align: center;'>Valores Anteriores</th>"
+                rowHTMLd += "<th class='col-xs-2' style='text-align: center;'>Valores Nuevos</th>"
+                rowHTMLd += "</tr>"
+                rowHTMLd += "</thead>"
+                rowHTMLd += "<tbody id='TableDifDet" + contDet + "'></tbody>"
+                 $.each(listaParametro.parametros, function (it, parametro) {
+                    arr = parametro.value.split("@@@");
+                    valViejo = arr[0];
+                    valNuevo = arr[1];
+
+                    rowHTMLd += "<tr>";
+                    rowHTMLd += "<td class='col-xs-1' style='text-align: center;'> " + parametro.parameterName + "</td > ";
+                    rowHTMLd += "<td class='col-xs-1' style='text-align: center;'> " + valViejo + "</td >";
+                    rowHTMLd += "<td class='col-xs-1' style='text-align: center;'> " + valNuevo + "</td >";
+                    rowHTMLd += "</tr>";
+
+                 });
+                rowHTMLd += "</table>"
+                rowHTMLd += "</div>"
+                rowHTMLd += "</div>"
+
+                 $("#rowTabDifDet").append(rowHTMLd);
+
+            });
+
             $("#modifModal").modal('show');
         }
 
