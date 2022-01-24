@@ -641,7 +641,7 @@ namespace WebApi.Entities
                     DB.Execute("delete from dg_orden_pub_as where id_op_dg = " + Id_op_dg.ToString());
                     DB.Execute("delete from dg_orden_pub_medios where id_op_dg = " + Id_op_dg.ToString());
                     
-                    int contadorDetalle = 0;
+                    int contadorDetalle = 1;
 
 
                     foreach (Dg_orden_pub_as elem in Detalles)

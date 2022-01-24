@@ -318,6 +318,8 @@ namespace WebApi.Entities
                                 " from dg_tarifas where es_borrado = 0 ";
             string mifiltro = "";
 
+            string idMedidas = "";
+            int contMedidas = 0;
             foreach (Parametro p in parametros)
             {
                 if (p.Value.ToString() != "")
@@ -350,7 +352,17 @@ namespace WebApi.Entities
                     if ((p.ParameterName == "id_emplazamiento") && (p.Value.ToString() != ""))
                         mifiltro = mifiltro + " and exists (select * from dg_tarifas_emplazamientos where dg_tarifas_emplazamientos.id_tarifa_dg = dg_tarifas.id_tarifa_dg and id_emplazamiento = " + p.Value.ToString() + ")";
                     if ((p.ParameterName == "id_medidadigital") && (p.Value.ToString() != ""))
-                        mifiltro = mifiltro + " and exists (select * from dg_tarifas_medidas where dg_tarifas_medidas.id_tarifa_dg = dg_tarifas.id_tarifa_dg and id_medidadigital = " + p.Value.ToString() + ")";
+                    {
+                        if (contMedidas == 0)
+                        {
+                            idMedidas = p.Value;
+                        }
+                        else
+                        {
+                            idMedidas += "," + p.Value;
+                        }
+                        contMedidas++;
+                    }
                     if ((p.ParameterName == "id_areaGeo") && (p.Value.ToString() != ""))
                         mifiltro = mifiltro + " and exists (select * from dg_tarifas_areas where dg_tarifas_areas.id_tarifa_dg = dg_tarifas.id_tarifa_dg and id_area = " + p.Value.ToString() + ")";
                     if ((p.ParameterName == "vigente") && (p.Value.ToString() == "1"))
@@ -358,6 +370,10 @@ namespace WebApi.Entities
                     if ((p.ParameterName == "id_red") && (p.Value.ToString() != ""))
                         mifiltro = mifiltro + " and id_red = " + p.Value.ToString() + ")";
                 }
+            }
+            if (idMedidas != "")
+            {
+                mifiltro = mifiltro + " and exists (select * from dg_tarifas_medidas where dg_tarifas_medidas.id_tarifa_dg = dg_tarifas.id_tarifa_dg and id_medidadigital IN (" + idMedidas + "))";
             }
 
             List<Dg_tarifas> col = new List<Dg_tarifas>();
