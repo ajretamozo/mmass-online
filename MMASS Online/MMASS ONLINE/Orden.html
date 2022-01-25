@@ -1208,9 +1208,9 @@
             getArchivos(data.id_op_dg.toString());
             calculateTotals();
 
-            if (data.id_Google_Ad_Manager > 0 && (data.id_op_dg != undefined && data.id_op_dg != 0)) {
-                comprobarModificaciones(data.id_op_dg, data.id_Google_Ad_Manager);
-            }
+            //if (data.id_Google_Ad_Manager > 0 && (data.id_op_dg != undefined && data.id_op_dg != 0)) {
+            //    comprobarModificaciones(data.id_op_dg, data.id_Google_Ad_Manager);
+            //}
         }
 
         function cargarProductosyOPRelacionada(idAgencia, idAnunciante, idProducto, idOpRelacionada) {
@@ -2401,7 +2401,7 @@
             $("#cantidadD").attr("disabled", false);
 
             $("#GuardarRenglon").attr("onclick", "prevAddRenglon(" + rId + ")");
-            var rDetalle = Detalles[rId];
+            var rDetalle = Detalles[rId-1];
             //$('#fechaDesdeD').attr("value", dateToFieldFormat(rDetalle.Fecha_desde));
             //$('#fechaHastaD').attr("value", dateToFieldFormat(rDetalle.Fecha_hasta));
             $('#fechaDesdeD').datetimepicker('date', moment(dateToFieldFormat(rDetalle.fecha_desde), 'DD/MM/YYYY'));
@@ -2598,7 +2598,7 @@
                 //addRenglon(rId);
 
                 for (var i = 0; i < Detalles.length; i++) {
-                    Detalles[rId].id_Google_Ad_Manager = idGAM
+                    Detalles[rId-1].id_Google_Ad_Manager = idGAM
                 }
                 recargarRenglones();
             }
