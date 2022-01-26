@@ -1787,6 +1787,9 @@
             idRed = $('#selRedes').val();
             idEmpresa = $('#selEmpresa').val();
 
+            $("#checkTarifaManualD")[0].checked = false;
+            $("#checkTarifaManualD").change();
+
             $("#selDetConvenio").attr("disabled", false);
             $('#divDetailsRows').hide(); $('#divAddRow').show();
             var $options = $("#selProducto > option").clone();
@@ -1983,6 +1986,9 @@
 
         //punto de control
         function addRenglon(id) {
+            if (id > 0) {
+                id--;
+            }
 
             var cantMedios = $("#selMediosD option:selected").length;
             if ($("#selAnunciante").val() == null) {
@@ -2119,7 +2125,7 @@
                 $('#divAddRow').hide();
                 //Limpio la tabla renglones antes de volver a generarla
                 if (id == -1) {
-                    id = Detalles.length;
+                    id = Detalles.length + 1;
                     rDetalle.id_detalle = id;
                     Detalles.push(rDetalle);
                 }                
@@ -2365,6 +2371,8 @@
             $('#selProductoD').append($options);
             $('#selProductoD').val = $('#selProducto').val();
             idEmpresa = $('#selEmpresa').val();
+            $("#checkTarifaManualD")[0].checked = false;
+            $("#checkTarifaManualD").change();
 
             //nuev
             if (idConvenio != 0) {
@@ -2394,14 +2402,14 @@
         }
 
         function onCargarModificarRenglon(rId) {
-
             //cargarNuevoRenglon();
 
             //AGREGUE:
             $("#cantidadD").attr("disabled", false);
 
             $("#GuardarRenglon").attr("onclick", "prevAddRenglon(" + rId + ")");
-            var rDetalle = Detalles[rId-1];
+            rId--;
+            var rDetalle = Detalles[rId];
             //$('#fechaDesdeD').attr("value", dateToFieldFormat(rDetalle.Fecha_desde));
             //$('#fechaHastaD').attr("value", dateToFieldFormat(rDetalle.Fecha_hasta));
             $('#fechaDesdeD').datetimepicker('date', moment(dateToFieldFormat(rDetalle.fecha_desde), 'DD/MM/YYYY'));
@@ -2508,13 +2516,17 @@
             if (rDetalle.tarifa_dg != null) {
                 $.when(filterTarifas()).then(function () {
                 $("#selTarifaD option[value=" + rDetalle.tarifa_dg.id_tarifa_dg + "]").attr("selected", "selected");
-                if (rDetalle.tarifa_manual) {
-                    $("#checkTarifaManualD")[0].checked = true;
-                    $("#checkTarifaManualD").change();
-                    $("#precioUnitarioD").val(rDetalle.importe_unitario);
-                    $("#precioUnitarioD").change();
-                }
-            }, function data() { });
+                    if (rDetalle.tarifa_manual) {
+                        $("#checkTarifaManualD")[0].checked = true;
+                        $("#checkTarifaManualD").change();
+                        $("#precioUnitarioD").val(rDetalle.importe_unitario);
+                        $("#precioUnitarioD").change();
+                    }
+                    //else {
+                    //    $("#checkTarifaManualD")[0].checked = false;
+                    //    $("#checkTarifaManualD").change();
+                    //}
+                }, function data() { });
             }
             //$.when(filterTarifas()).then(function () {
             //    $("#selTarifaD option[value=" + rDetalle.tarifa_dg.id_tarifa_dg + "]").attr("selected", "selected");
@@ -2564,7 +2576,8 @@
         //AGREGUE:
         function enviarLineaAddServer(r) {
             //callWS("googleAdManager", "runAdExchangeReport"); //para probar el reporte de adexchange
-            var rDetalle = Detalles[$(r).attr("data-id")];
+
+            var rDetalle = Detalles[($(r).attr("data-id"))-1];
             var fechaDesde = new Date(rDetalle.fecha_desde);
 
             var today = new Date();
@@ -2581,7 +2594,7 @@
             var hoy = new Date(today);
 
             if (fechaDesde > hoy) {
-                callWS("googleAdManager", "createLineItems", JSON.stringify(Detalles[$(r).attr("data-id")]), function (data) { onSendLinea(data, $(r).attr("data-id")); });
+                callWS("googleAdManager", "createLineItems", JSON.stringify(Detalles[($(r).attr("data-id"))-1]), function (data) { onSendLinea(data, $(r).attr("data-id")); });
             }
             else {
                 showMessage('La fecha de inicio de vigencia debe estar situada en el futuro', 'error');
@@ -2591,6 +2604,7 @@
         //AGREGUE:
         function onSendLinea(data, rId) {
             var idGAM = data;
+            rId--;
 
             if (idGAM > 0) {
                 showMessage("La Línea de pedido en Google Ad Manager se ha guardado con éxito con el ID: " + idGAM);
@@ -2598,7 +2612,7 @@
                 //addRenglon(rId);
 
                 for (var i = 0; i < Detalles.length; i++) {
-                    Detalles[rId-1].id_Google_Ad_Manager = idGAM
+                    Detalles[rId].id_Google_Ad_Manager = idGAM
                 }
                 recargarRenglones();
             }
@@ -2638,7 +2652,8 @@
             }
             
             r.parentElement.parentElement.remove();
-            Detalles.splice($(r).attr("data-id"), 1)
+
+            Detalles.splice(($(r).attr("data-id"))-1, 1)
             if (Detalles.length == 0) {
                 $("#selAgencia").attr("disabled", false);
                 $("#selAnunciante").attr("disabled", false);
