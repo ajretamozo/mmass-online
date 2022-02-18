@@ -73,5 +73,12 @@ namespace WebApi.Controllers
             var contacto = _contactoService.getContactoByIdGAMyRed(anun.id_contactodigital, anun.Id_red);
             return Ok(contacto);
         }
+
+        [HttpPost("getContactoById")]
+        public IActionResult getContactoById([FromBody] int id)
+        {
+            var contacto = _contactoService.getContactoById(id);
+            return Ok(contacto);
+        }
     }
 }

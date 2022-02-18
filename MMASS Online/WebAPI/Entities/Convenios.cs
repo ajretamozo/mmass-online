@@ -73,7 +73,18 @@ namespace WebApi.Entities
 
         public static Convenios getById(int id_convenio)
         {
-            string sqlCommand = @"select c.id_convenio, c.desc_convenio, cpa.id_formapago, c.id_agencia, c.id_anunciante, cp.id_producto, c.importe_total,
+         //   string sqlCommand = @"select c.id_convenio, c.desc_convenio, cpa.id_formapago, c.id_agencia, c.id_anunciante, cp.id_producto, c.importe_total,
+         //                           c.fecha_desde, c.fecha_hasta, c.estado, c.observaciones, c.facturar_a, c.id_empresa,
+         //                           ag.razon_social as agencia_nombre, an.razon_social as anunciante_nombre, fp.desc_formapago as formapago_nombre
+         //                           from convenio_anual_precios c
+         //                           left outer join contactos ag on ag.id_contacto = c.id_agencia
+         //                           left outer join contactos an on an.id_contacto = c.id_anunciante
+									//left outer join convenios_pagos cpa on cpa.id_convenio = c.id_convenio
+									//left outer join formas_pago fp on fp.id_formapago = cpa.id_formapago
+         //                           left outer join dg_conv_dg_detalle_productos cp on cp.id_convenio = c.id_convenio
+         //                           where c.id_convenio = " + id_convenio.ToString() + " and c.es_borrado = 0 and cp.id_detalle=1";
+
+            string sqlCommand = @"select top 1 c.id_convenio, c.desc_convenio, cpa.id_formapago, c.id_agencia, c.id_anunciante, cp.id_producto, c.importe_total,
                                     c.fecha_desde, c.fecha_hasta, c.estado, c.observaciones, c.facturar_a, c.id_empresa,
                                     ag.razon_social as agencia_nombre, an.razon_social as anunciante_nombre, fp.desc_formapago as formapago_nombre
                                     from convenio_anual_precios c
@@ -82,7 +93,7 @@ namespace WebApi.Entities
 									left outer join convenios_pagos cpa on cpa.id_convenio = c.id_convenio
 									left outer join formas_pago fp on fp.id_formapago = cpa.id_formapago
                                     left outer join dg_conv_dg_detalle_productos cp on cp.id_convenio = c.id_convenio
-                                    where c.id_convenio = " + id_convenio.ToString() + " and c.es_borrado = 0 and cp.id_detalle=1";
+                                    where c.id_convenio = " + id_convenio.ToString() + " and c.es_borrado = 0";
 
             Convenios resultado = new Convenios();
             DataTable t = DB.Select(sqlCommand);
@@ -97,7 +108,10 @@ namespace WebApi.Entities
                 }
                 resultado.Id_agencia = int.Parse(t.Rows[0]["id_agencia"].ToString());
                 resultado.Id_anunciante = int.Parse(t.Rows[0]["id_anunciante"].ToString());
-                resultado.Id_producto = int.Parse(t.Rows[0]["id_producto"].ToString());
+                if (t.Rows[0]["id_producto"].ToString() != "")
+                {
+                    resultado.Id_producto = int.Parse(t.Rows[0]["id_producto"].ToString());
+                }
                 resultado.Importe_total = float.Parse(t.Rows[0]["importe_total"].ToString());
                 resultado.Fecha_desde = DateTime.Parse(t.Rows[0]["fecha_desde"].ToString());
                 resultado.Fecha_hasta = DateTime.Parse(t.Rows[0]["fecha_hasta"].ToString());

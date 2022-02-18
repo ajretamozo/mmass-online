@@ -16,6 +16,7 @@ namespace WebApi.Services
         //Empresa GetAgencia(string username, string password);
         IEnumerable<Producto> getProductosPorAnunciante(int IdAnunciante);
         IEnumerable<Producto> getAll();
+        Producto getProductoById(int id);
 
     }
 
@@ -30,6 +31,11 @@ namespace WebApi.Services
         public IEnumerable<Producto> getAll()
         {
             return Producto.GetAll();
+        }
+
+        public Producto getProductoById(int id)
+        {
+            return Producto.getById(id);
         }
     }
 }

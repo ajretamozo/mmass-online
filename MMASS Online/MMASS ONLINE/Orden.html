@@ -521,8 +521,7 @@
                                             <label for="inpIdOrdenAdServer">ID AdServer</label>
                                             <input type="number" class="form-control" id="inpIdOrdenAdServer" disabled="disabled">
                                         </div>
-                                        <div class="col-lg-5" style="padding-right: 0px;
-">
+                                        <div class="col-lg-5" style="padding-right: 0px;">
                                             <label for="selRedes">Red AdServer</label>
                                             <select class="form-control" id="selRedes" onchange="onRedSelected()"></select>
                                         </div>
@@ -1043,6 +1042,7 @@
             var op = getUrlParameter("orderId")
             var data = {};
             data.Id_op_dg = op;
+            var idUser = getUserId();
             if (op != undefined) {
                 callWS("dg_orden_pub_aps", "getById", JSON.stringify(data), onGetOrder);
             }
@@ -1611,7 +1611,7 @@
             var pObj = data;
             var listitems = '';
             $.each(pObj, function (it, iObj) {
-                listitems += '<option forma_uso_desc=' + iObj["forma_uso"]["descripcion"] + ' forma_uso_id=' + iObj['forma_uso']['id'] + ' precio_unitario= ' + iObj['precio_unitario'] + ' value=' + iObj[colId] + '>' + iObj[colDesc] + '</option>';
+                listitems += '<option forma_uso_desc=' + iObj['forma_uso']['descripcion'] + ' forma_uso_id=' + iObj['forma_uso']['id'] + ' precio_unitario= ' + iObj['precio_unitario'] + ' value=' + iObj[colId] + '>' + iObj[colDesc] + '</option>';
             });
             $("#" + idSelect).empty();
             //$("#" + idSelect).append("<option value=''>(Todos) </option>");
@@ -1622,6 +1622,19 @@
                 $("#" + idSelect).change();
             }
 
+        }
+
+        function onTarifasGetAllConv(data, idSelect, colId, colDesc) {
+
+            var listitems = '';
+
+            listitems += '<option forma_uso_desc=' + data['forma_uso']['descripcion'] + ' forma_uso_id=' + data['forma_uso']['id'] + ' precio_unitario= ' + data['precio_unitario'] + ' value=' + data[colId] + '>' + data[colDesc] + '</option>';
+
+            $("#" + idSelect).empty();
+            //$("#" + idSelect).append("<option value=''>(Todos) </option>");
+            $("#" + idSelect).append(listitems);
+
+            //$("#" + idSelect).change();
         }
 
         //AGREGUE:
@@ -1685,6 +1698,22 @@
                 $("#selDetConvenio option[value='']").attr("selected", "selected");
             }
         }
+
+         function onPopulateSelecectContactoConv(data, idSelect, colId, colDesc) {
+
+            var sel = document.getElementById(idSelect);
+            //var selected = sel.options[sel.selectedIndex];
+
+            var listitems = '';
+
+                listitems += '<option value=' + data[colId] + '>' + data[colDesc] + '</option>';
+
+            $("#" + idSelect).empty();
+            //$("#" + idSelect).append("<option value=''>(Todos) </option>");
+            $("#" + idSelect).append(listitems);
+
+            //$("#" + idSelect + "option[value=" + data.id_agencia + "]").attr("selected", "selected");
+         }
 
         //AGREGUE:
         function onPopulateSelectMedidas(data, idSelect, colId, colAncho, colAlto) {
@@ -1750,9 +1779,9 @@
                 $("#" + idSelect).val([]);
             }
 
-            if ($("#" + idSelect).attr('multiple') == 'multiple') {
-                cMultiSelect.bootstrapDualListbox('refresh');
-            }
+            //if ($("#" + idSelect).attr('multiple') == 'multiple') {
+            //    cMultiSelect.bootstrapDualListbox('refresh');
+            //}
             $("#" + idSelect).val('');
         }
 
@@ -2725,9 +2754,11 @@
 
             $('#inpDescConvenio').val("");
 
-            $.when(limpiaVinculados()).then(function () {
-                callWS("medios", "GetConvenioById", JSON.stringify(id), function (data) { onSeleccionarConvenio(data); });
-            }, function data() { });
+            //$.when(limpiaVinculados()).then(function () {
+            //    callWS("medios", "GetConvenioById", JSON.stringify(id), function (data) { onSeleccionarConvenio(data); });
+            //}, function data() { });
+
+             callWS("medios", "GetConvenioById", JSON.stringify(id), function (data) { onSeleccionarConvenio(data); });
         }
 
         //Parámetro global para mantener el idConvenio y el idDetConvenio
@@ -2735,30 +2766,40 @@
         var idDetConvenio = 0;
 
         function onSeleccionarConvenio(data) {
-
+            ag = data.id_agencia
+            an = data.id_anunciante
+            $("#selProducto").attr("disabled", false);
+            //$("#selAgencia option[value=" + data.id_agencia + "]").attr("selected", "selected");
+            //$("#selAnunciante option[value=" + data.id_anunciante + "]").attr("selected", "selected");
+            callWS("contactos", "getContactoById", JSON.stringify(ag), function (agencia) { onPopulateSelecectContactoConv(agencia, 'selAgencia', 'id', 'razonSocial'); })
+            callWS("contactos", "getContactoById", JSON.stringify(an), function (anunciante) { onPopulateSelecectContactoConv(anunciante, 'selAnunciante', 'id', 'razonSocial'); })
             $("#selAgencia option[value=" + data.id_agencia + "]").attr("selected", "selected");
             $("#selAnunciante option[value=" + data.id_anunciante + "]").attr("selected", "selected");
-            if (data.id_producto != null) {
+            if (data.id_producto != null && data.id_producto != 0) {
+                pr = data.id_producto
+                callWS("productos", "getProductoById", JSON.stringify(pr), function (producto) { onPopulateSelecectContactoConv(producto, 'selProducto', 'id_producto', 'desc_producto'); })
                 $("#selProducto option[value=" + data.id_producto + "]").attr("selected", "selected");
+                $("#selProducto").attr("disabled", true);
             }
             else {
-                $("#selAnunciante").change(); //para que cargue los productos
+                callWS("productos", "getProductosPorAnunciante", JSON.stringify(an), function (productos) { onPopulateSelectDone(productos, 'selProducto', 'id_producto', 'desc_producto'); });
+          /*      $("#selAnunciante").change(); *///para que cargue los productos
             }
             $("#selEmpresa option[value=" + data.id_empresa + "]").attr("selected", "selected");
 
-            an = data.id_anunciante;
+            //an = data.id_anunciante;
 
             //Para que me setee el selOrdenRelacionada = ""
-            data1 = {};
-            ag = $('#selAgencia').val();
-            data1.agencia = {};
-            data1.anunciante = {};
-            data1.anunciante.id = an;
-            data1.agencia.id = ag;
-            callWS("dg_orden_pub_aps", "getOrdenesRadio", JSON.stringify(data1), function (data1) { onPopulateSelectDone(data1, 'selOrdenRelacionada', 'id', 'descripcion'); });
+            //data1 = {};
+            //ag = $('#selAgencia').val();
+            //data1.agencia = {};
+            //data1.anunciante = {};
+            //data1.anunciante.id = an;
+            //data1.agencia.id = ag;
+            //callWS("dg_orden_pub_aps", "getOrdenesRadio", JSON.stringify(data1), function (data1) { onPopulateSelectDone(data1, 'selOrdenRelacionada', 'id', 'descripcion'); });
             //hasta acá
 
-            callWS("productos", "getProductosPorAnunciante", JSON.stringify(an), function (data) { onPopulateSelectDone(data, 'selProducto', 'id_producto', 'desc_producto'); });
+            //callWS("productos", "getProductosPorAnunciante", JSON.stringify(an), function (data) { onPopulateSelectDone(data, 'selProducto', 'id_producto', 'desc_producto'); });
             $('#fechaDesde').datetimepicker('date', moment(dateToFieldFormat(data.fecha_desde), 'DD/MM/YYYY'));
             $('#fechaHasta').datetimepicker('date', moment(dateToFieldFormat(data.fecha_hasta), 'DD/MM/YYYY'));
             $("#selFacturar option[value=" + data.facturar_a + "]").attr("selected", "selected");
@@ -2766,7 +2807,12 @@
             $('#inpDescConvenio').val(data.desc_convenio);
             $("#selAgencia").attr("disabled", true);
             $("#selAnunciante").attr("disabled", true);
+            $("#botLimpiar").attr("disabled", true);
             $("#bBorrConvenios").attr("disabled", false);
+            $("#selFacturar").attr("disabled", true);
+            $("#selFPago").attr("disabled", true);
+            $("#selEmpresa").attr("disabled", true);
+
             idConvenio = data.id_convenio;
 
             $("#conveniosModal").modal('hide');
@@ -2923,10 +2969,11 @@
             //$(".bootstrap-duallistbox-container").find("*").prop("disabled", true);
             //$("#selPrograma").attr("disabled", true);
             $("#selProductoD").attr("disabled", true);
+
             if (data.tarifa_dg.id_tarifa_dg > 0) {
                 var tarifa = {};
                 tarifa.Id_tarifa_dg = data.tarifa_dg.id_tarifa_dg;
-                callWS("tarifas", "getById", JSON.stringify(tarifa), function (data2) { onTarifasGetAll(data2, 'selTarifaD', 'id_tarifa_dg', 'descripcion'); })
+                callWS("tarifas", "getById", JSON.stringify(tarifa), function (data2) { onTarifasGetAllConv(data2, 'selTarifaD', 'id_tarifa_dg', 'descripcion'); })
             }
             else {
                 filterTarifas();

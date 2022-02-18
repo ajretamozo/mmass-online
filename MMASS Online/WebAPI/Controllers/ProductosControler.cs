@@ -32,6 +32,12 @@ namespace WebApi.Controllers
             return Ok(productos);
         }
 
+        [HttpPost("getProductoById")]
+        public IActionResult getProductoById([FromBody]int id)
+        {
+            var producto = _productoService.getProductoById(id);
+            return Ok(producto);
+        }
 
     }
 }
