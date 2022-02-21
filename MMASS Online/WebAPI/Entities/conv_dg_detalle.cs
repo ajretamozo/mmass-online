@@ -79,7 +79,7 @@ namespace WebApi.Entities
         public string Descripcion { get; set; }
         public DateTime? Fecha_desde { get; set; }
         public DateTime? Fecha_hasta { get; set; }
-        public int Id_tipo_aviso_dg { get; set; }
+        //public int Id_tipo_aviso_dg { get; set; }
         public Conv_dg_detalle_forma_uso Forma_uso { get; set; }
         public float Precio_unitario { get; set; }
         public Dg_tarifas Tarifa_dg { get; set; } 
@@ -87,14 +87,15 @@ namespace WebApi.Entities
         public float Porc_conf_nc { get; set; }
         public float Porc_conf_fc { get; set; }
         public int Id_area { get; set; }
-        public List<Medio> Medios;
+        public List<Dg_tipos_avisos> Tipos_aviso;
+        public List<Dg_orden_pub_medios> Medios;
         public List<Dg_emplazamientos> Emplazamientos;
         public List<Dg_medidas> Medidas;
 
        
         public static Conv_dg_detalle getById(int id_convenio, int id_detalle)
         {
-            string sqlCommand = " select id_det_conv, id_convenio, id_detalle, descripcion, fecha_desde, fecha_hasta, id_tipo_aviso_dg, forma_uso, id_tarifa_dg, precio_unitario," +
+            string sqlCommand = " select id_det_conv, id_convenio, id_detalle, descripcion, fecha_desde, fecha_hasta, forma_uso, id_tarifa_dg, precio_unitario," +
                                 " porc_desc, porc_conf_nc, porc_conf_fc, id_area" +
                                 " from conv_dg_detalle where id_convenio = " + id_convenio.ToString() + " and id_detalle = " + id_detalle.ToString();
            
@@ -116,10 +117,10 @@ namespace WebApi.Entities
                 }
                 resultado.Fecha_desde = DateTime.Parse(item["fecha_desde"].ToString());
                 resultado.Fecha_hasta = DateTime.Parse(item["fecha_hasta"].ToString());
-                if (item["id_tipo_aviso_dg"].ToString() != "")
-                {
-                    resultado.Id_tipo_aviso_dg = int.Parse(item["id_tipo_aviso_dg"].ToString());
-                }
+                //if (item["id_tipo_aviso_dg"].ToString() != "")
+                //{
+                //    resultado.Id_tipo_aviso_dg = int.Parse(item["id_tipo_aviso_dg"].ToString());
+                //}
                 resultado.Forma_uso = Conv_dg_detalle_forma_uso.getFormaUso(DB.DInt(item["forma_uso"].ToString()));
                 resultado.Precio_unitario = float.Parse(item["precio_unitario"].ToString());
                 resultado.Tarifa_dg = Dg_tarifas.getById(DB.DInt(item["id_tarifa_dg"].ToString()));
@@ -139,13 +140,25 @@ namespace WebApi.Entities
                 {
                     resultado.Id_area = int.Parse(item["id_area"].ToString());
                 }
-                // Medios
-                resultado.Medios = new List<Medio>();
-                det = DB.Select("select cm.id_convenio, cm.id_detalle, m.* from dg_conv_dg_detalle_medios cm inner join medios m on m.id_medio = cm.id_medio where cm.id_convenio = " + id_convenio.ToString() + " and cm.id_detalle = " + id_detalle.ToString());
+                // Tipos de Aviso
+                resultado.Tipos_aviso = new List<Dg_tipos_avisos>();
+                det = DB.Select(@"select ta.* 
+                                  from dg_conv_dg_detalle_tipo_Avisos cta 
+                                  inner join dg_tipos_avisos ta on ta.id_tipo_aviso_dg = cta.id_tipo_aviso_dg
+                                  where cta.id_convenio = " + id_convenio.ToString() + " and cta.id_detalle = " + id_detalle.ToString());
                 foreach (DataRow item2 in det.Rows)
                 {
-                    Medio elem = Medio.getMedio(item2);
-                    resultado.Medios.Add(elem);
+                    Dg_tipos_avisos elem = Dg_tipos_avisos.getDg_tipos_avisos(item2);
+                    resultado.Tipos_aviso.Add(elem);
+                }
+                // Medios
+                resultado.Medios = new List<Dg_orden_pub_medios>();
+                det = DB.Select("select cm.id_convenio as id_op_dg, cm.id_detalle, cm.porcentaje, m.* from dg_conv_dg_detalle_medios cm inner join medios m on m.id_medio = cm.id_medio where cm.id_convenio = " + id_convenio.ToString() + " and cm.id_detalle = " + id_detalle.ToString());
+                foreach (DataRow item2 in det.Rows)
+                {
+                    //Medio elem = Medio.getMedio(item2);
+                    //resultado.Medios.Add(elem);
+                    resultado.Medios.Add(Dg_orden_pub_medios.getDg_orden_pub_medios(item2));
                 }
                 // Emplazamientos
                 resultado.Emplazamientos = new List<Dg_emplazamientos>();
@@ -203,10 +216,10 @@ namespace WebApi.Entities
                 {
                     elem.Fecha_hasta = DateTime.Parse(item["fecha_hasta"].ToString());
                 }
-                if (item["id_tipo_aviso_dg"].ToString() != "")
-                {
-                    elem.Id_tipo_aviso_dg = int.Parse(item["id_tipo_aviso_dg"].ToString());
-                }
+                //if (item["id_tipo_aviso_dg"].ToString() != "")
+                //{
+                //    elem.Id_tipo_aviso_dg = int.Parse(item["id_tipo_aviso_dg"].ToString());
+                //}
                 if (item["forma_uso"].ToString() != "")
                 {
                     elem.Forma_uso = Conv_dg_detalle_forma_uso.getFormaUso(DB.DInt(item["forma_uso"].ToString()));
@@ -232,13 +245,25 @@ namespace WebApi.Entities
                     elem.Id_area = int.Parse(item["id_area"].ToString());
                 }
 
-                // Medios
-                elem.Medios = new List<Medio>();
-                det = DB.Select("select cm.id_convenio, cm.id_detalle, m.* from dg_conv_dg_detalle_medios cm inner join medios m on m.id_medio = cm.id_medio where cm.id_convenio = " + item["id_convenio"].ToString() + " and cm.id_detalle = " + item["id_detalle"].ToString());
+                // Tipos de Aviso
+                elem.Tipos_aviso = new List<Dg_tipos_avisos>();
+                det = DB.Select(@"select ta.* 
+                                  from dg_conv_dg_detalle_tipo_Avisos cta 
+                                  inner join dg_tipos_avisos ta on ta.id_tipo_aviso_dg = cta.id_tipo_aviso_dg
+                                  where cta.id_convenio = " + item["id_convenio"].ToString() + " and cta.id_detalle = " + item["id_detalle"].ToString());
                 foreach (DataRow item2 in det.Rows)
                 {
-                    Medio med = Medio.getMedio(item2);
-                    elem.Medios.Add(med);
+                    Dg_tipos_avisos ta = Dg_tipos_avisos.getDg_tipos_avisos(item2);
+                    elem.Tipos_aviso.Add(ta);
+                }
+                // Medios
+                elem.Medios = new List<Dg_orden_pub_medios>();
+                det = DB.Select("select cm.id_convenio as id_op_dg, cm.id_detalle, cm.porcentaje, m.* from dg_conv_dg_detalle_medios cm inner join medios m on m.id_medio = cm.id_medio where cm.id_convenio = " + item["id_convenio"].ToString() + " and cm.id_detalle = " + item["id_detalle"].ToString());
+                foreach (DataRow item2 in det.Rows)
+                {
+                    //Medio med = Medio.getMedio(item2);
+                    //elem.Medios.Add(med);
+                    elem.Medios.Add(Dg_orden_pub_medios.getDg_orden_pub_medios(item2));
                 }
                 // Emplazamientos
                 elem.Emplazamientos = new List<Dg_emplazamientos>();
@@ -272,7 +297,7 @@ namespace WebApi.Entities
 
         public static List<Conv_dg_detalle> getAll()
         {
-            string sqlCommand = "select id_convenio, id_detalle, descripcion, fecha_desde, fecha_hasta, id_tipo_aviso_dg, forma_uso, precio_unitario," +
+            string sqlCommand = "select id_convenio, id_detalle, descripcion, fecha_desde, fecha_hasta, forma_uso, precio_unitario," +
                                 " porc_desc, porc_conf_nc, porc_conf_fc, id_area" +
                                 " from conv_dg_detalle ";
 
@@ -289,7 +314,7 @@ namespace WebApi.Entities
                     Descripcion = item["descripcion"].ToString(),
                     Fecha_desde = DateTime.Parse(item["fecha_desde"].ToString()),
                     Fecha_hasta = DateTime.Parse(item["fecha_hasta"].ToString()),
-                    Id_tipo_aviso_dg = int.Parse(item["id_tipo_aviso_dg"].ToString()),
+                    //Id_tipo_aviso_dg = int.Parse(item["id_tipo_aviso_dg"].ToString()),
                     Forma_uso = Conv_dg_detalle_forma_uso.getFormaUso(DB.DInt(item["forma_uso"].ToString())),
                     Precio_unitario = float.Parse(item["precio_unitario"].ToString()),
                     Porc_desc = float.Parse(item["porc_desc"].ToString()),
@@ -305,7 +330,7 @@ namespace WebApi.Entities
         //TERMINAR ESTO:
         public static List<Conv_dg_detalle> filter(List<Parametro> parametros)
         {
-            string sqlCommand = "select id_convenio, id_detalle, descripcion, fecha_desde, fecha_hasta, id_tipo_aviso_dg, forma_uso, precio_unitario, " +
+            string sqlCommand = "select id_convenio, id_detalle, descripcion, fecha_desde, fecha_hasta, forma_uso, precio_unitario, " +
                                 "porc_desc, porc_conf_nc, porc_conf_fc, id_area " +
                                 "from conv_dg_detalle " +
                                 "where 1=1 ";
@@ -364,7 +389,7 @@ namespace WebApi.Entities
                     Descripcion = item["descripcion"].ToString(),
                     Fecha_desde = DateTime.Parse(item["fecha_desde"].ToString()),
                     Fecha_hasta = DateTime.Parse(item["fecha_hasta"].ToString()),
-                    Id_tipo_aviso_dg = int.Parse(item["id_tipo_aviso_dg"].ToString()),
+                    //Id_tipo_aviso_dg = int.Parse(item["id_tipo_aviso_dg"].ToString()),
                     Forma_uso = Conv_dg_detalle_forma_uso.getFormaUso(DB.DInt(item["forma_uso"].ToString())),
                     Precio_unitario = float.Parse(item["precio_unitario"].ToString()),
                     Porc_desc = float.Parse(item["porc_desc"].ToString()),

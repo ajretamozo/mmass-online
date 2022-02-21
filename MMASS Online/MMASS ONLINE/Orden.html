@@ -728,7 +728,7 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-lg-4">
-                                            <button type="button" id="botPorcRon" class="btn btn-dark" onclick="openRonPorc();">%RON</button>
+                                            <button type="button" id="botPorcRon" class="btn btn-dark" onclick="openRonPorc();" style="margin-top: 5px;">%RON</button>
                                             <div id="porcRon" style="display:none"></div>
                                         </div>
                                     </div>
@@ -2447,19 +2447,20 @@
             var medios = rDetalle.medios;
             var viewListMedios = "<ul class=\"list-group\">"
             if (medios != undefined) {
-                            if (medios.length > 0) {
-                var porcHTML = '';
-                medios.forEach(function (medio) {
+                if (medios.length > 0) {
+                    var porcHTML = '';
+                    medios.forEach(function (medio) {
                     $("#selMediosD option[value=" + medio.id_medio + "]").attr("selected", "selected");
                     var desc = $("#selMediosD option[value=" + medio.id_medio + "]").text();
                     porcHTML += "<tr id='ronRow_" + medio.id_medio + "'><td>" + desc + "</td>" + "<td><input type='number' class='form-control inpRon' id='inpRonRow_" + medio.id_medio + "' value='" + medio.porcentaje + "' onchange=\"$(this).attr('value',$(this).val())\" /></td></tr>"
                     //viewListMedios += "<li class=\"list-group-item\">" + $("#selMediosD option[value='" + medio.id_medio + "']").text() + "</li>";
-                });
-                $("#porcRon").html(porcHTML);
-                enableRon();
-            } else {
+                    });
+                    $("#porcRon").html(porcHTML);
+                    enableRon();
+                }
+                else {
                 viewListMedios += "<li class=\"list-group-item\">(Todos)</li>";
-            };
+                }
             }
             //if (medios.length > 0) {
             //    var porcHTML = '';
@@ -2761,7 +2762,7 @@
              callWS("medios", "GetConvenioById", JSON.stringify(id), function (data) { onSeleccionarConvenio(data); });
         }
 
-        //Parámetro global para mantener el idConvenio y el idDetConvenio
+        //Parametro global para mantener el idConvenio y el idDetConvenio
         var idConvenio = 0;
         var idDetConvenio = 0;
 
@@ -2893,13 +2894,17 @@
 
         function onSeleccionarDetConvenio(data) {
 
-            $("#selTipoAvisoD").val(data.id_tipo_aviso_dg);
+            //$("#selTipoAvisoD").val(data.id_tipo_aviso_dg);
 
             $("#selTipoTarifaD").val(data.forma_uso.id);
 
             $("#selAreasGeo").val(data.id_area);
 
-
+            //Carga Tipos de Aviso
+            tiposAviso = data.tipos_aviso;
+             if (tiposAviso.length > 0) {
+                onTipoAvisoGetAll(tiposAviso, 'selTipoAvisoD', 'Id_tipo_aviso_dg', 'descripcion', 'Permite_envio_ads')
+             }
 
             //Carga Medios
             var medios = data.medios;
@@ -2909,10 +2914,11 @@
                 medios.forEach(function (medio) {
                     $("#selMediosD option[value=" + medio.id_medio + "]").attr("selected", "selected");
                     var desc = $("#selMediosD option[value=" + medio.id_medio + "]").text();
-                    porcHTML += "<tr id='ronRow_" + medio.id_medio + "'><td>" + desc + "</td>" + "<td><input type='number' class='form-control inpRon' id='inpRonRow_" + medio.id_medio + "' value='" + medio.porcentaje + "' onchange=\"$(this).attr('value',$(this).val())\" /></td></tr>"
+                    porcHTML += "<tr id='ronRow_" + medio.id_medio + "'><td>" + desc + "</td>" + "<td><input type='number' disabled='true' class='form-control inpRon' id='inpRonRow_" + medio.id_medio + "' value='" + medio.porcentaje + "'/></td></tr>"
                 });
                 $("#porcRon").html(porcHTML);
                 enableRon();
+
                 $("#selMediosD").attr("disabled", true);
             }
             //else {
@@ -3273,7 +3279,12 @@
 
         function showRonModal(content) {
             $("#modalCenterTitle").text("Editar % RON");
-            content += "<div class='row justify-content-end mt-3 mr-1'><button type='button' id='distrUniforme' class='btn btn-secondary' onClick=\"distrUniforme();\"> Distr. Uniforme </button></div>";
+            if ($('#selDetConvenio').val() == "" || $('#selDetConvenio').val() == undefined) {
+                content += "<div class='row justify-content-end mt-3 mr-1'><button type='button' id='distrUniforme' class='btn btn-secondary' onClick=\"distrUniforme();\"> Distr. Uniforme </button></div>";
+            }
+            else {
+                content += "<div class='row justify-content-end mt-3 mr-1'><button type='button' id='distrUniforme' class='btn btn-secondary' disabled='true' onClick=\"distrUniforme();\"> Distr. Uniforme </button></div>";
+            }
             $("#modalCenterBody").html(content);
             footer = '';
             footer += "<button type='button' id='aceptar' class='btn btn-secondary' onClick=\"setDetailRon($('#ronTableBody').html());\"> Aceptar </button>";
