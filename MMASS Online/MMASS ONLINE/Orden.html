@@ -1290,7 +1290,7 @@
         function prevSaveOrder() {
             if (!validarOrden()) { return false; }
 
-            if ($("#selOrdenRelacionada").val() != "") {
+            if ($("#selOrdenRelacionada").val() != "" && $("#selOrdenRelacionada").val() != undefined) {
                 var primer_neto = $("#neto1").val();
                 var conf_nc;
                 var conf_fc;
@@ -1379,7 +1379,7 @@
             })
 
 
-            if ($("#selOrdenRelacionada").val() == "") {
+            if ($("#selOrdenRelacionada").val() == "" || $("#selOrdenRelacionada").val() == undefined) {
                 data.id_op_relacionada = -1;
             } else {
                 data.id_op_relacionada = $("#selOrdenRelacionada").val();
@@ -1865,7 +1865,8 @@
 
         //AGREGUE (cantidad = días al seleccionar CPD Sponsor):
         function filterTarifas() {
-            if ($('#selTipoTarifaD').val() == 1) {
+            if (tieneTarifa == false) {
+                if ($('#selTipoTarifaD').val() == 1) {
                 var day1 = new Date(dateToSqlFormat($('#fechaDesdeD').val())); 
                 var day2 = new Date(dateToSqlFormat($('#fechaHastaD').val()));
                 //var difference = Math.abs(day2 - day1);
@@ -1873,73 +1874,74 @@
                 $("#cantidadL").text("Cantidad (días)");
                 $("#cantidadD").val(cantD);
                 //$("#cantidadD").attr("disabled", true);
-            }
-            else {
-                //$("#cantidadD").val("");
-                $("#cantidadD").attr("disabled", false);
-                $("#cantidadL").text("Cantidad");
-            }
+                }
+                else {
+                    //$("#cantidadD").val("");
+                    $("#cantidadD").attr("disabled", false);
+                    $("#cantidadL").text("Cantidad");
+                }
 
-            var parametros = {};
-            var listaParametros = [];
-            var objParametro = {};
+                var parametros = {};
+                var listaParametros = [];
+                var objParametro = {};
 
-            params = {}
-            if ($('#selTipoTarifaD').val() != null) {
-                objParametro.ParameterName = "forma_uso";
-                objParametro.Value = $('#selTipoTarifaD').val();
-                listaParametros.push(objParametro);
-            }
-            if ($('#selTipoAvisoD').val() != null) {
+                params = {}
+                if ($('#selTipoTarifaD').val() != null) {
+                    objParametro.ParameterName = "forma_uso";
+                    objParametro.Value = $('#selTipoTarifaD').val();
+                    listaParametros.push(objParametro);
+                }
+                if ($('#selTipoAvisoD').val() != null) {
+                    objParametro = {};
+                    objParametro.ParameterName = "id_tipo_aviso_dg";
+                    objParametro.Value = $('#selTipoAvisoD').val();
+                    listaParametros.push(objParametro);
+                }
+
+                values = $('#selMediosD').val();
+                values.forEach(function (value) {
+                    objParametro = {};
+                    objParametro.ParameterName = "id_medio";
+                    objParametro.Value = value;
+                    listaParametros.push(objParametro);
+                });
+
+                //AGREGUE:
+                tamaños = $('#selMedidasD').val();
+                tamaños.forEach(function (tamaño) {
+                    objParametro = {};
+                    objParametro.ParameterName = "id_medidadigital";
+                    objParametro.Value = tamaño;
+                    listaParametros.push(objParametro);
+                });
+
+                //AGREGUE:
+                emplazas = $('#selEmplazaD').val();
+                emplazas.forEach(function (emplaza) {
+                    objParametro = {};
+                    objParametro.ParameterName = "id_emplazamiento";
+                    objParametro.Value = emplaza;
+                    listaParametros.push(objParametro);
+                });
+
+                //AGREGUE:
+                if ($('#selAreasGeo').val() != null) {
+                    objParametro = {};
+                    objParametro.ParameterName = "id_areaGeo";
+                    objParametro.Value = $('#selAreasGeo').val();
+                    listaParametros.push(objParametro);
+                }
+
                 objParametro = {};
-                objParametro.ParameterName = "id_tipo_aviso_dg";
-                objParametro.Value = $('#selTipoAvisoD').val();
+                objParametro.ParameterName = "vigente";
+                objParametro.Value = 1;
                 listaParametros.push(objParametro);
+
+                parametros.Parametros = listaParametros;
+
+                return callWS("tarifas", "filter", JSON.stringify(parametros), function (data) { onTarifasGetAll(data, 'selTarifaD', 'id_tarifa_dg', 'descripcion'); })
             }
-
-            values = $('#selMediosD').val();
-            values.forEach(function (value) {
-                objParametro = {};
-                objParametro.ParameterName = "id_medio";
-                objParametro.Value = value;
-                listaParametros.push(objParametro);
-            });
-
-            //AGREGUE:
-            tamaños = $('#selMedidasD').val();
-            tamaños.forEach(function (tamaño) {
-                objParametro = {};
-                objParametro.ParameterName = "id_medidadigital";
-                objParametro.Value = tamaño;
-                listaParametros.push(objParametro);
-            });
-
-            //AGREGUE:
-            emplazas = $('#selEmplazaD').val();
-            emplazas.forEach(function (emplaza) {
-                objParametro = {};
-                objParametro.ParameterName = "id_emplazamiento";
-                objParametro.Value = emplaza;
-                listaParametros.push(objParametro);
-            });
-
-            //AGREGUE:
-            if ($('#selAreasGeo').val() != null) {
-                objParametro = {};
-                objParametro.ParameterName = "id_areaGeo";
-                objParametro.Value = $('#selAreasGeo').val();
-                listaParametros.push(objParametro);
-            }
-
-            objParametro = {};
-            objParametro.ParameterName = "vigente";
-            objParametro.Value = 1;
-            listaParametros.push(objParametro);
-
-            parametros.Parametros = listaParametros;
-
-            return callWS("tarifas", "filter", JSON.stringify(parametros), function (data) { onTarifasGetAll(data, 'selTarifaD', 'id_tarifa_dg', 'descripcion'); })
-
+            
         }
 
 
@@ -2762,9 +2764,10 @@
              callWS("medios", "GetConvenioById", JSON.stringify(id), function (data) { onSeleccionarConvenio(data); });
         }
 
-        //Parametro global para mantener el idConvenio y el idDetConvenio
+        //Parametro global para mantener el idConvenio, el idDetConvenio y si el det tiene tarifa
         var idConvenio = 0;
         var idDetConvenio = 0;
+        var tieneTarifa = false;
 
         function onSeleccionarConvenio(data) {
             ag = data.id_agencia
@@ -2894,17 +2897,23 @@
 
         function onSeleccionarDetConvenio(data) {
 
-            //$("#selTipoAvisoD").val(data.id_tipo_aviso_dg);
-
+            $("#cantidadD").val('');
+            $("#totalD").val('');
             $("#selTipoTarifaD").val(data.forma_uso.id);
+            $("#selTipoTarifaD").val(data.forma_uso.id);
+            $("#selTipoTarifaD").attr("disabled", true);
 
             $("#selAreasGeo").val(data.id_area);
 
             //Carga Tipos de Aviso
             tiposAviso = data.tipos_aviso;
-             if (tiposAviso.length > 0) {
+            if (tiposAviso.length > 0) {
                 onTipoAvisoGetAll(tiposAviso, 'selTipoAvisoD', 'Id_tipo_aviso_dg', 'descripcion', 'Permite_envio_ads')
-             }
+                $("#selTipoAvisoD").attr("disabled", false);
+            }
+            if (tiposAviso.length == 1) {
+                $("#selTipoAvisoD").attr("disabled", true);
+            }
 
             //Carga Medios
             var medios = data.medios;
@@ -2952,6 +2961,7 @@
                     $("#selEmplazaD option[value=" + emplaza.id_emplazamiento + "]").attr("selected", "selected");
                 });
                 $("#selEmplazaD").attr("disabled", true);
+                $(".bootstrap-duallistbox-container").find("selEmplazaD").prop("disabled", true);
             }
             viewListEmplazamientos += "</ul>"
             $("#selEmplazaD").after(viewListEmplazamientos);
@@ -2976,18 +2986,34 @@
             //$("#selPrograma").attr("disabled", true);
             $("#selProductoD").attr("disabled", true);
 
+            //Carga Tarifas
             if (data.tarifa_dg.id_tarifa_dg > 0) {
                 var tarifa = {};
                 tarifa.Id_tarifa_dg = data.tarifa_dg.id_tarifa_dg;
                 callWS("tarifas", "getById", JSON.stringify(tarifa), function (data2) { onTarifasGetAllConv(data2, 'selTarifaD', 'id_tarifa_dg', 'descripcion'); })
+                $("#selTarifaD").attr("disabled", true);
+                tieneTarifa = true;
+                $("#checkTarifaManualD")[0].checked = false;
+                $("#checkTarifaManualD")[0].disabled = true;
             }
             else {
+                $("#selTarifaD").attr("disabled", false);
+                $("#checkTarifaManualD")[0].disabled = false;
                 filterTarifas();
+                tieneTarifa = false;
             }
-            
+
+            //Carga Precio
             $('#precioUnitarioD').val(data.precio_unitario);
 
+            //Carga Descuento
             $('#descuentoD').val(data.porc_desc);
+            if (data.porc_desc > 0) {
+                $("#descuentoD").attr("disabled", true);
+            }
+            else {
+                $("#descuentoD").attr("disabled", false);
+            }
         }
 
         //AGREGUE:

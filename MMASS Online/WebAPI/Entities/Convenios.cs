@@ -308,7 +308,7 @@ select c.id_convenio, c.desc_convenio, cpa.id_formapago, c.id_agencia, c.id_anun
                                     left outer join contactos an on an.id_contacto = c.id_anunciante
 									left outer join convenios_pagos cpa on cpa.id_convenio = c.id_convenio
 									left outer join formas_pago fp on fp.id_formapago = cpa.id_formapago
-                                    where c.es_borrado = 0 and (@fechaActual >= c.fecha_desde and @fechaActual <= c.fecha_hasta)
+                                    where c.es_borrado = 0 and c.estado = 3 and (@fechaActual >= c.fecha_desde and @fechaActual <= c.fecha_hasta)
 									and exists (select id_convenio from conv_dg_detalle where id_convenio=c.id_convenio) ";
             string mifiltro = "";
 
