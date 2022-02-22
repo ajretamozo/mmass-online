@@ -564,7 +564,7 @@
                                         </div>
                                         <div class="col-lg-1" style="padding-right: 20px;padding-left: 20px;padding-top: 4px;">
                                             <label for="bConvenios" class="invisible">Convenios</label>
-                                            <button type="button" data-id="convenios" id="bConvenios" class="btn actions btn-outline-dark btn-sm mr-1" onclick="getConvenios()" style="width: 33px;">
+                                            <button type="button" data-id="convenios" id="bConvenios" class="btn actions btn-outline-dark btn-sm mr-1" onclick="prevGetConvenios()" style="width: 33px;">
                                                 <span class="fa fa-handshake-o" id="brow" title="Buscar Convenios"></span>
                                             </button>
                                         </div>
@@ -2707,8 +2707,18 @@
             return ret;
         }
 
-        function getConvenios() {
-            callWS("empresas", "getall", '', function (data) { onPopulateSelectDone(data, 'selEmpresaC', 'id_empresa', 'razon_social'); }),
+        function prevGetConvenios() {
+            callWS("medios", "getBD", '', function (bd) { getConvenios(bd); });
+        }
+
+        function getConvenios(base) {          
+            if (base == 1) {
+                callWS("empresas", "getall", '', function (data) { onPopulateSelectDone(data, 'selEmpresaC', 'id_empresa', 'razon_social'); });
+            }
+            else if (base == 2) {
+                 $("#selEmpresaC").attr("disabled", true);
+            }
+
             $('#inpDescConv').val("");
             $('#inpDescAgencia').val("");
             $('#inpDescAnunciante').val("");

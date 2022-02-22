@@ -9,6 +9,8 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using WebApi.Entities;
 using WebApi.Helpers;
+using System.Configuration;
+
 
 namespace WebApi.Services
 {
@@ -37,6 +39,7 @@ namespace WebApi.Services
         IEnumerable<Dg_red_GAM> filterRedes(List<Parametro> parametros);
         IEnumerable<Concepto_Negocio> getAllConceptos();
         Dg_emplazamientos getEmplazaByCodigo(long cod, int idRed);
+        int getBD();
     }
 
     public class MedioService : IMedioService
@@ -145,6 +148,11 @@ namespace WebApi.Services
         public Dg_emplazamientos getEmplazaByCodigo(long cod, int idRed)
         {
             return Dg_emplazamientos.getByCodigo2(cod, idRed);
+        }
+
+        public int getBD()
+        {
+            return int.Parse(ConfigurationManager.AppSettings["Base"]);
         }
 
     }

@@ -166,5 +166,12 @@ namespace WebApi.Controllers
             return Ok(emplazamiento);
         }
 
+        [HttpPost("getBD")]
+        public IActionResult getBD()
+        {
+            var BD = _medioService.getBD();
+            return Ok(BD);
+        }
+
     }
 }
