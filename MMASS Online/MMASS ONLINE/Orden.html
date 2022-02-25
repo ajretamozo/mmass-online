@@ -553,8 +553,10 @@
                                     <div class="input-group"> <input type="text" id="inpOrderNumberClient" class="form-control"> </div>
                                 </div>
                                 <div class="col-lg-4">
-                                    <label>Orden Relacionada</label>
-                                    <select class="form-control" id="selOrdenRelacionada" onchange="enableConf()" disabled="disabled"></select>
+                                    <!--<label>Orden Relacionada</label>
+                                    <select class="form-control" id="selOrdenRelacionada" onchange="enableConf()" disabled="disabled"></select>-->
+                                    <label>Descripción</label>
+                                    <div class="input-group"> <input type="text" id="inpDescOP" class="form-control"> </div>
                                 </div>
                                 <div class="col-lg-4">
                                     <div class="row">
@@ -1144,6 +1146,7 @@
             $("#selAnunciante").change(); //para que cargue los productos
     
             $("#inpOrderNumberClient").val(data.nro_orden_ag);
+            $("#inpDescOP").val(data.bitacora);
             $("#inpOrderNumber").val(data.nro_orden);
             $("#inpOrderNumber").attr("id_op_dg", data.id_op_dg);
             if (data.formasPago.length > 0) {
@@ -1208,9 +1211,9 @@
             getArchivos(data.id_op_dg.toString());
             calculateTotals();
 
-            //if (data.id_Google_Ad_Manager > 0 && (data.id_op_dg != undefined && data.id_op_dg != 0)) {
-            //    comprobarModificaciones(data.id_op_dg, data.id_Google_Ad_Manager);
-            //}
+            if (data.id_Google_Ad_Manager > 0 && (data.id_op_dg != undefined && data.id_op_dg != 0)) {
+                comprobarModificaciones(data.id_op_dg, data.id_Google_Ad_Manager);
+            }
         }
 
         function cargarProductosyOPRelacionada(idAgencia, idAnunciante, idProducto, idOpRelacionada) {
@@ -1220,9 +1223,15 @@
             data.anunciante.id = idAnunciante;
             data.agencia.id = idAgencia;
 
+            //$.when(
+            //    callWS("productos", "getProductosPorAnunciante", idAnunciante.toString(), function (data) { onPopulateSelectDone(data, 'selProducto', 'id_producto', 'desc_producto'); }),
+            //    callWS("dg_orden_pub_aps", "getOrdenesRadio", JSON.stringify(data), function (data) { onPopulateSelectDone(data, 'selOrdenRelacionada', 'id', 'descripcion'); })
+            //).then(function () { onCargarProductosyOPRelacionada(idProducto, idOpRelacionada) }, function (data1, data2) {
+            //    console.log("Productos: " + data1[2].statusText + "; Ordenes Relacionadas: " + data2[2].statusText + ";");
+            //    showMessage("Se produjo un error al cargar los campos, intentelo nuevamente", type = "alert");
+            //});
             $.when(
-                callWS("productos", "getProductosPorAnunciante", idAnunciante.toString(), function (data) { onPopulateSelectDone(data, 'selProducto', 'id_producto', 'desc_producto'); }),
-                callWS("dg_orden_pub_aps", "getOrdenesRadio", JSON.stringify(data), function (data) { onPopulateSelectDone(data, 'selOrdenRelacionada', 'id', 'descripcion'); })
+                callWS("productos", "getProductosPorAnunciante", idAnunciante.toString(), function (data) { onPopulateSelectDone(data, 'selProducto', 'id_producto', 'desc_producto'); })
             ).then(function () { onCargarProductosyOPRelacionada(idProducto, idOpRelacionada) }, function (data1, data2) {
                 console.log("Productos: " + data1[2].statusText + "; Ordenes Relacionadas: " + data2[2].statusText + ";");
                 showMessage("Se produjo un error al cargar los campos, intentelo nuevamente", type = "alert");
@@ -1235,17 +1244,17 @@
 
             $("#selProducto option[value=" + idProducto + "]").attr("selected", "selected");
 
-            if ($("#inpEsFacturada").val() == "SI" && idOpRelacionada != null && idOpRelacionada != -1 && idOpRelacionada != 0) {
-                callWS("dg_orden_pub_aps", "getOpRadioById", idOpRelacionada.toString(), function (data) {
-                    var nroOrdenRadio = data.anio + '-' + data.mes + '-' + data.nro_orden;
-                    var htmlOption = "<option>" + nroOrdenRadio + "</option>"
-                    $("#selOrdenRelacionada").html(htmlOption);
-                }),
-                    enableConf();
-            } else if (idOpRelacionada != null && idOpRelacionada != -1 && idOpRelacionada != 0) {
-                $("#selOrdenRelacionada option[value=" + idOpRelacionada + "]").attr("selected", "selected");
-                enableConf();
-            }
+            //if ($("#inpEsFacturada").val() == "SI" && idOpRelacionada != null && idOpRelacionada != -1 && idOpRelacionada != 0) {
+            //    callWS("dg_orden_pub_aps", "getOpRadioById", idOpRelacionada.toString(), function (data) {
+            //        var nroOrdenRadio = data.anio + '-' + data.mes + '-' + data.nro_orden;
+            //        var htmlOption = "<option>" + nroOrdenRadio + "</option>"
+            //        $("#selOrdenRelacionada").html(htmlOption);
+            //    }),
+            //        enableConf();
+            //} else if (idOpRelacionada != null && idOpRelacionada != -1 && idOpRelacionada != 0) {
+            //    $("#selOrdenRelacionada option[value=" + idOpRelacionada + "]").attr("selected", "selected");
+            //    enableConf();
+            //}
         }
 
         function validarOrden() {
@@ -1290,26 +1299,26 @@
         function prevSaveOrder() {
             if (!validarOrden()) { return false; }
 
-            if ($("#selOrdenRelacionada").val() != "" && $("#selOrdenRelacionada").val() != undefined) {
-                var primer_neto = $("#neto1").val();
-                var conf_nc;
-                var conf_fc;
-                $.when(callWS("dg_orden_pub_aps", "getOpRadioById", $("#selOrdenRelacionada").val(), function (data) {
-                    conf_nc = primer_neto / 100 * (data.imp_conf_nc / data.primer_neto * 100);
-                    conf_fc = primer_neto / 100 * (data.imp_conf_fc / data.primer_neto * 100);
-                })).then(function () {
-                    $("#conf_nc").val(conf_nc);
-                    $("#conf_nc").change();
-                    $("#conf_fc").val(conf_fc);
-                    $("#conf_fc").change();
-                    saveOrder();
-                }, function (data1) {
-                    console.log("Error: " + data1[2].statusText + ";");
-                    showMessage("Se produjo un error al guardar, revise los datos e intentelo nuevamente", type = "alert");
-                });
-            } else {
+            //if ($("#selOrdenRelacionada").val() != "" && $("#selOrdenRelacionada").val() != undefined) {
+            //    var primer_neto = $("#neto1").val();
+            //    var conf_nc;
+            //    var conf_fc;
+            //    $.when(callWS("dg_orden_pub_aps", "getOpRadioById", $("#selOrdenRelacionada").val(), function (data) {
+            //        conf_nc = primer_neto / 100 * (data.imp_conf_nc / data.primer_neto * 100);
+            //        conf_fc = primer_neto / 100 * (data.imp_conf_fc / data.primer_neto * 100);
+            //    })).then(function () {
+            //        $("#conf_nc").val(conf_nc);
+            //        $("#conf_nc").change();
+            //        $("#conf_fc").val(conf_fc);
+            //        $("#conf_fc").change();
+            //        saveOrder();
+            //    }, function (data1) {
+            //        console.log("Error: " + data1[2].statusText + ";");
+            //        showMessage("Se produjo un error al guardar, revise los datos e intentelo nuevamente", type = "alert");
+            //    });
+            //} else {
                 saveOrder();
-            }
+            //}
         }
 
         function saveOrder() {
@@ -1323,6 +1332,7 @@
             }
 
             data.Nro_orden_ag = $("#inpOrderNumberClient").val();
+            data.Bitacora = $("#inpDescOP").val();
             data.empresa = {};
             data.empresa.Id_empresa = $("#selEmpresa").val();
             data.id_concepto_negocio = $("#selConceptoN").val();
@@ -1342,7 +1352,6 @@
             data.idFormaPago = "1";
             data.Monto_bruto = $("#montoBruto").val();
             data.Es_anulada = 0;
-            data.Bitacora = "";
             data.Primer_neto = $("#neto1").val();
             data.Seg_neto = $("#neto2").val();
             if ($("#selFacturar").val() == 0) {
@@ -1379,11 +1388,11 @@
             })
 
 
-            if ($("#selOrdenRelacionada").val() == "" || $("#selOrdenRelacionada").val() == undefined) {
+            //if ($("#selOrdenRelacionada").val() == "" || $("#selOrdenRelacionada").val() == undefined) {
                 data.id_op_relacionada = -1;
-            } else {
-                data.id_op_relacionada = $("#selOrdenRelacionada").val();
-            }
+            //} else {
+            //    data.id_op_relacionada = $("#selOrdenRelacionada").val();
+            //}
 
             data.idEjecutivo = "0";
             formaspago = [];
@@ -1510,9 +1519,9 @@
                 //}
 
                 //AGREGUE:
-                if ($('#inpIdOrdenAdServer').val() !== 0 && $('#inpIdOrdenAdServer').val() !== "") {
-                    $("#bSendOrdenAddServer").attr("disabled", true);
-                }
+                //if ($('#inpIdOrdenAdServer').val() !== 0 && $('#inpIdOrdenAdServer').val() !== "") {
+                //    $("#bSendOrdenAddServer").attr("disabled", true);
+                //}
                 //punto de control
                 Detalles = data.op.detalles;
                 recargarRenglones();
@@ -1550,7 +1559,7 @@
                 data.anunciante = {};
                 data.anunciante.id = an;
                 data.agencia.id = ag;
-                callWS("dg_orden_pub_aps", "getOrdenesRadio", JSON.stringify(data), function (data) { onPopulateSelectDone(data, 'selOrdenRelacionada', 'id', 'descripcion'); });
+                //callWS("dg_orden_pub_aps", "getOrdenesRadio", JSON.stringify(data), function (data) { onPopulateSelectDone(data, 'selOrdenRelacionada', 'id', 'descripcion'); });
                 callWS("contactos", "getAgenciasPorAnunciante", an, function (data) { onPopulateSelectDone(data, 'selAgencia', 'id', 'razonSocial'); });
             } else {
                 callWS("contactos", "getAgenciasPorAnunciante", an, function (data) { onPopulateSelectDone(data, 'selAgencia', 'id', 'razonSocial'); });
@@ -1575,7 +1584,7 @@
                 data.anunciante = {};
                 data.anunciante.id = an;
                 data.agencia.id = ag;
-                callWS("dg_orden_pub_aps", "getOrdenesRadio", JSON.stringify(data), function (data) { onPopulateSelectDone(data, 'selOrdenRelacionada', 'id', 'descripcion'); });
+                //callWS("dg_orden_pub_aps", "getOrdenesRadio", JSON.stringify(data), function (data) { onPopulateSelectDone(data, 'selOrdenRelacionada', 'id', 'descripcion'); });
                 callWS("contactos", "getAnunciantesPorAgencia", ag, function (data) { onPopulateSelectDone(data, 'selAnunciante', 'id', 'razonSocial'); });
             }
         }
@@ -2597,14 +2606,34 @@
 
         //AGREGUE:
         function enviarOrdenAddServer() {
-            if ($('#selRedes').val() > 0) {
+            var msj = validarOrdenGam();
+            if (msj != "") {
+                showMessage(msj, 'info')
+            }
+            else {
                 var idOrden = $("#inpOrderNumber").attr("id_op_dg");
                 callWS("googleAdManager", "createOrder", JSON.stringify(idOrden), function (data) { onSendOrder(data); });
             }
-            else {
-                showMessage('Debe seleccionar una red AdServer','info')
-            }
+            //if ($('#selRedes').val() > 0) {
+            //    var idOrden = $("#inpOrderNumber").attr("id_op_dg");
+            //    callWS("googleAdManager", "createOrder", JSON.stringify(idOrden), function (data) { onSendOrder(data); });
+            //}
+            //else {
+            //    showMessage('Debe seleccionar una red AdServer','info')
+            //}
         }
+
+        function validarOrdenGam() {
+            var mensaje = "";
+            if ($('#selRedes').val() == 0) {
+                mensaje += "Debe seleccionar una red AdServer";
+            }
+            if ($("#inpDescOP").val() == "") {
+                mensaje += "\r\n Debe indicar una Descripción de OP";
+            }
+            return mensaje;
+        }
+
         //AGREGUE:
         function enviarLineaAddServer(r) {
             //callWS("googleAdManager", "runAdExchangeReport"); //para probar el reporte de adexchange
@@ -3174,12 +3203,12 @@
 
         function certificar(id_div) {
             var op = "";
-            if ($('#selOrdenRelacionada').val() != '') {
-                op = $('#selOrdenRelacionada option:selected')[0].innerText;
-                op = op.split(' ')[0];
-            } else {
+            //if ($('#selOrdenRelacionada').val() != '') {
+            //    op = $('#selOrdenRelacionada option:selected')[0].innerText;
+            //    op = op.split(' ')[0];
+            //} else {
                 op = $('#inpOrderYear').val() + '-' + $('#inpOrderMonth').val() + '-' + $('#inpOrderNumber').val();
-            }
+            //}
             $("#divCert").show();
             var el = document.getElementById(id_div);
             var element = el.cloneNode();
@@ -3381,15 +3410,15 @@
         }
 
         function enableConf() {
-            if ($("#selOrdenRelacionada").val() != "") {
-                //$("#conf_nc").val(0);
-                //$("#conf_fc").val(0);
-                $("#conf_nc").attr("disabled", true);
-                $("#conf_fc").attr("disabled", true);
-            } else {
+            //if ($("#selOrdenRelacionada").val() != "") {
+            //    //$("#conf_nc").val(0);
+            //    //$("#conf_fc").val(0);
+            //    $("#conf_nc").attr("disabled", true);
+            //    $("#conf_fc").attr("disabled", true);
+            //} else {
                 $("#conf_nc").attr("disabled", false);
                 $("#conf_fc").attr("disabled", false);
-            }
+            //}
         }
         //function loadCertList() {
         //    params = {};

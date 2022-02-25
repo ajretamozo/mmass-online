@@ -75,9 +75,27 @@ namespace WebApi.Services
                 return -2; //El contacto no esta sincronizado
             }
 
-            string nombreOrden = op.Producto_nombre + " " + op.Nro_orden.ToString();
+            //string nombreOrden;
+            //if (op.Bitacora == "")
+            //{
+            //    nombreOrden = op.Producto_nombre + " " + op.Anio.ToString() + " " + op.Mes.ToString() + " " + op.Nro_orden.ToString();
+            //}
+            //else
+            //{
+            //    nombreOrden = op.Bitacora;
+            //}
+            long result = 0;
 
-            long result = GoogleAdManager.CreateOrder(nombreOrden, DB.DLong(op.anunciante.IdContactoDigital));
+            if (op.Id_Google_Ad_Manager > 0)
+            {
+                result = GoogleAdManager.UpdateOrder(op.Bitacora, DB.DLong(op.anunciante.IdContactoDigital), op.Id_Google_Ad_Manager);
+
+            }
+            else
+            {
+                result = GoogleAdManager.CreateOrder(op.Bitacora, DB.DLong(op.anunciante.IdContactoDigital));
+
+            }
 
             if (result > 1)
             {
@@ -451,6 +469,33 @@ namespace WebApi.Services
 
             //se buscan diferencias entre la orden gam y la orden ap; si se encuentran, se devuelve la lista de cambios
             //orden.Observ = ordenGam.name;
+            //if (orden.Bitacora == "")
+            //{
+            //    string[] arrNombre = ordenGam.name.Split(" ");
+            //    string prod = arrNombre[0];
+            //    string anio = arrNombre[1];
+            //    string mes = arrNombre[2];
+            //    string nro_orden = arrNombre[3];
+            //    if (orden.Producto_nombre != prod || orden.Anio != int.Parse(anio) || orden.Mes != int.Parse(mes) || orden.Nro_orden != int.Parse(nro_orden))
+            //    {
+            //        string nombreOrden = orden.Producto_nombre + " " + orden.Anio.ToString() + " " + orden.Mes.ToString() + " " + orden.Nro_orden.ToString();
+            //        Parametro cambioNom = new Parametro();
+            //        cambioNom.ParameterName = "Nombre";
+            //        cambioNom.Value = nombreOrden + "@@@" + ordenGam.name;
+            //        ordYdet.Parametros.Add(cambioNom);
+            //    }
+            //}
+            //else
+            //{
+                if (orden.Bitacora != ordenGam.name)
+                {
+                    Parametro cambioNom = new Parametro();
+                    cambioNom.ParameterName = "Nombre";
+                    cambioNom.Value = orden.Bitacora + "@@@" + ordenGam.name;
+                    ordYdet.Parametros.Add(cambioNom);
+                }
+            //}
+
             if (long.Parse(orden.anunciante.IdContactoDigital) != ordenGam.advertiserId)
             {
                 Parametro cambioAnun = new Parametro();

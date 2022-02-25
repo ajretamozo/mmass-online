@@ -124,14 +124,14 @@
             <div class="table-responsive mt-2">
                 <table class="table table-fixed" id="tablaAnunciantesGAM">
                     <thead>
-                        <tr id="header">
+                        <tr id="header" align="center">
                             <th class="col-xs-3">ID</th>
                             <th class="col-xs-9">Anunciante Ad Server</th>
                             <th class="col-xs-9">Contacto MMASS</th>
 
                         </tr>
                     </thead>
-                    <tbody id="TableRenglones"></tbody>
+                    <tbody id="TableRenglones" align="center"></tbody>
                 </table>
             </div>
 
@@ -252,7 +252,7 @@
 
         function onCargarTabla(data, anunciantesGAM, idRed) {
             $("#TableRenglones tr").remove()
-            var strCabeceraOption = ' <select class="form-control-sm " ';
+            var strCabeceraOption = ' <select class="form-control" style="width: 426px;" ';
             var strOption = llenarStrOption(data);
             //showPleaseWait();
             

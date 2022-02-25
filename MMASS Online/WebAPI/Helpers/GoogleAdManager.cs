@@ -1228,6 +1228,63 @@ namespace WebApi.Helpers
             return result;
         }
 
+        //UPDATE ORDER:
+        public static long UpdateOrder(String name, long advertiserId, long orderId)
+        {
+            long result = -1;
+            //AdManagerUser user = new AdManagerUser();
+            using (OrderService orderService = user.GetService<OrderService>())
+            {
+                // Create a statement to get the order.
+                StatementBuilder statementBuilder = new StatementBuilder()
+                    .Where("id = :id")
+                    .OrderBy("id ASC")
+                    .Limit(1)
+                    .AddValue("id", orderId);
+
+                try
+                {
+                    // Get orders by statement.
+                    OrderPage page =
+                        orderService.getOrdersByStatement(statementBuilder.ToStatement());
+
+                    Order order = page.results[0];
+
+                    // Update the order object.
+                    order.name = name;
+                    order.advertiserId = advertiserId;
+
+                    // Update the orders on the server.
+                    Order[] orders = orderService.updateOrders(new Order[]
+                    {
+                        order
+                    });
+
+                    if (orders != null)
+                    {
+                        foreach (Order updatedOrder in orders)
+                        {
+                            Console.WriteLine(
+                                "Order with ID = '{0}', name = '{1}', advertiser ID = '{2}' " +
+                                "was updated.", updatedOrder.id,
+                                updatedOrder.name, updatedOrder.advertiserId);
+
+                            result = updatedOrder.id;
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("No orders updated.");
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Failed to update orders. Exception says \"{0}\"", e.Message);
+                }
+            }
+            return result;
+        }
+
         public static long ArchivarLineItem(long Id)
         {
             long result = -1;
