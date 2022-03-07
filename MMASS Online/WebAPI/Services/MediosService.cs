@@ -40,6 +40,7 @@ namespace WebApi.Services
         IEnumerable<Concepto_Negocio> getAllConceptos();
         Dg_emplazamientos getEmplazaByCodigo(long cod, int idRed);
         int getBD();
+        String getConString();
     }
 
     public class MedioService : IMedioService
@@ -153,6 +154,17 @@ namespace WebApi.Services
         public int getBD()
         {
             return int.Parse(ConfigurationManager.AppSettings["Base"]);
+        }
+
+        public String getConString()
+        {
+            string csEdit = "";
+            string[] arrCs = DB.conexion.ConnectionString.Split(";");
+            string[] arrIp = arrCs[0].Split("=");
+            string[] arrBd = arrCs[1].Split("=");
+            csEdit = arrIp[1] + " - " + arrBd[1];
+
+            return csEdit;
         }
 
     }

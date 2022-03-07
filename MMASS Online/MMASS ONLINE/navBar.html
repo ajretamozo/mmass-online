@@ -67,16 +67,27 @@
             </li>
         </ul>
         <ul class="navbar-nav ml-auto">
-            <li class="nav-item d-flex align-items-center">
+
+            <!--<li class="nav-item d-flex align-items-center">
+        <a class="nav-link disabled" id="BaseDatos" style="font-size: small;" href="#">Base de Datos</a>
+    </li>-->
+            <li class="nav-item dropdown d-flex align-items-center">
+                <a class="nav-link dropdown-toggle" href="#" id="NombreUsuario" data-toggle="dropdown">
+                    Usuario
+                </a>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="#" onclick="cerrarSesion()">Cerrar Sesión</a>
+                </div>
+            </li>
+            <!--<li class="nav-item d-flex align-items-center">
                 <a class="nav-link disabled" data-id="0" id="NombreUsuario" href="#">Usuario</a>
             </li>
             <li>
                 <a class="nav-link" href="#" onclick="cerrarSesion()">Cerrar Sesión</a>
-            </li>
+            </li>-->
             <li>
-                <a id="version" class="nav-link disabled" href="#" onclick="">
-                    v 1.5.4
-                </a>
+                <a id="version" class="nav-link disabled" href="#" onclick="">v 1.7.0</a>
+                <a class="nav-link disabled" id="BaseDatos" style="font-size: small;" href="#">Base de Datos</a>
             </li>
 
         </ul>
@@ -89,5 +100,14 @@
 </nav>
 <script type="text/javascript">
     setUserName();
+    getCS();
+
+    //function getCS() {
+    //    callWS("medios", "getConString", ''), function (data) { onGetCS(data); });
+    //}
+
+    //function onGetCS(bd) {
+    //    $("#BaseDatos").text(bd);
+    //}
 </script>
 

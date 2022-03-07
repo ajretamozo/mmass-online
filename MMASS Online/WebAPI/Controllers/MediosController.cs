@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using WebApi.Services;
 using WebApi.Entities;
+using Newtonsoft.Json;
 
 namespace WebApi.Controllers
 {
@@ -172,6 +173,14 @@ namespace WebApi.Controllers
             var BD = _medioService.getBD();
             return Ok(BD);
         }
+
+        [HttpPost("getConString")]
+        public IActionResult getConString()
+        {
+            var cn = _medioService.getConString();
+            return Ok(JsonConvert.SerializeObject(cn));
+        }
+
 
     }
 }

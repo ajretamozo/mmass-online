@@ -457,16 +457,19 @@
 
                     <!-- Modal body -->
                     <div class="modal-body" id="modifModalBody">
-
-                        <div class="row">
+                        <div class="row justify-content-center">
+                            <label><b>Cabecera</b></label>
+                        </div>
+                        <div class="row" style="padding-left: 20px; padding-right: 20px;">
                             <!--Tabla Dif Cabecera-->
-                            <div class="table-responsive mt-2 tableFixHead">
+                            <div class="table-responsive mt-2 tableFixHead" style="height: 300px;">
                                 <table class="table table-fixed table-striped" id="tModifCabecera">
                                     <thead class="thead-dark">
                                         <tr>
-                                            <th class="col-xs-3" style="text-align: center;">Campo</th>
-                                            <th class="col-xs-2" style="text-align: center;">Valores Anteriores</th>
-                                            <th class="col-xs-2" style="text-align: center;">Valores Nuevos</th>
+                                            <th class="col-xs" style="text-align: center;">Campo</th>
+                                            <th class="col-xs" style="text-align: center;">Valor Anterior</th>
+                                            <th class="col-xs" style="text-align: center;">Valor Nuevo</th>
+                                            <th class="col-xs" style="text-align: center;">Acción</th>
                                         </tr>
                                     </thead>
                                     <tbody id="TableDifCabecera"></tbody>
@@ -474,8 +477,8 @@
                             </div>
                         </div>
 
-                        <hr>
-                        <div class="row" id="rowTabDifDet">
+                        <!--<hr>-->
+                        <div class="row" id="rowTabDifDet" style="padding-left: 20px; padding-right: 20px;">
                             <!--Tablas Dif Detalles-->
                         </div>
 
@@ -483,9 +486,9 @@
 
                     <!-- Modal footer -->
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-danger" onclick="ActualizarOrden()">Aplicar cambios</button>
+                        <button type="button" class="btn btn-danger" onclick="ActualizarOrden()">Aplicar todo</button>
                         <!--<button type="button" class="btn btn-danger" data-dismiss="modal">Aplicar cambios</button>-->
-                        <button type="button" class="btn btn-danger" data-dismiss="modal">Descartar cambios</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Descartar todo</button>
                     </div>
 
                 </div>
@@ -527,8 +530,8 @@
                                         </div>
                                         <div class="col-lg-2 pt-1">
                                             <label for="bgetOrderASDetais" class="invisible">InfoGAM</label>
-                                            <button type="button" data-id="getOrderASDetails" id="bgetOrderASDetais" disabled="disabled" class="btn actions btn-outline-dark btn-sm mr-1" onclick="getOrderDetails()">
-                                                <span class="fa fa-info-circle" id="brow" title="Ver detalles OrdenAS"></span>
+                                            <button type="button" data-id="getOrderASDetails" id="bgetOrderASDetais" disabled="disabled" class="btn actions btn-outline-dark btn-sm mr-1" onclick="getOrderDetails()" title="Ver detalles OrdenAS">
+                                                <span class="fa fa-info-circle" id="brow"></span>
                                             </button>
                                         </div>
                                     </div>
@@ -566,14 +569,14 @@
                                         </div>
                                         <div class="col-lg-1" style="padding-right: 20px;padding-left: 20px;padding-top: 4px;">
                                             <label for="bConvenios" class="invisible">Convenios</label>
-                                            <button type="button" data-id="convenios" id="bConvenios" class="btn actions btn-outline-dark btn-sm mr-1" onclick="prevGetConvenios()" style="width: 33px;">
-                                                <span class="fa fa-handshake-o" id="brow" title="Buscar Convenios"></span>
+                                            <button type="button" data-id="convenios" id="bConvenios" class="btn actions btn-outline-dark btn-sm mr-1" onclick="prevGetConvenios()" style="width: 33px;" title="Buscar Convenios">
+                                                <span class="fa fa-handshake-o" id="brow"></span>
                                             </button>
                                         </div>
                                         <div class="col-lg-1" style="padding-right: 15px;padding-left: 23px;padding-top: 4px;">
                                             <label for="bBorrConvenios" class="invisible">Convenios</label>
-                                            <button type="button" data-id="borrConvenios" id="bBorrConvenios" class="btn actions btn-outline-dark btn-sm mr-1" disabled="disabled" onclick="nuevaOrden()" style="width: 33px;">
-                                                <span class="fa fa-remove" id="brow" title="Quitar Convenio"></span>
+                                            <button type="button" data-id="borrConvenios" id="bBorrConvenios" class="btn actions btn-outline-dark btn-sm mr-1" disabled="disabled" onclick="nuevaOrden()" style="width: 33px;" title="Quitar Convenio">
+                                                <span class="fa fa-remove" id="brow"></span>
                                             </button>
                                         </div>
                                     </div>
@@ -870,8 +873,8 @@
                                 <div class="col-lg-8"></div>
                                 <div class="col-lg-4 d-flex justify-content-end">
                                     <!--AGREGUÉ BOTON:-->
-                                    <button type="button" data-id="sendOrderAS" id="bSendOrdenAddServer" class="btn actions btn-outline-dark btn-sm mr-1" disabled="disabled" onclick="enviarOrdenAddServer()">
-                                        <span class="fa fa-cloud" id="brow" title="Enviar ordenAddServer"></span>
+                                    <button type="button" data-id="sendOrderAS" id="bSendOrdenAddServer" class="btn actions btn-outline-dark btn-sm mr-1" disabled="disabled" onclick="enviarOrdenAddServer()" title="Enviar ordenAddServer">
+                                        <span class="fa fa-cloud" id="brow"></span>
                                     </button>
                                     <button type="button" id="bGuardarOrden" class="btn actions btn-dark btn-sm mx-1" onclick="prevSaveOrder()">
                                         <span class="fa fa-save"></span> Guardar
@@ -1180,6 +1183,10 @@
             if (data.id_convenio > 0) {
                 idConvenio = data.id_convenio;
                 callWS("medios", "GetConvenioById", JSON.stringify(idConvenio), function (data) { $('#inpDescConvenio').val(data.desc_convenio); });
+                $("#selFacturar").attr("disabled", true);
+                $("#selFPago").attr("disabled", true);
+                $("#selEmpresa").attr("disabled", true);
+                $("#selProducto").attr("disabled", true);
             }
 
             $("#selConceptoN option[value=" + data.id_concepto_negocio + "]").attr("selected", "selected");
@@ -1272,10 +1279,21 @@
                 return false;
             }
             if ($("#fechaDesde").val() == "" || $("#fechaHasta").val() == "") { showMessage("Seleccione las fechas de vigencia de la orden", "error"); return false; }
-
             if ($("#selFPago").val() == null) {
                 showMessage("Seleccione una Forma de Pago", "error");
                 return false;
+            }
+            if ($("#selConceptoN").val() == null) {
+                showMessage("Seleccione un Concepto de Negocio", "error");
+                return false;
+            }
+            if ($("#selEmpresa").val() == null) {
+                showMessage("Seleccione una Empresa", "error");
+                return false;
+            }
+
+            if ($("#selEjecutivo").val() == 0) {
+                callWS("medios", "getBD", '', function (bd) {validarEjecutivo(bd)});
             }
 
             if (Detalles.length < 1) {
@@ -1292,7 +1310,13 @@
             }
 
             return true;
+        }
 
+        function validarEjecutivo(bd) {
+            if (bd == 1) {
+                showMessage("Seleccione un Ejecutivo", "error");
+                return false;
+            }
         }
 
         //Si tiene una OP relacionada, calcula el valor de los confidenciales según los valores de la OP de radio
@@ -1430,7 +1454,8 @@
             data.id_red = $('#selRedes').val();
             callWS("dg_orden_pub_aps", "save", JSON.stringify(data), onSaveOrder);
             $("#bSendOrdenAddServer").attr("disabled", false);
-
+            $("#bConvenios").attr("disabled", true);
+            $("#bBorrConvenios").attr("disabled", true);
         }
         function dateToSqlFormat(date) {
             arr = date.split("/");
@@ -1694,7 +1719,6 @@
             if ((idSelect == "selAnunciante" || idSelect == "selAgencia" || idSelect == "selProducto") && selected != undefined) {
                 //Carga las opciones filtradas per deja seleccionada la que estaba
                 $("#" + idSelect).val(selected.value);
-
             }
 
             if ($("#" + idSelect).attr('multiple') == 'multiple') {
@@ -2286,14 +2310,14 @@
             $('.disableOnEdit').attr("disabled", false);
             //  Botón enviar renglon a AdServer
             if (det.tipo_aviso_dg == "" || det.tipo_aviso_dg == undefined || det.tipo_aviso_dg == null) {
-                str = str + " <button type='button' data-id='" + id + "' disabled id='bSendAddServer" + id + "' class='btn actions btn-outline-dark btn-sm mr-1' onclick='enviarLineaAddServer(this)' > <span class='fa fa-cloud ' id='brow" + id + "' title='Enviar AddServer''></span></button>";
+                str = str + " <button type='button' data-id='" + id + "' disabled id='bSendAddServer" + id + "' class='btn actions btn-outline-dark btn-sm mr-1' onclick='enviarLineaAddServer(this)' title='Enviar AddServer'> <span class='fa fa-cloud ' id='brow" + id + "'></span></button>";
             }
             else {
                 if ((det.tipo_aviso_dg.permite_envio_ads === true || det.tipo_aviso_dg.permite_envio_ads == "true") && (det.id_op_dg != 0) && ($('#inpIdOrdenAdServer').val() !== 0 && $('#inpIdOrdenAdServer').val() !== "")) {
-                str = str + " <button type='button' data-id='" + id + "'  id='bSendAddServer" + id + "' class='btn actions btn-outline-dark btn-sm mr-1' onclick='enviarLineaAddServer(this)' > <span class='fa fa-cloud ' id='brow" + id + "' title='Enviar AddServer''></span></button>";
+                str = str + " <button type='button' data-id='" + id + "'  id='bSendAddServer" + id + "' class='btn actions btn-outline-dark btn-sm mr-1' onclick='enviarLineaAddServer(this)' title='Enviar AddServer'> <span class='fa fa-cloud ' id='brow" + id + "'></span></button>";
                 }
                 else {
-                str = str + " <button type='button' data-id='" + id + "' disabled id='bSendAddServer" + id + "' class='btn actions btn-outline-dark btn-sm mr-1' onclick='enviarLineaAddServer(this)' > <span class='fa fa-cloud ' id='brow" + id + "' title='Enviar AddServer''></span></button>";
+                str = str + " <button type='button' data-id='" + id + "' disabled id='bSendAddServer" + id + "' class='btn actions btn-outline-dark btn-sm mr-1' onclick='enviarLineaAddServer(this)' title='Enviar AddServer'> <span class='fa fa-cloud ' id='brow" + id + "'></span></button>";
                 }
             }
             //if ((det.tipo_aviso_dg.permite_envio_ads === true || det.tipo_aviso_dg.permite_envio_ads == "true") && (det.id_op_dg != 0) && ($('#inpIdOrdenAdServer').val() !== 0 && $('#inpIdOrdenAdServer').val() !== "")) {
@@ -2302,9 +2326,9 @@
             //    str = str + " <button type='button' data-id='" + id + "' disabled id='bSendAddServer" + id + "' class='btn actions btn-outline-dark btn-sm mr-1' onclick='enviarLineaAddServer(this)' > <span class='fa fa-cloud ' id='brow" + id + "' title='Enviar AddServer''></span></button>";
             //}
             //  Botón eliminar renglon
-            str = str + " <button type='button' data-id='" + id + "' class='btn actions btn-outline-dark btn-sm mr-1'  onclick='deleteRenglon(this, " + det.id_Google_Ad_Manager + ")'> <span class='fa fa-remove' title='Eliminar Renglon'></span></button>";
+            str = str + " <button type='button' data-id='" + id + "' class='btn actions btn-outline-dark btn-sm mr-1'  onclick='deleteRenglon(this, " + det.id_Google_Ad_Manager + ")' title='Eliminar Renglon'> <span class='fa fa-remove'></span></button>";
             //  Botón modificar renglon
-            str = str + " <button type='button' data-id='" + id + "' class='btn actions btn-outline-dark btn-sm mr-1'  onclick='cargarModificarRenglon(this)'> <span class='fa fa-edit' title='Modificar Renglon'></span></button>";
+            str = str + " <button type='button' data-id='" + id + "' class='btn actions btn-outline-dark btn-sm mr-1'  onclick='cargarModificarRenglon(this)' title='Modificar Renglon'> <span class='fa fa-edit'></span></button>";
             //  Alerta renglon no guardado
             str = str + "</td> <td class='col-xs-1 pl-0' style='padding-top: 16px'>";
             if (det.id_op_dg == 0) {
@@ -2966,8 +2990,6 @@
                 });
                 $("#porcRon").html(porcHTML);
                 enableRon();
-
-                $("#selMediosD").attr("disabled", true);
             }
             //else {
             //    viewListMedios += "<li class=\"list-group-item\">(Todos)</li>";
@@ -3529,9 +3551,13 @@
                 valNuevo = arr[1];
 
                 rowHTML += "<tr>";
-                rowHTML += "<td class='col-xs-1' style='text-align: center;'> " + parametro.parameterName + "</td > ";
-                rowHTML += "<td class='col-xs-1' style='text-align: center;'> " + valViejo + "</td >";
-                rowHTML += "<td class='col-xs-1' style='text-align: center;'> " + valNuevo + "</td >";
+                rowHTML += "<td class='col-xs' style='text-align: center;'> " + parametro.parameterName + "</td > ";
+                rowHTML += "<td class='col-xs' style='text-align: center;'> " + valViejo + "</td >";
+                rowHTML += "<td class='col-xs' style='text-align: center;'> " + valNuevo + "</td >";
+                rowHTML += "<td class='col-xs pr-0 actions d-flex justify-content-center align-content-start'>";
+                rowHTML += "<button type='button' id='btnApl" + parametro.parameterName + "'  class='btn actions btn-outline-dark btn-sm mr-1' onClick='aplicarCambio(" + valViejo + ", " + valNuevo + ")' title='Aplicar cambio'><span class='fa fa-check'></span></button>";
+                rowHTML += "<button type='button' id='btnDes" + parametro.parameterName + "'  class='btn actions btn-outline-dark btn-sm mr-1' onClick='descartarCambio(" + parametro.parameterName + ")' title='Descartar cambio'><span class='fa fa-remove'></span></button>";
+                rowHTML += "</td>";
                 rowHTML += "</tr>";
 
             });
@@ -3543,40 +3569,41 @@
             rowHTMLd = ''
             $.each(data.listaListaParametros, function (it, listaParametro) {
                 contDet++;
-                rowHTMLd += "<div class='row'>";
-                rowHTMLd += "<div class='table-responsive mt-2 tableFixHead'>"
-                rowHTMLd += "<table class='table table-fixed table-striped' id='tModifDet" + contDet + "'>"
-                rowHTMLd += "<thead class='thead-dark'>"
-                rowHTMLd += "<div class='row'>";
+
+                rowHTMLd += "<label><b style='padding-left: 810px;'>Detalle " + contDet + "</b></label>"
                 rowHTMLd += "<div class='table-responsive mt-2 tableFixHead'>"
                 rowHTMLd += "<table class='table table-fixed table-striped' id='tModifDet" + contDet + "'>"
                 rowHTMLd += "<thead class='thead-dark'>"
                 rowHTMLd += "<tr>"
-                rowHTMLd += "<th class='col-xs-3' style='text-align: center;'>Campo</th>"
-                rowHTMLd += "<th class='col-xs-2' style='text-align: center;'>Valores Anteriores</th>"
-                rowHTMLd += "<th class='col-xs-2' style='text-align: center;'>Valores Nuevos</th>"
+                rowHTMLd += "<th class='col-xs' style='text-align: center;'>Campo</th>"
+                rowHTMLd += "<th class='col-xs' style='text-align: center;'>Valor Anterior</th>"
+                rowHTMLd += "<th class='col-xs' style='text-align: center;'>Valor Nuevo</th>" 
+                rowHTMLd += "<th class='col-xs-2' style = 'text-align: center;'>Acción</th >"
                 rowHTMLd += "</tr>"
                 rowHTMLd += "</thead>"
-                rowHTMLd += "<tbody id='TableDifDet" + contDet + "'></tbody>"
+                rowHTMLd += "<tbody id='TableDifDet" + contDet + "'></tbody>";
+
                  $.each(listaParametro.parametros, function (it, parametro) {
                     arr = parametro.value.split("@@@");
                     valViejo = arr[0];
                     valNuevo = arr[1];
 
                     rowHTMLd += "<tr>";
-                    rowHTMLd += "<td class='col-xs-1' style='text-align: center;'> " + parametro.parameterName + "</td > ";
-                    rowHTMLd += "<td class='col-xs-1' style='text-align: center;'> " + valViejo + "</td >";
-                    rowHTMLd += "<td class='col-xs-1' style='text-align: center;'> " + valNuevo + "</td >";
+                    rowHTMLd += "<td class='col-xs' style='text-align: center;'> " + parametro.parameterName + "</td > ";
+                    rowHTMLd += "<td class='col-xs' style='text-align: center;'> " + valViejo + "</td >";
+                    rowHTMLd += "<td class='col-xs' style='text-align: center;'> " + valNuevo + "</td >";
+                    rowHTMLd += "<td class='col-xs pr-0 actions d-flex justify-content-center align-content-start'>";
+                    rowHTMLd += "<button type='button' id='btnApl" + parametro.parameterName + "D'  class='btn actions btn-outline-dark btn-sm mr-1' onClick='aplicarCambio(" + valViejo + ", " + valNuevo + ")' title='Aplicar cambio'><span class='fa fa-check' ></span></button>";
+                    rowHTMLd += "<button type='button' id='btnDes" + parametro.parameterName + "D'  class='btn actions btn-outline-dark btn-sm mr-1' onClick='descartarCambio(" + parametro.parameterName + "D)' title='Descartar cambio'><span class='fa fa-remove'></span></button>";
+                    rowHTMLd += "</td>";
                     rowHTMLd += "</tr>";
 
                  });
                 rowHTMLd += "</table>"
                 rowHTMLd += "</div>"
-                rowHTMLd += "</div>"
-
-                 $("#rowTabDifDet").append(rowHTMLd);
 
             });
+            $("#rowTabDifDet").append(rowHTMLd);
 
             $("#modifModal").modal('show');
         }

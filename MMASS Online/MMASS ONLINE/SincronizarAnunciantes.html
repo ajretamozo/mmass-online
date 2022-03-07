@@ -58,8 +58,10 @@
     <div id="divNavBar"></div>
 
     <!--CONTENEDOR PRINCIPAL HTML-->
-    <main role="main" class="container">
+    <main role="main" class="container d-flex justify-content-center">
         <div id="divBlock" style="left:0; right:0;top:0; bottom:0;overflow-x: hidden; overflow-y: auto;position:fixed;z-index:1051;outline:0;display:none"></div>
+
+        <!-- Modal -->
         <div class="modal " id="pleaseWaitDialog" data-backdrop="static" data-keyboard="false" style="display:none">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -105,7 +107,8 @@
             </div>
         </div>
         <div id="divMessage" class="alert" style="display:none;cursor:pointer;z-index:10000;" title="Click para cerrar"> </div>
-        <div class="jumbotron" id="divGeneral">
+
+        <div class="jumbotron mt-4 py-4 col-12" id="divGeneral">
             <div class="row">
                 <div class="col-md-4">
                     <label for="descFiltro">Anunciante AdServer: </label>
@@ -262,8 +265,8 @@
                 str = str + "<td class='col-xs-2' > " + anuncianteGAM.idContactoDigital + "</td > ";
                 str = str + "<td class='col-xs-4' > " + anuncianteGAM.razonSocial + "</td >";
                 str = str + '<td class="col-xs-4" >' + strCabeceraOption + " id='sel" + anuncianteGAM.idContactoDigital + "' >" + strOption + '</td >';
-                str = str + "<td class='col-xs-2' > <button type='button' id=button" + anuncianteGAM.idContactoDigital + " class='btn btn-primary' onClick='vincular(" + anuncianteGAM.idContactoDigital +", " + idRed + ")'>Vincular</button> </td ></tr>";
-                str = str + "<tr>";
+                str = str + "<td class='col-xs-2' > <button type='button' id=button" + anuncianteGAM.idContactoDigital + " class='btn btn-primary' onClick='vincular(" + anuncianteGAM.idContactoDigital +", " + idRed + ")'>Vincular</button> </td >";
+                str = str + "</tr>";
 
                 $("#TableRenglones").append(str);
               

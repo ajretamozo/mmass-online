@@ -541,9 +541,10 @@ namespace WebApi.Services
 
             //else
             //{
-            ListaParametro cambiosL = new ListaParametro();
+           
                 foreach (Dg_orden_pub_as detalle in orden.Detalles)
                 {
+                    ListaParametro cambiosL = new ListaParametro();
                     foreach (LineItem linea in lineasGAM)
                     {
                         if (linea.id == detalle.Id_Google_Ad_Manager)

@@ -249,7 +249,7 @@ namespace WebApi.Entities
 
         public static bool cantMaxUsers()
         {
-            string sqlCommand = "select count(*) as cant from usuarios where clave_web is not null";
+            string sqlCommand = "select count(*) as cant from usuarios where clave_web is not null and clave_web != ''";
             bool resultado = false;
             int cant = 0;
 

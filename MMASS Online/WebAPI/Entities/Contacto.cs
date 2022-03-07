@@ -98,7 +98,7 @@ namespace WebApi.Entities
             List<Contacto> col = new List<Contacto>();
             Contacto contact;
             DataTable t = DB.Select(sqlCommand);
-
+          
             foreach (DataRow item in t.Rows)
             {
                 contact = new Contacto

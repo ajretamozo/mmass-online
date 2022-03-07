@@ -19,7 +19,7 @@ namespace WebApi.Helpers
     {
         private static readonly object conexionLock = new object();
         private static SqlConnection _conexion = null;
-        private static SqlConnection conexion {
+        public static SqlConnection conexion {
             get {
                 lock (conexionLock) {
                     if (_conexion == null) {
