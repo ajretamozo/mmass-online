@@ -490,19 +490,19 @@ namespace WebApi.Services
                 if (orden.Bitacora != ordenGam.name)
                 {
                     Parametro cambioNom = new Parametro();
-                    cambioNom.ParameterName = "Nombre";
+                    cambioNom.ParameterName = "Descripción";
                     cambioNom.Value = orden.Bitacora + "@@@" + ordenGam.name;
                     ordYdet.Parametros.Add(cambioNom);
                 }
             //}
 
-            if (long.Parse(orden.anunciante.IdContactoDigital) != ordenGam.advertiserId)
-            {
-                Parametro cambioAnun = new Parametro();
-                cambioAnun.ParameterName = "Anunciante";
-                cambioAnun.Value = orden.Anunciante_nombre + "@@@" + Contacto.getContactoByIdGAMyRed(ordenGam.advertiserId.ToString(), red.Id_red).RazonSocial;
-                ordYdet.Parametros.Add(cambioAnun);
-            }
+            //if (long.Parse(orden.anunciante.IdContactoDigital) != ordenGam.advertiserId)
+            //{
+            //    Parametro cambioAnun = new Parametro();
+            //    cambioAnun.ParameterName = "Anunciante";
+            //    cambioAnun.Value = orden.Anunciante_nombre + "@@@" + Contacto.getContactoByIdGAMyRed(ordenGam.advertiserId.ToString(), red.Id_red).RazonSocial;
+            //    ordYdet.Parametros.Add(cambioAnun);
+            //}
 
             if (ordenGam.totalBudget.microAmount / 1000000 != orden.Seg_neto)
             {

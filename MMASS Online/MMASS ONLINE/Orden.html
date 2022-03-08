@@ -1118,9 +1118,8 @@
                 $("#inpEsFacturada").val("SI");
                 $("#bGuardarOrden").attr("disabled", true);
                 $("#bGuardarOrden").attr("title", "No se pueden guardar ordenes que esten facturadas");
-
-
-            } else {
+            }
+            else {
                 $("#inpEsFacturada").val("NO");
             }
 
@@ -3555,8 +3554,8 @@
                 rowHTML += "<td class='col-xs' style='text-align: center;'> " + valViejo + "</td >";
                 rowHTML += "<td class='col-xs' style='text-align: center;'> " + valNuevo + "</td >";
                 rowHTML += "<td class='col-xs pr-0 actions d-flex justify-content-center align-content-start'>";
-                rowHTML += "<button type='button' id='btnApl" + parametro.parameterName + "'  class='btn actions btn-outline-dark btn-sm mr-1' onClick='aplicarCambio(" + valViejo + ", " + valNuevo + ")' title='Aplicar cambio'><span class='fa fa-check'></span></button>";
-                rowHTML += "<button type='button' id='btnDes" + parametro.parameterName + "'  class='btn actions btn-outline-dark btn-sm mr-1' onClick='descartarCambio(" + parametro.parameterName + ")' title='Descartar cambio'><span class='fa fa-remove'></span></button>";
+                rowHTML += "<button type='button' id='btnApl" + parametro.parameterName + "'  class='btn actions btn-outline-dark btn-sm mr-1' onClick='aplicarCambio(\"" + parametro.parameterName + "\", \"" + valNuevo + "\")' title='Aplicar cambio'><span class='fa fa-check'></span></button>";
+                rowHTML += "<button type='button' id='btnDes" + parametro.parameterName + "'  class='btn actions btn-outline-dark btn-sm mr-1' onClick='descartarCambio(\"" + parametro.parameterName + "\")' title='Descartar cambio'><span class='fa fa-remove'></span></button>";
                 rowHTML += "</td>";
                 rowHTML += "</tr>";
 
@@ -3593,8 +3592,8 @@
                     rowHTMLd += "<td class='col-xs' style='text-align: center;'> " + valViejo + "</td >";
                     rowHTMLd += "<td class='col-xs' style='text-align: center;'> " + valNuevo + "</td >";
                     rowHTMLd += "<td class='col-xs pr-0 actions d-flex justify-content-center align-content-start'>";
-                    rowHTMLd += "<button type='button' id='btnApl" + parametro.parameterName + "D'  class='btn actions btn-outline-dark btn-sm mr-1' onClick='aplicarCambio(" + valViejo + ", " + valNuevo + ")' title='Aplicar cambio'><span class='fa fa-check' ></span></button>";
-                    rowHTMLd += "<button type='button' id='btnDes" + parametro.parameterName + "D'  class='btn actions btn-outline-dark btn-sm mr-1' onClick='descartarCambio(" + parametro.parameterName + "D)' title='Descartar cambio'><span class='fa fa-remove'></span></button>";
+                    rowHTMLd += "<button type='button' id='btnApl" + parametro.parameterName + "D'  class='btn actions btn-outline-dark btn-sm mr-1' onClick='aplicarCambio(\"" + parametro.parameterName + "D, \"" + valNuevo + "\")' title='Aplicar cambio'><span class='fa fa-check' ></span></button>";
+                    rowHTMLd += "<button type='button' id='btnDes" + parametro.parameterName + "D'  class='btn actions btn-outline-dark btn-sm mr-1' onClick='descartarCambio(\"" + parametro.parameterName + "D\")' title='Descartar cambio'><span class='fa fa-remove'></span></button>";
                     rowHTMLd += "</td>";
                     rowHTMLd += "</tr>";
 
@@ -3606,6 +3605,26 @@
             $("#rowTabDifDet").append(rowHTMLd);
 
             $("#modifModal").modal('show');
+        }
+
+        function aplicarCambio(paramName, valNuevo) {
+ 
+
+            switch (paramName)
+                            {
+                                case 'Descripción':
+                                    $("#inpDescOP").val(valNuevo);
+                                    break;
+                                case 'Vigencia Desde':
+                                    $('#fechaDesde').datetimepicker('date', moment(dateToFieldFormat(valNuevo), 'DD/MM/YYYY'));
+                                    break;
+                                case 'Vigencia Hasta':
+                                    $('#fechaHasta').datetimepicker('date', moment(dateToFieldFormat(valNuevo), 'DD/MM/YYYY'));
+                                    break;
+                                case 'Seg Neto':
+                                    $("#neto2").val(valNuevo);
+                                    break;
+                            }
         }
 
     </script>
