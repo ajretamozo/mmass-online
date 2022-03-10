@@ -154,5 +154,12 @@ namespace WebApi.Controllers
             var res = _GoogleAdManagerService.ComprobarModificaciones(order);
             return Ok(res);
         }
+
+        [HttpPost("comprobarModificacionesD")]
+        public IActionResult ComprobarModificacionesD([FromBody] long idGam)
+        {
+            var res = _GoogleAdManagerService.ComprobarModificacionesD(idGam);
+            return Ok(res);
+        }
     }
 }

@@ -2182,6 +2182,7 @@
                 rDetalle.id_det_conv = $('#selDetConvenio').val();
             }
 
+            rDetalle.id_red = $('#selRedes').val();
 
             if (validarDetalle(rDetalle) && validarFechas()) {
                 $('#divDetailsRows').show();
@@ -2605,9 +2606,10 @@
             //AGREGUE:
             if (rDetalle.id_Google_Ad_Manager != 0 && rDetalle.id_Google_Ad_Manager != null) {
                 $("#inpIdAdServer").val(rDetalle.id_Google_Ad_Manager);
-                //$("#inpIdAdServer").attr('disabled', true);
                 $('#inpIdAdServer').css("background-color", "#c3e6cb");
-
+                var idOrden = $("#inpOrderNumber").attr("id_op_dg");
+                var idOrdenGAM = $('#inpIdOrdenAdServer').val();
+                comprobarModificacionesD(rDetalle.id_Google_Ad_Manager);
             }
             else {
                 $('#inpIdAdServer').css("background-color", "#e9ecef");
@@ -2871,6 +2873,14 @@
             $("#selFacturar option[value=" + data.facturar_a + "]").attr("selected", "selected");
             $("#selFPago option[value=" + data.id_formapago + "]").attr("selected", "selected");
             $('#inpDescConvenio').val(data.desc_convenio);
+            if (data.porc_conf_nc != null && data.porc_conf_nc != 0) {
+                $('#conf_nc').val(data.porc_conf_nc);
+                $("#conf_nc").attr("disabled", true);
+            }
+            if (data.porc_conf_fc != null && data.porc_conf_fc != 0) {
+               $('#conf_fc').val(data.porc_conf_fc);
+               $("#conf_fc").attr("disabled", true);
+            }
             $("#selAgencia").attr("disabled", true);
             $("#selAnunciante").attr("disabled", true);
             $("#botLimpiar").attr("disabled", true);
@@ -3610,24 +3620,90 @@
         function aplicarCambio(paramName, valNuevo) {
  
 
-            switch (paramName)
-                            {
-                                case 'Descripción':
-                                    $("#inpDescOP").val(valNuevo);
-                                    break;
-                                case 'Vigencia Desde':
-                                    $('#fechaDesde').datetimepicker('date', moment(dateToFieldFormat(valNuevo), 'DD/MM/YYYY'));
-                                    break;
-                                case 'Vigencia Hasta':
-                                    $('#fechaHasta').datetimepicker('date', moment(dateToFieldFormat(valNuevo), 'DD/MM/YYYY'));
-                                    break;
-                                case 'Seg Neto':
-                                    $("#neto2").val(valNuevo);
-                                    break;
-                            }
+            switch (paramName){
+                case 'Descripción':
+                    $("#inpDescOP").val(valNuevo);
+                    break;
+                case 'Vigencia Desde':
+                    $('#fechaDesde').datetimepicker('date', moment(dateToFieldFormat(valNuevo), 'DD/MM/YYYY'));
+                    break;
+                case 'Vigencia Hasta':
+                    $('#fechaHasta').datetimepicker('date', moment(dateToFieldFormat(valNuevo), 'DD/MM/YYYY'));
+                    break;
+                case 'Seg Neto':
+                    $("#neto2").val(valNuevo);
+                    break;
+                case 'DescripciónD':
+                    $("#descripcionD").val(valNuevo);
+                    break;
+                case 'Vigencia DesdeD':
+                    $('#fechaDesdeD').datetimepicker('date', moment(dateToFieldFormat(valNuevo), 'DD/MM/YYYY'));
+                    break;
+                case 'Vigencia HastaD':
+                    $('#fechaHastaD').datetimepicker('date', moment(dateToFieldFormat(valNuevo), 'DD/MM/YYYY'));
+                    break;
+                case 'Tipo TarifaD':
+                    $("#selTipoTarifaD").val(valNuevo);
+                    break;
+                case 'Precio UnitarioD':
+                    $("#precioUnitarioD").val(valNuevo);
+                    break;
+                case 'DescuentoD':
+                    $("#descuentoD").val(valNuevo);
+                    break;
+                case 'CantidadD':
+                    $("#cantidadD").val(valNuevo);
+                    break;
+                case 'TotalD':
+                    $("#totalD").val(valNuevo);
+                    break;
+            }
+        }
+
+        function comprobarModificacionesD(idDetGAM) {
+            //var op = {};
+            //op.id_op_dg = idOp;
+            //op.id_Google_Ad_Manager = idOpGAM;
+            //var det = {}; 
+            //det.id_detalle = idDet;
+            //det.id_Google_Ad_Manager = idDetGAM;
+            //op.Detalles = push(det);
+
+            callWS("googleAdManager", "comprobarModificacionesD", JSON.stringify(idDetGAM), function (data) { onComprobarModificacionesD(data); });
+        }
+
+        function onComprobarModificacionesD(data) {
+            if (data != null) {
+                onPopulateTablasDifD(data);
+            }
+        }
+
+        function onPopulateTablasDifD(data) {
+            //se genera la tabla diferencias del detalle
+            rowHTML = ''
+            $.each(data.parametros, function (it, parametro) {
+                arr = parametro.value.split("@@@");
+                valViejo = arr[0];
+                valNuevo = arr[1];
+
+                rowHTML += "<tr>";
+                rowHTML += "<td class='col-xs' style='text-align: center;'> " + parametro.parameterName + "</td > ";
+                rowHTML += "<td class='col-xs' style='text-align: center;'> " + valViejo + "</td >";
+                rowHTML += "<td class='col-xs' style='text-align: center;'> " + valNuevo + "</td >";
+                rowHTML += "<td class='col-xs pr-0 actions d-flex justify-content-center align-content-start'>";
+                rowHTML += "<button type='button' id='btnApl" + parametro.parameterName + "'  class='btn actions btn-outline-dark btn-sm mr-1' onClick='aplicarCambio(\"" + parametro.parameterName + "\", \"" + valNuevo + "\")' title='Aplicar cambio'><span class='fa fa-check'></span></button>";
+                rowHTML += "<button type='button' id='btnDes" + parametro.parameterName + "'  class='btn actions btn-outline-dark btn-sm mr-1' onClick='descartarCambio(\"" + parametro.parameterName + "\")' title='Descartar cambio'><span class='fa fa-remove'></span></button>";
+                rowHTML += "</td>";
+                rowHTML += "</tr>";
+
+            });
+
+            $("#TableDifCabecera").html(rowHTML);
+            $("#rowTabDifDet").html('');
+
+            $("#modifModal").modal('show');
         }
 
     </script>
 </body>
-
 </html>

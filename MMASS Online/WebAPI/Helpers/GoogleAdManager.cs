@@ -1420,5 +1420,31 @@ namespace WebApi.Helpers
             return result;
         }
 
+        public static LineItem GetLineItemById(long lineaId)
+        {
+            LineItem result = new LineItem();
+            using (LineItemService lineItemService = user.GetService<LineItemService>())
+            {
+                // Set the ID of the line item.
+                long lineItemId = lineaId;
+
+                // Create a statement to get the line item.
+                StatementBuilder statementBuilder = new StatementBuilder()
+                    .Where("id = :lineItemId")
+                    .OrderBy("id ASC")
+                    .Limit(1)
+                    .AddValue("lineItemId", lineItemId);
+
+                // Get line items by statement.
+                LineItemPage page =
+                    lineItemService.getLineItemsByStatement(statementBuilder.ToStatement());
+                
+                LineItem lineItem = page.results[0];
+
+                result = lineItem;
+            }
+            return result;
+        }
+
     }
 }

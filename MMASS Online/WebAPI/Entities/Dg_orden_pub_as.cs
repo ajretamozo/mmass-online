@@ -58,6 +58,7 @@ namespace WebApi.Entities
         public bool Ron { get; set; }
         public long Id_Google_Ad_Manager { get; set; }
         public int Id_det_conv { get; set; }
+        public int Id_red { get; set; }
         //AGREGUE:
         public Dg_areas_geo areaGeo { get; set; }
 
@@ -191,7 +192,7 @@ namespace WebApi.Entities
             sql += " id_tarifa_dg, tarifa_manual, id_tipo_aviso_dg," +
             "tipo_tarifa, imp_tarifa, importe_unitario, cantidad, monto_bruto, porc_dto,monto_neto, netomanual," +
             "porcconfnc, porcconffc, impconffc, impconfnc, porc_dto1, imp_dto1, id_mtvo_dto1, tipo_dto1, porc_dto2, imp_dto2, id_mtvo_dto2, tipo_dto2," +
-            "porc_dto3, imp_dto3, id_mtvo_dto3, tipo_dto3, porc_dto4, imp_dto4, id_mtvo_dto4, tipo_dto4, porc_dto5, imp_dto5, id_mtvo_dto5, tipo_dto5,id_google_ad_manager, ron, id_area, id_det_conv) " +
+            "porc_dto3, imp_dto3, id_mtvo_dto3, tipo_dto3, porc_dto4, imp_dto4, id_mtvo_dto4, tipo_dto4, porc_dto5, imp_dto5, id_mtvo_dto5, tipo_dto5,id_google_ad_manager, ron, id_area, id_det_conv, id_red) " +
             " values (@id_op_dg, @id_detalle, @anio, @mes, @nro_orden, @fecha_desde, @fecha_hasta," +
             "@id_producto, @descripcion,";
             if (!progisnull)
@@ -201,7 +202,7 @@ namespace WebApi.Entities
             sql += " @id_tarifa_dg, @tarifa_manual, @id_tipo_aviso_dg," +
             "@tipo_tarifa, @imp_tarifa, @importe_unitario, @cantidad, @monto_bruto, @porc_dto,@monto_neto, @netomanual," +
             "@porcconfnc, @porcconffc, @impconffc, @impconfnc, @porc_dto1, @imp_dto1, @id_mtvo_dto1, @tipo_dto1, @porc_dto2, @imp_dto2, @id_mtvo_dto2, @tipo_dto2," +
-            "@porc_dto3, @imp_dto3, @id_mtvo_dto3, @tipo_dto3, @porc_dto4, @imp_dto4, @id_mtvo_dto4, @tipo_dto4, @porc_dto5, @imp_dto5, @id_mtvo_dto5, @tipo_dto5,@id_google_ad_manager, @ron, @id_area, @id_det_conv)";
+            "@porc_dto3, @imp_dto3, @id_mtvo_dto3, @tipo_dto3, @porc_dto4, @imp_dto4, @id_mtvo_dto4, @tipo_dto4, @porc_dto5, @imp_dto5, @id_mtvo_dto5, @tipo_dto5,@id_google_ad_manager, @ron, @id_area, @id_det_conv, @id_red)";
 
             List<SqlParameter> parametros = new List<SqlParameter>()
                 {
@@ -315,6 +316,14 @@ namespace WebApi.Entities
             else
             {
                 parametros.Add(new SqlParameter() { ParameterName = "@id_det_conv", SqlDbType = SqlDbType.Int, Value = DB.DInt(Id_det_conv) });
+            }
+            if (DB.DInt(Id_red) == 0)
+            {
+                parametros.Add(new SqlParameter() { ParameterName = "@id_red", SqlDbType = SqlDbType.Int, Value = DBNull.Value });
+            }
+            else
+            {
+                parametros.Add(new SqlParameter() { ParameterName = "@id_red", SqlDbType = SqlDbType.Int, Value = DB.DInt(Id_red) });
             }
 
             try
@@ -580,6 +589,23 @@ namespace WebApi.Entities
                 }
             }
             return col;
+        }
+
+        public static Dg_orden_pub_as getByIdGam(long idGam, int idRed)
+        {
+            string strSql = " select id_op_dg, id_detalle, anio, mes, nro_orden, fecha_desde, fecha_hasta, id_producto, descripcion, id_programa, id_tarifa_dg," +
+                                   " tarifa_manual, id_tipo_aviso_dg, tipo_tarifa, imp_tarifa, importe_unitario, cantidad, monto_bruto, porc_dto," +
+                                   " monto_neto, netomanual, porcconfnc, porcconffc, impconfnc, impconffc," +
+                                   " porc_dto1, imp_dto1, id_mtvo_dto1, tipo_dto1, porc_dto2, imp_dto2, id_mtvo_dto2, tipo_dto2," +
+                                   " porc_dto3, imp_dto3, id_mtvo_dto3, tipo_dto3, porc_dto4, imp_dto4, id_mtvo_dto4, tipo_dto4," +
+                                   " porc_dto5, imp_dto5, id_mtvo_dto5, tipo_dto5,id_google_ad_manager, ron, id_area, id_det_conv from Dg_orden_pub_as where id_google_ad_manager = " + idGam.ToString() + " and id_red = " + idRed.ToString();
+            DataTable td = DB.Select(strSql);
+            Dg_orden_pub_as det = new Dg_orden_pub_as();
+            if (td.Rows.Count == 1)
+            {
+                det = Dg_orden_pub_as.getDg_orden_pub_as(td.Rows[0]);
+            }
+            return det;
         }
 
     }

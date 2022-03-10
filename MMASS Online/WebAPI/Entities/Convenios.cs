@@ -28,6 +28,8 @@ namespace WebApi.Entities
         public string Agencia_nombre { get; set; }
         public string Anunciante_nombre { get; set; }
         public string Formapago_nombre { get; set; }
+        public float Porc_conf_nc { get; set; }
+        public float Porc_conf_fc { get; set; }
 
         //public static Convenios getById(int id_convenio)
         //{
@@ -88,7 +90,7 @@ namespace WebApi.Entities
             int BD = int.Parse(ConfigurationManager.AppSettings["Base"]);
 
             string sqlCommand = @"select top 1 c.id_convenio, c.desc_convenio, cpa.id_formapago, c.id_agencia, c.id_anunciante, cp.id_producto, c.importe_total,
-                                    c.fecha_desde, c.fecha_hasta, c.estado, c.observaciones, c.facturar_a, c.id_empresa,
+                                    c.fecha_desde, c.fecha_hasta, c.estado, c.observaciones, c.facturar_a, c.id_empresa, c.porc_conf_nc, c.porc_conf_fc, 
                                     ag.razon_social as agencia_nombre, an.razon_social as anunciante_nombre, fp.desc_formapago as formapago_nombre
                                     from convenio_anual_precios c
                                     left outer join contactos ag on ag.id_contacto = c.id_agencia
@@ -144,6 +146,8 @@ namespace WebApi.Entities
                 {
                     resultado.Formapago_nombre = t.Rows[0]["formapago_nombre"].ToString();
                 }
+                resultado.Porc_conf_nc = float.Parse(t.Rows[0]["porc_conf_nc"].ToString());
+                resultado.Porc_conf_fc = float.Parse(t.Rows[0]["porc_conf_fc"].ToString());
             }
             return resultado;
         }
