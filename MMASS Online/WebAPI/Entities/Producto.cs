@@ -49,8 +49,8 @@ namespace WebApi.Entities
                 Alias_producto = item["alias_producto"].ToString(),
                 No_vinculable = DB.DInt(item["No_vinculable"].ToString()),
                 Email = item["email"].ToString(),
-                Fecha_modificacion = DB.DFecha(item["fecha_modificacion"].ToString()),
-                Transferido = item["transferido"].ToString()
+                //Fecha_modificacion = DB.DFecha(item["fecha_modificacion"].ToString()),
+                //Transferido = item["transferido"].ToString()
             };
             return mi;
         }
@@ -127,7 +127,7 @@ namespace WebApi.Entities
             }
             else if (BD == 2)
             {
-                sqlCommand = "select p.id_producto, desc_producto, p.es_borrado, p.alias_producto, p.no_vinculable, p.email, p.fecha_modificacion, p.transferido, " +
+                sqlCommand = "select p.id_producto, desc_producto, p.es_borrado, p.alias_producto, p.no_vinculable, p.email, " +
                                     " c.id_competitivo, c.desc_competitivo, " +
                                     " p.id_imagen_marca, im.desc_tabla as image_marca, " +
                                     " t.id_target_producto, t.desc_target_producto, " +

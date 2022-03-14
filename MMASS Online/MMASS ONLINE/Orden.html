@@ -520,11 +520,45 @@
                                 <!--AGREGUE:-->
                                 <div class="col-lg-4">
                                     <div class="row">
-                                        <div class="col-lg-5">
+                                        <div class="col-lg-6">
+                                            <div class="row">
+                                                <div class="col-lg-10" style="padding-right: 12px;">
+                                                    <label for="inpIdOrdenAdServer">ID AdServer</label>
+                                                    <input type="number" class="form-control" id="inpIdOrdenAdServer" disabled="disabled">
+                                                </div>
+                                                <div class="col-lg-2 pt-1" style="padding-left: 0px;">
+                                                    <label for="bcomprobarModificaciones" class="invisible">ModiGAM</label>
+                                                    <button type="button" data-id="bcomprobarModificaciones" id="bcomprobarModificaciones" disabled="disabled" class="btn actions btn-outline-dark btn-sm mr-1" onclick="comprobarModificacionesButton()" title="Comprobar modificaciones en AdServer">
+                                                        <span class="fa fa-refresh"></span>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6" style="padding-right: 42px;">
+                                            <div class="row">
+                                                <div class="col-lg-10" style="padding-right: 0px;">
+                                                    <label for="selRedes">Red AdServer</label>
+                                                    <select class="form-control" id="selRedes" onchange="onRedSelected()"></select>
+                                                </div>
+                                                <div class="col-lg-2 pt-1" style="padding-left: 10px;">
+                                                    <label for="bgetOrderASDetais" class="invisible">InfoGAM</label>
+                                                    <button type="button" data-id="getOrderASDetails" id="bgetOrderASDetais" disabled="disabled" class="btn actions btn-outline-dark btn-sm mr-1" onclick="getOrderDetails()" title="Ver detalles OrdenAS">
+                                                        <span class="fa fa-info-circle" id="brow"></span>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!--<div class="col-lg-4">
                                             <label for="inpIdOrdenAdServer">ID AdServer</label>
                                             <input type="number" class="form-control" id="inpIdOrdenAdServer" disabled="disabled">
                                         </div>
-                                        <div class="col-lg-5" style="padding-right: 0px;">
+                                        <div class="col-lg-2 pt-1">
+                                            <label for="bcomprobarModificaciones" class="invisible">ModiGAM</label>
+                                            <button type="button" data-id="bcomprobarModificaciones" id="bcomprobarModificaciones" disabled="disabled" class="btn actions btn-outline-dark btn-sm mr-1" onclick="comprobarModificacionesButton()" title="Comprobar modificaciones en AdServer">
+                                                <span class="fa fa-arrows-rotate"></span>
+                                            </button>
+                                        </div>-->
+                                        <!--<div class="col-lg-4" style="padding-right: 0px;">
                                             <label for="selRedes">Red AdServer</label>
                                             <select class="form-control" id="selRedes" onchange="onRedSelected()"></select>
                                         </div>
@@ -533,7 +567,7 @@
                                             <button type="button" data-id="getOrderASDetails" id="bgetOrderASDetais" disabled="disabled" class="btn actions btn-outline-dark btn-sm mr-1" onclick="getOrderDetails()" title="Ver detalles OrdenAS">
                                                 <span class="fa fa-info-circle" id="brow"></span>
                                             </button>
-                                        </div>
+                                        </div>-->
                                     </div>
                                 </div>
                                 <div class="col-lg-4">
@@ -693,9 +727,19 @@
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-lg-3">
-                                            <label for="inpIdAdServer">ID AdServer</label>
-                                            <!--AGREGUE:-->
-                                            <input type="number" class="form-control" id="inpIdAdServer" disabled="disabled">
+                                            <div class="row">
+                                                <div class="col-lg-10">
+                                                    <label for="inpIdAdServer">ID AdServer</label>
+                                                    <!--AGREGUE:-->
+                                                    <input type="number" class="form-control" id="inpIdAdServer" disabled="disabled">
+                                                </div>
+                                                <div class="col-lg-2 pt-1" style="padding-left: 0px;">
+                                                    <label for="bcomprobarModificacionesD" class="invisible">ModiGAM</label>
+                                                    <button type="button" data-id="bcomprobarModificacionesD" id="bcomprobarModificacionesD" disabled="disabled" class="btn actions btn-outline-dark btn-sm mr-1" onclick="comprobarModificacionesDButton()" title="Comprobar modificaciones en AdServer">
+                                                        <span class="fa fa-refresh"></span>
+                                                    </button>
+                                                </div>
+                                            </div>
                                         </div>
                                         <div class="col-lg-3">
                                             <label>Convenio</label>
@@ -1175,6 +1219,7 @@
                 $('#inpIdOrdenAdServer').val(data.id_Google_Ad_Manager);
                 $('#inpIdOrdenAdServer').css("background-color", "#c3e6cb");
                 $("#bgetOrderASDetais").attr("disabled", false);
+                $("#bcomprobarModificaciones").attr("disabled", false);
             }
 
             $("#bConvenios").attr("disabled", true);
@@ -3541,6 +3586,14 @@
 
             callWS("googleAdManager", "comprobarModificaciones", JSON.stringify(data), function (data) { onComprobarModificaciones(data); });
         }
+
+        function comprobarModificacionesButton() {
+            var data = {};
+            data.id_op_dg = $("#inpOrderNumber").attr("id_op_dg");
+            data.id_Google_Ad_Manager = $('#inpIdOrdenAdServer').val();;
+
+            callWS("googleAdManager", "comprobarModificaciones", JSON.stringify(data), function (data) { onComprobarModificaciones(data); });
+        }        
 
         function onComprobarModificaciones(data) {
             if (data != null) {

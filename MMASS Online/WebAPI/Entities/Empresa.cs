@@ -64,7 +64,7 @@ namespace WebApi.Entities
             {
                 sqlCommand = @"select id_empresa,nombre,razon_social,cuit,dgr,inicio,domicilio,localidad,provincia,pais,telefono,fax,email,web,
                     ingreso,cliente,ciemail,citel,cifax,ciweb,version,denom,minutos_hora,es_borrado,kla,installdate,lastaccessdate,
-	                cod_sociedad_sap,direc_exten,id_cond_iva,id_localidad,Id_cond_ib,logo,usa_certif from empresa
+	                cod_sociedad_sap,direc_exten,id_cond_iva,id_localidad,Id_cond_ib,logo from empresa
                     where id_empresa = " + Id.ToString();
             }
 
@@ -81,7 +81,7 @@ namespace WebApi.Entities
                 else if (BD == 2)
                 {
                     resultado.Id_empresa = DB.DInt(t.Rows[0]["id_empresa"].ToString());
-                }             
+                }
                 resultado.Nombre = t.Rows[0]["nombre"].ToString();
                 if (BD == 1)
                 {
@@ -128,7 +128,10 @@ namespace WebApi.Entities
                 resultado.Id_localidad = DB.DInt(t.Rows[0]["id_localidad"].ToString());
                 resultado.Id_cond_ib = DB.DInt(t.Rows[0]["Id_cond_ib"].ToString());
                 resultado.Logo_url = t.Rows[0]["logo"].ToString();
-                resultado.Usa_certif = (t.Rows[0]["usa_certif"].ToString() == "1");
+                if (BD == 1)
+                {
+                    resultado.Usa_certif = (t.Rows[0]["usa_certif"].ToString() == "1");
+                }
             }
             return resultado;
         }
@@ -326,8 +329,8 @@ namespace WebApi.Entities
                 Id_cond_iva = DB.DInt(item["id_cond_iva"].ToString()),
                 Id_localidad = DB.DInt(item["id_localidad"].ToString()),
                 Id_cond_ib = DB.DInt(item["Id_cond_ib"].ToString()),
-                Logo_url = item["logo_url"].ToString(),
-                Usa_certif = (item["usa_certif"].ToString() == "1")
+                Logo_url = item["logo_url"].ToString()
+                //Usa_certif = (item["usa_certif"].ToString() == "1")
             };
             return miEmpresa;
         }
@@ -346,7 +349,7 @@ namespace WebApi.Entities
             {
                 sqlCommand = " select id_empresa,nombre,razon_social,cuit,dgr,inicio,domicilio,localidad,provincia,pais,telefono,fax,email,web," +
                              " ingreso,cliente,ciemail,citel,cifax,ciweb,version,denom,minutos_hora,es_borrado,kla,installdate,lastaccessdate," +
-                             " cod_sociedad_sap,direc_exten,id_cond_iva,id_localidad,Id_cond_ib,logo_url,usa_certif from empresa where es_borrado=0";
+                             " cod_sociedad_sap,direc_exten,id_cond_iva,id_localidad,Id_cond_ib,logo_url from empresa where es_borrado=0";
             }
 
             List<Empresa> col = new List<Empresa>();

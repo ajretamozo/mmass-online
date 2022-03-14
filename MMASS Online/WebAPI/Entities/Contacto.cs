@@ -9,7 +9,7 @@ namespace WebApi.Entities
 {
     public class Contacto
     {
-        public int  Id { get; set; }
+        public int Id { get; set; }
         public int Id_contacto { get; set; }
         public string RazonSocial { get; set; }
         public string IdContactoDigital { get; set; }
@@ -23,7 +23,7 @@ namespace WebApi.Entities
             string sqlCommand = @"Select c.id_contacto, c.no_facturable, razon_social, g.id_contactodigital from contactos c
                                   left join dg_contacto_red_GAM g on c.id_contacto = g.id_contacto
                                   where c.id_contacto = " + Id.ToString();
-            
+
             Contacto contacto = new Contacto();
             contacto.IdContactosDigitales = new List<string>();
             DataTable t = DB.Select(sqlCommand);
@@ -38,7 +38,7 @@ namespace WebApi.Entities
                     contacto.IdContactosDigitales.Add(item["id_contactodigital"].ToString());
                     contacto.RazonSocial = item["razon_social"].ToString();
                     contacto.No_facturable = !(item["no_facturable"].ToString() == "1");
-                };                
+                };
             }
             return contacto;
         }
@@ -98,7 +98,7 @@ namespace WebApi.Entities
             List<Contacto> col = new List<Contacto>();
             Contacto contact;
             DataTable t = DB.Select(sqlCommand);
-          
+
             foreach (DataRow item in t.Rows)
             {
                 contact = new Contacto
@@ -121,7 +121,7 @@ namespace WebApi.Entities
             {
                 sqlCommand = @"Select c.id_contacto, c.razon_social from contactos c , roles r, vinculos v where r.id_contacto = c.id_contacto  and es_borrado = 0 
                                       and r.tipo_rol = 1 and c.id_contacto = v.id_contacto and v.tipo_rol_padre= 0 
-                                      and v.id_contacto_padre=" + idAgencia.ToString() + " order by razon_social "; 
+                                      and v.id_contacto_padre=" + idAgencia.ToString() + " order by razon_social ";
             }
             else if (BD == 2)
             {
