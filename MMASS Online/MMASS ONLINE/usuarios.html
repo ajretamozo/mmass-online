@@ -98,6 +98,8 @@
             </div>
         </div>
 
+        <div id="divMessage" class="alert" style="display:none;cursor:pointer;z-index:10000;" title="Click para cerrar" onclick="$('#divMessage').hide('slideDown')"> </div>
+
         <div class="card mb-3" style="max-width: 100rem; margin-top: 5rem;">
             <div class="card-header d-flex align-items-center" style="margin-bottom: 1rem;">
                 <span id="headerTitle" class="mr-auto dataTitle">Usuarios</span>
@@ -262,6 +264,7 @@
             callWS("users", "removeUser", JSON.stringify(data), function (data) {
                 if (data == true) {
                     location.href = "/usuariosList.html";
+                    showMessage("Usuario eliminado", "info");
                 } else {
                     console.log(data);
                 }
@@ -291,13 +294,18 @@
                 if (data.id_usuario == 0) {
                     callWS("users", "cantMaxUsers", '', function (data1) {
                         if (data1 == true) {
-                            showMessage("Se a alcanzado el límite de Usuarios (20)", "info");
+                            showMessage("Se a alcanzado el límite de Usuarios (20)", "error");
 
-                        } else {
+                        }
+                        else {
                             callWS("users", "saveUser", JSON.stringify(data), function (data) {
-                                if (data == true) {
+                                if (data == 0) {
                                     location.href = "/usuariosList.html";
-                                } else {
+                                }
+                                else if (data == 1) {
+                                    showMessage("El nombre de usuario ya existe", "error");
+                                }
+                                else {
                                     console.log(data);
                                 }
                             });

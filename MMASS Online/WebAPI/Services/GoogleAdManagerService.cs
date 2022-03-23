@@ -505,13 +505,13 @@ namespace WebApi.Services
             //    ordYdet.Parametros.Add(cambioAnun);
             //}
 
-            if (ordenGam.totalBudget.microAmount / 1000000 != orden.Seg_neto)
-            {
-                Parametro cambioTotal = new Parametro();
-                cambioTotal.ParameterName = "Seg Neto";
-                cambioTotal.Value = orden.Seg_neto.ToString() + "@@@" + (ordenGam.totalBudget.microAmount / 1000000).ToString();
-                ordYdet.Parametros.Add(cambioTotal);
-            }
+            //if (ordenGam.totalBudget.microAmount / 1000000 != orden.Seg_neto)
+            //{
+            //    Parametro cambioTotal = new Parametro();
+            //    cambioTotal.ParameterName = "Seg Neto";
+            //    cambioTotal.Value = orden.Seg_neto.ToString() + "@@@" + (ordenGam.totalBudget.microAmount / 1000000).ToString();
+            //    ordYdet.Parametros.Add(cambioTotal);
+            //}
 
             if (System.DateTime.Parse(DateTimeUtilities.ToString(ordenGam.startDateTime, "yyyy/MM/dd")) != orden.Fecha)
             {
@@ -850,11 +850,11 @@ namespace WebApi.Services
                 string empDesc = Dg_emplazamientos.getByCodigo2(idEmpla, idRed).Descripcion;
                 if (empGam == "")
                 {
-                    empGam = empDesc;
+                    empGam = empDesc + "$@%" + idEmpla.ToString();
                 }
                 else
                 {
-                    empGam += ", " + empDesc;
+                    empGam += ", " + empDesc + "$@%" + idEmpla.ToString();
                 }
             }
 
@@ -993,13 +993,14 @@ namespace WebApi.Services
                         if (idEmpla == emp.Codigo_emplazamiento)
                         {
                             existeEmp = true;
+                            break;
                         }
                     }
                     if (existeEmp == false)
                     {
                         cambiosL.Parametros.Add(ImprimirEmplazas(detalle.Emplazamientos, linea.targeting.inventoryTargeting.targetedPlacementIds, red.Id_red));
                     }
-                    break;
+                    //break;
                 }
             }
 
@@ -1010,11 +1011,10 @@ namespace WebApi.Services
             }
             else
             {
-                bool existe = false;
                 foreach (Dg_orden_pub_medidas med in detalle.Medidas)
                 {
                     string medAg = med.Ancho.ToString() + "x" + med.Alto.ToString();
-
+                    bool existe = false;
                     foreach (CreativePlaceholder cph in linea.creativePlaceholders)
                     {
                         string medGam = cph.size.width.ToString() + "x" + cph.size.height.ToString();
@@ -1022,13 +1022,14 @@ namespace WebApi.Services
                         if (String.Equals(medGam, medAg))
                         {
                             existe = true;
+                            break;
                         }
                     }
                     if (existe == false)
                     {
                         cambiosL.Parametros.Add(ImprimirMedidas(detalle.Medidas, linea.creativePlaceholders));
                     }
-                    break;
+                    //break;
                 }
             }
 
@@ -1056,13 +1057,13 @@ namespace WebApi.Services
                 cambiosL.Parametros.Add(cambioLCant);
             }
 
-            if ((linea.budget.microAmount / 1000000) != detalle.Monto_neto)
-            {
-                Parametro cambioLImpTotal = new Parametro();
-                cambioLImpTotal.ParameterName = "Total";
-                cambioLImpTotal.Value = detalle.Monto_neto.ToString() + "@@@" + (linea.budget.microAmount / 1000000).ToString();
-                cambiosL.Parametros.Add(cambioLImpTotal);
-            }
+            //if ((linea.budget.microAmount / 1000000) != detalle.Monto_neto)
+            //{
+            //    Parametro cambioLImpTotal = new Parametro();
+            //    cambioLImpTotal.ParameterName = "Total";
+            //    cambioLImpTotal.Value = detalle.Monto_neto.ToString() + "@@@" + (linea.budget.microAmount / 1000000).ToString();
+            //    cambiosL.Parametros.Add(cambioLImpTotal);
+            //}
 
             if (System.DateTime.Parse(DateTimeUtilities.ToString(linea.startDateTime, "yyyy/MM/dd")) != detalle.Fecha_desde)
             {

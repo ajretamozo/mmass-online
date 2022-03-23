@@ -98,6 +98,8 @@
             </div>
         </div>
 
+        <div id="divMessage" class="alert" style="display:none;cursor:pointer;z-index:10000;" title="Click para cerrar" onclick="$('#divMessage').hide('slideDown')"> </div>
+
         <div class="card mb-3" style="max-width: 100rem; margin-top: 5rem;">
             <div class="card-header d-flex align-items-center" style="margin-bottom: 1rem;">
                 <span id="headerTitle" class="mr-auto dataTitle">Redes AdServer</span>
@@ -274,17 +276,24 @@
             if ($("#descRed").val() == "") {
                 error.push("Descripcion");
             }
+            if ($("#codRed").val() == "") {
+                error.push("Código");
+            }
 
             if (error.length == 0) {
                 data.id_red = $('#idRed').attr("value");
                 data.descripcion = $("#descRed").val();
                 data.codigo_red = $('#codRed').val();
 
-                callWS("medios", "saveRed", JSON.stringify(data), function (data) {
-                    if (data == true) {
+                callWS("medios", "saveRed", JSON.stringify(data), function (resp) {
+                    if (resp == 0) {
                         location.href = "/redesGamlist.html";
-                    } else {
-                        console.log(data);
+                    }
+                    else if (resp == 1) {
+                        showMessage("El nombre de red ya existe", "error");
+                    }
+                    else {
+                       console.log(resp);
                     }
                 });
 

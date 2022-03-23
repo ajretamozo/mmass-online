@@ -140,6 +140,7 @@ namespace WebApi.Entities
             {
                 mi.areaGeo = Dg_areas_geo.getById(DB.DInt(item["Id_area"].ToString()));
             }
+            mi.Id_red = DB.DInt(item["Id_red"].ToString());
 
             mi.Medios = new List<Dg_orden_pub_medios>();
             // Medios
@@ -598,7 +599,7 @@ namespace WebApi.Entities
                                    " monto_neto, netomanual, porcconfnc, porcconffc, impconfnc, impconffc," +
                                    " porc_dto1, imp_dto1, id_mtvo_dto1, tipo_dto1, porc_dto2, imp_dto2, id_mtvo_dto2, tipo_dto2," +
                                    " porc_dto3, imp_dto3, id_mtvo_dto3, tipo_dto3, porc_dto4, imp_dto4, id_mtvo_dto4, tipo_dto4," +
-                                   " porc_dto5, imp_dto5, id_mtvo_dto5, tipo_dto5,id_google_ad_manager, ron, id_area, id_det_conv from Dg_orden_pub_as where id_google_ad_manager = " + idGam.ToString() + " and id_red = " + idRed.ToString();
+                                   " porc_dto5, imp_dto5, id_mtvo_dto5, tipo_dto5,id_google_ad_manager, ron, id_area, id_det_conv, id_red from Dg_orden_pub_as where id_google_ad_manager = " + idGam.ToString() + " and id_red = " + idRed.ToString();
             DataTable td = DB.Select(strSql);
             Dg_orden_pub_as det = new Dg_orden_pub_as();
             if (td.Rows.Count == 1)

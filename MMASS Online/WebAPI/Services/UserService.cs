@@ -17,7 +17,7 @@ namespace WebApi.Services
     {
         User Authenticate(string username, string password);
         IEnumerable<User> GetAll();
-        bool saveUser(Usuario miobj);
+        int saveUser(Usuario miobj);
         IEnumerable<Usuario> getAllUsers();
         IEnumerable<Usuario> getUserByNom(string nom);
         bool deleteUser(Usuario miobj);
@@ -90,11 +90,11 @@ namespace WebApi.Services
             //password = "lmn2011$";
 
 
-            Usuario uMMASS = Usuario.getByNombre(username);
+            //Usuario uMMASS = Usuario.getByNombre(username);
             User user= null;
 
 
-            uMMASS = Usuario.getByNombre(username);
+            Usuario uMMASS = Usuario.getByNombre(username);
             if (uMMASS != null)
             {
                 if (Decencriptar(uMMASS.Clave_web, "silverblue") == password) //Heredado MMASS GRAPH
@@ -139,7 +139,7 @@ namespace WebApi.Services
             });
         }
 
-        public bool saveUser(Usuario miobj)
+        public int saveUser(Usuario miobj)
         {
             miobj.Clave_web = Encriptar(miobj.Clave_web, "silverblue");
             return miobj.save();

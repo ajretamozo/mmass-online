@@ -35,7 +35,7 @@ namespace WebApi.Services
         Dg_red_GAM getRedById(int id);
         List<string> getCodigosRed();
         bool deleteRed(Dg_red_GAM miobj);
-        bool saveRed(Dg_red_GAM miobj);
+        int saveRed(Dg_red_GAM miobj);
         IEnumerable<Dg_red_GAM> filterRedes(List<Parametro> parametros);
         IEnumerable<Concepto_Negocio> getAllConceptos();
         Dg_emplazamientos getEmplazaByCodigo(long cod, int idRed);
@@ -131,7 +131,7 @@ namespace WebApi.Services
             return miobj.deleteRed();
         }
 
-        public bool saveRed(Dg_red_GAM miobj)
+        public int saveRed(Dg_red_GAM miobj)
         {
             return miobj.save();
         }

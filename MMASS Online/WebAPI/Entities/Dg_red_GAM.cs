@@ -88,25 +88,34 @@ namespace WebApi.Entities
             return col;
         }
 
-        public bool save()
+        public int save()
         {
+            int respuesta = 0;
             string sql = "";
 
             if (Id_red == 0)
             {
-                string sqlId = "select max(id_red) as maximo from dg_red_GAM";
-                int nuevoId = 0;
-                DataTable t = DB.Select(sqlId);
-
-                if (t.Rows.Count == 1)
+                if (existeRed(Descripcion) == true)
                 {
-                    nuevoId = DB.DInt(t.Rows[0]["maximo"].ToString());
-                    nuevoId++;
-                    Id_red = nuevoId;
+                    respuesta = 1;
+                    return respuesta;
                 }
+                else
+                {
+                    string sqlId = "select max(id_red) as maximo from dg_red_GAM";
+                    int nuevoId = 0;
+                    DataTable t = DB.Select(sqlId);
 
-                sql = "insert into dg_red_GAM (id_red, descripcion, codigo_red, es_borrado)" +
-                                     " values (@id_red, @descripcion, @codigo_red, 0)";
+                    if (t.Rows.Count == 1)
+                    {
+                        nuevoId = DB.DInt(t.Rows[0]["maximo"].ToString());
+                        nuevoId++;
+                        Id_red = nuevoId;
+                    }
+
+                    sql = "insert into dg_red_GAM (id_red, descripcion, codigo_red, es_borrado)" +
+                                         " values (@id_red, @descripcion, @codigo_red, 0)";
+                } 
             }
 
             else
@@ -130,9 +139,10 @@ namespace WebApi.Entities
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                return false;
+                respuesta = 2;
+                return respuesta;
             }
-            return true;
+            return respuesta;
         }
 
         public bool deleteRed()
@@ -179,6 +189,20 @@ namespace WebApi.Entities
                 col.Add(elem);
             }
             return col;
+        }
+
+        public static bool existeRed(string red)
+        {
+            string sqlCommand = "select id_red from dg_red_GAM where es_borrado = 0 and descripcion = '" + red + "'";
+            bool resultado = false;
+
+            DataTable t = DB.Select(sqlCommand);
+
+            if (t.Rows.Count > 0)
+            {
+                resultado = true;
+            }
+            return resultado;
         }
 
     }

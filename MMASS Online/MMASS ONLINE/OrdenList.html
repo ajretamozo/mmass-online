@@ -232,6 +232,7 @@
                                 <th>Anunciante</th>
                                 <th>Producto</th>
                                 <th>Neto</th>
+                                <th>Facturada</th>
                             </tr>
                         </thead>
                         <tbody id="TableRenglones" class="small" align="center"></tbody>
@@ -351,6 +352,13 @@
             rowHTML += "<td class='col-xs-1'>" + iord.anunciante.razonSocial + "</td>";
             rowHTML += "<td class='col-xs-1'>" + iord.producto.desc_producto + "</td>";
             rowHTML += "<td class='col-xs-1'>$ " + formatearMonto(iord.seg_neto) + "</td>";
+            if (iord.es_facturada) {
+                rowHTML += "<td class='col-xs-1'>";
+                rowHTML += "<span class='fa fa-check' id='brow" + iord.id_op_dg + "' title='Orden facturada''></span></td>";
+            }
+            else {
+                rowHTML += "<td class='col-xs-1'></td>";
+            }
             //Acciones
             //rowHTML += "<td id='colAcciones' class='col-xs-2 d-flex justify-content-around'>"
             //rowHTML += "<button type='button' class='btn btn-outline-dark btn-sm' onclick=\"openOrder("+iord.id_tarifa_dg+",'view')\"><span class='fa fa-eye'></span> </button>"

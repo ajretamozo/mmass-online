@@ -82,7 +82,7 @@ namespace WebApi.Entities
         public static Usuario getByNombre(string  pNombre)
         {
             string sqlCommand = " select id_usuario, nombre, nombrel, tipodoc, nrodoc, f_alta, f_baja, clave, clave_web, email, adusuario, Ambito, " +
-                                " usrrol, idioma, sistema from usuarios where nombre = '" + pNombre+"'";
+                                " usrrol, idioma, sistema from usuarios where nombre = '" + pNombre+ "' and (f_baja is null or f_baja = '') ";
             Usuario resultado= null;
            
             DataTable t = DB.Select(sqlCommand);
@@ -109,25 +109,34 @@ namespace WebApi.Entities
             return resultado;
         }
 
-        public bool save()
+        public int save()
         {
+            int respuesta = 0;
             string sql = "";
             F_alta = DateTime.Now;
             if (Id_usuario == 0)
             {
-                string sqlId = "select max(id_usuario) as maximo from usuarios";
-                int nuevoId = 0;
-                DataTable t = DB.Select(sqlId);
-
-                if (t.Rows.Count == 1)
+                if (existeUser(Nombre) == true)
                 {
-                    nuevoId = DB.DInt(t.Rows[0]["maximo"].ToString());
-                    nuevoId++;
-                    Id_usuario = nuevoId;
+                    respuesta = 1;
+                    return respuesta;
                 }
+                else
+                {
+                    string sqlId = "select max(id_usuario) as maximo from usuarios";
+                    int nuevoId = 0;
+                    DataTable t = DB.Select(sqlId);
 
-                sql = "insert into usuarios (id_usuario, nombre, nombrel, tipodoc, nrodoc, f_alta, clave, clave_web, email, adusuario, usrrol)" +
-                                   " values (@id_usuario, @nombre, @nombrel, 0, '', @f_alta, '', @clave_web, '', '', 0)";
+                    if (t.Rows.Count == 1)
+                    {
+                        nuevoId = DB.DInt(t.Rows[0]["maximo"].ToString());
+                        nuevoId++;
+                        Id_usuario = nuevoId;
+                    }
+
+                    sql = "insert into usuarios (id_usuario, nombre, nombrel, tipodoc, nrodoc, f_alta, clave, clave_web, email, adusuario, usrrol)" +
+                                       " values (@id_usuario, @nombre, @nombrel, 0, '', @f_alta, '', @clave_web, '', '', 0)";
+                }
             }
 
             else
@@ -155,15 +164,16 @@ namespace WebApi.Entities
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                return false;
+                respuesta = 2;
+                return respuesta;
             }
-            return true;
+            return respuesta;
         }
 
         public static List<Usuario> getAllUsers()
         {
             string sqlCommand = " select id_usuario, nombre, nombrel, tipodoc, nrodoc, f_alta, f_baja, clave, clave_web, email, adusuario, Ambito, " +
-                                " usrrol, idioma, sistema from usuarios where clave_web is not null and clave_web != ''";
+                                " usrrol, idioma, sistema from usuarios where clave_web is not null and clave_web != '' and (f_baja is null or f_baja = '')";
 
             List<Usuario> col = new List<Usuario>();
             Usuario user;
@@ -180,7 +190,7 @@ namespace WebApi.Entities
         public static List<Usuario> getByNombreList(string pNombre)
         {
             string sqlCommand = " select id_usuario, nombre, nombrel, tipodoc, nrodoc, f_alta, f_baja, clave, clave_web, email, adusuario, Ambito, " +
-                                " usrrol, idioma, sistema from usuarios where clave_web is not null and nombre like '%" + pNombre + "%'";
+                                " usrrol, idioma, sistema from usuarios where clave_web is not null and nombre like '%" + pNombre + "%' and (f_baja is null or f_baja = '')";
             List<Usuario> col = new List<Usuario>();
             Usuario user;
             DataTable t = DB.Select(sqlCommand);
@@ -203,7 +213,7 @@ namespace WebApi.Entities
             }
             else
             {
-                sql = "update usuarios set nombre = '', clave_web = '' where id_usuario = @id_usuario";
+                sql = "update usuarios set F_BAJA = GETDATE() where id_usuario = @id_usuario";
             }
                 
             List<SqlParameter> parametros = new List<SqlParameter>()
@@ -283,6 +293,20 @@ namespace WebApi.Entities
                 {
                     resultado = true;
                 }
+            }
+            return resultado;
+        }
+
+        public static bool existeUser(string user)
+        {
+            string sqlCommand = "select id_usuario from usuarios where (f_baja is null or f_baja = '') and nombre = '" + user + "'";
+            bool resultado = false;
+
+            DataTable t = DB.Select(sqlCommand);
+
+            if (t.Rows.Count > 0)
+            {
+                resultado = true;
             }
             return resultado;
         }

@@ -113,11 +113,11 @@ function showMessage(message, type = "success") {
     if (type == "success") {
         $("#divMessage").addClass("alert alert-success").html(message);
         setTimeout(function () { $("#divMessage").show(); }, 5);//si no lo llamo asi no muestra el mensaje
-        setTimeout(function () { $("#divMessage").hide("slideDown"); }, 500);
+        setTimeout(function () { $("#divMessage").hide("slideDown"); }, 3000);
 
     } else if (type == "info") {
         $("#divMessage").addClass("alert alert-info").show().html(message);
-        setTimeout(function () { $("#divMessage").hide("slideDown"); }, 500);
+        setTimeout(function () { $("#divMessage").hide("slideDown"); }, 3000);
     } else {
         $("#divMessage").addClass("alert alert-danger").show().html(message);
     }
