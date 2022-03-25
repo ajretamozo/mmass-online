@@ -3885,7 +3885,7 @@
 
         function prevAnularOrden() {
             if ($('#inpIdOrdenAdServer').val() == "") {
-                anularOrden();
+                checkAnularOrden();
             }
             else {
                 showMessage("La órden no puede ser anulada porque ya ha sido enviada al AdServer", "info")
@@ -3918,6 +3918,7 @@
                 bloquearCamposCabecera();
                 $("#bGuardarOrden").attr("disabled", true);
                 $("#bGuardarOrden").attr("title", "No se pueden guardar ordenes que estén anuladas");
+                recargarRenglones();
                 showMessage("Orden anulada con éxito", "info");
             }
             else {
