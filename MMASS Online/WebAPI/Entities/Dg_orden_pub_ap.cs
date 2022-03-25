@@ -217,7 +217,7 @@ namespace WebApi.Entities
                                 " left outer join contactos an on an.id_contacto = dg.id_anunciante " +
                                 " left outer join productos p on p.id_producto = dg.id_producto " +
                                 " left outer join orden_pub_ap op on dg.id_op_relacionada = op.id_op " +
-                                " where dg.es_anulada = 0 ";
+                                " where 1 = 1 ";
             string mifiltro = "";
 
             foreach (Parametro p in parametros)
@@ -263,6 +263,10 @@ namespace WebApi.Entities
                         mifiltro = mifiltro + " and an.razon_social like '%" + p.Value + "%'";
                     if ((p.ParameterName == "producto_nombre") && (p.Value.ToString() != ""))
                         mifiltro = mifiltro + " and p.desc_producto like '%" + p.Value + "%'";
+                    if ((p.ParameterName == "anuladas") && (p.Value.ToString() == "1"))
+                    {
+                        mifiltro = mifiltro + " and dg.es_anulada = 0";
+                    }
                 }
             }
             List<Dg_orden_pub_ap> col = new List<Dg_orden_pub_ap>();
@@ -901,6 +905,23 @@ namespace WebApi.Entities
                 existe = true;
             }
             return existe;
+        }
+
+        public static bool anularOrden(int idOp)
+        {
+            bool resultado = true;
+            string sql = "UPDATE dg_orden_pub_ap SET es_anulada = 1, fecha_anulada = GETDATE() WHERE id_op_dg = " + idOp.ToString();
+
+            try
+            {
+                DB.Execute(sql);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                resultado = false;
+            }
+            return resultado;
         }
   
     }

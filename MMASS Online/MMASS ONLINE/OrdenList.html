@@ -198,6 +198,12 @@
                     </div>
                     <div class="row justify-content-end py-3">
                         <div class="col-md-4">
+                            <input type="checkbox" id="checkAnuladas" style="margin-bottom: .8rem; margin-right: .2rem">
+                            <label for="checkAnuladas">Incluir anuladas</label>
+                        </div>
+                        <div class="col-md-4">
+                        </div>
+                        <div class="col-md-4">
                             <div class="col-md-10 px-0 d-flex justify-content-end">
                                 <button type="button" class="btn btn-dark btn-sm mx-1" onclick=" $('#divDetailsRows').show();$('#divAddRow').hide(); searchOrders();">
                                     <span class="fa fa-search"></span> Buscar
@@ -207,8 +213,8 @@
                                 </button>
                                 <!--TEST-->
                                 <!--<button type="button" class="btn btn-dark btn-sm mx-1" onclick="reporteTest()">
-                                    <span class="fa fa-check"></span> Reporte Test
-                                </button>-->
+                <span class="fa fa-check"></span> Reporte Test
+            </button>-->
                             </div>
                         </div>
                     </div>
@@ -340,7 +346,12 @@
         orderlist = data;
         rowHTML = ''
         $.each(orderlist, function (it, iord) {
-            rowHTML += "<tr id-order=\"" + iord.id_op_dg + "\" onclick='openOrder(this)'>"
+            if (iord.es_anulada == 0) {
+                rowHTML += "<tr id-order=\"" + iord.id_op_dg + "\" onclick='openOrder(this)'>"
+            }
+            else {
+                rowHTML += "<tr style='color:red' id-order=\"" + iord.id_op_dg + "\" onclick='openOrder(this)'>"
+            }
             //rowHTML += "<tr onclick='openOrder(this)'>"
             if (iord.id_op_relacionada == -1 || iord.id_op_relacionada == 0 || iord.id_op_relacionada == null) {
                 rowHTML += "<td class='col-xs-1'>" + iord.anio + "-" + iord.mes + "-" + iord.nro_orden + "</td>";
@@ -375,6 +386,10 @@
         params.anio = $('#inpOrderYear').val();
         params.mes = $('#inpOrderMonth').val();
         params.nro_orden = $('#inpOrderNumber').val();
+        if (document.getElementById("checkAnuladas").checked == false) {
+            params.anuladas = "1";
+        };
+
         if ($('#fechaDesde').val() != "") {
             fDesde = new Date(moment($("#fechaDesde").val(), 'DD/MM/YYYY', true).format());
             mfDesde = moment(fDesde);

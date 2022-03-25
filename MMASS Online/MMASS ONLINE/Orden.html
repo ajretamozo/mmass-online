@@ -914,7 +914,12 @@
 
                         <div class="card-footer mt-2 ">
                             <div class="row">
-                                <div class="col-lg-8"></div>
+                                <div class="col-lg-2">
+                                    <button type="button" id="bAnular" class="btn actions btn-dark btn-sm mx-1" onclick="prevAnularOrden()">
+                                        <span class="fa fa-ban"></span> Anular Orden
+                                    </button>
+                                </div>
+                                <div class="col-lg-6"></div>
                                 <div class="col-lg-4 d-flex justify-content-end">
                                     <!--AGREGUÉ BOTON:-->
                                     <button type="button" data-id="sendOrderAS" id="bSendOrdenAddServer" class="btn actions btn-outline-dark btn-sm mr-1" disabled="disabled" onclick="enviarOrdenAddServer()" title="Enviar ordenAddServer">
@@ -1161,22 +1166,8 @@
             if (data.es_facturada) {
                 $("#inpEsFacturada").val("SI");
                 $("#bGuardarOrden").attr("disabled", true);
-                $("#bGuardarOrden").attr("title", "No se pueden guardar ordenes que esten facturadas");
-                $("#inpOrderNumberClient").attr("disabled", true); 
-                $("#inpDescOP").attr("disabled", true);
-                $("#selRedes").attr("disabled", true);
-                $("#fechaDesde").attr("disabled", true);
-                $("#fechaHasta").attr("disabled", true);
-                $("#selEmpresa").attr("disabled", true);
-                $("#selConceptoN").attr("disabled", true);
-                $("#selProducto").attr("disabled", true);
-                $("#selFacturar").attr("disabled", true);
-                $("#selFPago").attr("disabled", true);
-                $("#selEjecutivo").attr("disabled", true);
-                $("#bCargarNuevoRenglon").attr("disabled", true);
-                $("#conf_nc").attr("disabled", true);
-                $("#conf_fc").attr("disabled", true);
-                $("#bSendOrdenAddServer").attr("disabled", true);
+                $("#bGuardarOrden").attr("title", "No se pueden guardar ordenes que estén facturadas");
+                bloquearCamposCabecera();
             }
             else {
                 $("#inpEsFacturada").val("NO");
@@ -1225,7 +1216,7 @@
             }
             
             //AGREGUE:
-            if ((data.id_op_dg != undefined && data.id_op_dg != 0) && (data.id_Google_Ad_Manager == undefined || data.id_Google_Ad_Manager == 0) && data.es_facturada == false) {
+            if ((data.id_op_dg != undefined && data.id_op_dg != 0) && (data.id_Google_Ad_Manager == undefined || data.id_Google_Ad_Manager == 0) && data.es_facturada == false && data.es_anulada == 0) {
                 $("#bSendOrdenAddServer").attr("disabled", false);
                 $('#inpIdOrdenAdServer').val("");
             }
@@ -1249,6 +1240,13 @@
             }
 
             $("#selConceptoN option[value=" + data.id_concepto_negocio + "]").attr("selected", "selected");
+
+            if (data.es_anulada == 1) {
+                $("#bGuardarOrden").attr("disabled", true);
+                $("#bGuardarOrden").attr("title", "No se pueden guardar ordenes que estén anuladas");
+                bloquearCamposCabecera()
+                document.body.style.backgroundImage = "url(./Anulada.png)";
+            }
 
             //data.Id_condpagoap = 1; //Arreglar
 
@@ -1970,7 +1968,7 @@
                 }
                 else {
                     //$("#cantidadD").val("");
-                    if ($("#inpEsFacturada").val() == 'NO') {
+                    if ($("#inpEsFacturada").val() == 'NO' && document.body.style.backgroundImage != 'url("./Anulada.png")') {
                         $("#cantidadD").attr("disabled", false);
                     }
                     $("#cantidadL").text("Cantidad");
@@ -2384,7 +2382,7 @@
                 }
             }
             //  Botón eliminar renglon
-            if ($("#inpEsFacturada").val() == 'SI') {
+            if ($("#inpEsFacturada").val() == 'SI' || document.body.style.backgroundImage == 'url("./Anulada.png")') {
                 str = str + " <button type='button' data-id='" + id + "' disabled id='bEliminar" + id + "' class='btn actions btn-outline-dark btn-sm mr-1'  onclick='deleteRenglon(this, " + det.id_Google_Ad_Manager + ")' title='Eliminar Renglon'> <span class='fa fa-remove'></span></button>";
             }
             else {
@@ -2511,7 +2509,7 @@
             }
             idRed = $('#selRedes').val();
 
-            if ($("#inpEsFacturada").val() == 'SI') {
+            if ($("#inpEsFacturada").val() == 'SI' || document.body.style.backgroundImage == 'url("./Anulada.png")') {
                 bloquearCamposDetalle();
             }
 
@@ -2536,7 +2534,7 @@
             //cargarNuevoRenglon();
 
             //AGREGUE:
-            if ($("#inpEsFacturada").val() == 'SI') {
+            if ($("#inpEsFacturada").val() == 'SI' || document.body.style.backgroundImage == 'url("./Anulada.png")') {
                 $("#cantidadD").attr("disabled", true);
             }
             else {
@@ -3276,7 +3274,7 @@
                     optionFunc: ""
                 }
             ];
-            showModal("¿Esta seguro de borrar el archivo?", options);
+            showModal("¿Está seguro de borrar el archivo?", options);
         }
 
         function deleteFile(filepath) {
@@ -3827,7 +3825,7 @@
             $("#modifModal").modal('show');
         }
 
-        function bloquearCamposDetalle ()
+        function bloquearCamposDetalle()
         {
              $("#fechaDesdeD").attr("disabled", true);
              $("#fechaHastaD").attr("disabled", true);
@@ -3846,7 +3844,7 @@
              $("#GuardarRenglon").attr("disabled", true);
         }
 
-        function desbloquearCamposDetalle ()
+        function desbloquearCamposDetalle()
         {
              $("#fechaDesdeD").attr("disabled", false);
              $("#fechaHastaD").attr("disabled", false);
@@ -3863,6 +3861,68 @@
              $("#descuentoD").attr("disabled", false);
              $(".bootstrap-duallistbox-container").find("*").prop("disabled", false);
              $("#GuardarRenglon").attr("disabled", false);
+        }
+
+        function bloquearCamposCabecera()
+        {
+                $("#inpOrderNumberClient").attr("disabled", true); 
+                $("#inpDescOP").attr("disabled", true);
+                $("#selRedes").attr("disabled", true);
+                $("#fechaDesde").attr("disabled", true);
+                $("#fechaHasta").attr("disabled", true);
+                $("#selEmpresa").attr("disabled", true);
+                $("#selConceptoN").attr("disabled", true);
+                $("#selProducto").attr("disabled", true);
+                $("#selFacturar").attr("disabled", true);
+                $("#selFPago").attr("disabled", true);
+                $("#selEjecutivo").attr("disabled", true);
+                $("#bCargarNuevoRenglon").attr("disabled", true);
+                $("#conf_nc").attr("disabled", true);
+                $("#conf_fc").attr("disabled", true);
+                $("#bSendOrdenAddServer").attr("disabled", true);
+                $("#bAnular").attr("disabled", true);
+        }
+
+        function prevAnularOrden() {
+            if ($('#inpIdOrdenAdServer').val() == "") {
+                anularOrden();
+            }
+            else {
+                showMessage("La órden no puede ser anulada porque ya ha sido enviada al AdServer", "info")
+            }
+        }
+
+        function checkAnularOrden() {
+            options = [
+                {
+                    optionDesc: "Aceptar",
+                    optionFunc: "anularOrden()"
+                },
+                {
+                    optionDesc: "Cancelar",
+                    optionFunc: ""
+                }
+            ];
+            showModal("¿Está seguro de anular la órden?", options);
+        }
+
+        function anularOrden() {
+            var id_op_dg = $("#inpOrderNumber").attr("id_op_dg");
+
+            callWS("dg_orden_pub_aps", "anularOrden", JSON.stringify(id_op_dg), function (data) { onAnularOrden(data); });
+        }
+
+        function onAnularOrden(data) {
+            if (data == true) {
+                document.body.style.backgroundImage = "url(./Anulada.png)";
+                bloquearCamposCabecera();
+                $("#bGuardarOrden").attr("disabled", true);
+                $("#bGuardarOrden").attr("title", "No se pueden guardar ordenes que estén anuladas");
+                showMessage("Orden anulada con éxito", "info");
+            }
+            else {
+                showMessage("Ocurrión un problema al intentar anular la órden", "error");
+            }
         }
 
     </script>

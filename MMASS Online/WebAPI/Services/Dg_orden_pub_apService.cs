@@ -36,6 +36,7 @@ namespace WebApi.Services
         //AGREGUE:
         //IEnumerable<Dg_orden_pub_as> getSponsorsPorFecha(DateTime fechaDesde, DateTime fechaHasta);
         IEnumerable<Dg_orden_pub_as> getSponsorsPorFecha(Dg_orden_pub_as det);
+        bool anularOrden(int id);
     }
     public class Dg_orden_pub_apM : Dg_orden_pub_ap {
         public int result { get; set; }
@@ -126,6 +127,11 @@ namespace WebApi.Services
         public IEnumerable<Dg_orden_pub_as> getSponsorsPorFecha(Dg_orden_pub_as det)
         {
             return Dg_orden_pub_as.getSponsorsPorFecha(det);
+        }
+
+        public bool anularOrden(int id)
+        {
+            return Dg_orden_pub_ap.anularOrden(id);
         }
 
     }
