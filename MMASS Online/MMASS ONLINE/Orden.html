@@ -914,12 +914,17 @@
 
                         <div class="card-footer mt-2 ">
                             <div class="row">
-                                <div class="col-lg-2">
+                                <div class="col-lg-4">
                                     <button type="button" id="bAnular" class="btn actions btn-dark btn-sm mx-1" onclick="prevAnularOrden()">
                                         <span class="fa fa-ban"></span> Anular Orden
                                     </button>
+                                    <div class="form-check-inline mr-0">
+                                        <label class="form-check-label " for="checkListaParaFact" style="padding-right: 15px; margin-left: 10px;">
+                                            <input type="checkbox" style="margin-top: .4rem; margin-right: .2rem" class="form-check-input float-sm-left" id="checkListaParaFact" checked>Lista para facturar
+                                        </label>
+                                    </div>
                                 </div>
-                                <div class="col-lg-6"></div>
+                                <div class="col-lg-4"></div>
                                 <div class="col-lg-4 d-flex justify-content-end">
                                     <!--AGREGUÉ BOTON:-->
                                     <button type="button" data-id="sendOrderAS" id="bSendOrdenAddServer" class="btn actions btn-outline-dark btn-sm mr-1" disabled="disabled" onclick="enviarOrdenAddServer()" title="Enviar ordenAddServer">
@@ -1248,6 +1253,11 @@
                 document.body.style.backgroundImage = "url(./Anulada.png)";
             }
 
+            if (data.parafacturar == 0) {
+                $("#checkListaParaFact")[0].checked = false;
+                $("#checkListaParaFact").change();
+            }
+
             //data.Id_condpagoap = 1; //Arreglar
 
             //data.idEjecutivo = "4";
@@ -1447,6 +1457,13 @@
             data.Imp_conf_nc = $("#conf_nc").val();
             data.Imp_conf_fc = $("#conf_fc").val();
             data.Tercer_neto = data.Seg_neto;//$("#total").val(); //Total
+
+            if (document.getElementById("checkListaParaFact").checked) {
+                data.Parafacturar = "1";
+            }
+            else {
+                data.Parafacturar = "0";
+            }
 
             data.usuario = {};
             data.usuario.Id_usuario = $("#NombreUsuario").attr("data-id");
@@ -3881,6 +3898,7 @@
                 $("#conf_fc").attr("disabled", true);
                 $("#bSendOrdenAddServer").attr("disabled", true);
                 $("#bAnular").attr("disabled", true);
+                $("#checkListaParaFact")[0].disabled = true;
         }
 
         function prevAnularOrden() {

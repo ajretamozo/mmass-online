@@ -79,6 +79,7 @@ namespace WebApi.Entities
         public string Producto_nombre { get; set; }
         public long Id_Google_Ad_Manager { get; set; }
         public int Id_red { get; set; }
+        public int Parafacturar { get; set; }
         public List<Dg_orden_pub_as> Detalles;
         public List<Dg_orden_pub_ejecutivos> Ejecutivos;
         public List<Dg_orden_pub_pagos> FormasPago;
@@ -169,6 +170,7 @@ namespace WebApi.Entities
             mi.Id_op_relacionada = DB.DInt(item["id_op_relacionada"].ToString());
             mi.Id_Google_Ad_Manager = DB.DLong(item["id_google_ad_manager"].ToString());
             mi.Id_red = DB.DInt(item["id_red"].ToString());
+            mi.Parafacturar = DB.DInt(item["parafacturar"].ToString());
             if (item["nro_orden_rel"] != null)
             {
                 mi.Nro_op_relacionada = item["nro_orden_rel"].ToString();
@@ -210,7 +212,7 @@ namespace WebApi.Entities
                                 " dg.Desc2, dg.Desc3, dg.Desc4, dg.desc5, dg.id_cond_iva, dg.id_moneda, dg.cambio, dg.bonificado, dg.id_convenio, " +
                                 " dg.transferido, dg.bitacora, dg.Id_facturar, dg.Total_Avisos, dg.Total_Impresiones, " +
                                 " dg.Es_facturada, dg.Id_factura_ap, " +
-                                " ag.razon_social as agencia_nombre, an.razon_social as anunciante_nombre, p.desc_producto as producto_nombre, id_google_ad_manager, id_red, " +
+                                " ag.razon_social as agencia_nombre, an.razon_social as anunciante_nombre, p.desc_producto as producto_nombre, dg.id_google_ad_manager, dg.id_red, dg.parafacturar, " +
                                 " cast(op.anio as varchar(4)) + '-' + cast(op.mes as varchar(2)) + '-' + cast(op.nro_orden as varchar(5)) as nro_orden_rel " +
                                 " from Dg_orden_pub_ap dg " +
                                 " left outer join contactos ag on ag.id_contacto = dg.id_agencia " +
@@ -310,7 +312,7 @@ namespace WebApi.Entities
                                 " dg.Desc2, dg.Desc3, dg.Desc4, dg.desc5, dg.id_cond_iva, dg.id_moneda, dg.cambio, dg.bonificado, dg.id_convenio, " +
                                 " dg.transferido, dg.bitacora, dg.Id_facturar, dg.Total_Avisos, dg.Total_Impresiones, " +
                                 " dg.Es_facturada, dg.Id_factura_ap, " +
-                                " ag.razon_social as agencia_nombre, an.razon_social as anunciante_nombre, p.desc_producto as producto_nombre, id_google_ad_manager, id_red, " +
+                                " ag.razon_social as agencia_nombre, an.razon_social as anunciante_nombre, p.desc_producto as producto_nombre, dg.id_google_ad_manager, dg.id_red, dg.parafacturar, " +
                                 " cast(op.anio as varchar(4)) + '-' + cast(op.mes as varchar(2)) + '-' + cast(op.nro_orden as varchar(5)) as nro_orden_rel " +
                                 " from Dg_orden_pub_ap dg " +
                                 " left outer join contactos ag on ag.id_contacto = dg.id_agencia " +
@@ -377,7 +379,7 @@ namespace WebApi.Entities
                                 " dg.Desc2, dg.Desc3, dg.Desc4, dg.desc5, dg.id_cond_iva, dg.id_moneda, dg.cambio, dg.bonificado, dg.id_convenio, " +
                                 " dg.transferido, dg.bitacora, dg.Id_facturar, dg.Total_Avisos, dg.Total_Impresiones, " +
                                 " dg.Es_facturada, dg.Id_factura_ap, " +
-                                " ag.razon_social as agencia_nombre, an.razon_social as anunciante_nombre, p.desc_producto as producto_nombre, id_google_ad_manager, id_red, " +
+                                " ag.razon_social as agencia_nombre, an.razon_social as anunciante_nombre, p.desc_producto as producto_nombre, dg.id_google_ad_manager, dg.id_red, dg.parafacturar, " +
                                 " cast(op.anio as varchar(4)) + '-' + cast(op.mes as varchar(2)) + '-' + cast(op.nro_orden as varchar(5)) as nro_orden_rel " +
                                 " from Dg_orden_pub_ap dg " +
                                 " left outer join contactos ag on ag.id_contacto = dg.id_agencia " +
@@ -478,13 +480,13 @@ namespace WebApi.Entities
                 if (Id_op_dg == 0)
                 {
                     sql = "insert into dg_orden_pub_ap (id_op_dg,anio, mes, nro_orden, id_empresa, id_medio, es_varios_medios, fecha, fecha_expiracion, id_agencia," +
-                            " id_anunciante, id_producto, id_google_ad_manager, id_red, id_condpagoap, " +
+                            " id_anunciante, id_producto, id_google_ad_manager, id_red, id_condpagoap, parafacturar,  " +
                             " nro_orden_ag, facturar_a, tipo_orden, observ, monto_bruto, monto_bonif, monto_dto, primer_neto, es_anulada, fecha_anulada, monto_desc_ag," +
                             " monto_desc_an, monto_desc_agan, monto_desc_fact, monto_desc_difag, monto_desc_restfa, nro_orden_imp, porc_dto, porc_conf, seg_neto, fecha_alta," +
                             " id_concepto_negocio, id_usuario, porcvol_ag, tercer_neto, localnacional, imp_conf_nc, imp_conf_fc, porcvol_an, Desc2, Desc3, Desc4, Desc5," +
                             " id_cond_iva, id_moneda, cambio, bonificado, id_convenio, transferido, bitacora, Id_facturar, id_op_relacionada, Total_Avisos, Total_Impresiones)" +
                             " values (@id_op_dg, @anio, @mes, @nro_orden, @id_empresa, @id_medio, @es_varios_medios, @fecha, @fecha_expiracion, " +
-                            " @id_agencia, @id_anunciante, @id_producto, @id_google_ad_manager, @id_red, @id_condpagoap, " +
+                            " @id_agencia, @id_anunciante, @id_producto, @id_google_ad_manager, @id_red, @id_condpagoap, @parafacturar, " +
                             " @nro_orden_ag, @facturar_a, @tipo_orden, @observ, @monto_bruto, @monto_bonif, @monto_dto, @primer_neto, 0, @fecha_anulada, @monto_desc_ag, " +
                             " @monto_desc_an, @monto_desc_agan, @monto_desc_fact, @monto_desc_difag, @monto_desc_restfa, @nro_orden_imp, @porc_dto, @porc_conf, @seg_neto, @fecha_alta," +
                             " @id_concepto_negocio, @id_usuario, @porcvol_ag, @tercer_neto, @localnacional, @imp_conf_nc, @imp_conf_fc, @porcvol_an, @Desc2, @Desc3, @Desc4, @Desc5," +
@@ -509,7 +511,7 @@ namespace WebApi.Entities
                 {
                     sql = "update dg_orden_pub_ap set  nro_orden = @nro_orden, id_empresa = @id_empresa, id_medio = @id_medio, es_varios_medios = @es_varios_medios," +
                         "fecha = @fecha, fecha_expiracion = @fecha_expiracion, id_agencia = @id_agencia, id_anunciante = @id_anunciante, " +
-                        "id_producto = @id_producto, id_google_ad_manager = @id_google_ad_manager, id_red = @id_red, " +
+                        "id_producto = @id_producto, id_google_ad_manager = @id_google_ad_manager, id_red = @id_red, parafacturar = @parafacturar, " +
                         "id_condpagoap = @id_condpagoap, nro_orden_ag = @nro_orden_ag, facturar_a = @facturar_a, tipo_orden = @tipo_orden, observ = @observ," +
                         "monto_bruto = @monto_bruto, monto_bonif = @monto_bonif, monto_dto = @monto_dto, primer_neto = @primer_neto, " +
                         "fecha_anulada = @fecha_anulada, monto_desc_ag = @monto_desc_ag, monto_desc_an = @monto_desc_an, monto_desc_agan = @monto_desc_agan," +
@@ -631,7 +633,8 @@ namespace WebApi.Entities
                 parametros.Add(new SqlParameter() { ParameterName = "@id_op_relacionada", SqlDbType = SqlDbType.Int, Value = DB.DInt(Id_op_relacionada) });
                 parametros.Add(new SqlParameter() { ParameterName = "@Total_Avisos", SqlDbType = SqlDbType.Int, Value = Total_Avisos });
                 parametros.Add(new SqlParameter() { ParameterName = "@Total_Impresiones", SqlDbType = SqlDbType.Int, Value = Total_Impresiones });
-          
+                parametros.Add(new SqlParameter() { ParameterName = "@parafacturar", SqlDbType = SqlDbType.Int, Value = Parafacturar });
+
                 using (TransactionScope transaccion = new TransactionScope(TransactionScopeOption.RequiresNew, new TimeSpan(0, 2, 0)))
                 {                    
                     // Grabo Cabecera...
