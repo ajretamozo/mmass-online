@@ -175,25 +175,56 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-4" style="left: 100px;">
+                        <div class="col-md-3">
                             <label>Agencia:</label>
                             <div class="row align-items-center">
-                                <div class="col-md-10"> <div class="input-group enterSearch"> <input type="text" id="inpDescAgencia" class="form-control"> </div> </div>
+                                <div class="col-md-10"> <div class="input-group enterSearch" style="width: 280px;"> <input type="text" id="inpDescAgencia" class="form-control"> </div> </div>
                             </div>
                             <label>Anunciante:</label>
                             <div class="row align-items-center">
-                                <div class="col-md-10"> <div class="input-group enterSearch"> <input type="text" id="inpDescAnunciante" class="form-control"> </div> </div>
+                                <div class="col-md-10"> <div class="input-group enterSearch" style="width: 280px;"> <input type="text" id="inpDescAnunciante" class="form-control"> </div> </div>
                             </div>
                         </div>
-                        <div class="col-md-4" style="left: 80px;">
-                            <label>Producto:</label>
-                            <div class="row align-items-center">
-                                <div class="col-md-10"> <div class="input-group enterSearch"> <input type="text" id="inpDescProducto" class="form-control"> </div> </div>
-                            </div>
-                            <label>Número de Orden Cliente:</label>
-                            <div class="row align-items-center">
-                                <div class="col-md-10"> <div class="input-group enterSearch"> <input type="text" id="inpOrderNumberClient" class="form-control"> </div> </div>
-                            </div>
+                        <div class="col-md-5">
+                            <div class="row">
+                                <div class="col-md-7">
+                                    <label>Producto:</label>
+                                    <div class="row align-items-center">
+                                        <div class="col-md-10"> <div class="input-group enterSearch" style="width: 280px;"> <input type="text" id="inpDescProducto" class="form-control"> </div> </div>
+                                    </div>
+                                    <label>Número de Orden Cliente:</label>
+                                    <div class="row align-items-center">
+                                        <div class="col-md-10"> <div class="input-group enterSearch" style="width: 280px;"> <input type="text" id="inpOrderNumberClient" class="form-control"> </div> </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-5" style="padding-left: 30px;">
+                                    <div class="card" style="height: 140px; border-color: #ced4da;">
+                                        <div class="card-header" style="background-color: #e9ecef;">
+                                            Para Facturar
+                                        </div>
+                                        <div class="card-body" style="margin-top: 0px;padding-top: 10px;background-color: #e9ecef;height: 85px;padding-bottom: 0px;">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="flexRadioParaFacturar" id="flexRadioNoListas">
+                                                <label class="form-check-label" for="flexRadioNoListas">
+                                                    No Lista
+                                                </label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="flexRadioParaFacturar" id="flexRadioListas">
+                                                <label class="form-check-label" for="flexRadioListas">
+                                                    Lista
+                                                </label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="flexRadioParaFacturar" id="flexRadioTodas" checked>
+                                                <label class="form-check-label" for="flexRadioTodas">
+                                                    Todas
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>                          
                         </div>
                     </div>
                     <div class="row justify-content-end py-3">
@@ -390,6 +421,13 @@
             params.anuladas = "1";
         };
 
+        if (document.getElementById("flexRadioNoListas").checked == true) {
+            params.para_facturar = "1";
+        };
+        if (document.getElementById("flexRadioListas").checked == true) {
+            params.para_facturar = "2";
+        };
+
         if ($('#fechaDesde').val() != "") {
             fDesde = new Date(moment($("#fechaDesde").val(), 'DD/MM/YYYY', true).format());
             mfDesde = moment(fDesde);
@@ -477,8 +515,6 @@
     function formatearMonto(x) {
         return Number.parseFloat(x).toFixed(2);
     }
-
-
 
     </script>
 </body>

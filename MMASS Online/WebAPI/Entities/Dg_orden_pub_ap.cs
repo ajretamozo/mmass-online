@@ -269,6 +269,21 @@ namespace WebApi.Entities
                     {
                         mifiltro = mifiltro + " and dg.es_anulada = 0";
                     }
+                    if (p.ParameterName == "para_facturar")
+                    {
+                        if(p.Value.ToString() == "1")
+                        {
+                            mifiltro = mifiltro + " and dg.parafacturar = 0";
+                        }
+                        else
+                        {
+                            mifiltro = mifiltro + " and dg.parafacturar = 1";
+                        }
+                    }
+                    if ((p.ParameterName == "anuladas") && (p.Value.ToString() == "1"))
+                    {
+                        mifiltro = mifiltro + " and dg.es_anulada = 0";
+                    }
                 }
             }
             List<Dg_orden_pub_ap> col = new List<Dg_orden_pub_ap>();
