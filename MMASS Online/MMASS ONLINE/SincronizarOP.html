@@ -217,9 +217,9 @@
             $("#" + idSelect).val('');
          }
 
-        function getOrdenesGAM(codRed) {
-            callWS("googleAdManager", "getOpNuevas", '', function (data) { onCargarTabla('TableRenglones', data, codRed); });
-        }
+        //function getOrdenesGAM(codRed) {
+        //    callWS("googleAdManager", "getOpNuevas", '', function (data) { onCargarTabla('TableRenglones', data); });
+        //}
 
         //function onRedSelected() {     
         //    $("#pleaseWaitDialog").modal();
@@ -247,10 +247,17 @@
                 objParametro.ParameterName = "nombre";
                 objParametro.Value = desc;
 
-                callWS("googleAdManager", "getOpNuevas", JSON.stringify(objParametro), function (data) { onCargarTabla('TableRenglones', data, codRed); });
+                callWS("googleAdManager", "getOpNuevas", JSON.stringify(objParametro), function (data) { onGetOrdenesGAM(data); });
             }
             else {
                 showMessage("Seleccione una Red AdServer", "alert");
+            }
+        }
+
+        function onGetOrdenesGAM(data) {
+            onCargarTabla('TableRenglones', data);
+            if (data.length == 0) {
+                showMessage("No se enontraron Ordenes", "info");
             }
         }
 

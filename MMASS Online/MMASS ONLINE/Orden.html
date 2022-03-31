@@ -2694,10 +2694,12 @@
             if (rDetalle.id_Google_Ad_Manager != 0 && rDetalle.id_Google_Ad_Manager != null) {
                 $("#inpIdAdServer").val(rDetalle.id_Google_Ad_Manager);
                 $('#inpIdAdServer').css("background-color", "#c3e6cb");
-                var idOrden = $("#inpOrderNumber").attr("id_op_dg");
-                var idOrdenGAM = $('#inpIdOrdenAdServer').val();
-                comprobarModificacionesD(rDetalle.id_Google_Ad_Manager);
-                $("#bcomprobarModificacionesD").attr("disabled", false);
+                //var idOrden = $("#inpOrderNumber").attr("id_op_dg");
+                //var idOrdenGAM = $('#inpIdOrdenAdServer').val();
+                if ($("#inpOrderNumber").attr("id_op_dg") > 0) {
+                    comprobarModificacionesD(rDetalle.id_Google_Ad_Manager);
+                    $("#bcomprobarModificacionesD").attr("disabled", false);
+                }
             }
             else {
                 $('#inpIdAdServer').css("background-color", "#e9ecef");
