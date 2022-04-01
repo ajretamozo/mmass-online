@@ -668,7 +668,7 @@
                         <div class="row">
                             <div class="col-lg-4">
                                 <label>Facturar a</label>
-                                <select class="form-control" id="selFacturar">
+                                <select class="form-control" id="selFacturar" onchange="onFacturarSelected()">
                                     <option value="0" checked>Agencia</option>
                                     <option value="1">Anunciante</option>
                                     <option value="2">No facturar</option>
@@ -1258,6 +1258,12 @@
                 $("#checkListaParaFact").change();
             }
 
+            if (data.facturar_a == 2) {
+                $("#selAgencia option[value=" + data.agencia.id_contacto + "]").attr("selected", "selected");
+                $("#checkListaParaFact")[0].checked = false;
+                $("#checkListaParaFact").change();
+            }
+
             //data.Id_condpagoap = 1; //Arreglar
 
             //data.idEjecutivo = "4";
@@ -1285,9 +1291,9 @@
             getArchivos(data.id_op_dg.toString());
             calculateTotals();
 
-            if (data.id_Google_Ad_Manager > 0 && (data.id_op_dg != undefined && data.id_op_dg != 0)) {
-                comprobarModificaciones(data.id_op_dg, data.id_Google_Ad_Manager);
-            }
+            //if (data.id_Google_Ad_Manager > 0 && (data.id_op_dg != undefined && data.id_op_dg != 0)) {
+            //    comprobarModificaciones(data.id_op_dg, data.id_Google_Ad_Manager);
+            //}
         }
 
         function cargarProductosyOPRelacionada(idAgencia, idAnunciante, idProducto, idOpRelacionada) {
@@ -1724,12 +1730,12 @@
             $("#" + idSelect).empty();
             //$("#" + idSelect).append("<option value=''>(Todos) </option>");
             $("#" + idSelect).append(listitems);
-            if (pObj.length > 1) {
-                $("#" + idSelect).val([]);
-            } else {
-                $("#" + idSelect).change();
-            }
-
+            //if (pObj.length > 1) {
+            //    $("#" + idSelect).val([]);
+            //} else {
+            //    $("#" + idSelect).change();
+            //}
+            $("#" + idSelect).val([]);
         }
 
         function onTarifasGetAllConv(data, idSelect, colId, colDesc) {
@@ -2341,7 +2347,7 @@
         function recargarRenglones() {
             $("#TableRenglones").empty();
             if (Detalles.length > 0) {
-                $("#selAgencia").attr("disabled", true);
+                //$("#selAgencia").attr("disabled", true);
                 $("#selAnunciante").attr("disabled", true);
                 $("#botLimpiar").attr("disabled", true);
                 $("#botLimpiar").attr("title", "No es posible limpiar Agencia - Anunciante si existen campañas cargadas");
@@ -2697,7 +2703,7 @@
                 //var idOrden = $("#inpOrderNumber").attr("id_op_dg");
                 //var idOrdenGAM = $('#inpIdOrdenAdServer').val();
                 if ($("#inpOrderNumber").attr("id_op_dg") > 0) {
-                    comprobarModificacionesD(rDetalle.id_Google_Ad_Manager);
+                    //comprobarModificacionesD(rDetalle.id_Google_Ad_Manager);
                     $("#bcomprobarModificacionesD").attr("disabled", false);
                 }
             }
@@ -3943,6 +3949,19 @@
             }
             else {
                 showMessage("Ocurrión un problema al intentar anular la órden", "error");
+            }
+        }
+
+        function onFacturarSelected() {
+            if ($("#selFacturar").val() == "2") {
+                $("#checkListaParaFact")[0].checked = false;
+                $("#checkListaParaFact").change();
+                $("#checkListaParaFact")[0].disabled = true;
+            }
+            else {
+                $("#checkListaParaFact")[0].checked = true;
+                $("#checkListaParaFact").change();
+                $("#checkListaParaFact")[0].disabled = false;
             }
         }
 
