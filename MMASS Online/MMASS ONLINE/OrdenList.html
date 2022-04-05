@@ -378,10 +378,20 @@
         rowHTML = ''
         $.each(orderlist, function (it, iord) {
             if (iord.es_anulada == 0) {
-                rowHTML += "<tr id-order=\"" + iord.id_op_dg + "\" onclick='openOrder(this)'>"
+                if (iord.id_Google_Ad_Manager != undefined && iord.id_Google_Ad_Manager != 0) {
+                    rowHTML += "<tr id-order=\"" + iord.id_op_dg + "\" onclick='openOrder(this)' class='table-success'>"
+                }
+                else {
+                    rowHTML += "<tr id-order=\"" + iord.id_op_dg + "\" onclick='openOrder(this)'>"
+                }
             }
             else {
-                rowHTML += "<tr style='color:red' id-order=\"" + iord.id_op_dg + "\" onclick='openOrder(this)'>"
+                if (iord.id_Google_Ad_Manager != undefined && iord.id_Google_Ad_Manager != 0) {
+                    rowHTML += "<tr style='color:red' id-order=\"" + iord.id_op_dg + "\" onclick='openOrder(this)' class='table-success'>"
+                }
+                else {
+                    rowHTML += "<tr style='color:red' id-order=\"" + iord.id_op_dg + "\" onclick='openOrder(this)'>"
+                }
             }
             //rowHTML += "<tr onclick='openOrder(this)'>"
             if (iord.id_op_relacionada == -1 || iord.id_op_relacionada == 0 || iord.id_op_relacionada == null) {

@@ -528,8 +528,8 @@
                                                 </div>
                                                 <div class="col-lg-2 pt-1" style="padding-left: 0px;">
                                                     <label for="bcomprobarModificaciones" class="invisible">ModiGAM</label>
-                                                    <button type="button" data-id="bcomprobarModificaciones" id="bcomprobarModificaciones" disabled="disabled" class="btn actions btn-outline-dark btn-sm mr-1" onclick="comprobarModificacionesButton()" title="Comprobar modificaciones en AdServer">
-                                                        <span class="fa fa-refresh"></span>
+                                                    <button type="button" data-id="bcomprobarModificaciones" id="bcomprobarModificaciones" disabled="disabled" class="btn actions btn-outline-dark btn-sm mr-1" onclick="comprobarModificacionesButton()" title="No hay modificaciones en AdServer">
+                                                        <span class="fa fa-refresh" id="spanCompAct"></span>
                                                     </button>
                                                 </div>
                                             </div>
@@ -1230,7 +1230,7 @@
                 $('#inpIdOrdenAdServer').val(data.id_Google_Ad_Manager);
                 $('#inpIdOrdenAdServer').css("background-color", "#c3e6cb");
                 $("#bgetOrderASDetais").attr("disabled", false);
-                $("#bcomprobarModificaciones").attr("disabled", false);
+                //$("#bcomprobarModificaciones").attr("disabled", false);
             }
 
             $("#bConvenios").attr("disabled", true);
@@ -1291,9 +1291,9 @@
             getArchivos(data.id_op_dg.toString());
             calculateTotals();
 
-            //if (data.id_Google_Ad_Manager > 0 && (data.id_op_dg != undefined && data.id_op_dg != 0)) {
-            //    comprobarModificaciones(data.id_op_dg, data.id_Google_Ad_Manager);
-            //}
+            if (data.id_Google_Ad_Manager > 0 && (data.id_op_dg != undefined && data.id_op_dg != 0) && data.es_anulada == 0 && data.es_facturada == false) {
+                comprobarModificaciones(data.id_op_dg, data.id_Google_Ad_Manager);
+            }
         }
 
         function cargarProductosyOPRelacionada(idAgencia, idAnunciante, idProducto, idOpRelacionada) {
@@ -1837,7 +1837,7 @@
             var pObj = data;
             var listitems = '';
             $.each(pObj, function (it, iObj) {
-                listitems += '<option value=' + iObj[colId] + '>' + iObj[colAncho] + 'x' + iObj[colAlto] + '</option>';
+                listitems += '<option medida=' + iObj[colAncho] + 'x' + iObj[colAlto] + ' value=' + iObj[colId] + '>' + iObj[colAncho] + 'x' + iObj[colAlto] + '</option>';
             });
             $("#" + idSelect).empty();
             //$("#" + idSelect).append("<option value=''>(Todos) </option>");
@@ -3643,16 +3643,20 @@
             data.id_op_dg = $("#inpOrderNumber").attr("id_op_dg");
             data.id_Google_Ad_Manager = $('#inpIdOrdenAdServer').val();
 
-            callWS("googleAdManager", "comprobarModificaciones", JSON.stringify(data), function (data) { onComprobarModificaciones(data); });
+            callWS("googleAdManager", "comprobarModificaciones", JSON.stringify(data), function (data) { onPopulateTablasDif(data); });
         }        
 
         function onComprobarModificaciones(data) {
-            if (data != null) {
-                //data.Parametros.forEach(onPopulateTablaDifCabecera);
-                onPopulateTablasDif(data);
-
+            if (data.parametros.length > 0) {
+                $("#bcomprobarModificaciones").attr("disabled", false);
+                $("#bcomprobarModificaciones").prop('title', 'Ver modificaciones en AdServer');
+                $("#spanCompAct").addClass("fa-pulse");
+                //onPopulateTablasDif(data);
                 //$("#modifModal").modal('show');
             }
+            //else {
+            //    $("#bcomprobarModificaciones").attr("disabled", true);
+            //}
         }
 
         function onPopulateTablasDif(data) {
@@ -3678,45 +3682,45 @@
             $("#TableDifCabecera").html(rowHTML);
 
             //Se generan las tablas diferencias en detalles
-            contDet = 0;
-            rowHTMLd = ''
-            $.each(data.listaListaParametros, function (it, listaParametro) {
-                contDet++;
+            //contDet = 0;
+            //rowHTMLd = ''
+            //$.each(data.listaListaParametros, function (it, listaParametro) {
+            //    contDet++;
 
-                rowHTMLd += "<label><b style='padding-left: 810px;'>Detalle " + contDet + "</b></label>"
-                rowHTMLd += "<div class='table-responsive mt-2 tableFixHead'>"
-                rowHTMLd += "<table class='table table-fixed table-striped' id='tModifDet" + contDet + "'>"
-                rowHTMLd += "<thead class='thead-dark'>"
-                rowHTMLd += "<tr>"
-                rowHTMLd += "<th class='col-xs' style='text-align: center;'>Campo</th>"
-                rowHTMLd += "<th class='col-xs' style='text-align: center;'>Valores MMASS Online</th>"
-                rowHTMLd += "<th class='col-xs' style='text-align: center;'>Valores AdServer</th>" 
-                rowHTMLd += "<th class='col-xs-2' style = 'text-align: center;'>Acción</th >"
-                rowHTMLd += "</tr>"
-                rowHTMLd += "</thead>"
-                rowHTMLd += "<tbody id='TableDifDet" + contDet + "'></tbody>";
+            //    rowHTMLd += "<label><b style='padding-left: 810px;'>Detalle " + contDet + "</b></label>"
+            //    rowHTMLd += "<div class='table-responsive mt-2 tableFixHead'>"
+            //    rowHTMLd += "<table class='table table-fixed table-striped' id='tModifDet" + contDet + "'>"
+            //    rowHTMLd += "<thead class='thead-dark'>"
+            //    rowHTMLd += "<tr>"
+            //    rowHTMLd += "<th class='col-xs' style='text-align: center;'>Campo</th>"
+            //    rowHTMLd += "<th class='col-xs' style='text-align: center;'>Valores MMASS Online</th>"
+            //    rowHTMLd += "<th class='col-xs' style='text-align: center;'>Valores AdServer</th>" 
+            //    rowHTMLd += "<th class='col-xs-2' style = 'text-align: center;'>Acción</th >"
+            //    rowHTMLd += "</tr>"
+            //    rowHTMLd += "</thead>"
+            //    rowHTMLd += "<tbody id='TableDifDet" + contDet + "'></tbody>";
 
-                 $.each(listaParametro.parametros, function (it, parametro) {
-                    arr = parametro.value.split("@@@");
-                    valViejo = arr[0];
-                    valNuevo = arr[1];
+            //     $.each(listaParametro.parametros, function (it, parametro) {
+            //        arr = parametro.value.split("@@@");
+            //        valViejo = arr[0];
+            //        valNuevo = arr[1];
 
-                    rowHTMLd += "<tr>";
-                    rowHTMLd += "<td class='col-xs' style='text-align: center;'> " + parametro.parameterName + "</td > ";
-                    rowHTMLd += "<td class='col-xs' style='text-align: center;'> " + valViejo + "</td >";
-                    rowHTMLd += "<td class='col-xs' style='text-align: center;'> " + valNuevo + "</td >";
-                    rowHTMLd += "<td class='col-xs pr-0 actions d-flex justify-content-center align-content-start'>";
-                    rowHTMLd += "<button type='button' id='btnApl" + parametro.parameterName + "D'  class='btn actions btn-outline-dark btn-sm mr-1' onClick='aplicarCambio(\"" + parametro.parameterName + "D, \"" + valNuevo + "\")' title='Aplicar cambio'><span class='fa fa-check' ></span></button>";
-                    rowHTMLd += "<button type='button' id='btnDes" + parametro.parameterName + "D'  class='btn actions btn-outline-dark btn-sm mr-1' onClick='descartarCambio(\"" + parametro.parameterName + "D\")' title='Descartar cambio'><span class='fa fa-remove'></span></button>";
-                    rowHTMLd += "</td>";
-                    rowHTMLd += "</tr>";
+            //        rowHTMLd += "<tr>";
+            //        rowHTMLd += "<td class='col-xs' style='text-align: center;'> " + parametro.parameterName + "</td > ";
+            //        rowHTMLd += "<td class='col-xs' style='text-align: center;'> " + valViejo + "</td >";
+            //        rowHTMLd += "<td class='col-xs' style='text-align: center;'> " + valNuevo + "</td >";
+            //        rowHTMLd += "<td class='col-xs pr-0 actions d-flex justify-content-center align-content-start'>";
+            //        rowHTMLd += "<button type='button' id='btnApl" + parametro.parameterName + "D'  class='btn actions btn-outline-dark btn-sm mr-1' onClick='aplicarCambio(\"" + parametro.parameterName + "D, \"" + valNuevo + "\")' title='Aplicar cambio'><span class='fa fa-check' ></span></button>";
+            //        rowHTMLd += "<button type='button' id='btnDes" + parametro.parameterName + "D'  class='btn actions btn-outline-dark btn-sm mr-1' onClick='descartarCambio(\"" + parametro.parameterName + "D\")' title='Descartar cambio'><span class='fa fa-remove'></span></button>";
+            //        rowHTMLd += "</td>";
+            //        rowHTMLd += "</tr>";
 
-                 });
-                rowHTMLd += "</table>"
-                rowHTMLd += "</div>"
+            //     });
+            //    rowHTMLd += "</table>"
+            //    rowHTMLd += "</div>"
 
-            });
-            $("#rowTabDifDet").append(rowHTMLd);
+            //});
+            //$("#rowTabDifDet").append(rowHTMLd);
 
             $("#modifModal").modal('show');
         }
@@ -3772,6 +3776,34 @@
                     $("#cantidadD").val(valNuevo);
                     calcularNetoD();
                     break;
+                case 'EmplazamientosD':
+                    if (valNuevo != "") {
+                        var emplazamientos = valNuevo.split(",")
+                        var viewListEmplazamientos = "<ul class=\"list-group\">"
+                        if (emplazamientos.length > 0) {
+                            emplazamientos.forEach(function (emplaza) {
+                                $("#selEmplazaD option[codigo_emplazamiento=" + emplaza + "]").attr("selected", "selected");
+                            });
+                        }
+                        viewListEmplazamientos += "</ul>"
+                        $("#selEmplazaD").after(viewListEmplazamientos);
+                        cMultiSelect.bootstrapDualListbox('refresh');
+                    }
+                    break;
+                 case 'MedidasD':
+                    if (valNuevo != "") {
+                        var medidas = valNuevo.split(",")
+                        var viewListMedidas = "<ul class=\"list-group\">"
+                        if (medidas.length > 0) {
+                            medidas.forEach(function (medida) {
+                                $("#selMedidasD option[medida=" + medida + "]").attr("selected", "selected");
+                            });
+                        }
+                        viewListMedidas += "</ul>"
+                        $("#selMedidasD").after(viewListMedidas);
+                        cMultiSelect.bootstrapDualListbox('refresh');
+                    }
+                    break;              
                 //case 'TotalD':
                 //    $("#totalD").val(valNuevo);
                 //    break;
