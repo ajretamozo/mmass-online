@@ -270,7 +270,7 @@ namespace WebApi.Services
         {
             ListaParametro ordYdet = new ListaParametro();
             ordYdet.Parametros = new List<Parametro>();
-            ordYdet.ListaListaParametros = new List<ListaParametro>();
+            ordYdet.ListaDetalles = new List<int>();
             Order ordenGam = new Order();
             ordenGam = GoogleAdManager.GetOrderById(order.Id_Google_Ad_Manager);
             Dg_orden_pub_ap orden = new Dg_orden_pub_ap();
@@ -282,49 +282,13 @@ namespace WebApi.Services
             red = Dg_red_GAM.getByCodigo(codRed);
 
             //se buscan diferencias entre la orden gam y la orden ap; si se encuentran, se devuelve la lista de cambios
-            //orden.Observ = ordenGam.name;
-            //if (orden.Bitacora == "")
-            //{
-            //    string[] arrNombre = ordenGam.name.Split(" ");
-            //    string prod = arrNombre[0];
-            //    string anio = arrNombre[1];
-            //    string mes = arrNombre[2];
-            //    string nro_orden = arrNombre[3];
-            //    if (orden.Producto_nombre != prod || orden.Anio != int.Parse(anio) || orden.Mes != int.Parse(mes) || orden.Nro_orden != int.Parse(nro_orden))
-            //    {
-            //        string nombreOrden = orden.Producto_nombre + " " + orden.Anio.ToString() + " " + orden.Mes.ToString() + " " + orden.Nro_orden.ToString();
-            //        Parametro cambioNom = new Parametro();
-            //        cambioNom.ParameterName = "Nombre";
-            //        cambioNom.Value = nombreOrden + "@@@" + ordenGam.name;
-            //        ordYdet.Parametros.Add(cambioNom);
-            //    }
-            //}
-            //else
-            //{
-                if (orden.Bitacora != ordenGam.name)
-                {
-                    Parametro cambioNom = new Parametro();
-                    cambioNom.ParameterName = "Descripción";
-                    cambioNom.Value = orden.Bitacora + "@@@" + ordenGam.name;
-                    ordYdet.Parametros.Add(cambioNom);
-                }
-            //}
-
-            //if (long.Parse(orden.anunciante.IdContactoDigital) != ordenGam.advertiserId)
-            //{
-            //    Parametro cambioAnun = new Parametro();
-            //    cambioAnun.ParameterName = "Anunciante";
-            //    cambioAnun.Value = orden.Anunciante_nombre + "@@@" + Contacto.getContactoByIdGAMyRed(ordenGam.advertiserId.ToString(), red.Id_red).RazonSocial;
-            //    ordYdet.Parametros.Add(cambioAnun);
-            //}
-
-            //if (ordenGam.totalBudget.microAmount / 1000000 != orden.Seg_neto)
-            //{
-            //    Parametro cambioTotal = new Parametro();
-            //    cambioTotal.ParameterName = "Seg Neto";
-            //    cambioTotal.Value = orden.Seg_neto.ToString() + "@@@" + (ordenGam.totalBudget.microAmount / 1000000).ToString();
-            //    ordYdet.Parametros.Add(cambioTotal);
-            //}
+            if (orden.Bitacora != ordenGam.name)
+            {
+                Parametro cambioNom = new Parametro();
+                cambioNom.ParameterName = "Descripción";
+                cambioNom.Value = orden.Bitacora + "@@@" + ordenGam.name;
+                ordYdet.Parametros.Add(cambioNom);
+            }
 
             if (System.DateTime.Parse(DateTimeUtilities.ToString(ordenGam.startDateTime, "yyyy/MM/dd")) != orden.Fecha)
             {
@@ -358,178 +322,207 @@ namespace WebApi.Services
            
                 foreach (Dg_orden_pub_as detalle in orden.Detalles)
                 {
-                    ListaParametro cambiosL = new ListaParametro();
+                    //ListaParametro cambiosL = new ListaParametro();
                     foreach (LineItem linea in lineasGAM)
                     {
                         if (linea.id == detalle.Id_Google_Ad_Manager)
                         {
-                            cambiosL.Parametros = new List<Parametro>();
+                            //cambiosL.Parametros = new List<Parametro>();
+                            bool difTipoTar = false;
+                            bool difEmplaza = false;
+
                             switch (detalle.Tipo_tarifa)
                             {
                                 case 0:
                                     if (linea.costType != CostType.CPM)
                                     {
-                                        Parametro cambioLTipoTar = new Parametro();
-                                        cambioLTipoTar.ParameterName = "Tipo Tarifa";
-                                        cambioLTipoTar.Value = "CPM" + "@@@" + linea.costType.ToString();
-                                        cambiosL.Parametros.Add(cambioLTipoTar);
+                                        //Parametro cambioLTipoTar = new Parametro();
+                                        //cambioLTipoTar.ParameterName = "Tipo Tarifa";
+                                        //cambioLTipoTar.Value = "CPM" + "@@@" + linea.costType.ToString();
+                                        //cambiosL.Parametros.Add(cambioLTipoTar);
+                                        difTipoTar = true;
                                     }
                                     break;
                                 case 1:
                                     if (linea.costType != CostType.CPD)
                                     {
-                                        Parametro cambioLTipoTar = new Parametro();
-                                        cambioLTipoTar.ParameterName = "Tipo Tarifa";
-                                        cambioLTipoTar.Value = "CPD" + "@@@" + linea.costType.ToString();
-                                        cambiosL.Parametros.Add(cambioLTipoTar);
+                                        //Parametro cambioLTipoTar = new Parametro();
+                                        //cambioLTipoTar.ParameterName = "Tipo Tarifa";
+                                        //cambioLTipoTar.Value = "CPD" + "@@@" + linea.costType.ToString();
+                                        //cambiosL.Parametros.Add(cambioLTipoTar);
+                                        difTipoTar = true;
                                     }
                                     break;
                                 case 2:
                                     {
-                                        Parametro cambioLTipoTar = new Parametro();
-                                        cambioLTipoTar.ParameterName = "Tipo Tarifa";
-                                        cambioLTipoTar.Value = "Posteo" + "@@@" + linea.costType.ToString();
-                                        cambiosL.Parametros.Add(cambioLTipoTar);
-                                    }                                                 
+                                        //Parametro cambioLTipoTar = new Parametro();
+                                        //cambioLTipoTar.ParameterName = "Tipo Tarifa";
+                                        //cambioLTipoTar.Value = "Posteo" + "@@@" + linea.costType.ToString();
+                                        //cambiosL.Parametros.Add(cambioLTipoTar);
+                                        difTipoTar = true;
+                                    }
                                     break;
                                 case 3:
                                     if (linea.costType != CostType.CPC)
                                     {
-                                        Parametro cambioLTipoTar = new Parametro();
-                                        cambioLTipoTar.ParameterName = "Tipo Tarifa";
-                                        cambioLTipoTar.Value = "CPC" + "@@@" + linea.costType.ToString();
-                                        cambiosL.Parametros.Add(cambioLTipoTar);
+                                        //Parametro cambioLTipoTar = new Parametro();
+                                        //cambioLTipoTar.ParameterName = "Tipo Tarifa";
+                                        //cambioLTipoTar.Value = "CPC" + "@@@" + linea.costType.ToString();
+                                        //cambiosL.Parametros.Add(cambioLTipoTar);
+                                        difTipoTar = true;
                                     }
                                     break;
                                 case 4:
                                     if (linea.costType != CostType.CPA)
                                     {
-                                        Parametro cambioLTipoTar = new Parametro();
-                                        cambioLTipoTar.ParameterName = "Tipo Tarifa";
-                                        cambioLTipoTar.Value = "CPA" + "@@@" + linea.costType.ToString();
-                                        cambiosL.Parametros.Add(cambioLTipoTar);
+                                        //Parametro cambioLTipoTar = new Parametro();
+                                        //cambioLTipoTar.ParameterName = "Tipo Tarifa";
+                                        //cambioLTipoTar.Value = "CPA" + "@@@" + linea.costType.ToString();
+                                        //cambiosL.Parametros.Add(cambioLTipoTar);
+                                        difTipoTar = true;
                                     }
                                     break;
                             }
 
-                            if (linea.name != detalle.Descripcion)
+                            if(difTipoTar == true)
                             {
-                                Parametro cambioLDesc = new Parametro();
-                                cambioLDesc.ParameterName = "Descripción";
-                                cambioLDesc.Value = detalle.Descripcion + "@@@" + linea.name;
-                                cambiosL.Parametros.Add(cambioLDesc);
+                                ordYdet.ListaDetalles.Add(detalle.Id_detalle);
+                                break;
                             }
 
-                            //Se comparan emplazamientos
-                            int cantEmpGam = 0;
-                            if (linea.targeting.inventoryTargeting.targetedPlacementIds != null)
+                            else if (linea.name != detalle.Descripcion)
                             {
-                                cantEmpGam = linea.targeting.inventoryTargeting.targetedPlacementIds.Length;
+                                //Parametro cambioLDesc = new Parametro();
+                                //cambioLDesc.ParameterName = "Descripción";
+                                //cambioLDesc.Value = detalle.Descripcion + "@@@" + linea.name;
+                                //cambiosL.Parametros.Add(cambioLDesc);
+                                ordYdet.ListaDetalles.Add(detalle.Id_detalle);
+                                //break;
                             }
-                            if (cantEmpGam != detalle.Emplazamientos.Count)
+
+                            else if ((linea.costPerUnit.microAmount / 1000000) != detalle.Importe_unitario)
                             {
-                                cambiosL.Parametros.Add(ImprimirEmplazas(detalle.Emplazamientos, linea.targeting.inventoryTargeting.targetedPlacementIds, red.Id_red));
+                                //Parametro cambioLImpUni = new Parametro();
+                                //cambioLImpUni.ParameterName = "Precio Unitario";
+                                //cambioLImpUni.Value = detalle.Importe_unitario.ToString() + "@@@" + (linea.costPerUnit.microAmount / 1000000).ToString();
+                                //cambiosL.Parametros.Add(cambioLImpUni);
+                                ordYdet.ListaDetalles.Add(detalle.Id_detalle);
+                                //break;
                             }
+
+                            else if ((float)linea.discount != detalle.Porc_dto)
+                            {
+                                //Parametro cambioLDesc = new Parametro();
+                                //cambioLDesc.ParameterName = "Descuento";
+                                //cambioLDesc.Value = detalle.Porc_dto.ToString() + "@@@" + ((float)linea.discount).ToString();
+                                //cambiosL.Parametros.Add(cambioLDesc);
+                                ordYdet.ListaDetalles.Add(detalle.Id_detalle);
+                                //break;
+                            }
+
+                            else if ((int)linea.primaryGoal.units != detalle.Cantidad)
+                            {
+                                //Parametro cambioLCant = new Parametro();
+                                //cambioLCant.ParameterName = "Cantidad";
+                                //cambioLCant.Value = detalle.Cantidad.ToString() + "@@@" + ((int)linea.primaryGoal.units).ToString();
+                                //cambiosL.Parametros.Add(cambioLCant);
+                                ordYdet.ListaDetalles.Add(detalle.Id_detalle);
+                                //break;
+                            }
+
+                            else if (System.DateTime.Parse(DateTimeUtilities.ToString(linea.startDateTime, "yyyy/MM/dd")) != detalle.Fecha_desde)
+                            {
+                                //Parametro cambioLDesde = new Parametro();
+                                //cambioLDesde.ParameterName = "Vigencia Desde";
+                                //string fechaFormat = formatFecha(detalle.Fecha_desde.ToString());
+                                //cambioLDesde.Value = fechaFormat + "@@@" + DateTimeUtilities.ToString(linea.startDateTime, "dd/MM/yyyy");
+                                //cambiosL.Parametros.Add(cambioLDesde);
+                                ordYdet.ListaDetalles.Add(detalle.Id_detalle);
+                                //break;
+                            }
+
+                            else if (System.DateTime.Parse(DateTimeUtilities.ToString(linea.endDateTime, "yyyy/MM/dd")) != detalle.Fecha_hasta)
+                            {
+                                //Parametro cambioLHasta = new Parametro();
+                                //cambioLHasta.ParameterName = "Vigencia Hasta";
+                                //string fechaFormat = formatFecha(detalle.Fecha_hasta.ToString());
+                                //cambioLHasta.Value = fechaFormat + "@@@" + DateTimeUtilities.ToString(linea.endDateTime, "dd/MM/yyyy");
+                                //cambiosL.Parametros.Add(cambioLHasta);
+                                ordYdet.ListaDetalles.Add(detalle.Id_detalle);
+                                //break;
+                            }
+                           
                             else
                             {
-                                foreach (Dg_orden_pub_emplazamientos emp in detalle.Emplazamientos)
+                                //Se comparan emplazamientos
+                                int cantEmpGam = 0;                               
+                                if (linea.targeting.inventoryTargeting.targetedPlacementIds != null)
                                 {
-                                    bool existeEmp = false;
-                                    foreach (long idEmpla in linea.targeting.inventoryTargeting.targetedPlacementIds)
+                                    cantEmpGam = linea.targeting.inventoryTargeting.targetedPlacementIds.Length;
+                                }
+                                if (cantEmpGam != detalle.Emplazamientos.Count)
+                                {
+                                    difEmplaza = true;
+                                }
+                                else
+                                {                                    
+                                    foreach (Dg_orden_pub_emplazamientos emp in detalle.Emplazamientos)
                                     {
-                                        if (idEmpla == emp.Codigo_emplazamiento)
+                                        bool existeEmp = false;
+                                        foreach (long idEmpla in linea.targeting.inventoryTargeting.targetedPlacementIds)
                                         {
-                                            existeEmp = true;
+                                            if (idEmpla == emp.Codigo_emplazamiento)
+                                            {
+                                                existeEmp = true;
+                                            }
                                         }
+                                        if (existeEmp == false)
+                                        {
+                                            difEmplaza = true;
+                                        }
+                                        break;
                                     }
-                                    if (existeEmp == false)
-                                    {
-                                        cambiosL.Parametros.Add(ImprimirEmplazas(detalle.Emplazamientos, linea.targeting.inventoryTargeting.targetedPlacementIds, red.Id_red));
-                                    }
-                                    break;
                                 }
                             }
 
-                            //Se comparan medidas
-                            if (linea.creativePlaceholders.Length != detalle.Medidas.Count)
+                            if (difEmplaza == true)
                             {
-                                cambiosL.Parametros.Add(ImprimirMedidas(detalle.Medidas, linea.creativePlaceholders));
+                                ordYdet.ListaDetalles.Add(detalle.Id_detalle);
+                                break;
                             }
                             else
                             {
-                                bool existe = false;
-                                foreach (Dg_orden_pub_medidas med in detalle.Medidas)
+                                //Se comparan medidas
+                                if (linea.creativePlaceholders.Length != detalle.Medidas.Count)
                                 {
-                                    string medAg = med.Ancho.ToString() + "x" + med.Alto.ToString();
-
-                                    foreach (CreativePlaceholder cph in linea.creativePlaceholders)
-                                    {
-                                        string medGam = cph.size.width.ToString() + "x" + cph.size.height.ToString();
-
-                                        if (String.Equals(medGam, medAg))
-                                        {
-                                            existe = true;
-                                        }
-                                    }
-                                    if (existe == false)
-                                    {
-                                        cambiosL.Parametros.Add(ImprimirMedidas(detalle.Medidas, linea.creativePlaceholders));
-                                    }
-                                    break;
+                                    ordYdet.ListaDetalles.Add(detalle.Id_detalle);
                                 }
-                            }
+                                else
+                                {
+                                    bool existe = false;
+                                    foreach (Dg_orden_pub_medidas med in detalle.Medidas)
+                                    {
+                                        string medAg = med.Ancho.ToString() + "x" + med.Alto.ToString();
 
-                            if ((linea.costPerUnit.microAmount / 1000000) != detalle.Importe_unitario)
-                            {
-                                Parametro cambioLImpUni = new Parametro();
-                                cambioLImpUni.ParameterName = "Precio Unitario";
-                                cambioLImpUni.Value = detalle.Importe_unitario.ToString() + "@@@" + (linea.costPerUnit.microAmount / 1000000).ToString();
-                                cambiosL.Parametros.Add(cambioLImpUni);
-                            }
+                                        foreach (CreativePlaceholder cph in linea.creativePlaceholders)
+                                        {
+                                            string medGam = cph.size.width.ToString() + "x" + cph.size.height.ToString();
 
-                            if ((float)linea.discount != detalle.Porc_dto)
-                            {
-                                Parametro cambioLDesc = new Parametro();
-                                cambioLDesc.ParameterName = "Descuento";
-                                cambioLDesc.Value = detalle.Porc_dto.ToString() + "@@@" + ((float)linea.discount).ToString();
-                                cambiosL.Parametros.Add(cambioLDesc);
-                            }
-
-                            if ((int)linea.primaryGoal.units != detalle.Cantidad)
-                            {
-                                Parametro cambioLCant = new Parametro();
-                                cambioLCant.ParameterName = "Cantidad";
-                                cambioLCant.Value = detalle.Cantidad.ToString() + "@@@" + ((int)linea.primaryGoal.units).ToString();
-                                cambiosL.Parametros.Add(cambioLCant);
-                            }
-
-                            if ((linea.budget.microAmount / 1000000) != detalle.Monto_neto)
-                            {
-                                Parametro cambioLImpTotal = new Parametro();
-                                cambioLImpTotal.ParameterName = "Total";
-                                cambioLImpTotal.Value = detalle.Monto_neto.ToString() + "@@@" + (linea.budget.microAmount / 1000000).ToString();
-                                cambiosL.Parametros.Add(cambioLImpTotal);
-                            }
-
-                            if (System.DateTime.Parse(DateTimeUtilities.ToString(linea.startDateTime, "yyyy/MM/dd")) != detalle.Fecha_desde)
-                            {
-                                Parametro cambioLDesde = new Parametro();
-                                cambioLDesde.ParameterName = "Vigencia Desde";
-                                string fechaFormat = formatFecha(detalle.Fecha_desde.ToString());
-                                cambioLDesde.Value = fechaFormat + "@@@" + DateTimeUtilities.ToString(linea.startDateTime, "dd/MM/yyyy");
-                                cambiosL.Parametros.Add(cambioLDesde);
-                            }
-                            if (System.DateTime.Parse(DateTimeUtilities.ToString(linea.endDateTime, "yyyy/MM/dd")) != detalle.Fecha_hasta)
-                            {
-                                Parametro cambioLHasta = new Parametro();
-                                cambioLHasta.ParameterName = "Vigencia Hasta";
-                                string fechaFormat = formatFecha(detalle.Fecha_hasta.ToString());
-                                cambioLHasta.Value = fechaFormat + "@@@" + DateTimeUtilities.ToString(linea.endDateTime, "dd/MM/yyyy");
-                                cambiosL.Parametros.Add(cambioLHasta);
-                            }
+                                            if (String.Equals(medGam, medAg))
+                                            {
+                                                existe = true;
+                                            }
+                                        }
+                                        if (existe == false)
+                                        {
+                                            ordYdet.ListaDetalles.Add(detalle.Id_detalle);
+                                        }
+                                        break;
+                                    }
+                                }
+                            }                            
                         }
                     }
-                    ordYdet.ListaListaParametros.Add(cambiosL);
                 }
 
             return ordYdet;

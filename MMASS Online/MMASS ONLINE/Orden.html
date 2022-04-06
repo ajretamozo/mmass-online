@@ -700,6 +700,9 @@
                                             <span class="fa fa-plus"></span>
                                         </button>
                                     </div>
+                                    <!--<div class="col-lg-1" style="left: -10;left: -10;right: 40px;top: 2px;">
+                                        <span class="fa fa-refresh fa-pulse invisible" id="spanCompActD" title="Hay modificaciones en AdServer"></span>
+                                    </div>-->
                                 </div>
 
                                 <div class="table-responsive mt-2">
@@ -2418,7 +2421,7 @@
             if (det.id_op_dg == 0) {
                 str = str + "<span class='fa fa-exclamation fa-pulse' id='brow" + id + "' title='Detalle no guardado''></span></td>";
             }
-            str = str + "<td></td></tr>";
+            str = str + "<td id='tdMod" + id + "' style='padding-top: 16px;'><span class='fa fa-refresh fa-pulse invisible' id='spanCompActD" + id + "' title='Hay modificaciones en AdServer'></span></td></tr>";
             $("#TableRenglones").append(str);
             //  Colorear verde renglon enviado a AdServer
             if (det.id_Google_Ad_Manager != undefined && det.id_Google_Ad_Manager != 0) {
@@ -3638,26 +3641,35 @@
             callWS("googleAdManager", "comprobarModificaciones", JSON.stringify(data), function (data) { onComprobarModificaciones(data); });
         }
 
-        function comprobarModificacionesButton() {
-            var data = {};
-            data.id_op_dg = $("#inpOrderNumber").attr("id_op_dg");
-            data.id_Google_Ad_Manager = $('#inpIdOrdenAdServer').val();
-
-            callWS("googleAdManager", "comprobarModificaciones", JSON.stringify(data), function (data) { onPopulateTablasDif(data); });
-        }        
-
         function onComprobarModificaciones(data) {
             if (data.parametros.length > 0) {
                 $("#bcomprobarModificaciones").attr("disabled", false);
                 $("#bcomprobarModificaciones").prop('title', 'Ver modificaciones en AdServer');
                 $("#spanCompAct").addClass("fa-pulse");
-                //onPopulateTablasDif(data);
+                onPopulateTablasDif(data);
                 //$("#modifModal").modal('show');
+            }
+            if (data.listaDetalles.length > 0) {
+                data.listaDetalles.forEach(function (det) {
+                    $("#spanCompActD" + det).removeClass("invisible");
+                    //$("#tdMod" + det).append("<span class='fa fa-refresh fa-pulse' id='spanCompActD" + det + "' title='Hay modificaciones en AdServer'></span>");
+                 });
+                //$("#spanCompActD").removeClass("invisible");
+                //$("#spanCompAct").addClass("fa-pulse");
             }
             //else {
             //    $("#bcomprobarModificaciones").attr("disabled", true);
             //}
         }
+
+        function comprobarModificacionesButton() {
+            //var data = {};
+            //data.id_op_dg = $("#inpOrderNumber").attr("id_op_dg");
+            //data.id_Google_Ad_Manager = $('#inpIdOrdenAdServer').val();
+
+            //callWS("googleAdManager", "comprobarModificaciones", JSON.stringify(data), function (data) { onPopulateTablasDif(data); });
+            $("#modifModal").modal('show');
+        }        
 
         function onPopulateTablasDif(data) {
             //se genera la tabla diferencias en cabecera
@@ -3722,7 +3734,7 @@
             //});
             //$("#rowTabDifDet").append(rowHTMLd);
 
-            $("#modifModal").modal('show');
+            //$("#modifModal").modal('show');
         }
 
         function aplicarCambio(paramName, valNuevo) {
@@ -3778,16 +3790,16 @@
                     break;
                 case 'EmplazamientosD':
                     if (valNuevo != "") {
-                        var emplazamientos = valNuevo.split(",")
-                        var viewListEmplazamientos = "<ul class=\"list-group\">"
-                        if (emplazamientos.length > 0) {
-                            emplazamientos.forEach(function (emplaza) {
-                                $("#selEmplazaD option[codigo_emplazamiento=" + emplaza + "]").attr("selected", "selected");
-                            });
-                        }
-                        viewListEmplazamientos += "</ul>"
-                        $("#selEmplazaD").after(viewListEmplazamientos);
-                        cMultiSelect.bootstrapDualListbox('refresh');
+                            var emplazamientos = valNuevo.split(",")
+                            var viewListEmplazamientos = "<ul class=\"list-group\">"
+                            if (emplazamientos.length > 0) {
+                                emplazamientos.forEach(function (emplaza) {
+                                    $("#selEmplazaD option[codigo_emplazamiento=" + emplaza + "]").attr("selected", "selected");
+                                });
+                            }
+                            viewListEmplazamientos += "</ul>"
+                            $("#selEmplazaD").after(viewListEmplazamientos);
+                            cMultiSelect.bootstrapDualListbox('refresh');                      
                     }
                     break;
                  case 'MedidasD':
@@ -3861,6 +3873,7 @@
                     else {
                         arrEmp = valNuevo.split("$@%");
                         valNuevo = arrEmp[0];
+                        valoresNuevos = arrEmp[1];
                     }
                 }
 
