@@ -444,7 +444,7 @@
                 </div>
             </div>
         </div>
-        <!--Modal Modificaciones-->
+        <!--Modal Modificaciones Cabecera-->
         <div class="modal fade" id="modifModal">
             <div class="modal-dialog modal-xl modalConv">
                 <div class="modal-content">
@@ -476,6 +476,50 @@
                                 </table>
                             </div>
                         </div>
+                    </div>
+
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" onclick="ActualizarOrden()">Aplicar todo</button>
+                        <!--<button type="button" class="btn btn-danger" data-dismiss="modal">Aplicar cambios</button>-->
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Descartar todo</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <!--Modal Modificaciones Detalles-->
+        <div class="modal fade" id="modifModalD">
+            <div class="modal-dialog modal-xl modalConv">
+                <div class="modal-content">
+
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="modifModalDTitle">Modificaciones OP en AdServer</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+
+                    <!-- Modal body -->
+                    <div class="modal-body" id="modifModalDBody">
+                        <div class="row justify-content-center">
+                            <label><b>Detalles</b></label>
+                        </div>
+                        <div class="row" style="padding-left: 20px; padding-right: 20px;">
+                            <!--Tabla Dif Cabecera-->
+                            <div class="table-responsive mt-2 tableFixHead" style="height: 300px;">
+                                <table class="table table-fixed table-striped" id="tModifD">
+                                    <thead class="thead-dark">
+                                        <tr>
+                                            <th class="col-xs" style="text-align: center;">Campo</th>
+                                            <th class="col-xs" style="text-align: center;">Valores MMASS Online</th>
+                                            <th class="col-xs" style="text-align: center;">Valores AdServer</th>
+                                            <th class="col-xs" style="text-align: center;">Acción</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="TableDifD"></tbody>
+                                </table>
+                            </div>
+                        </div>
 
                         <!--<hr>-->
                         <div class="row" id="rowTabDifDet" style="padding-left: 20px; padding-right: 20px;">
@@ -494,6 +538,7 @@
                 </div>
             </div>
         </div>
+
         <div id="divMessage" class="alert" style="display:none;cursor:pointer;z-index:10000;" title="Click para cerrar"> </div>
         <div class="jumbotron mt-4 py-4" id="divOrderMain">
             <!-- TABS -->
@@ -549,25 +594,25 @@
                                             </div>
                                         </div>
                                         <!--<div class="col-lg-4">
-                                            <label for="inpIdOrdenAdServer">ID AdServer</label>
-                                            <input type="number" class="form-control" id="inpIdOrdenAdServer" disabled="disabled">
-                                        </div>
-                                        <div class="col-lg-2 pt-1">
-                                            <label for="bcomprobarModificaciones" class="invisible">ModiGAM</label>
-                                            <button type="button" data-id="bcomprobarModificaciones" id="bcomprobarModificaciones" disabled="disabled" class="btn actions btn-outline-dark btn-sm mr-1" onclick="comprobarModificacionesButton()" title="Comprobar modificaciones en AdServer">
-                                                <span class="fa fa-arrows-rotate"></span>
-                                            </button>
-                                        </div>-->
+                                        <label for="inpIdOrdenAdServer">ID AdServer</label>
+                                        <input type="number" class="form-control" id="inpIdOrdenAdServer" disabled="disabled">
+                                    </div>
+                                    <div class="col-lg-2 pt-1">
+                                        <label for="bcomprobarModificaciones" class="invisible">ModiGAM</label>
+                                        <button type="button" data-id="bcomprobarModificaciones" id="bcomprobarModificaciones" disabled="disabled" class="btn actions btn-outline-dark btn-sm mr-1" onclick="comprobarModificacionesButton()" title="Comprobar modificaciones en AdServer">
+                                            <span class="fa fa-arrows-rotate"></span>
+                                        </button>
+                                    </div>-->
                                         <!--<div class="col-lg-4" style="padding-right: 0px;">
-                                            <label for="selRedes">Red AdServer</label>
-                                            <select class="form-control" id="selRedes" onchange="onRedSelected()"></select>
-                                        </div>
-                                        <div class="col-lg-2 pt-1">
-                                            <label for="bgetOrderASDetais" class="invisible">InfoGAM</label>
-                                            <button type="button" data-id="getOrderASDetails" id="bgetOrderASDetais" disabled="disabled" class="btn actions btn-outline-dark btn-sm mr-1" onclick="getOrderDetails()" title="Ver detalles OrdenAS">
-                                                <span class="fa fa-info-circle" id="brow"></span>
-                                            </button>
-                                        </div>-->
+                                        <label for="selRedes">Red AdServer</label>
+                                        <select class="form-control" id="selRedes" onchange="onRedSelected()"></select>
+                                    </div>
+                                    <div class="col-lg-2 pt-1">
+                                        <label for="bgetOrderASDetais" class="invisible">InfoGAM</label>
+                                        <button type="button" data-id="getOrderASDetails" id="bgetOrderASDetais" disabled="disabled" class="btn actions btn-outline-dark btn-sm mr-1" onclick="getOrderDetails()" title="Ver detalles OrdenAS">
+                                            <span class="fa fa-info-circle" id="brow"></span>
+                                        </button>
+                                    </div>-->
                                     </div>
                                 </div>
                                 <div class="col-lg-4">
@@ -591,7 +636,7 @@
                                 </div>
                                 <div class="col-lg-4">
                                     <!--<label>Orden Relacionada</label>
-                                    <select class="form-control" id="selOrdenRelacionada" onchange="enableConf()" disabled="disabled"></select>-->
+                                <select class="form-control" id="selOrdenRelacionada" onchange="enableConf()" disabled="disabled"></select>-->
                                     <label>Descripción</label>
                                     <div class="input-group"> <input type="text" id="inpDescOP" class="form-control"> </div>
                                 </div>
@@ -701,8 +746,8 @@
                                         </button>
                                     </div>
                                     <!--<div class="col-lg-1" style="left: -10;left: -10;right: 40px;top: 2px;">
-                                        <span class="fa fa-refresh fa-pulse invisible" id="spanCompActD" title="Hay modificaciones en AdServer"></span>
-                                    </div>-->
+                                    <span class="fa fa-refresh fa-pulse invisible" id="spanCompActD" title="Hay modificaciones en AdServer"></span>
+                                </div>-->
                                 </div>
 
                                 <div class="table-responsive mt-2">
@@ -1006,7 +1051,8 @@
         $("#divNavBar").load("navBar.html");
 
         var cMultiSelect = $('.custom-select').bootstrapDualListbox({
-            filterPlaceHolder: 'Filtrar'
+            filterPlaceHolder: 'Filtrar',
+            removeAllLabel: 'Remove all'
         });
         $(".moveall").hide();
         $(".removeall").hide();
@@ -1594,6 +1640,9 @@
         function onSaveOrder(data) {
 
             if (data.result > 0) {
+                if (data.op.id_Google_Ad_Manager > 0) {
+                    comprobarModificaciones(data.op.id_op_dg, data.op.id_Google_Ad_Manager);
+                }
 
                 $('#inpOrderNumber').val(data.op.nro_orden);
                 $("#inpOrderNumber").attr("id_op_dg", data.op.id_op_dg);
@@ -1635,7 +1684,8 @@
                 recargarRenglones();
 
                 //showMessage("La orden se guardo con exito: " + data.nro_orden);
-            } else {
+            }
+            else {
                 //showMessage("Ocurrio un error al intentar guardar la orden: ","error");
             }
             showMessage(data.message);
@@ -2707,7 +2757,12 @@
                 //var idOrdenGAM = $('#inpIdOrdenAdServer').val();
                 if ($("#inpOrderNumber").attr("id_op_dg") > 0) {
                     //comprobarModificacionesD(rDetalle.id_Google_Ad_Manager);
-                    $("#bcomprobarModificacionesD").attr("disabled", false);
+                    if ($("#spanCompActD" + rDetalle.id_detalle).hasClass("invisible") == false) {
+                        $("#bcomprobarModificacionesD").attr("disabled", false);
+                    }
+                    else {
+                        $("#bcomprobarModificacionesD").attr("disabled", true);
+                    }
                 }
             }
             else {
@@ -2819,6 +2874,7 @@
                 $('#inpIdOrdenAdServer').css("background-color", "#c3e6cb");
                 $("#bgetOrderASDetais").attr("disabled", false);
                 recargarRenglones();
+                comprobarModificaciones($("#inpOrderNumber").attr("id_op_dg"), r);
             }
             else {
                 if (r == -2) {
@@ -3647,18 +3703,21 @@
                 $("#bcomprobarModificaciones").prop('title', 'Ver modificaciones en AdServer');
                 $("#spanCompAct").addClass("fa-pulse");
                 onPopulateTablasDif(data);
-                //$("#modifModal").modal('show');
+            }
+            else {
+                $("#bcomprobarModificaciones").attr("disabled", true);
+                $("#bcomprobarModificaciones").prop('title', 'No hay modificaciones en AdServer');
+                $("#spanCompAct").removeClass("fa-pulse");
             }
             if (data.listaDetalles.length > 0) {
                 data.listaDetalles.forEach(function (det) {
                     $("#spanCompActD" + det).removeClass("invisible");
-                    //$("#tdMod" + det).append("<span class='fa fa-refresh fa-pulse' id='spanCompActD" + det + "' title='Hay modificaciones en AdServer'></span>");
-                 });
-                //$("#spanCompActD").removeClass("invisible");
-                //$("#spanCompAct").addClass("fa-pulse");
+                });
             }
             //else {
-            //    $("#bcomprobarModificaciones").attr("disabled", true);
+            //    if ($("#spanCompActD" + det).hasClass("invisible") == false) {
+            //        $("#spanCompActD" + det).addClass("invisible");
+            //    }
             //}
         }
 
@@ -3692,49 +3751,6 @@
             });
 
             $("#TableDifCabecera").html(rowHTML);
-
-            //Se generan las tablas diferencias en detalles
-            //contDet = 0;
-            //rowHTMLd = ''
-            //$.each(data.listaListaParametros, function (it, listaParametro) {
-            //    contDet++;
-
-            //    rowHTMLd += "<label><b style='padding-left: 810px;'>Detalle " + contDet + "</b></label>"
-            //    rowHTMLd += "<div class='table-responsive mt-2 tableFixHead'>"
-            //    rowHTMLd += "<table class='table table-fixed table-striped' id='tModifDet" + contDet + "'>"
-            //    rowHTMLd += "<thead class='thead-dark'>"
-            //    rowHTMLd += "<tr>"
-            //    rowHTMLd += "<th class='col-xs' style='text-align: center;'>Campo</th>"
-            //    rowHTMLd += "<th class='col-xs' style='text-align: center;'>Valores MMASS Online</th>"
-            //    rowHTMLd += "<th class='col-xs' style='text-align: center;'>Valores AdServer</th>" 
-            //    rowHTMLd += "<th class='col-xs-2' style = 'text-align: center;'>Acción</th >"
-            //    rowHTMLd += "</tr>"
-            //    rowHTMLd += "</thead>"
-            //    rowHTMLd += "<tbody id='TableDifDet" + contDet + "'></tbody>";
-
-            //     $.each(listaParametro.parametros, function (it, parametro) {
-            //        arr = parametro.value.split("@@@");
-            //        valViejo = arr[0];
-            //        valNuevo = arr[1];
-
-            //        rowHTMLd += "<tr>";
-            //        rowHTMLd += "<td class='col-xs' style='text-align: center;'> " + parametro.parameterName + "</td > ";
-            //        rowHTMLd += "<td class='col-xs' style='text-align: center;'> " + valViejo + "</td >";
-            //        rowHTMLd += "<td class='col-xs' style='text-align: center;'> " + valNuevo + "</td >";
-            //        rowHTMLd += "<td class='col-xs pr-0 actions d-flex justify-content-center align-content-start'>";
-            //        rowHTMLd += "<button type='button' id='btnApl" + parametro.parameterName + "D'  class='btn actions btn-outline-dark btn-sm mr-1' onClick='aplicarCambio(\"" + parametro.parameterName + "D, \"" + valNuevo + "\")' title='Aplicar cambio'><span class='fa fa-check' ></span></button>";
-            //        rowHTMLd += "<button type='button' id='btnDes" + parametro.parameterName + "D'  class='btn actions btn-outline-dark btn-sm mr-1' onClick='descartarCambio(\"" + parametro.parameterName + "D\")' title='Descartar cambio'><span class='fa fa-remove'></span></button>";
-            //        rowHTMLd += "</td>";
-            //        rowHTMLd += "</tr>";
-
-            //     });
-            //    rowHTMLd += "</table>"
-            //    rowHTMLd += "</div>"
-
-            //});
-            //$("#rowTabDifDet").append(rowHTMLd);
-
-            //$("#modifModal").modal('show');
         }
 
         function aplicarCambio(paramName, valNuevo) {
@@ -3790,6 +3806,7 @@
                     break;
                 case 'EmplazamientosD':
                     if (valNuevo != "") {
+                        $.when(LimpiarEmpYMed('selEmplazaD')).then(function () {
                             var emplazamientos = valNuevo.split(",")
                             var viewListEmplazamientos = "<ul class=\"list-group\">"
                             if (emplazamientos.length > 0) {
@@ -3799,21 +3816,24 @@
                             }
                             viewListEmplazamientos += "</ul>"
                             $("#selEmplazaD").after(viewListEmplazamientos);
-                            cMultiSelect.bootstrapDualListbox('refresh');                      
+                            cMultiSelect.bootstrapDualListbox('refresh');
+                        });                                    
                     }
                     break;
                  case 'MedidasD':
                     if (valNuevo != "") {
-                        var medidas = valNuevo.split(",")
-                        var viewListMedidas = "<ul class=\"list-group\">"
-                        if (medidas.length > 0) {
-                            medidas.forEach(function (medida) {
-                                $("#selMedidasD option[medida=" + medida + "]").attr("selected", "selected");
-                            });
-                        }
-                        viewListMedidas += "</ul>"
-                        $("#selMedidasD").after(viewListMedidas);
-                        cMultiSelect.bootstrapDualListbox('refresh');
+                        $.when(LimpiarEmpYMed('selMedidasD')).then(function () {
+                            var medidas = valNuevo.split(",")
+                            var viewListMedidas = "<ul class=\"list-group\">"
+                            if (medidas.length > 0) {
+                                medidas.forEach(function (medida) {
+                                    $("#selMedidasD option[medida=" + medida + "]").attr("selected", "selected");
+                                });
+                            }
+                            viewListMedidas += "</ul>"
+                            $("#selMedidasD").after(viewListMedidas);
+                            cMultiSelect.bootstrapDualListbox('refresh');
+                        });                                                        
                     }
                     break;              
                 //case 'TotalD':
@@ -3889,10 +3909,10 @@
 
             });
 
-            $("#TableDifCabecera").html(rowHTML);
+            $("#TableDifD").html(rowHTML);
             $("#rowTabDifDet").html('');
 
-            $("#modifModal").modal('show');
+            $("#modifModalD").modal('show');
         }
 
         function bloquearCamposDetalle()
@@ -4007,6 +4027,21 @@
                 $("#checkListaParaFact")[0].checked = true;
                 $("#checkListaParaFact").change();
                 $("#checkListaParaFact")[0].disabled = false;
+            }
+        }
+
+        function LimpiarEmpYMed(select) {
+
+            var selectedOpts = []
+
+            $('#' + select + ' option:selected').each(function () {
+                selectedOpts.push( $(this).val());
+            });
+
+            if (selectedOpts.length > 0) {
+                selectedOpts.forEach(function (opt) {
+                    $("#" + select + " option[value=" + opt + "]").attr("selected", false);
+                });
             }
         }
 
