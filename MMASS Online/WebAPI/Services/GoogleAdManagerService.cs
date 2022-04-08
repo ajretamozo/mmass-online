@@ -420,8 +420,8 @@ namespace WebApi.Services
                                 //break;
                             }
 
-                            else if ((int)linea.primaryGoal.units != detalle.Cantidad)
-                            {
+                            else if (linea.costType != CostType.CPD && (int)linea.primaryGoal.units != detalle.Cantidad)
+                            {                             
                                 //Parametro cambioLCant = new Parametro();
                                 //cambioLCant.ParameterName = "Cantidad";
                                 //cambioLCant.Value = detalle.Cantidad.ToString() + "@@@" + ((int)linea.primaryGoal.units).ToString();
@@ -855,7 +855,7 @@ namespace WebApi.Services
                 cambiosL.Parametros.Add(cambioLDesc);
             }
 
-            if ((int)linea.primaryGoal.units != detalle.Cantidad)
+            if (linea.costType != CostType.CPD && (int)linea.primaryGoal.units != detalle.Cantidad)
             {
                 Parametro cambioLCant = new Parametro();
                 cambioLCant.ParameterName = "Cantidad";

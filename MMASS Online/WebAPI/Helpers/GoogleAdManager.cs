@@ -644,7 +644,7 @@ namespace WebApi.Helpers
                 {
                     goal.goalType = GoalType.DAILY;
                     goal.unitType = UnitType.IMPRESSIONS;
-                    goal.units = units;
+                    goal.units = 100;
                 }
                 if (tipoTarifa == 3)
                 {
@@ -1184,7 +1184,7 @@ namespace WebApi.Helpers
                     {
                         goal.goalType = GoalType.DAILY;
                         goal.unitType = UnitType.IMPRESSIONS;
-                        goal.units = units;
+                        goal.units = 100;
                     }
                     if (tipoTarifa == 3)
                     {

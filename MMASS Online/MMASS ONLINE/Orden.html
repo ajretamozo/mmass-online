@@ -285,6 +285,10 @@
         width: 90%;
         }
 
+        .btn-blue {
+            background-color: #d1ecf1;
+        }
+
     </style>
 
 </head>
@@ -850,7 +854,7 @@
                                         <div class="col-lg-4" style="padding-right: 30px; padding-left: 30px;">
                                             <div class="row">
                                                 <label>Tipo Tarifa</label>
-                                                <select class="form-control" id="selTipoTarifaD" onchange="filterTarifas()"></select>
+                                                <select class="form-control" id="selTipoTarifaD" onchange="filterTarifas(); calcularNetoD()"></select>
                                             </div>
                                             <div class="row">
                                                 <label>Area Geográfica</label>
@@ -2199,10 +2203,10 @@
                 showMessage("Debe realizar la distribución de porcentajes de RON", "info")
                 return;
             }
-            if ($('#selTipoTarifaD').val() == 1 && ($('#cantidadD').val() < 1 || $('#cantidadD').val() > 100)) {
-                showMessage("Introduzca un valor de porcentaje entre 1 y 100", "info");
-                return;
-            }
+            //if ($('#selTipoTarifaD').val() == 1 && ($('#cantidadD').val() < 1 || $('#cantidadD').val() > 100)) {
+            //    showMessage("Introduzca un valor de porcentaje entre 1 y 100", "info");
+            //    return;
+            //}
 
             var rDetalle = {};
 
@@ -3738,13 +3742,24 @@
                 valViejo = arr[0];
                 valNuevo = arr[1];
 
+                var paraNameSinEsp = "";
+                if (parametro.parameterName.includes(" ") == true) {
+                    arrPalabras = parametro.parameterName.split(" ");
+                    arrPalabras.forEach(function (palabra) {
+                        paraNameSinEsp += palabra;
+                    });
+                }
+                else {
+                    paraNameSinEsp = parametro.parameterName;
+                }
+
                 rowHTML += "<tr>";
                 rowHTML += "<td class='col-xs' style='text-align: center;'> " + parametro.parameterName + "</td > ";
                 rowHTML += "<td class='col-xs' style='text-align: center;'> " + valViejo + "</td >";
                 rowHTML += "<td class='col-xs' style='text-align: center;'> " + valNuevo + "</td >";
                 rowHTML += "<td class='col-xs pr-0 actions d-flex justify-content-center align-content-start'>";
-                rowHTML += "<button type='button' id='btnApl" + parametro.parameterName + "'  class='btn actions btn-outline-dark btn-sm mr-1' onClick='aplicarCambio(\"" + parametro.parameterName + "\", \"" + valNuevo + "\")' title='Aplicar cambio'><span class='fa fa-check'></span></button>";
-                rowHTML += "<button type='button' id='btnDes" + parametro.parameterName + "'  class='btn actions btn-outline-dark btn-sm mr-1' onClick='descartarCambio(\"" + parametro.parameterName + "\")' title='Descartar cambio'><span class='fa fa-remove'></span></button>";
+                rowHTML += "<button type='button' id='btnApl" + paraNameSinEsp + "'  class='btn actions btn-outline-dark btn-sm mr-1' onClick='aplicarCambio(\"" + paraNameSinEsp + "\", \"" + valNuevo + "\")' title='Aplicar cambios'><span class='fa fa-check'></span> Aplicar</button>";
+                //rowHTML += "<button type='button' id='btnDes" + parametro.parameterName + "'  class='btn actions btn-outline-dark btn-sm mr-1' onClick='descartarCambio(\"" + parametro.parameterName + "\")' title='Descartar cambio'><span class='fa fa-remove'></span></button>";
                 rowHTML += "</td>";
                 rowHTML += "</tr>";
 
@@ -3759,50 +3774,79 @@
             switch (paramName){
                 case 'Descripción':
                     $("#inpDescOP").val(valNuevo);
+                    $("#btnApl" + paramName).addClass('btn-blue');
+                    showMessage("Descripción actualizada", "info");
                     break;
-                case 'Vigencia Desde':
+                case 'VigenciaDesde':
                     $('#fechaDesde').datetimepicker('date', moment(dateToFieldFormat(valNuevo), 'DD/MM/YYYY'));
+                    $("#btnApl" + paramName).addClass('btn-blue');
+                    showMessage("Vigencia Desde actualizada", "info");
                     break;
-                case 'Vigencia Hasta':
+                case 'VigenciaHasta':
                     $('#fechaHasta').datetimepicker('date', moment(dateToFieldFormat(valNuevo), 'DD/MM/YYYY'));
+                    $("#btnApl" + paramName).addClass('btn-blue');
+                    showMessage("Vigencia Hasta actualizada", "info");
                     break;
                 //case 'Seg Neto':
                 //    $("#neto2").val(valNuevo);
                 //    break;
                 case 'DescripciónD':
                     $("#descripcionD").val(valNuevo);
+                    $("#btnApl" + paramName).addClass('btn-blue');
+                    showMessage("Descripción actualizada", "info");
                     break;
-                case 'Vigencia DesdeD':
+                case 'VigenciaDesdeD':
                     $('#fechaDesdeD').datetimepicker('date', moment(dateToFieldFormat(valNuevo), 'DD/MM/YYYY'));
+                    $("#btnApl" + paramName).addClass('btn-blue');
+                    showMessage("Vigencia Desde actualizada", "info");
                     break;
-                case 'Vigencia HastaD':
+                case 'VigenciaHastaD':
                     $('#fechaHastaD').datetimepicker('date', moment(dateToFieldFormat(valNuevo), 'DD/MM/YYYY'));
+                    $("#btnApl" + paramName).addClass('btn-blue');
+                    showMessage("Vigencia Hasta actualizada", "info");
                     break;
-                case 'Tipo TarifaD':
+                case 'TipoTarifaD':
                     switch (valNuevo) {
                         case 'CPM':
                             $("#selTipoTarifaD").val(0);
+                            $("#cantidadL").text("Cantidad");
                             break;
                         case 'CPD':
                             $("#selTipoTarifaD").val(1);
+                            $("#cantidadL").text("Cantidad (días)");
                             break;
                         case 'CPC':
                             $("#selTipoTarifaD").val(3);
+                            $("#cantidadL").text("Cantidad");
                             break;
                         case 'CPA':
                             $("#selTipoTarifaD").val(4);
+                            $("#cantidadL").text("Cantidad");
                             break;
                     }
+                    $("#btnApl" + paramName).addClass('btn-blue');
+                    showMessage("Tipo Tarifa actualizado", "info");
                     break;
-                case 'Precio UnitarioD':
+                case 'PrecioUnitarioD':
                     $("#precioUnitarioD").val(valNuevo);
+                    $("#btnApl" + paramName).addClass('btn-blue');
+                    showMessage("Precio Unitario actualizado", "info");
                     break;
                 case 'DescuentoD':
                     $("#descuentoD").val(valNuevo);
+                    $("#btnApl" + paramName).addClass('btn-blue');
+                    showMessage("Descuento actualizado", "info");
                     break;
                 case 'CantidadD':
-                    $("#cantidadD").val(valNuevo);
-                    calcularNetoD();
+                    if ($("#selTipoTarifaD").val() == 1) {
+                        showMessage("Debe cambiar el Tipo Tarifa primero", "info");
+                    }
+                    else {
+                        $("#cantidadD").val(valNuevo);
+                        calcularNetoD();
+                        $("#btnApl" + paramName).addClass('btn-blue');
+                        showMessage("Cantidad actualizada", "info");
+                    }
                     break;
                 case 'EmplazamientosD':
                     if (valNuevo != "") {
@@ -3819,6 +3863,8 @@
                             cMultiSelect.bootstrapDualListbox('refresh');
                         });                                    
                     }
+                    $("#btnApl" + paramName).addClass('btn-blue');
+                    showMessage("Emplazamientos actualizados", "info");
                     break;
                  case 'MedidasD':
                     if (valNuevo != "") {
@@ -3835,6 +3881,8 @@
                             cMultiSelect.bootstrapDualListbox('refresh');
                         });                                                        
                     }
+                    $("#btnApl" + paramName).addClass('btn-blue');
+                    showMessage("Medidas actualizadas", "info");
                     break;              
                 //case 'TotalD':
                 //    $("#totalD").val(valNuevo);
@@ -3897,13 +3945,24 @@
                     }
                 }
 
+               var paraNameSinEsp = "";
+                if (parametro.parameterName.includes(" ") == true) {
+                    arrPalabras = parametro.parameterName.split(" ");
+                    arrPalabras.forEach(function (palabra) {
+                        paraNameSinEsp += palabra;
+                    });
+                }
+                else {
+                    paraNameSinEsp = parametro.parameterName;
+                }
+
                 rowHTML += "<tr>";
                 rowHTML += "<td class='col-xs' style='text-align: center;'> " + parametro.parameterName + "</td > ";
                 rowHTML += "<td class='col-xs' style='text-align: center;'> " + valViejo + "</td >";
                 rowHTML += "<td class='col-xs' style='text-align: center;'> " + valNuevo + "</td >";
                 rowHTML += "<td class='col-xs pr-0 actions d-flex justify-content-center align-content-start'>";
-                rowHTML += "<button type='button' id='btnApl" + parametro.parameterName + "D'  class='btn actions btn-outline-dark btn-sm mr-1' onClick='aplicarCambio(\"" + parametro.parameterName + "D\", \"" + valoresNuevos + "\")' title='Aplicar cambio'><span class='fa fa-check' ></span></button>";
-                rowHTML += "<button type='button' id='btnDes" + parametro.parameterName + "D'  class='btn actions btn-outline-dark btn-sm mr-1' onClick='descartarCambio(\"" + parametro.parameterName + "D\")' title='Descartar cambio'><span class='fa fa-remove'></span></button>";
+                rowHTML += "<button type='button' id='btnApl" + paraNameSinEsp + "D'  class='btn actions btn-outline-dark btn-sm mr-1' onClick='aplicarCambio(\"" + paraNameSinEsp + "D\", \"" + valoresNuevos + "\")' title='Aplicar cambios'><span class='fa fa-check' ></span> Aplicar</button>";
+                //rowHTML += "<button type='button' id='btnDes" + parametro.parameterName + "D'  class='btn actions btn-outline-dark btn-sm mr-1' onClick='descartarCambio(\"" + parametro.parameterName + "D\")' title='Descartar cambio'><span class='fa fa-remove'></span></button>";
                 rowHTML += "</td>";
                 rowHTML += "</tr>";
 
