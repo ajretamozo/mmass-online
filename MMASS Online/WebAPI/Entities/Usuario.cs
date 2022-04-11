@@ -114,28 +114,36 @@ namespace WebApi.Entities
             int respuesta = 0;
             string sql = "";
             F_alta = DateTime.Now;
+
             if (Id_usuario == 0)
             {
-                if (existeUser(Nombre) == true)
+                if (existeUserOnline(Nombre) == true)
                 {
                     respuesta = 1;
                     return respuesta;
                 }
                 else
                 {
-                    string sqlId = "select max(id_usuario) as maximo from usuarios";
-                    int nuevoId = 0;
-                    DataTable t = DB.Select(sqlId);
-
-                    if (t.Rows.Count == 1)
+                    if (existeUserTrafico(Nombre) == true)
                     {
-                        nuevoId = DB.DInt(t.Rows[0]["maximo"].ToString());
-                        nuevoId++;
-                        Id_usuario = nuevoId;
+                        sql = "update usuarios set clave_web = @clave_web where nombre = @nombre";
                     }
+                    else
+                    {
+                        string sqlId = "select max(id_usuario) as maximo from usuarios";
+                        int nuevoId = 0;
+                        DataTable t = DB.Select(sqlId);
 
-                    sql = "insert into usuarios (id_usuario, nombre, nombrel, tipodoc, nrodoc, f_alta, clave, clave_web, email, adusuario, usrrol)" +
-                                       " values (@id_usuario, @nombre, @nombrel, 0, '', @f_alta, '', @clave_web, '', '', 0)";
+                        if (t.Rows.Count == 1)
+                        {
+                            nuevoId = DB.DInt(t.Rows[0]["maximo"].ToString());
+                            nuevoId++;
+                            Id_usuario = nuevoId;
+                        }
+
+                        sql = "insert into usuarios (id_usuario, nombre, nombrel, tipodoc, nrodoc, f_alta, clave, clave_web, email, adusuario, usrrol)" +
+                                           " values (@id_usuario, @nombre, @nombrel, 0, '', @f_alta, '', @clave_web, '', '', 0)";
+                    }
                 }
             }
 
@@ -173,7 +181,7 @@ namespace WebApi.Entities
         public static List<Usuario> getAllUsers()
         {
             string sqlCommand = " select id_usuario, nombre, nombrel, tipodoc, nrodoc, f_alta, f_baja, clave, clave_web, email, adusuario, Ambito, " +
-                                " usrrol, idioma, sistema from usuarios where clave_web is not null and clave_web != '' and (f_baja is null or f_baja = '')";
+                                " usrrol, idioma, sistema from usuarios where (clave_web is not null and clave_web != '') and (f_baja is null or f_baja = '')";
 
             List<Usuario> col = new List<Usuario>();
             Usuario user;
@@ -190,7 +198,7 @@ namespace WebApi.Entities
         public static List<Usuario> getByNombreList(string pNombre)
         {
             string sqlCommand = " select id_usuario, nombre, nombrel, tipodoc, nrodoc, f_alta, f_baja, clave, clave_web, email, adusuario, Ambito, " +
-                                " usrrol, idioma, sistema from usuarios where clave_web is not null and nombre like '%" + pNombre + "%' and (f_baja is null or f_baja = '')";
+                                " usrrol, idioma, sistema from usuarios where (clave_web is not null and clave_web != '') and nombre like '%" + pNombre + "%' and (f_baja is null or f_baja = '')";
             List<Usuario> col = new List<Usuario>();
             Usuario user;
             DataTable t = DB.Select(sqlCommand);
@@ -233,33 +241,9 @@ namespace WebApi.Entities
             return true;
         }
 
-        //public bool deleteUser()
-        //{
-        //    string sp = "eliminar_usuario";
-
-        //    List<SqlParameter> parametros = new List<SqlParameter>()
-        //    {
-        //        new SqlParameter()
-        //        { ParameterName="@id_us", SqlDbType = SqlDbType.Int, Value = Id_usuario }
-        //    };
-        //    if (Id_usuario != 0)
-        //    {
-        //        try
-        //        {
-        //            DB.ExecuteSp(sp, parametros);
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            Console.WriteLine(ex.Message);
-        //            return false;
-        //        }
-        //    }
-        //    return true;
-        //}
-
         public static bool cantMaxUsers()
         {
-            string sqlCommand = "select count(*) as cant from usuarios where clave_web is not null and clave_web != ''";
+            string sqlCommand = "select count(*) as cant from usuarios where (f_baja is null or f_baja = '') and (clave_web is not null and clave_web != '')";
             bool resultado = false;
             int cant = 0;
 
@@ -297,14 +281,28 @@ namespace WebApi.Entities
             return resultado;
         }
 
-        public static bool existeUser(string user)
+        public static bool existeUserOnline(string user)
         {
-            string sqlCommand = "select id_usuario from usuarios where (f_baja is null or f_baja = '') and nombre = '" + user + "'";
+            string sqlCommand = "select id_usuario from usuarios where (f_baja is null or f_baja = '') and (clave_web is not null and clave_web != '') and nombre = '" + user + "'";
             bool resultado = false;
 
             DataTable t = DB.Select(sqlCommand);
 
-            if (t.Rows.Count > 0)
+            if (t.Rows.Count == 1)
+            {
+                resultado = true;
+            }
+            return resultado;
+        }
+
+        public static bool existeUserTrafico(string user)
+        {
+            string sqlCommand = "select id_usuario from usuarios where (f_baja is null or f_baja = '') and (clave is not null and clave != '') and nombre = '" + user + "'";
+            bool resultado = false;
+
+            DataTable t = DB.Select(sqlCommand);
+
+            if (t.Rows.Count == 1)
             {
                 resultado = true;
             }

@@ -289,6 +289,18 @@
             background-color: #d1ecf1;
         }
 
+        .btn-danger {
+            color: #fff;
+            background-color: #fc9a00;
+            border-color: #fc9a00
+        }
+
+        .btn-danger:hover {
+            color: #fff;
+            background-color: #e08902;
+            border-color: #e08902
+        }
+
     </style>
 
 </head>
@@ -298,8 +310,18 @@
 
     <!--CONTENEDOR PRINCIPAL HTML-->
     <main role="main" class="container">
-        <div id="divBlock" style="left:0; right:0;top:0; bottom:0;overflow-x: hidden; overflow-y: auto;position:fixed;z-index:1051;outline:0;display:none"></div>
-        <div class="modal " id="pleaseWaitDialog" data-backdrop="static" data-keyboard="false" style="display:none">
+        <div id="divBlock" style="        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        overflow-x: hidden;
+        overflow-y: auto;
+        position: fixed;
+        z-index: 1051;
+        outline: 0;
+        display: none"></div>
+        <div class="modal " id="pleaseWaitDialog" data-backdrop="static" data-keyboard="false" style="        display: none
+">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -349,7 +371,7 @@
 
                     <!-- Modal footer -->
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
                     </div>
 
                 </div>
@@ -423,7 +445,7 @@
                             <table class="table table-fixed table-striped" id="tConvenios">
                                 <thead class="thead-dark">
                                     <tr>
-                                        <th class="col-xs-3" style="text-align: center;">ID</th>
+                                        <th class="col-xs-3" style="        text-align: center;">ID</th>
                                         <th class="col-xs-2" style="text-align: center;">Descripción</th>
                                         <th class="col-xs-2" style="text-align: center;">Agencia</th>
                                         <th class="col-xs-1" style="text-align: center;">Anunciante</th>
@@ -466,7 +488,8 @@
                         </div>
                         <div class="row" style="padding-left: 20px; padding-right: 20px;">
                             <!--Tabla Dif Cabecera-->
-                            <div class="table-responsive mt-2 tableFixHead" style="height: 300px;">
+                            <div class="table-responsive mt-2 tableFixHead" style="        height: 300px;
+">
                                 <table class="table table-fixed table-striped" id="tModifCabecera">
                                     <thead class="thead-dark">
                                         <tr>
@@ -484,9 +507,9 @@
 
                     <!-- Modal footer -->
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-danger" onclick="ActualizarOrden()">Aplicar todo</button>
+                        <!--<button type="button" class="btn btn-danger" onclick="ActualizarOrden()">Aplicar todo</button>-->
                         <!--<button type="button" class="btn btn-danger" data-dismiss="modal">Aplicar cambios</button>-->
-                        <button type="button" class="btn btn-danger" data-dismiss="modal">Descartar todo</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
                     </div>
 
                 </div>
@@ -534,9 +557,9 @@
 
                     <!-- Modal footer -->
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-danger" onclick="ActualizarOrden()">Aplicar todo</button>
+                        <!--<button type="button" class="btn btn-danger" onclick="ActualizarOrden()">Aplicar todo</button>-->
                         <!--<button type="button" class="btn btn-danger" data-dismiss="modal">Aplicar cambios</button>-->
-                        <button type="button" class="btn btn-danger" data-dismiss="modal">Descartar todo</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
                     </div>
 
                 </div>
