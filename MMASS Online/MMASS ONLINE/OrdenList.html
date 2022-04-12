@@ -265,6 +265,7 @@
                             <tr>
                                 <th>N Orden</th>
                                 <th>Vigencia</th>
+                                <th>Nombre</th>
                                 <th>Agencia</th>
                                 <th>Anunciante</th>
                                 <th>Producto</th>
@@ -400,6 +401,7 @@
                 rowHTML += "<td class='col-xs-1'>" + iord.nro_op_relacionada + ' *' + "</td>";
             }
             rowHTML += "<td class='col-xs-1'>" + dateToFieldFormat(iord.fecha) + ' - ' + dateToFieldFormat(iord.fecha_expiracion) + "</td>";
+            rowHTML += "<td class='col-xs-1'>" + iord.bitacora + "</td>";
             rowHTML += "<td class='col-xs-1'>" + iord.agencia.razonSocial + "</td>";
             rowHTML += "<td class='col-xs-1'>" + iord.anunciante.razonSocial + "</td>";
             rowHTML += "<td class='col-xs-1'>" + iord.producto.desc_producto + "</td>";
