@@ -282,6 +282,7 @@ namespace WebApi.Services
             red = Dg_red_GAM.getByCodigo(codRed);
 
             //se buscan diferencias entre la orden gam y la orden ap; si se encuentran, se devuelve la lista de cambios
+
             if (orden.Bitacora != ordenGam.name)
             {
                 Parametro cambioNom = new Parametro();
@@ -294,8 +295,7 @@ namespace WebApi.Services
             {
                 Parametro cambioDesde = new Parametro();
                 cambioDesde.ParameterName = "Vigencia Desde";
-                string fechaFormat = formatFecha(orden.Fecha.ToString());
-                cambioDesde.Value = fechaFormat + "@@@" + DateTimeUtilities.ToString(ordenGam.startDateTime, "dd/MM/yyyy");
+                cambioDesde.Value = DateTimeUtilities.ToString(DateTimeUtilities.FromDateTime((System.DateTime)orden.Fecha, "America/Argentina/Buenos_Aires"), "dd/MM/yyyy") + "@@@" + DateTimeUtilities.ToString(ordenGam.startDateTime, "dd/MM/yyyy");
                 ordYdet.Parametros.Add(cambioDesde);
             }
 
@@ -303,23 +303,12 @@ namespace WebApi.Services
             {
                 Parametro cambioHasta = new Parametro();
                 cambioHasta.ParameterName = "Vigencia Hasta";
-                string fechaFormat = formatFecha(orden.Fecha_expiracion.ToString());
-                cambioHasta.Value = fechaFormat + "@@@" + DateTimeUtilities.ToString(ordenGam.endDateTime, "dd/MM/yyyy");
+                cambioHasta.Value = DateTimeUtilities.ToString(DateTimeUtilities.FromDateTime((System.DateTime)orden.Fecha_expiracion, "America/Argentina/Buenos_Aires"), "dd/MM/yyyy") + "@@@" + DateTimeUtilities.ToString(ordenGam.endDateTime, "dd/MM/yyyy");
                 ordYdet.Parametros.Add(cambioHasta);
             }
 
             //Se comparan las Lineas de Pedido
-            //if (lineasGAM.Count != orden.Detalles.Count)
-            //{
-            //    Parametro cambioLCant = new Parametro();
-            //    cambioLCant.ParameterName = "cantLineas";
-            //    cambioLCant.Value = orden.Detalles.Count.ToString() + "@@@" + lineasGAM.Count.ToString();
-            //    cambios.Parametros.Add(cambioLCant);
-            //}
-
-            //else
-            //{
-           
+            
                 foreach (Dg_orden_pub_as detalle in orden.Detalles)
                 {
                     //ListaParametro cambiosL = new ListaParametro();
@@ -597,16 +586,19 @@ namespace WebApi.Services
                     }
                     detalle.Emplazamientos = emplazamientos;
                 }
-                foreach (CreativePlaceholder cph in linea.creativePlaceholders)
+                if (linea.creativePlaceholders != null)
                 {
-                    Dg_orden_pub_medidas medida = new Dg_orden_pub_medidas();
-                    string desc = cph.size.width.ToString() + "x" + cph.size.height.ToString();
-                    medida.Id_medidadigital = Dg_medidas.getByDescripcion(desc).Id_medidadigital;
-                    medida.Ancho = cph.size.width;
-                    medida.Alto = cph.size.height;
-                    medidas.Add(medida);
+                    foreach (CreativePlaceholder cph in linea.creativePlaceholders)
+                    {
+                        Dg_orden_pub_medidas medida = new Dg_orden_pub_medidas();
+                        string desc = cph.size.width.ToString() + "x" + cph.size.height.ToString();
+                        medida.Id_medidadigital = Dg_medidas.getByDescripcion(desc).Id_medidadigital;
+                        medida.Ancho = cph.size.width;
+                        medida.Alto = cph.size.height;
+                        medidas.Add(medida);
+                    }
+                    detalle.Medidas = medidas;
                 }
-                detalle.Medidas = medidas;
                 detalle.Tarifa_manual = 1;
                 detalle.Importe_unitario = linea.costPerUnit.microAmount / 1000000;
                 detalle.Porc_dto = (float)linea.discount;
@@ -781,20 +773,23 @@ namespace WebApi.Services
 
             //Se comparan emplazamientos
             int cantEmpGam = 0;
+            long[] emplazasLinea = { };
+
             if (linea.targeting.inventoryTargeting.targetedPlacementIds != null)
             {
                 cantEmpGam = linea.targeting.inventoryTargeting.targetedPlacementIds.Length;
+                emplazasLinea = linea.targeting.inventoryTargeting.targetedPlacementIds;
             }
             if (cantEmpGam != detalle.Emplazamientos.Count)
             {
-                cambiosL.Parametros.Add(ImprimirEmplazas(detalle.Emplazamientos, linea.targeting.inventoryTargeting.targetedPlacementIds, red.Id_red));
+                cambiosL.Parametros.Add(ImprimirEmplazas(detalle.Emplazamientos, emplazasLinea, red.Id_red));
             }
             else
             {
                 foreach (Dg_orden_pub_emplazamientos emp in detalle.Emplazamientos)
                 {
                     bool existeEmp = false;
-                    foreach (long idEmpla in linea.targeting.inventoryTargeting.targetedPlacementIds)
+                    foreach (long idEmpla in emplazasLinea)
                     {
                         if (idEmpla == emp.Codigo_emplazamiento)
                         {
@@ -804,7 +799,7 @@ namespace WebApi.Services
                     }
                     if (existeEmp == false)
                     {
-                        cambiosL.Parametros.Add(ImprimirEmplazas(detalle.Emplazamientos, linea.targeting.inventoryTargeting.targetedPlacementIds, red.Id_red));
+                        cambiosL.Parametros.Add(ImprimirEmplazas(detalle.Emplazamientos, emplazasLinea, red.Id_red));
                     }
                     //break;
                 }
@@ -875,16 +870,14 @@ namespace WebApi.Services
             {
                 Parametro cambioLDesde = new Parametro();
                 cambioLDesde.ParameterName = "Vigencia Desde";
-                string fechaFormat = formatFecha(detalle.Fecha_desde.ToString());
-                cambioLDesde.Value = fechaFormat + "@@@" + DateTimeUtilities.ToString(linea.startDateTime, "dd/MM/yyyy");
+                cambioLDesde.Value = DateTimeUtilities.ToString(DateTimeUtilities.FromDateTime((System.DateTime)detalle.Fecha_desde, "America/Argentina/Buenos_Aires"), "dd/MM/yyyy") + "@@@" + DateTimeUtilities.ToString(linea.startDateTime, "dd/MM/yyyy");
                 cambiosL.Parametros.Add(cambioLDesde);
             }
             if (System.DateTime.Parse(DateTimeUtilities.ToString(linea.endDateTime, "yyyy/MM/dd")) != detalle.Fecha_hasta)
             {
                 Parametro cambioLHasta = new Parametro();
                 cambioLHasta.ParameterName = "Vigencia Hasta";
-                string fechaFormat = formatFecha(detalle.Fecha_hasta.ToString());
-                cambioLHasta.Value = fechaFormat + "@@@" + DateTimeUtilities.ToString(linea.endDateTime, "dd/MM/yyyy");
+                cambioLHasta.Value = DateTimeUtilities.ToString(DateTimeUtilities.FromDateTime((System.DateTime)detalle.Fecha_hasta, "America/Argentina/Buenos_Aires"), "dd/MM/yyyy") + "@@@" + DateTimeUtilities.ToString(linea.endDateTime, "dd/MM/yyyy");
                 cambiosL.Parametros.Add(cambioLHasta);
             }
 

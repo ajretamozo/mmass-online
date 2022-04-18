@@ -1646,9 +1646,9 @@
         function onSaveOrder(data) {
 
             if (data.result > 0) {
-                if (data.op.id_Google_Ad_Manager > 0) {
-                    comprobarModificaciones(data.op.id_op_dg, data.op.id_Google_Ad_Manager);
-                }
+                //if (data.op.id_Google_Ad_Manager > 0) {
+                //    comprobarModificaciones(data.op.id_op_dg, data.op.id_Google_Ad_Manager);
+                //}
 
                 $('#inpOrderNumber').val(data.op.nro_orden);
                 $("#inpOrderNumber").attr("id_op_dg", data.op.id_op_dg);
@@ -2414,6 +2414,9 @@
 
             Detalles.forEach(generarTablaDetalles);
             calculateTotals();
+            if ($('#inpIdOrdenAdServer').val() !== 0 && $('#inpIdOrdenAdServer').val() !== "") {
+                comprobarModificaciones($("#inpOrderNumber").attr("id_op_dg"), $('#inpIdOrdenAdServer').val());
+            }
         }
 
         //AGREGUE (modifique onclick del boton sendaddserver y modifique IF del btn sendaddserver e IF del btn getorderdetails, en onclick='getOrderDetails(this) borré el this):
@@ -2880,7 +2883,7 @@
                 $('#inpIdOrdenAdServer').css("background-color", "#c3e6cb");
                 $("#bgetOrderASDetais").attr("disabled", false);
                 recargarRenglones();
-                comprobarModificaciones($("#inpOrderNumber").attr("id_op_dg"), r);
+                //comprobarModificaciones($("#inpOrderNumber").attr("id_op_dg"), r);
             }
             else {
                 if (r == -2) {
@@ -3728,11 +3731,6 @@
         }
 
         function comprobarModificacionesButton() {
-            //var data = {};
-            //data.id_op_dg = $("#inpOrderNumber").attr("id_op_dg");
-            //data.id_Google_Ad_Manager = $('#inpIdOrdenAdServer').val();
-
-            //callWS("googleAdManager", "comprobarModificaciones", JSON.stringify(data), function (data) { onPopulateTablasDif(data); });
             $("#modifModal").modal('show');
         }        
 
@@ -3893,14 +3891,6 @@
         }
 
         function comprobarModificacionesD(idDetGAM) {
-            //var op = {};
-            //op.id_op_dg = idOp;
-            //op.id_Google_Ad_Manager = idOpGAM;
-            //var det = {}; 
-            //det.id_detalle = idDet;
-            //det.id_Google_Ad_Manager = idDetGAM;
-            //op.Detalles = push(det);
-
             callWS("googleAdManager", "comprobarModificacionesD", JSON.stringify(idDetGAM), function (data) { onComprobarModificacionesD(data); });
         }
 
@@ -3922,6 +3912,7 @@
                 arrValores = parametro.value.split("@@@");
                 valViejo = arrValores[0];
                 valNuevo = arrValores[1];
+
                 valoresNuevos = valNuevo;
                 if (parametro.parameterName == "Emplazamientos") {
                     if (valNuevo.includes(",") == true) {

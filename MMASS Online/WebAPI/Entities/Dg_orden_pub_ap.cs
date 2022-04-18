@@ -284,6 +284,8 @@ namespace WebApi.Entities
                     {
                         mifiltro = mifiltro + " and dg.es_anulada = 0";
                     }
+                    if ((p.ParameterName == "id_red") && (p.Value.ToString() != ""))
+                        mifiltro = mifiltro + " and dg.id_red = " + p.Value;
                 }
             }
             List<Dg_orden_pub_ap> col = new List<Dg_orden_pub_ap>();

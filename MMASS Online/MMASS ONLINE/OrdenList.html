@@ -227,6 +227,12 @@
                             </div>                          
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label for="descFiltro">Red AdServer: </label>
+                            <select class="form-control enterSearch" id="selRedes"> <option value=''>(Todas) </option></select>
+                        </div>
+                    </div>
                     <div class="row justify-content-end py-3">
                         <div class="col-md-4">
                             <input type="checkbox" id="checkAnuladas" style="margin-bottom: .8rem; margin-right: .2rem">
@@ -244,19 +250,11 @@
                                 </button>
                                 <!--TEST-->
                                 <!--<button type="button" class="btn btn-dark btn-sm mx-1" onclick="reporteTest()">
-                <span class="fa fa-check"></span> Reporte Test
-            </button>-->
+                                    <span class="fa fa-check"></span> Reporte Test
+                                </button>-->
                             </div>
                         </div>
                     </div>
-                    <!--<div class="row">
-                        <div class="col-lg-2" style="padding-right: 0px;">
-                            <label>Red Ad Server</label>
-                        </div>
-                        <div class="col-lg-3" style="padding-left: 0px;">
-                            <select class="form-control" id="selRedes" onchange="onRedSelected()"></select>
-                        </div>
-                    </div>-->
                 </div>
                 <!--Tabla-->
                 <div id="tabla" class="table-responsive mt-2">
@@ -341,7 +339,7 @@
                 searchOrders();
             }
         });
-
+        getRedesGAM();
     });
 
 
@@ -463,6 +461,7 @@
         params.agencia_nombre = $('#inpDescAgencia').val();
         params.anunciante_nombre = $('#inpDescAnunciante').val();
         params.producto_nombre = $('#inpDescProducto').val();
+        params.id_red = $('#selRedes').val();
 
         for (param in params) {
             if (params[param] == null) {
@@ -526,7 +525,26 @@
 
     function formatearMonto(x) {
         return Number.parseFloat(x).toFixed(2);
-    }
+        }
+
+        function getRedesGAM() {
+            callWS("medios", "getAllRedes", '', function (data) { onCargarSelect(data, 'selRedes', 'id_red', 'descripcion', 'codigo_red'); });
+        }
+
+         function onCargarSelect(data, idSelect) {
+            var pObj = data;
+            var listitems = '';
+            $.each(pObj, function (it, iObj) {
+                listitems += '<option  codigo_red= ' + iObj['codigo_red'] + ' value=' + iObj['id_red'] + '>' + iObj["descripcion"] + '</option>';
+            });
+            $("#" + idSelect).empty();
+            $("#" + idSelect).append("<option value=''>(Todas) </option>");
+            $("#" + idSelect).append(listitems);
+            if (pObj.length > 1) {
+            $("#" + idSelect).val([]);
+            }
+         }
+
 
     </script>
 </body>
