@@ -70,7 +70,7 @@ function _onAutentificar(data) {
     sessionStorage.setItem('token', "Bearer " + data.token);
     sessionStorage.setItem('userId',  data.id);
     sessionStorage.setItem('userName',data.firstName);
-
+    sessionStorage.setItem('userRol', data.usrrol);
 
     //inicializar();
 }
@@ -148,4 +148,14 @@ function getCS() {
 
 function onGetCS(bd) {
     $("#BaseDatos").text(bd);
+}
+
+function getUserRol() {
+    return sessionStorage.getItem('userRol');
+}
+
+function setUserRol() {
+    if (getUserRol() == 1) {
+        $("#usuarios").removeClass("disabled");
+    }
 }

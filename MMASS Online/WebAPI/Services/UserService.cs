@@ -102,6 +102,7 @@ namespace WebApi.Services
                     user = new User();
                     user.Id = uMMASS.Id_usuario;
                     user.FirstName = uMMASS.Nombre;
+                    user.Usrrol = uMMASS.Usrrol;
                 }
             }
 

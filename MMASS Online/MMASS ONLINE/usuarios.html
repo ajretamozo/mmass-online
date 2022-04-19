@@ -140,6 +140,12 @@
                         </div>
                     </div>
                 </div>
+                <div class="row justify-content-end py-3">
+                    <div class="col-lg-3" style="padding-left: 130px;">
+                            <input class="enableOnEdit" type="checkbox" id="checkAdmin" title="Los Administradores pueden crear, modificar y eliminar Usuarios">
+                            <label for="checkAdmin" title="Los Administradores pueden crear, modificar y eliminar Usuarios"> Administrador</label>
+                    </div>
+                </div>
             </div>
             <div class="card-footer bg-transparent mb-3" style="text-align: right; vertical-align: middle; padding-bottom: 0;">
                 <button id="botGuardar" type="button" class="btn btn-light enableOnEdit" onclick="guardarUser()">Guardar</button>
@@ -191,6 +197,11 @@
             $('#descUser').attr("value", data.nombrel);
             $('#usuario').attr("value", data.nombre);
             $('#contra').attr("value", data.clave_web);
+            if (data.usrrol) {
+                $('#checkAdmin').attr("checked", true);
+            } else {
+                $('#checkAdmin').attr("checked", false);
+            }
         }
 
         function setMode(mode) {
@@ -198,7 +209,7 @@
                 $('#headerTitle').html("Usuario");
                 //#botNuevo, #botEditar, #botBorrar
                 $('.disableOnEdit').attr("disabled", false);
-                //#botGuardar, #botCancelar
+                //#botGuardar, #botCancelar, #checkAdmin
                 $('.enableOnEdit').attr("disabled", true);
                 //AGREGUE:
                 $('.View').attr("disabled", false);
@@ -208,7 +219,7 @@
                 $('#headerTitle').html("Editar Usuario");
                 //#botNuevo, #botEditar, #botBorrar
                 $('.disableOnEdit').attr("disabled", true);
-                //#botGuardar, #botCancelar
+                //#botGuardar, #botCancelar, #checkAdmin
                 $('.enableOnEdit').attr("disabled", false);
                 //#descRed
                 $('.readonlyOnView').attr("readonly", false);
@@ -216,7 +227,7 @@
                 $('#headerTitle').html("Editar Usuario");
                 //#botNuevo, #botEditar, #botBorrar
                 $('.disableOnEdit').attr("disabled", true);
-                //#botGuardar, #botCancelar
+                //#botGuardar, #botCancelar, #checkAdmin
                 $('.enableOnEdit').attr("disabled", false);
                 //#descRed
                 $('.readonlyOnView').attr("readonly", false);
@@ -290,22 +301,29 @@
                 data.nombre = $("#usuario").val();
                 data.nombrel = $('#descUser').val();
                 data.clave_web = $('#contra').val();
+                if (document.getElementById("checkAdmin").checked == true) {
+                    data.usrrol = 1;
+                }
+                else {
+                     data.usrrol = 0;
+                }
 
                 if (data.id_usuario == 0) {
                     callWS("users", "cantMaxUsers", '', function (data1) {
                         if (data1 == true) {
                             showMessage("Se a alcanzado el límite de Usuarios (20)", "error");
-
                         }
                         else {
                             callWS("users", "saveUser", JSON.stringify(data), function (data) {
                                 if (data == 0) {
                                     location.href = "/usuariosList.html";
                                 }
-                                else if (data == 1) {
-                                    showMessage("El nombre de usuario ya existe", "error");
-                                }
-                                else {
+                                else if (data == 1)
+                                {
+                                  showMessage("El nombre de usuario ya existe", "error");
+                                }   
+                                else
+                                {
                                     console.log(data);
                                 }
                             });
@@ -314,7 +332,7 @@
                 }
                 else {
                   callWS("users", "saveUser", JSON.stringify(data), function (data) {
-                    if (data == true) {
+                    if (data == 0) {
                         location.href = "/usuariosList.html";
                     } else {
                         console.log(data);

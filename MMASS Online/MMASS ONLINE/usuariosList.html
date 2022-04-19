@@ -163,7 +163,11 @@
                 rowHTML += "<button type='button' title='Editar' class='btn btn-outline-dark btn-sm mx-1' onclick=\"openUser(" + iuser.id_usuario + ",'edit')\"><span class='fa fa-edit'></span> </button>"
                 rowHTML += "<button type='button' title='Eliminar' class='btn btn-outline-dark btn-sm mx-1' onclick=\"checkBorrarUser(" + iuser.id_usuario + ")\"><span class='fa fa-times'></span> </button>"
                 rowHTML += "</td>"
-                rowHTML += '</tr>'
+                if (iuser.usrrol == 1) {
+                    rowHTML += "</td> <td class='col-xs-1 pl-0' style='padding-top: 16px'>";
+                    rowHTML += "<span class='fa fa-wrench' id='brow" + iuser.id_usuario + "' title='Admin''></span></td>";
+                }
+                rowHTML += "</tr>"
             })
             $("#" + idTable).html(rowHTML);
         }

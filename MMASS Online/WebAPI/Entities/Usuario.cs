@@ -126,7 +126,7 @@ namespace WebApi.Entities
                 {
                     if (existeUserTrafico(Nombre) == true)
                     {
-                        sql = "update usuarios set clave_web = @clave_web where nombre = @nombre";
+                        sql = "update usuarios set clave_web = @clave_web where nombre = @nombre, usrrol = @usrrol";
                     }
                     else
                     {
@@ -142,14 +142,14 @@ namespace WebApi.Entities
                         }
 
                         sql = "insert into usuarios (id_usuario, nombre, nombrel, tipodoc, nrodoc, f_alta, clave, clave_web, email, adusuario, usrrol)" +
-                                           " values (@id_usuario, @nombre, @nombrel, 0, '', @f_alta, '', @clave_web, '', '', 0)";
+                                           " values (@id_usuario, @nombre, @nombrel, 0, '', @f_alta, '', @clave_web, '', '', @usrrol)";
                     }
                 }
             }
 
             else
             {
-                sql = "update usuarios set nombre = @nombre, nombrel = @nombrel, clave_web = @clave_web where id_usuario = @id_usuario";
+                sql = "update usuarios set nombre = @nombre, nombrel = @nombrel, clave_web = @clave_web, usrrol = @usrrol where id_usuario = @id_usuario";
             }
 
             List<SqlParameter> parametros = new List<SqlParameter>()
@@ -162,8 +162,10 @@ namespace WebApi.Entities
                 { ParameterName="@nombrel",SqlDbType = SqlDbType.VarChar, Value = Nombrel },
                 new SqlParameter()
                 { ParameterName="@clave_web", SqlDbType = SqlDbType.VarChar, Value = Clave_web },
-                 new SqlParameter()
-                { ParameterName="@f_alta", SqlDbType = SqlDbType.DateTime, Value = F_alta }
+                new SqlParameter()
+                { ParameterName="@f_alta", SqlDbType = SqlDbType.DateTime, Value = F_alta },
+                new SqlParameter()
+                { ParameterName="@usrrol", SqlDbType = SqlDbType.SmallInt, Value = Usrrol }
             };
             try
             {
