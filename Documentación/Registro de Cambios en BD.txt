@@ -25,6 +25,8 @@ Agregado campo [id_red] a tabla [dg_orden_pub_ap]
 Agregado campo [id_red] a tabla [dg_orden_pub_as]
 Agregado campo [id_red] a tabla [dg_emplazamientos] 
 Agregado campo [id_red] a tabla [dg_tarifas] 
+Agregado campo [parafacturar] a tabla [dg_orden_pub_ap] 
+Creada tabla [dg_orden_pub_bloqueo]
 
 
 TABLAS SIN DATOS:

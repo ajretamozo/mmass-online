@@ -80,6 +80,7 @@ namespace WebApi.Entities
         public long Id_Google_Ad_Manager { get; set; }
         public int Id_red { get; set; }
         public int Parafacturar { get; set; }
+        public int bloqueado { get; set; }
         public List<Dg_orden_pub_as> Detalles;
         public List<Dg_orden_pub_ejecutivos> Ejecutivos;
         public List<Dg_orden_pub_pagos> FormasPago;
@@ -119,7 +120,7 @@ namespace WebApi.Entities
                 //}
             }            
             if (item["id_producto"].ToString() != "")
-                mi.producto = Producto.getById(DB.DInt(item["id_producto"].ToString()));
+            mi.producto = Producto.getById(DB.DInt(item["id_producto"].ToString()));
             mi.Id_condpagoap = DB.DInt(item["Id_condpagoap"].ToString());
             mi.Nro_orden_ag = item["Nro_orden_ag"].ToString();
             mi.Facturar_a = DB.DInt(item["Facturar_a"].ToString());
@@ -171,6 +172,14 @@ namespace WebApi.Entities
             mi.Id_Google_Ad_Manager = DB.DLong(item["id_google_ad_manager"].ToString());
             mi.Id_red = DB.DInt(item["id_red"].ToString());
             mi.Parafacturar = DB.DInt(item["parafacturar"].ToString());
+            if (item["bloqueado"] != null)
+            {
+                mi.bloqueado = DB.DInt(item["bloqueado"].ToString());
+            }
+            else
+            {
+                mi.bloqueado = 0;
+            }
             if (item["nro_orden_rel"] != null)
             {
                 mi.Nro_op_relacionada = item["nro_orden_rel"].ToString();
@@ -211,7 +220,7 @@ namespace WebApi.Entities
                                 " dg.id_usuario, dg.porcvol_ag, dg.tercer_neto, dg.localnacional, dg.imp_conf_nc, dg.imp_conf_fc, dg.porcvol_an, dg.id_op_relacionada, " +
                                 " dg.Desc2, dg.Desc3, dg.Desc4, dg.desc5, dg.id_cond_iva, dg.id_moneda, dg.cambio, dg.bonificado, dg.id_convenio, " +
                                 " dg.transferido, dg.bitacora, dg.Id_facturar, dg.Total_Avisos, dg.Total_Impresiones, " +
-                                " dg.Es_facturada, dg.Id_factura_ap, " +
+                                " dg.Es_facturada, dg.Id_factura_ap, opb.bloqueado, " +
                                 " ag.razon_social as agencia_nombre, an.razon_social as anunciante_nombre, p.desc_producto as producto_nombre, dg.id_google_ad_manager, dg.id_red, dg.parafacturar, " +
                                 " cast(op.anio as varchar(4)) + '-' + cast(op.mes as varchar(2)) + '-' + cast(op.nro_orden as varchar(5)) as nro_orden_rel " +
                                 " from Dg_orden_pub_ap dg " +
@@ -219,6 +228,7 @@ namespace WebApi.Entities
                                 " left outer join contactos an on an.id_contacto = dg.id_anunciante " +
                                 " left outer join productos p on p.id_producto = dg.id_producto " +
                                 " left outer join orden_pub_ap op on dg.id_op_relacionada = op.id_op " +
+                                " left outer join dg_orden_pub_bloqueo opb on dg.id_op_dg = opb.id_op_dg " +
                                 " where 1 = 1 ";
             string mifiltro = "";
 
@@ -328,7 +338,7 @@ namespace WebApi.Entities
                                 " dg.id_usuario, dg.porcvol_ag, dg.tercer_neto, dg.localnacional, dg.imp_conf_nc, dg.imp_conf_fc, dg.porcvol_an, dg.id_op_relacionada, " +
                                 " dg.Desc2, dg.Desc3, dg.Desc4, dg.desc5, dg.id_cond_iva, dg.id_moneda, dg.cambio, dg.bonificado, dg.id_convenio, " +
                                 " dg.transferido, dg.bitacora, dg.Id_facturar, dg.Total_Avisos, dg.Total_Impresiones, " +
-                                " dg.Es_facturada, dg.Id_factura_ap, " +
+                                " dg.Es_facturada, dg.Id_factura_ap, opb.bloqueado, " +
                                 " ag.razon_social as agencia_nombre, an.razon_social as anunciante_nombre, p.desc_producto as producto_nombre, dg.id_google_ad_manager, dg.id_red, dg.parafacturar, " +
                                 " cast(op.anio as varchar(4)) + '-' + cast(op.mes as varchar(2)) + '-' + cast(op.nro_orden as varchar(5)) as nro_orden_rel " +
                                 " from Dg_orden_pub_ap dg " +
@@ -336,6 +346,7 @@ namespace WebApi.Entities
                                 " left outer join contactos an on an.id_contacto = dg.id_anunciante " +
                                 " left outer join productos p on p.id_producto = dg.id_producto " +
                                 " left outer join orden_pub_ap op on dg.id_op_relacionada = op.id_op " +
+                                " left outer join dg_orden_pub_bloqueo opb on dg.id_op_dg = opb.id_op_dg " +
                                 " where dg.es_anulada = 0 order by dg.id_op_dg desc";
             List<Dg_orden_pub_ap> col = new List<Dg_orden_pub_ap>();
             Dg_orden_pub_ap elem;
@@ -395,7 +406,7 @@ namespace WebApi.Entities
                                 " dg.id_usuario, dg.porcvol_ag, dg.tercer_neto, dg.localnacional, dg.imp_conf_nc, dg.imp_conf_fc, dg.porcvol_an, dg.id_op_relacionada, " +
                                 " dg.Desc2, dg.Desc3, dg.Desc4, dg.desc5, dg.id_cond_iva, dg.id_moneda, dg.cambio, dg.bonificado, dg.id_convenio, " +
                                 " dg.transferido, dg.bitacora, dg.Id_facturar, dg.Total_Avisos, dg.Total_Impresiones, " +
-                                " dg.Es_facturada, dg.Id_factura_ap, " +
+                                " dg.Es_facturada, dg.Id_factura_ap, opb.bloqueado, " +
                                 " ag.razon_social as agencia_nombre, an.razon_social as anunciante_nombre, p.desc_producto as producto_nombre, dg.id_google_ad_manager, dg.id_red, dg.parafacturar, " +
                                 " cast(op.anio as varchar(4)) + '-' + cast(op.mes as varchar(2)) + '-' + cast(op.nro_orden as varchar(5)) as nro_orden_rel " +
                                 " from Dg_orden_pub_ap dg " +
@@ -403,6 +414,7 @@ namespace WebApi.Entities
                                 " left outer join contactos an on an.id_contacto = dg.id_anunciante " +
                                 " left outer join productos p on p.id_producto = dg.id_producto " +
                                 " left outer join orden_pub_ap op on dg.id_op_relacionada = op.id_op " +
+                                " left outer join dg_orden_pub_bloqueo opb on dg.id_op_dg = opb.id_op_dg " +
                                 " where dg.id_op_dg = " + Id.ToString();
             Dg_orden_pub_ap resultado;
             resultado = new Dg_orden_pub_ap();

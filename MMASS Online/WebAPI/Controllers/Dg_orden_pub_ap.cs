@@ -65,7 +65,6 @@ namespace WebApi.Controllers
         [HttpPost("getSponsorsPorFecha")]
         public IActionResult getSponsorsPorFecha(Dg_orden_pub_as det)
         {
-            //var result = _Dg_orden_pub_apService.getSponsorsPorFecha((System.DateTime)det.Fecha_desde, (System.DateTime)det.Fecha_hasta);
             var result = _Dg_orden_pub_apService.getSponsorsPorFecha(det);
             return Ok(result);
         }
@@ -74,6 +73,20 @@ namespace WebApi.Controllers
         public IActionResult anularOrden([FromBody] int id)
         {
             var result = _Dg_orden_pub_apService.anularOrden(id);
+            return Ok(result);
+        }
+
+        [HttpPost("bloquearOp")]
+        public IActionResult bloquearOp(Dg_orden_pub_bloqueo opb)
+        {
+            var result = _Dg_orden_pub_apService.bloquearOP(opb);
+            return Ok(result);
+        }
+
+        [HttpPost("desbloquearOp")]
+        public IActionResult desbloquearOp(Dg_orden_pub_bloqueo opb)
+        {
+            var result = _Dg_orden_pub_apService.desbloquearOP(opb);
             return Ok(result);
         }
 

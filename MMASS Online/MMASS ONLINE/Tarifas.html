@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>MMASS - Tarifas</title>
+    <title>MMASS Online - Tarifas</title>
 
     <link rel="shortcut icon" href="favicon.png">
 
@@ -76,7 +76,7 @@
     </style>
 
 </head>
-<body>
+<body style="padding-top: 30px;">
     <!--MENU-->
     <div id="divNavBar"></div>
     <main role="main" class="container">
@@ -168,7 +168,7 @@
                         <select id="selMedios" class="custom-select" name="dlcMedios" style="display:none" multiple></select>
                     </div>
                     <div class="col-lg-6">
-                        <label for="selTipoPublicidad"> Tipo de publicidad</label>
+                        <label for="selTipoPublicidad"> Tipo de Aviso</label>
                         <select id="selTipoPublicidad" class="custom-select" name="dlcTipos" style="display:none" multiple></select>
                     </div>
                 </div>
@@ -398,7 +398,7 @@
 
             //Llenar select Medios
             //callWS("medios", "getAll", '', function (data) { onPopulateSelectDone(data, 'selMedios', 'id_medio', 'desc_medio'); });
-            //// Llenar select Tipos de publicidad
+            //// Llenar select Tipos de Aviso
             //callWS("tipos_avisos", "getAll", '', function (data) { onPopulateSelectDone(data, 'selTipoPublicidad', 'id_tipo_aviso_dg', 'descripcion'); });
             //// Llenar select Formas de uso
             //callWS("tarifas", "getFormasUsoAll", '', function (data) { onPopulateSelectDone(data, 'selFormaUso', 'id', 'descripcion'); });
@@ -413,7 +413,7 @@
                 callWS("medios", "getAllA", '', function (data) { onPopulateSelectDone(data, 'selAreasGeo', 'id_area', 'descripcion'); }),
                 callWS("tarifas", "getFormasUsoAll", '', function (data) { onPopulateSelectDone(data, 'selFormaUso', 'id', 'descripcion'); })
             ).then(function () { checkParameters() }, function (data1, data2, data3) {
-                console.log("Medios: " + data1[2].statusText + "; Tipos de Publicidad: " + data2[2].statusText + "Formas de uso: " + data3[2].statusText + ";");
+                console.log("Medios: " + data1[2].statusText + "; Tipos de aviso: " + data2[2].statusText + "Formas de uso: " + data3[2].statusText + ";");
                 showMessage("Se produjo un error al cargar los campos, intentelo nuevamente", type = "alert");
             });
         }

@@ -1,7 +1,7 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-    <title>MMASS - Tipos de Publicidad</title>
+    <title>MMASS Online - Tipos de Aviso</title>
 
     <link rel="shortcut icon" href="favicon.png">
 
@@ -76,7 +76,7 @@
     </style>
 
 </head>
-<body>
+<body style="padding-top: 30px;">
     <!--MENU-->
     <div id="divNavBar"></div>
 
@@ -100,7 +100,7 @@
 
         <div class="card mb-3" style="max-width: 100rem; margin-top: 5rem;">
             <div class="card-header d-flex align-items-center" style="margin-bottom: 1rem;">
-                <span id="headerTitle" class="mr-auto dataTitle">Tipos de Publicidad</span>
+                <span id="headerTitle" class="mr-auto dataTitle">Tipos de Aviso</span>
                 <div>
                     <button id="botNuevo" type="button" class="btn btn-light disableOnEdit" onclick="nuevaTipoAviso()">Nuevo</button>
                     <button id="botEditar" type="button" class="btn btn-light disableOnEdit" onclick="editarTipoAviso()">Editar</button>
@@ -120,7 +120,7 @@
                 </div>
                 <div class="row">
                     <div class="col-lg-6">
-                        <label for="descTipoAviso"> Descripción Tipo de publicidad</label>
+                        <label for="descTipoAviso"> Descripción Tipo de Aviso</label>
                         <div class="input-group">
                             <input type="text" id="descTipoAviso" class="form-control readonlyOnView" placeholder="Descripcion">
                         </div>
@@ -192,7 +192,7 @@
 
         function setMode(mode) {
             if (mode == 'view') {
-                $('#headerTitle').html("Tipo de Publicidad");
+                $('#headerTitle').html("Tipo de Aviso");
                 //#botNuevo, #botEditar, #botBorrar
                 $('.disableOnEdit').attr("disabled", false);
                 //#botGuardar, #botCancelar, #checkEnvioAdServer
@@ -202,7 +202,7 @@
                 //#descTipoAviso
                 $('.readonlyOnView').attr("readonly", true);
             } else if (mode == 'edit') {
-                $('#headerTitle').html("Editar Tipo de Publicidad");
+                $('#headerTitle').html("Editar Tipo de Aviso");
                 //#botNuevo, #botEditar, #botBorrar
                 $('.disableOnEdit').attr("disabled", true);
                 //#botGuardar, #botCancelar, #checkEnvioAdServer
@@ -210,7 +210,7 @@
                 //#descTipoAviso
                 $('.readonlyOnView').attr("readonly", false);
             } else if (mode == 'new') {
-                $('#headerTitle').html("Editar Tipo de Publicidad");
+                $('#headerTitle').html("Editar Tipo de Aviso");
                 //#botNuevo, #botEditar, #botBorrar
                 $('.disableOnEdit').attr("disabled", true);
                 //#botGuardar, #botCancelar, #checkEnvioAdServer
@@ -250,7 +250,7 @@
                 }
             ];
 
-            var mensaje = "<div class='d-flex justify-content-center'>¿Esta seguro de borrar el Tipo de Publicidad?</div>";
+            var mensaje = "<div class='d-flex justify-content-center'>¿Esta seguro de borrar el Tipo de Aviso?</div>";
 
             showModal(mensaje, options);
         }

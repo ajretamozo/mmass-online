@@ -2,7 +2,7 @@
 <html>
 <head runat="server">
     <meta http-equiv="content-type" content="application/vnd.ms-excel;" charset="UTF-8">
-    <title>Informe de ventas - MMASS Online</title>
+    <title>MMASS Online - Informe de ventas</title>
 
     <link rel="shortcut icon" href="favicon.png">
 
@@ -83,10 +83,15 @@
             border-top: 1px solid #b3b7bb;
             box-shadow: 1px 0 0 1px #e9ecef;
         }
+
+        .dataTitle {
+            font-family: 'Roboto';
+            font-size: 20px;
+        }
     </style>
 
 </head>
-<body>
+<body style="padding-top: 80px;">
 
     <!--MENU-->
     <div id="divNavBar"></div>
@@ -114,12 +119,12 @@
 
         <div id="divMessage" class="alert" style="display:none;cursor:pointer;z-index:10000;" title="Click para cerrar" onclick="$('#divMessage').hide('slideDown')"> </div>
         <div class="jumbotron mt-4 py-4" id="divTarifasMain">
-            <div class="row justify-content-center mt-2">
-                <h4>Informe de Ventas</h4>
-            </div>
+            <p class="dataTitle">INFORME DE VENTAS</p>
+            <!--<div class="row justify-content-center mt-2">
+            <h4>Informe de Ventas</h4>
+            </div>-->
             <div class="row justify-content-center mt-2 printOnly">
-                <h6 id="obsReporte" >
-
+                <h6 id="obsReporte">
                 </h6>
                 <hr />
             </div>
@@ -604,7 +609,7 @@
 
         //Llenar select Medios
         //callWS("medios", "getAll", '', function (data) { onPopulateSelectDone(data, 'selMedios', 'id_medio', 'desc_medio'); });
-        //// Llenar select Tipos de publicidad
+        //// Llenar select Tipos de Aviso
         //callWS("tipos_avisos", "getAll", '', function (data) { onPopulateSelectDone(data, 'selTipoPublicidad', 'id_tipo_aviso_dg', 'descripcion'); });
         //// Llenar select Formas de uso
         //callWS("tarifas", "getFormasUsoAll", '', function (data) { onPopulateSelectDone(data, 'selFormaUso', 'id', 'descripcion'); });
@@ -617,7 +622,7 @@
             $('#fechaDesde').val(moment().startOf('month').format('DD/MM/YYYY')),
             $('#fechaHasta').val(moment().endOf('month').format('DD/MM/YYYY'))
         ).then(function () {  }, function (data1, data2) {
-            console.log("Medios: " + data1[2].statusText + "; Tipos de Publicidad: " + data2[2].statusText + "Formas de uso: " + data3[2].statusText + ";");
+            console.log("Medios: " + data1[2].statusText + "; Tipos de Aviso: " + data2[2].statusText + "Formas de uso: " + data3[2].statusText + ";");
             showMessage("Se produjo un error al cargar los campos, intentelo nuevamente", type = "alert");
         });
             }

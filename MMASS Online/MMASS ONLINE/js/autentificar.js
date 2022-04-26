@@ -39,6 +39,7 @@ function callWS(ws, op, data, onDone) {
         }
     });
 }
+
 function setUserName() {
 
     $("#NombreUsuario").text(getUserName());

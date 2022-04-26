@@ -12,7 +12,7 @@
         html +="<a class='nav-link' href='tarifaslist.html'>Tarifas</a>";
         html +="</li>";
         html +="<li class='nav-item'>";
-        html +="<a class='nav-link' href='tiposavisoslist.html'>Tipos de Publicidad</a>";
+        html +="<a class='nav-link' href='tiposavisoslist.html'>Tipos de Aviso</a>";
         html +="</li>";
         html +="<li class='nav-item dropdown'>";
         html +="<a class='nav-link dropdown-toggle' href='#' id='navbardrop' data-toggle='dropdown'>";

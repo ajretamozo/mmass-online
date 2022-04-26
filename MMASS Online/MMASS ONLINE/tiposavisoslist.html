@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head runat="server">
-    <title>MMASS - Tipos de Publicidad</title>
+    <title>MMASS Online - Tipos de Aviso</title>
 
     <link rel="shortcut icon" href="favicon.png">
 
@@ -68,7 +68,7 @@
     </style>
 
 </head>
-<body>
+<body style="padding-top: 80px;">
     <!--MENU-->
     <div id="divNavBar"></div>
 
@@ -96,7 +96,7 @@
         <div id="divMessage" class="alert" style="display:none;cursor:pointer;z-index:10000;" title="Click para cerrar" onclick="$('#divMessage').hide('slideDown')"> </div>
         <div class="jumbotron mt-4 py-4 col-lg-9" id="divTiposAvisosMain">
             <!--Tipos de Avisos DATA-->
-            <p class="dataTitle">TIPOS DE PUBLICIDAD</p>
+            <p class="dataTitle">TIPOS DE AVISO</p>
             <div id="divTiposAvisosData d-flex align-items-around align-items-end">
                 <div class="row py-1">
                     <div class="col-md-5">
@@ -108,7 +108,7 @@
                             <span class="fa fa-search"></span> Buscar
                         </button>
                         <button type="button" class="btn btn-dark btn-sm mx-1" onclick="nuevoTipoAviso()">
-                            <span class="fa fa-check"></span> Nuevo Tipo de Publicidad
+                            <span class="fa fa-check"></span> Nuevo Tipo de Aviso
                         </button>
                     </div>
                 </div>
@@ -144,7 +144,7 @@
 
         function populateFields() {
 
-            // Llenar tabla con tipos de publicidad existentes
+            // Llenar tabla con tipos de Aviso existentes
             callWS("tipos_avisos", "getAll", '', function (data) { populateTable(data, 'TableTiposAvisos'); });
         }
 
@@ -230,7 +230,7 @@
                 }
             ];
 
-            var mensaje = "<div class='d-flex justify-content-center'>¿Esta seguro de borrar el Tipo de Publicidad?</div>";
+            var mensaje = "<div class='d-flex justify-content-center'>¿Esta seguro de borrar el Tipo de Aviso?</div>";
 
             showModal(mensaje, options);
         }
@@ -242,7 +242,7 @@
                 if (data == true) {
                     callWS("tipos_avisos", "getAll", '', function (data) { populateTable(data, 'TableTiposAvisos'); });
                 } else {
-                    message = 'Ocurrió un problema al borrar el Tipo de Publicidad';
+                    message = 'Ocurrió un problema al borrar el Tipo de Aviso';
                     showMessage(message, "alert");
                 }
 

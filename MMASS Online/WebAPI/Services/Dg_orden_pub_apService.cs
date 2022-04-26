@@ -29,6 +29,8 @@ namespace WebApi.Services
         Dg_orden_pub_ap getOpRadioById(int id);
         IEnumerable<DatoGenerico> getOrdenesRadio(int Id_agencia, int Id_anunciante);
         IEnumerable<Dg_orden_pub_ap> filter(List<Parametro> parametros);
+        bool bloquearOP(Dg_orden_pub_bloqueo opb);
+        bool desbloquearOP(Dg_orden_pub_bloqueo opb);
         //bool removeTarifa(Dg_tarifas miobj);
         //IEnumerable<Dg_tarifa_forma_uso> getFormasUso();
         //IEnumerable<Dg_tarifas> filter(List<Parametro> parametros);
@@ -132,6 +134,16 @@ namespace WebApi.Services
         public bool anularOrden(int id)
         {
             return Dg_orden_pub_ap.anularOrden(id);
+        }
+
+        public bool bloquearOP(Dg_orden_pub_bloqueo opb)
+        {
+            return opb.bloquear();
+        }
+
+        public bool desbloquearOP(Dg_orden_pub_bloqueo opb)
+        {
+            return opb.desbloquear();
         }
 
     }

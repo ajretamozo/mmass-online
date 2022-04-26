@@ -51,10 +51,15 @@
                 text-align: center;
             }
         }
+
+        .dataTitle {
+            font-family: 'Roboto';
+            font-size: 20px;
+        }
     </style>
 
 </head>
-<body>
+<body style="padding-top: 80px;">
     <!--MENU-->
     <div id="divNavBar"></div>
 
@@ -107,6 +112,7 @@
         </div>
         <div id="divMessage" class="alert" style="display:none;cursor:pointer;z-index:10000;" title="Click para cerrar"> </div>
         <div class="jumbotron mt-4 py-4 col-12" id="divGeneral">
+            <p class="dataTitle">SINCRONIZAR EMPLAZAMIENTOS</p>
             <div class="row">
                 <div class="col-lg-2" style="padding-right: 0px;">
                     <label>Red AdServer</label>
@@ -120,45 +126,45 @@
                     </button>
                 </div>
             </div>
-                <div class="row">
-                    <div class="col-md-5">
-                        <label><b>AdServer:</b></label>
-                        <!--Tabla GAM-->
-                        <div id="tabla" class="table-responsive mt-2">
-                            <table class='table table-hover table-sm '>
-                                <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Emplazamiento</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="TableGAM" class="small"></tbody>
-                            </table>
-                        </div>
+            <div class="row">
+                <div class="col-md-5">
+                    <label><b>AdServer:</b></label>
+                    <!--Tabla GAM-->
+                    <div id="tabla" class="table-responsive mt-2">
+                        <table class='table table-hover table-sm '>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Emplazamiento</th>
+                                </tr>
+                            </thead>
+                            <tbody id="TableGAM" class="small"></tbody>
+                        </table>
                     </div>
-                    <div class="col-md-2" style="padding-left: 30px;padding-right: 30px;padding-top: 40px;">
-                        <!--Botón Sincronizar-->
-                        <button type="button" class="btn btn-dark btn-sm mx-1" onclick="sincronizar()">
-                            Sincronizar <span class="fa fa-chevron-right"></span><span class="fa fa-chevron-right"></span>
-                        </button>
-                    </div>
-                    <div class="col-md-5">
-                        <label><b>MMASSOnline:</b></label>
-                        <!--Tabla MMASSOnline-->
-                        <div id="tabla" class="table-responsive mt-2">
-                            <table class='table table-hover table-sm '>
-                                <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Emplazamiento</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="TableMMASS" class="small"></tbody>
-                            </table>
-                        </div>
-                    </div>
-
                 </div>
+                <div class="col-md-2" style="padding-left: 30px;padding-right: 30px;padding-top: 40px;">
+                    <!--Botón Sincronizar-->
+                    <button type="button" class="btn btn-dark btn-sm mx-1" onclick="sincronizar()">
+                        Sincronizar <span class="fa fa-chevron-right"></span><span class="fa fa-chevron-right"></span>
+                    </button>
+                </div>
+                <div class="col-md-5">
+                    <label><b>MMASSOnline:</b></label>
+                    <!--Tabla MMASSOnline-->
+                    <div id="tabla" class="table-responsive mt-2">
+                        <table class='table table-hover table-sm '>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Emplazamiento</th>
+                                </tr>
+                            </thead>
+                            <tbody id="TableMMASS" class="small"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
 
         </div>
 </main>

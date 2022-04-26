@@ -1,7 +1,7 @@
 ﻿<!DOCTYPE html>
 <html>
 <head runat="server">
-    <title>MMASS Online - Sinc Órdenes</title>
+    <title>MMASS Online - Sinc Anunciantes</title>
 
     <link rel="shortcut icon" href="favicon.png">
 
@@ -50,10 +50,15 @@
                 text-align: center;
             }
         }
+
+        .dataTitle {
+            font-family: 'Roboto';
+            font-size: 20px;
+        }
     </style>
 
 </head>
-<body>
+<body style="padding-top: 80px;">
     <!--MENU-->
     <div id="divNavBar"></div>
 
@@ -109,6 +114,7 @@
         <div id="divMessage" class="alert" style="display:none;cursor:pointer;z-index:10000;" title="Click para cerrar"> </div>
 
         <div class="jumbotron mt-4 py-4 col-12" id="divGeneral">
+            <p class="dataTitle">SINCRONIZAR ANUNCIANTES</p>
             <div class="row">
                 <div class="col-md-4">
                     <label for="descFiltro">Anunciante AdServer: </label>

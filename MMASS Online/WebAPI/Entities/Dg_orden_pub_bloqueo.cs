@@ -38,7 +38,7 @@ namespace WebApi.Entities
             bool existeRegistro = false;
             int bloqueado = 0;
 
-            string sqlId = "select id_op_dg from dg_orden_pub_bloqueo where id_op_dg = " + Id_op_dg.ToString();
+            string sqlId = "select bloqueado from dg_orden_pub_bloqueo where id_op_dg = " + Id_op_dg.ToString();
             DataTable t = DB.Select(sqlId);
             if (t.Rows.Count == 1)
             {
@@ -87,38 +87,38 @@ namespace WebApi.Entities
         public bool desbloquear()
         {
             string sql = "";
-            UltimoAcceso = DateTime.Now;
-            bool existeRegistro = false;
-             int bloqueado = 0;
+            UltimoDesbloqueo = DateTime.Now;
+            //bool existeRegistro = false;
+            // int bloqueado = 0;
 
-            string sqlId = "select id_op_dg from dg_orden_pub_bloqueo where id_op_dg = " + Id_op_dg.ToString();
-            DataTable t = DB.Select(sqlId);
-            if (t.Rows.Count == 1)
-            {
-                existeRegistro = true;
-                foreach (DataRow r in t.Rows)
-                {
-                    bloqueado = DB.DInt(r["bloqueado"].ToString());
-                }
-            }
+            //string sqlId = "select id_op_dg from dg_orden_pub_bloqueo where id_op_dg = " + Id_op_dg.ToString();
+            //DataTable t = DB.Select(sqlId);
+            //if (t.Rows.Count == 1)
+            //{
+            //    existeRegistro = true;
+            //    foreach (DataRow r in t.Rows)
+            //    {
+            //        bloqueado = DB.DInt(r["bloqueado"].ToString());
+            //    }
+            //}
 
-            if (existeRegistro == false)
-            {
-                sql = "insert into dg_orden_pub_bloqueo (id_op_dg, id_usuario, ultimoAcceso, bloqueado)" +
-                      " values (@id_op_dg, @id_usuario, @ultimoAcceso, 1)";
-            }
+            //if (existeRegistro == false)
+            //{
+            //    sql = "insert into dg_orden_pub_bloqueo (id_op_dg, id_usuario, ultimoAcceso, bloqueado)" +
+            //          " values (@id_op_dg, @id_usuario, @ultimoAcceso, 1)";
+            //}
 
-            else if (existeRegistro == true && bloqueado == 0)
-            {
-                sql = "update dg_orden_pub_bloqueo set id_op_dg = @id_op_dg, id_usuario = @id_usuario, ultimoAcceso=@ultimoAcceso, bloqueado = 1 where id_op_dg = @id_op_dg";
-            }
+            //else if (existeRegistro == true && bloqueado == 0)
+            //{
+                sql = "update dg_orden_pub_bloqueo set id_op_dg = @id_op_dg, id_usuario_desbl = @id_usuario_desbl, ultimoDesbloqueo=@ultimoDesbloqueo, bloqueado = 0 where id_op_dg = @id_op_dg";
+            //}
 
-            if (sql != "")
-            {
+            //if (sql != "")
+            //{
                 List<SqlParameter> parametros = new List<SqlParameter>();
                 parametros.Add(new SqlParameter() { ParameterName = "@id_op_dg", SqlDbType = SqlDbType.Int, Value = DB.DInt(Id_op_dg) });
-                parametros.Add(new SqlParameter() { ParameterName = "@id_usuario", SqlDbType = SqlDbType.Int, Value = DB.DInt(Id_usuario) });
-                parametros.Add(new SqlParameter() { ParameterName = "@ultimoAcceso", SqlDbType = SqlDbType.DateTime, Value = UltimoAcceso });
+                parametros.Add(new SqlParameter() { ParameterName = "@id_usuario_desbl", SqlDbType = SqlDbType.Int, Value = DB.DInt(Id_usuario) });
+                parametros.Add(new SqlParameter() { ParameterName = "@ultimoDesbloqueo", SqlDbType = SqlDbType.DateTime, Value = UltimoDesbloqueo });
 
                 try
                 {
@@ -130,11 +130,11 @@ namespace WebApi.Entities
                     return false;
                 }
                 return true;
-            }
-            else
-            {
-                return true;
-            }          
+            //}
+            //else
+            //{
+            //    return true;
+            //}          
         }
 
     }

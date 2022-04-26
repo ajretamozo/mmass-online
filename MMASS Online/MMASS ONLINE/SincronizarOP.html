@@ -52,14 +52,19 @@
             }
         }
 
-          .btn {
-                font-size: inherit;
-                height: 30px;
-            }
+        .btn {
+            font-size: inherit;
+            height: 30px;
+        }
+
+        .dataTitle {
+            font-family: 'Roboto';
+            font-size: 20px;
+        }
     </style>
 
 </head>
-<body>
+<body style="padding-top: 80px;">
     <!--MENU-->
     <div id="divNavBar"></div>
 
@@ -112,6 +117,7 @@
         </div>
         <div id="divMessage" class="alert" style="display:none;cursor:pointer;z-index:10000;" title="Click para cerrar"> </div>
         <div class="jumbotron mt-4 py-4 col-12" id="divGeneral">
+            <p class="dataTitle">SINCRONIZAR ORDENES</p>
             <!-- TABS -->
             <nav class="nav nav-tabs mb-3">
                 <a class="nav-link active" id="principal-tab" data-toggle="tab" href="#principal" role="tab" aria-controls="principal" aria-selected="true">OP Nuevas</a>
@@ -157,36 +163,36 @@
                 </div>
             </div>
 
-                    <!--<div class="row">
-                        <div class="col-md-4">
-                            <label for="descFiltro">Descripción OP: </label>
-                            <div class="input-group enterSearch"> <input type="text" id="descFiltro" class="form-control"></div>
-                        </div>
-                        <div class="col-md-4">
-                            <label for="descFiltro">Red AdServer: </label>
-                            <select class="form-control enterSearch" id="selRedes" onchange="onRedSelected()"></select>
-                        </div>
-                        <div class="col-md-4 d-flex justify-content-end align-items-end">
-                            <button type="button" class="btn btn-dark btn-sm mx-1" onclick="filter()">
-                                <span class="fa fa-search"></span> Buscar
-                            </button>
-                        </div>
-                    </div>
-                    <div class="table-responsive mt-2">
-                        <table class="table table-hover table-sm " id="tablaOPGAM">
-                            <thead>
-                                <tr id="header">
-                                    <th class="col-xs-3">ID AdServer</th>
-                                    <th class="col-xs-9">Nombre</th>
-                                    <th class="col-xs-9">Anunciante</th>
-                                    <th class="col-xs-9">Fecha Desde</th>
-                                    <th class="col-xs-9">Fecha Hasta</th>
-                                    <th class="col-xs-9">Neto</th>
-                                </tr>
-                            </thead>
-                            <tbody id="TableRenglones" class="small"></tbody>
-                        </table>
-                    </div>-->
+            <!--<div class="row">
+        <div class="col-md-4">
+            <label for="descFiltro">Descripción OP: </label>
+            <div class="input-group enterSearch"> <input type="text" id="descFiltro" class="form-control"></div>
+        </div>
+        <div class="col-md-4">
+            <label for="descFiltro">Red AdServer: </label>
+            <select class="form-control enterSearch" id="selRedes" onchange="onRedSelected()"></select>
+        </div>
+        <div class="col-md-4 d-flex justify-content-end align-items-end">
+            <button type="button" class="btn btn-dark btn-sm mx-1" onclick="filter()">
+                <span class="fa fa-search"></span> Buscar
+            </button>
+        </div>
+    </div>
+    <div class="table-responsive mt-2">
+        <table class="table table-hover table-sm " id="tablaOPGAM">
+            <thead>
+                <tr id="header">
+                    <th class="col-xs-3">ID AdServer</th>
+                    <th class="col-xs-9">Nombre</th>
+                    <th class="col-xs-9">Anunciante</th>
+                    <th class="col-xs-9">Fecha Desde</th>
+                    <th class="col-xs-9">Fecha Hasta</th>
+                    <th class="col-xs-9">Neto</th>
+                </tr>
+            </thead>
+            <tbody id="TableRenglones" class="small"></tbody>
+        </table>
+    </div>-->
 
         </div>
 </main>

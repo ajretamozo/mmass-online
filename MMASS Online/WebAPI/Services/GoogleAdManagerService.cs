@@ -444,15 +444,21 @@ namespace WebApi.Services
                             else
                             {
                                 //Se comparan emplazamientos
-                                int cantEmpGam = 0;                               
+                                int cantEmpGam = 0;
+                                //int cantEmpDet = 0; 
                                 if (linea.targeting.inventoryTargeting.targetedPlacementIds != null)
                                 {
                                     cantEmpGam = linea.targeting.inventoryTargeting.targetedPlacementIds.Length;
                                 }
+                                //if (detalle.Emplazamientos != null)
+                                //{
+                                //    cantEmpDet = detalle.Emplazamientos.Count;
+                                //}
                                 if (cantEmpGam != detalle.Emplazamientos.Count)
                                 {
                                     difEmplaza = true;
                                 }
+                                //else if (cantEmpGam == cantEmpDet && (cantEmpGam != 0 && cantEmpDet != 0))
                                 else
                                 {                                    
                                     foreach (Dg_orden_pub_emplazamientos emp in detalle.Emplazamientos)
@@ -773,17 +779,25 @@ namespace WebApi.Services
 
             //Se comparan emplazamientos
             int cantEmpGam = 0;
+            //int cantEmpDet = 0;
             long[] emplazasLinea = { };
+            //List<Dg_orden_pub_emplazamientos> emplazasDetalle = new List<Dg_orden_pub_emplazamientos>();
 
             if (linea.targeting.inventoryTargeting.targetedPlacementIds != null)
             {
                 cantEmpGam = linea.targeting.inventoryTargeting.targetedPlacementIds.Length;
                 emplazasLinea = linea.targeting.inventoryTargeting.targetedPlacementIds;
             }
+            //if (detalle.Emplazamientos != null)
+            //{
+            //    cantEmpDet = detalle.Emplazamientos.Count;
+            //    emplazasDetalle = detalle.Emplazamientos;
+            //}
             if (cantEmpGam != detalle.Emplazamientos.Count)
             {
                 cambiosL.Parametros.Add(ImprimirEmplazas(detalle.Emplazamientos, emplazasLinea, red.Id_red));
             }
+            //else if (cantEmpGam == cantEmpDet && (cantEmpGam !=0 && cantEmpDet != 0))
             else
             {
                 foreach (Dg_orden_pub_emplazamientos emp in detalle.Emplazamientos)
@@ -806,10 +820,18 @@ namespace WebApi.Services
             }
 
             //Se comparan medidas
+            //int cantMedDet = 0;
+            //List<Dg_orden_pub_medidas> medidasDetalle = new List<Dg_orden_pub_medidas>();
+            //if (detalle.Medidas != null)
+            //{
+            //    cantMedDet = detalle.Medidas.Count;
+            //    medidasDetalle = detalle.Medidas;
+            //}
             if (linea.creativePlaceholders.Length != detalle.Medidas.Count)
             {
                 cambiosL.Parametros.Add(ImprimirMedidas(detalle.Medidas, linea.creativePlaceholders));
             }
+            //else if (linea.creativePlaceholders.Length == cantMedDet && cantMedDet != 0)
             else
             {
                 foreach (Dg_orden_pub_medidas med in detalle.Medidas)

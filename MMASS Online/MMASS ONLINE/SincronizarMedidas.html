@@ -1,7 +1,7 @@
 ﻿<!DOCTYPE html>
 <html>
 <head runat="server">
-    <title>MMASS Online - Sinc Tamaños</title>
+    <title>MMASS Online - Sinc Medidas</title>
 
     <link rel="shortcut icon" href="favicon.png">
 
@@ -50,10 +50,15 @@
                 text-align: center;
             }
         }
+
+        .dataTitle {
+            font-family: 'Roboto';
+            font-size: 20px;
+        }
     </style>
 
 </head>
-<body>
+<body style="padding-top: 80px;">
     <!--MENU-->
     <div id="divNavBar"></div>
 
@@ -106,6 +111,7 @@
         </div>
         <div id="divMessage" class="alert" style="display:none;cursor:pointer;z-index:10000;" title="Click para cerrar"> </div>
         <div class="jumbotron mt-4 py-4 col-12" id="divGeneral">
+            <p class="dataTitle">SINCRONIZAR MEDIDAS</p>
             <div class="row">
                 <div class="col-md-5">
                     <label><b>AdServer:</b></label>
@@ -115,7 +121,7 @@
                             <thead>
                                 <tr>
                                     <th>ID</th>
-                                    <th>Tamaño</th>
+                                    <th>Medida</th>
                                 </tr>
                             </thead>
                             <tbody id="TableGAM" class="small"></tbody>
@@ -136,7 +142,7 @@
                             <thead>
                                 <tr>
                                     <th>ID</th>
-                                    <th>Tamaño</th>
+                                    <th>Medida</th>
                                 </tr>
                             </thead>
                             <tbody id="TableMMASS" class="small"></tbody>

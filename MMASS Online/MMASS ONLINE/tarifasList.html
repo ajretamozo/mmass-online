@@ -1,7 +1,7 @@
 ﻿<!DOCTYPE html>
 <html>
 <head runat="server">
-    <title>MMASS - Tarifas</title>
+    <title>MMASS Online - Tarifas</title>
 
     <link rel="shortcut icon" href="favicon.png">
 
@@ -74,7 +74,7 @@
     </style>
 
 </head>
-<body>
+<body style="padding-top: 80px;">
     <!--MENU-->
     <div id="divNavBar"></div>
 
@@ -129,7 +129,7 @@
                 </div>
                 <div class="row py-1">
                     <div class="col-lg-4">
-                        <label for="">Tipo de Publicidad:</label>
+                        <label for="">Tipo de Aviso:</label>
                         <div class="input-group">
                             <select class="form-control enterSearch" name="medio" id="selTipoPublicidad">
                                 <option value=''>(Todos) </option>
@@ -212,12 +212,12 @@
     $.when(
         // Llenar select Medios
         callWS("medios", "getAll", '', function (data) { onPopulateSelectDone(data, 'selMedios', 'id_medio', 'desc_medio'); }),
-        // Llenar select Tipos de publicidad
+        // Llenar select Tipos de Aviso
         callWS("tipos_avisos", "getAll", '', function (data) { onPopulateSelectDone(data, 'selTipoPublicidad', 'id_tipo_aviso_dg', 'descripcion'); }),
         // Llenar select Formas de uso
         callWS("tarifas", "getFormasUsoAll", '', function (data) { onPopulateSelectDone(data, 'selFormaUso', 'id', 'descripcion'); }),
     ).then(function () { searchTarifas() },function (data1, data2, data3) {
-        console.log("Medios: " + data1[2].statusText + "; Tipos de Publicidad: " + data2[2].statusText + "Formas de uso: " + data3[2].statusText + ";");
+        console.log("Medios: " + data1[2].statusText + "; Tipos de aviso: " + data2[2].statusText + "Formas de uso: " + data3[2].statusText + ";");
         showMessage("Se produjo un error al cargar los campos, intentelo nuevamente", type = "alert");
     });
 
