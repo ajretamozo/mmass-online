@@ -36,7 +36,7 @@ namespace WebApi.Services
         long ArchivarLineItems(long lineItemIdt);
         void CambiarRed(string netCode);
         long GetRedActual();
-        IEnumerable<Dg_orden_pub_ap> GetOpNuevas(Parametro nombre);
+        IEnumerable<Dg_orden_pub_ap> GetOpNuevas(List<Parametro> parametros);
         ListaParametro ComprobarModificaciones(Dg_orden_pub_ap order);
         ListaParametro ComprobarModificacionesD(long idGam);
     }
@@ -222,14 +222,14 @@ namespace WebApi.Services
             return result;
         }
 
-        public IEnumerable<Dg_orden_pub_ap> GetOpNuevas(Parametro nombre)
+        public IEnumerable<Dg_orden_pub_ap> GetOpNuevas(List<Parametro> parametros)
         {
             long codRed = GetRedActual();
             Dg_red_GAM red = new Dg_red_GAM();
             red = Dg_red_GAM.getByCodigo(codRed);
             List<Order> ordenesGAM = new List<Order>();
             List<Dg_orden_pub_ap> ordenesNuevas = new List<Dg_orden_pub_ap>();
-            ordenesGAM = GoogleAdManager.GetAllOrders(nombre);
+            ordenesGAM = GoogleAdManager.GetAllOrders(parametros);
 
             foreach (Order order in ordenesGAM)
             {

@@ -142,9 +142,9 @@ namespace WebApi.Controllers
         }
 
         [HttpPost("getOpNuevas")]
-        public IActionResult getOpNuevas([FromBody] Parametro nombre)
+        public IActionResult getOpNuevas(ListaParametro parametros)
         {
-            var ordenes = _GoogleAdManagerService.GetOpNuevas(nombre);
+            var ordenes = _GoogleAdManagerService.GetOpNuevas(parametros.Parametros);
             return Ok(ordenes);
         }
 

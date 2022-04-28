@@ -1322,19 +1322,31 @@ namespace WebApi.Helpers
             return result;
         }
 
-        public static List<Order> GetAllOrders(Parametro nombre)
+        public static List<Order> GetAllOrders(List<Parametro> parametros)
         {
             List<Order> OrdenesGAM = new List<Order>();
 
-            string where = "";
-            if (nombre.Value == "")
+            string where = "endDateTime >= :now";
+
+            foreach (Parametro p in parametros)
             {
-                where = "endDateTime >= :now";
+                if (p.Value.ToString() != "")
+                {
+                    if (p.ParameterName == "descripcion")
+                        where = where + " and name like '%" + p.Value.ToString() + "%'";
+                    if (p.ParameterName == "id")
+                        where = where + " and id = " + p.Value.ToString();
+                }
             }
-            else
-            {
-                where = "endDateTime >= :now and name like '%" + nombre.Value + "%'";
-            }
+            
+            //    if (nombre.Value == "")
+            //{
+            //    where = "endDateTime >= :now";
+            //}
+            //else
+            //{
+            //    where = "endDateTime >= :now and name like '%" + nombre.Value + "%'";
+            //}
 
             using (OrderService orderService = user.GetService<OrderService>())
             {

@@ -127,14 +127,24 @@
                 <!--ORDENES NUEVAS-->
                 <div class="tab-pane fade show active" id="principal" role="tabpanel" aria-labelledby="principal-tab">
 
-                    <div class="row">
+                    <div class="row py-1">
                         <div class="col-md-4">
-                            <label for="descFiltro">Descripción OP: </label>
+                            <label for="descFiltro">ID: </label>
+                            <div class="input-group enterSearch"> <input type="number" id="idFiltro" class="form-control"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="descFiltro">Nombre: </label>
                             <div class="input-group enterSearch"> <input type="text" id="descFiltro" class="form-control"></div>
                         </div>
                         <div class="col-md-4">
                             <label for="descFiltro">Red AdServer: </label>
                             <select class="form-control enterSearch" id="selRedes" onchange="onRedSelected()"></select>
+                        </div>
+                    </div>
+                    <div class="row py-1">
+                        <div class="col-md-4">
+                        </div>
+                        <div class="col-md-4">
                         </div>
                         <div class="col-md-4 d-flex justify-content-end align-items-end">
                             <button type="button" class="btn btn-dark btn-sm mx-1" onclick="filter()">
@@ -244,16 +254,32 @@
 
         function filter() {
             rows = $("tr").not("#header");
-            desc = $("#descFiltro").val();
-            red = $("#selRedes").val();
+            params = {};
+            params.id = $("#idFiltro").val();
+            params.descripcion = $('#descFiltro').val();  
+            params.red = $('#selRedes').val();  
+      
+            //id = $("#idFiltro").val();
+            //desc = $("#descFiltro").val();
+            //red = $("#selRedes").val();
 
-            if (red != 0 && red != null) {
-                var objParametro = {};
+            if (params.red != 0 && params.red != null) {
+                //var objParametro = {};
               
-                objParametro.ParameterName = "nombre";
-                objParametro.Value = desc;
+                //objParametro.ParameterName = "nombre";
+                //objParametro.Value = desc;
+                //objParametro.ParameterName = "id";
+                //objParametro.Value = id;
 
-                callWS("googleAdManager", "getOpNuevas", JSON.stringify(objParametro), function (data) { onGetOrdenesGAM(data); });
+                for (param in params) {
+                    if (params[param] == null) {
+                        params[param] = '';
+                    }
+                };
+
+                var parametros = setListaParametros(params);
+
+                callWS("googleAdManager", "getOpNuevas", JSON.stringify(parametros), function (data) { onGetOrdenesGAM(data); });
             }
             else {
                 showMessage("Seleccione una Red AdServer", "alert");
@@ -330,6 +356,20 @@
 
         function formatearMonto(x) {
            return Number.parseFloat(x).toFixed(2);
+        }
+
+        function setListaParametros(data) {
+            var parametros = {};
+            var listaParametros = [];
+
+            Object.keys(data).forEach(function(key) {
+                var objParametro = {};
+                objParametro.ParameterName = key;
+                objParametro.Value = data[key];
+                listaParametros.push(objParametro);
+            });
+            parametros.Parametros = listaParametros;
+            return parametros;
         }
 
     </script>

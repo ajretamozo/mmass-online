@@ -157,6 +157,7 @@
                 rowHTML += "<td class='col-xs-1' align='center'>" + ired.descripcion + "</td>";
                 rowHTML += "<td class='col-xs-1' align='center'>" + ired.codigo_red + "</td>";
                 rowHTML += "<td id='colAcciones' class='col-xs-2 d-flex justify-content-center'>"
+                rowHTML += "<button type='button' title='Comprobar conexión' class='btn btn-outline-dark btn-sm mx-1' onclick=\"checkRed(" + ired.codigo_red + ")\"><span class='fa fa-plug'></span> </button>"
                 rowHTML += "<button type='button' title='Ver' class='btn btn-outline-dark btn-sm mx-1' onclick=\"openRed(" + ired.id_red + ",'view')\"><span class='fa fa-eye'></span> </button>"
                 rowHTML += "<button type='button' title='Editar' class='btn btn-outline-dark btn-sm mx-1' onclick=\"openRed(" + ired.id_red + ",'edit')\"><span class='fa fa-edit'></span> </button>"
                 rowHTML += "<button type='button' title='Eliminar' class='btn btn-outline-dark btn-sm mx-1' onclick=\"checkBorrarRed(" + ired.id_red + ")\"><span class='fa fa-times'></span> </button>"
@@ -243,6 +244,24 @@
             });
         }
 
+        function checkRed(codRed) {
+            $.when(
+                callWS("googleAdManager", "cambiarRed", JSON.stringify(codRed))
+            ).then( onCheckRed());
+        }
+
+        function onCheckRed() {
+                callWS("googleAdManager", "getRedActual", "", function (data) { mostrarRed(data); })
+        }
+
+        function mostrarRed(codigo) {
+            if (codigo > 0) {
+                showMessage("La conexión con la red " + codigo + " funciona correctamente");
+            }
+            else {
+                showMessage("Error al intentar conectar a la red", "error");
+            }
+        }
 
         function selectToJson(idSelect, idCol) {
             ret = [];
