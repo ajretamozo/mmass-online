@@ -605,11 +605,23 @@ namespace WebApi.Helpers
                             creativePlaceholder
                     };
                 }
-          
+
 
                 // Vigencia
-                lineItem.startDateTime = DateTimeUtilities.FromDateTime((System.DateTime)fechaDesde, "America/Argentina/Buenos_Aires");
-                lineItem.endDateTime = DateTimeUtilities.FromDateTime((System.DateTime)fechaHasta, "America/Argentina/Buenos_Aires");
+                //si fechadesde es hoy: lineItem.startDateTimeType = StartDateTimeType.IMMEDIATELY;
+                //System.DateTime fecha = System.DateTime.Now.Date;
+                if (fechaDesde == System.DateTime.Now.Date)
+                {
+                    lineItem.startDateTimeType = StartDateTimeType.IMMEDIATELY;
+                }
+                else
+                {
+                    lineItem.startDateTime = DateTimeUtilities.FromDateTime((System.DateTime)fechaDesde, "America/Argentina/Buenos_Aires");
+                }
+                string fechaHStg = fechaHasta.ToString();
+                string[] arrFechaH = fechaHStg.Split(" ");
+                System.DateTime fechaHastaFormat = System.DateTime.Parse(arrFechaH[0] + " 23:59:59");
+                lineItem.endDateTime = DateTimeUtilities.FromDateTime((System.DateTime)fechaHastaFormat, "America/Argentina/Buenos_Aires");
 
                 // Costos
                 if (tipoTarifa == 0)
@@ -1142,8 +1154,18 @@ namespace WebApi.Helpers
                     }
 
                     // Vigencia
-                    lineItem.startDateTime = DateTimeUtilities.FromDateTime((System.DateTime)fechaDesde, "America/Argentina/Buenos_Aires");
-                    lineItem.endDateTime = DateTimeUtilities.FromDateTime((System.DateTime)fechaHasta, "America/Argentina/Buenos_Aires");
+                    if (fechaDesde == System.DateTime.Now.Date)
+                    {
+                        lineItem.startDateTimeType = StartDateTimeType.IMMEDIATELY;
+                    }
+                    else
+                    {
+                        lineItem.startDateTime = DateTimeUtilities.FromDateTime((System.DateTime)fechaDesde, "America/Argentina/Buenos_Aires");
+                    }
+                    string fechaHStg = fechaHasta.ToString();
+                    string[] arrFechaH = fechaHStg.Split(" ");
+                    System.DateTime fechaHastaFormat = System.DateTime.Parse(arrFechaH[0] + " 23:59:59");
+                    lineItem.endDateTime = DateTimeUtilities.FromDateTime((System.DateTime)fechaHastaFormat, "America/Argentina/Buenos_Aires");
 
                     // Costos
                     int divD = 1;

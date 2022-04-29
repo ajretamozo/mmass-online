@@ -1342,6 +1342,18 @@
                 $("#checkListaParaFact").change();
             }
 
+            if (data.id_Google_Ad_Manager > 0 && (data.id_op_dg != undefined && data.id_op_dg != 0) && data.es_anulada == 0 && data.es_facturada == false) {
+                comprobarModificaciones(data.id_op_dg, data.id_Google_Ad_Manager);
+            }
+            if (data.bloqueado == 0) {
+                bloquearOp(data.id_op_dg);
+            }
+            else {
+                OpYaAbierta = true;
+                OpBloqueada = true;
+                bloquearCamposCabecera();
+            }
+
             //data.Id_condpagoap = 1; //Arreglar
 
             //data.idEjecutivo = "4";
@@ -1364,16 +1376,6 @@
                 $("#botLimpiar").attr("title", "No es posible limpiar Agencia - Anunciante si existen campañas cargadas");
                 if (data.nro_orden > 0)
                     $("#selAgencia").attr("disabled", true);
-            }
-            if (data.id_Google_Ad_Manager > 0 && (data.id_op_dg != undefined && data.id_op_dg != 0) && data.es_anulada == 0 && data.es_facturada == false) {
-                comprobarModificaciones(data.id_op_dg, data.id_Google_Ad_Manager);
-            }
-            if (data.bloqueado == 0) {
-                bloquearOp(data.id_op_dg);
-            }
-            else {
-                OpYaAbierta = true;
-                bloquearCamposCabecera();
             }
 
             Detalles.forEach(generarTablaDetalles);
@@ -2168,6 +2170,7 @@
         //punto de control
         //Parametro global para saber si la OP está abierta por otro usuario
         OpYaAbierta = false;
+        OpBloqueada = false;
         //Parametro global para llevar los detalles, ver como mejorar esto
         Detalles = [];
 
@@ -2499,7 +2502,7 @@
                 }
             }
             //  Botón eliminar renglon
-            if ($("#inpEsFacturada").val() == 'SI' || document.body.style.backgroundImage == 'url("./Anulada.png")') {
+            if ($("#inpEsFacturada").val() == 'SI' || document.body.style.backgroundImage == 'url("./Anulada.png")' || OpBloqueada == true) {
                 str = str + " <button type='button' data-id='" + id + "' disabled id='bEliminar" + id + "' class='btn actions btn-outline-dark btn-sm mr-1'  onclick='deleteRenglon(this, " + det.id_Google_Ad_Manager + ")' title='Eliminar Renglon'> <span class='fa fa-remove'></span></button>";
             }
             else {
@@ -2860,27 +2863,27 @@
             //callWS("googleAdManager", "runAdExchangeReport"); //para probar el reporte de adexchange
 
             var rDetalle = Detalles[($(r).attr("data-id")) - 1];
-            var fechaDesde = new Date(rDetalle.fecha_desde);
+            //var fechaDesde = new Date(rDetalle.fecha_desde);
 
-            var today = new Date();
-            var dd = today.getDate();
-            var mm = today.getMonth() + 1;
-            var yyyy = today.getFullYear();
-            if (dd < 10) {
-                dd = '0' + dd;
-            }
-            if (mm < 10) {
-                mm = '0' + mm;
-            }
-            today = mm + '/' + dd + '/' + yyyy;
-            var hoy = new Date(today);
+            //var today = new Date();
+            //var dd = today.getDate();
+            //var mm = today.getMonth() + 1;
+            //var yyyy = today.getFullYear();
+            //if (dd < 10) {
+            //    dd = '0' + dd;
+            //}
+            //if (mm < 10) {
+            //    mm = '0' + mm;
+            //}
+            //today = mm + '/' + dd + '/' + yyyy;
+            //var hoy = new Date(today);
 
-            if (fechaDesde > hoy) {
+            //if (fechaDesde > hoy) {
                 callWS("googleAdManager", "createLineItems", JSON.stringify(Detalles[($(r).attr("data-id")) - 1]), function (data) { onSendLinea(data, $(r).attr("data-id")); });
-            }
-            else {
-                showMessage('La fecha de inicio de vigencia debe estar situada en el futuro', 'error');
-            }
+            //}
+            //else {
+            //    showMessage('La fecha de inicio de vigencia debe estar situada en el futuro', 'error');
+            //}
 
         }
         //AGREGUE:
@@ -3579,7 +3582,13 @@
             }
             $("#modalCenterBody").html(content);
             footer = '';
-            footer += "<button type='button' id='aceptar' class='btn btn-secondary' onClick=\"setDetailRon($('#ronTableBody').html());\"> Aceptar </button>";
+
+            if ($("#inpEsFacturada").val() == 'SI' || document.body.style.backgroundImage == 'url("./Anulada.png")' || OpBloqueada == true) {
+                footer += "<button type='button' disabled id='aceptar' class='btn btn-secondary' onClick=\"setDetailRon($('#ronTableBody').html());\"> Aceptar </button>";
+            }
+            else {
+                footer += "<button type='button' id='aceptar' class='btn btn-secondary' onClick=\"setDetailRon($('#ronTableBody').html());\"> Aceptar </button>";
+            }
             footer += "<button type='button' class='btn btn-secondary' data-dismiss='modal' onClick=\"$('#ronTableBody').empty();\"> Cancelar </button>";
             $("#modalCenterFooter").html(footer);
             $("#modalCenter").modal('show');
