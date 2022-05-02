@@ -981,7 +981,8 @@
                                 </div>
 
                                 <div class="col-sm">
-                                    <label>Total (+IVA)</label>
+                                    <!--<label>Total (+IVA)</label>-->
+                                    <label>Total</label>
                                     <input type="number" class="form-control" value="0" readonly="readonly" id="total">
                                 </div>
                             </div>
@@ -1331,7 +1332,7 @@
                 document.body.style.backgroundImage = "url(./Anulada.png)";
             }
 
-            if (data.parafacturar == 0) {
+            if (data.parafacturar == 0 && data.nro_orden > 0) {
                 $("#checkListaParaFact")[0].checked = false;
                 $("#checkListaParaFact").change();
             }
@@ -1624,12 +1625,14 @@
             $("#bConvenios").attr("disabled", true);
             $("#bBorrConvenios").attr("disabled", true);
         }
+
         function dateToSqlFormat(date) {
             arr = date.split("/");
             sqlFormatDate = '';
             sqlFormatDate = arr[2] + '-' + arr[1] + '-' + arr[0];
             return sqlFormatDate;
         }
+
         function dateToFieldFormat(date) {
             date = date.split('T')[0];
             arr = date.split("-");
@@ -1667,7 +1670,8 @@
 
             neto2 = sumNetoRenglones - parseFloat($("#conf_nc").val()) - parseFloat($("#conf_fc").val());
             $("#neto2").val(neto2.toFixed(2));
-            cTotal = neto2 * 1.21;
+            //cTotal = neto2 * 1.21; CON IVA
+            cTotal = neto2;
 
             $("#total").val(cTotal.toFixed(2));
 
@@ -2075,7 +2079,7 @@
                     var day1 = new Date(dateToSqlFormat($('#fechaDesdeD').val()));
                     var day2 = new Date(dateToSqlFormat($('#fechaHastaD').val()));
                     //var difference = Math.abs(day2 - day1);
-                    var cantD = Math.abs(day2 - day1) / (1000 * 3600 * 24);
+                    var cantD = (Math.abs(day2 - day1) / (1000 * 3600 * 24)) + 1;
                     $("#cantidadL").text("Cantidad (días)");
                     $("#cantidadD").val(cantD);
                     //$("#cantidadD").attr("disabled", true);
@@ -2449,7 +2453,7 @@
 
             Detalles.forEach(generarTablaDetalles);
             calculateTotals();
-            if ($('#inpIdOrdenAdServer').val() !== 0 && $('#inpIdOrdenAdServer').val() !== "") {
+            if ($('#inpIdOrdenAdServer').val() !== 0 && $('#inpIdOrdenAdServer').val() !== "" && $("#inpOrderNumber").attr("id_op_dg") > 0) {
                 comprobarModificaciones($("#inpOrderNumber").attr("id_op_dg"), $('#inpIdOrdenAdServer').val());
             }
         }
@@ -2530,6 +2534,21 @@
             cantD = $("#cantidadD").val();
             descD = $("#descuentoD").val();
             resultD = $("#precioUnitarioD").val();
+
+            var divD = 1;
+            if ($("#selTipoTarifaD option:selected").text() == "CPM") {
+                divD = 1000;
+            }
+
+            if ($('#selTipoTarifaD').val() == 1) {
+                var day1 = new Date(dateToSqlFormat($('#fechaDesdeD').val()));
+                var day2 = new Date(dateToSqlFormat($('#fechaHastaD').val()));
+
+                var difference = Math.abs(day2 - day1);
+                cantD = (difference / (1000 * 3600 * 24)) + 1;
+
+                $("#cantidadD").val(cantD);
+
             if (descD == "") {
                 descD = 0;
             }
@@ -2553,19 +2572,19 @@
             }
 
 
-            var divD = 1;
-            if ($("#selTipoTarifaD option:selected").text() == "CPM") {
-                divD = 1000;
-            }
+            //var divD = 1;
+            //if ($("#selTipoTarifaD option:selected").text() == "CPM") {
+            //    divD = 1000;
+            //}
 
-            if ($('#selTipoTarifaD').val() == 1) {
-                var day1 = new Date(dateToSqlFormat($('#fechaDesdeD').val()));
-                var day2 = new Date(dateToSqlFormat($('#fechaHastaD').val()));
+            //if ($('#selTipoTarifaD').val() == 1) {
+            //    var day1 = new Date(dateToSqlFormat($('#fechaDesdeD').val()));
+            //    var day2 = new Date(dateToSqlFormat($('#fechaHastaD').val()));
 
-                var difference = Math.abs(day2 - day1);
-                cantD = difference / (1000 * 3600 * 24);
+            //    var difference = Math.abs(day2 - day1);
+            //    cantD = difference / (1000 * 3600 * 24);
 
-                $("#cantidadD").val(cantD);
+            //    $("#cantidadD").val(cantD);
             }
 
             brutoD = resultD * (cantD / divD)
