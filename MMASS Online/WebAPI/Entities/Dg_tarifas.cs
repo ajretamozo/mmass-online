@@ -33,7 +33,7 @@ namespace WebApi.Entities
                 col.Add(item);
                 item = new Dg_tarifa_forma_uso();
                 item.Id = 2;
-                item.Descripcion = "Posteo";
+                item.Descripcion = "Post";
                 col.Add(item);
                 item = new Dg_tarifa_forma_uso();
                 item.Id = 3;

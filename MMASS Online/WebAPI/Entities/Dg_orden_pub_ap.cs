@@ -650,7 +650,11 @@ namespace WebApi.Entities
                     parametros.Add(new SqlParameter() { ParameterName = "@transferido", SqlDbType = SqlDbType.Char, Value = Transferido });
 
                 }
-                parametros.Add(new SqlParameter() { ParameterName = "@bitacora", SqlDbType = SqlDbType.NVarChar, Value = Bitacora });
+                if (Bitacora == "")
+                {
+                    Bitacora = anunciante.RazonSocial + "_" + Anio.ToString() + "_" + Mes.ToString() + "_" + Nro_orden;
+                }
+                parametros.Add(new SqlParameter() { ParameterName = "@bitacora", SqlDbType = SqlDbType.NVarChar, Value = Bitacora });               
                 parametros.Add(new SqlParameter() { ParameterName = "@Id_facturar", SqlDbType = SqlDbType.Int, Value = DB.DInt(Id_facturar) });
                 //if (DB.DInt(Id_op_relacionada) == -1)
                 //{

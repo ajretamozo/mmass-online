@@ -991,8 +991,11 @@
                         <div class="card-footer mt-2 ">
                             <div class="row">
                                 <div class="col-lg-4">
+                                    <button type="button" id="bClonar" class="btn actions btn-dark btn-sm mx-1" onclick="prevClonarOrden()">
+                                        <span class="fa fa-clone"></span> Clonar OP
+                                    </button>
                                     <button type="button" id="bAnular" class="btn actions btn-dark btn-sm mx-1" onclick="prevAnularOrden()">
-                                        <span class="fa fa-ban"></span> Anular Orden
+                                        <span class="fa fa-ban"></span> Anular OP
                                     </button>
                                     <div class="form-check-inline mr-0">
                                         <label class="form-check-label " for="checkListaParaFact" style="padding-right: 15px; margin-left: 10px;">
@@ -1195,6 +1198,16 @@
                 $.when(callWS("googleAdManager", "cambiarRed", codRed)
                 ).then(getOrdenGAM(Id_op_gam));
             }
+
+            //si la OP viene de ClonarOP
+            var op2 = getUrlParameter("orderClon")
+            var data = {};
+            data.Id_op_dg = op2;
+
+            if (op2 != undefined) {
+                OpClon = true;
+                callWS("dg_orden_pub_aps", "getById", JSON.stringify(data), onGetOrder);
+            }
         }
 
         function getOrdenGAM(IdOpGam) {
@@ -1304,7 +1317,7 @@
                 $("#bSendOrdenAddServer").attr("disabled", false);
                 $('#inpIdOrdenAdServer').val("");
             }
-            if (data.id_Google_Ad_Manager > 0) {
+            if (data.id_Google_Ad_Manager > 0 && OpClon == false) {
                 $("#bSendOrdenAddServer").css("background-color", "#c3e6cb");
                 $('#inpIdOrdenAdServer').val(data.id_Google_Ad_Manager);
                 $('#inpIdOrdenAdServer').css("background-color", "#c3e6cb");
@@ -1346,6 +1359,7 @@
             if (data.id_Google_Ad_Manager > 0 && (data.id_op_dg != undefined && data.id_op_dg != 0) && data.es_anulada == 0 && data.es_facturada == false) {
                 comprobarModificaciones(data.id_op_dg, data.id_Google_Ad_Manager);
             }
+
             if (data.bloqueado == 0) {
                 bloquearOp(data.id_op_dg);
             }
@@ -1353,6 +1367,14 @@
                 OpYaAbierta = true;
                 OpBloqueada = true;
                 bloquearCamposCabecera();
+            }
+
+            if (OpClon == true) {
+                $("#inpOrderMonth").val("");
+                $("#inpOrderYear").val("");
+                $("#inpOrderNumber").val("");
+                $("#inpFechaAlta").val("");
+                $("#inpEsFacturada").val("NO");
             }
 
             //data.Id_condpagoap = 1; //Arreglar
@@ -1515,7 +1537,6 @@
                 data.nro_orden = $("#inpOrderNumber").val();
                 data.id_op_dg = $("#inpOrderNumber").attr("id_op_dg")
             }
-
             data.Nro_orden_ag = $("#inpOrderNumberClient").val();
             data.Bitacora = $("#inpDescOP").val();
             data.empresa = {};
@@ -1527,6 +1548,7 @@
             data.agencia.Id_contacto = $("#selAgencia").val();
             data.anunciante = {};
             data.anunciante.Id_contacto = $("#selAnunciante").val();
+            data.anunciante.RazonSocial = $("#selAnunciante option:selected").text();
             data.producto = {};
             data.producto.Id_producto = $("#selProducto").val();
             data.medio = {};
@@ -1690,6 +1712,8 @@
                 $("#inpOrderNumber").attr("id_op_dg", data.op.id_op_dg);
                 $("#inpOrderMonth").val(data.op.mes);
                 $("#inpOrderYear").val(data.op.anio);
+
+                $("#inpDescOP").val(data.op.bitacora);
 
                 //AGREGUE (traer fecha actual):
                 if ($("#inpFechaAlta").val() == "") {
@@ -2175,6 +2199,7 @@
         //Parametro global para saber si la OP está abierta por otro usuario
         OpYaAbierta = false;
         OpBloqueada = false;
+        OpClon = false;
         //Parametro global para llevar los detalles, ver como mejorar esto
         Detalles = [];
 
@@ -2857,13 +2882,6 @@
                 var idOrden = $("#inpOrderNumber").attr("id_op_dg");
                 callWS("googleAdManager", "createOrder", JSON.stringify(idOrden), function (data) { onSendOrder(data); });
             }
-            //if ($('#selRedes').val() > 0) {
-            //    var idOrden = $("#inpOrderNumber").attr("id_op_dg");
-            //    callWS("googleAdManager", "createOrder", JSON.stringify(idOrden), function (data) { onSendOrder(data); });
-            //}
-            //else {
-            //    showMessage('Debe seleccionar una red AdServer','info')
-            //}
         }
 
         function validarOrdenGam() {
@@ -2880,30 +2898,7 @@
         //AGREGUE:
         function enviarLineaAddServer(r) {
             //callWS("googleAdManager", "runAdExchangeReport"); //para probar el reporte de adexchange
-
-            var rDetalle = Detalles[($(r).attr("data-id")) - 1];
-            //var fechaDesde = new Date(rDetalle.fecha_desde);
-
-            //var today = new Date();
-            //var dd = today.getDate();
-            //var mm = today.getMonth() + 1;
-            //var yyyy = today.getFullYear();
-            //if (dd < 10) {
-            //    dd = '0' + dd;
-            //}
-            //if (mm < 10) {
-            //    mm = '0' + mm;
-            //}
-            //today = mm + '/' + dd + '/' + yyyy;
-            //var hoy = new Date(today);
-
-            //if (fechaDesde > hoy) {
-                callWS("googleAdManager", "createLineItems", JSON.stringify(Detalles[($(r).attr("data-id")) - 1]), function (data) { onSendLinea(data, $(r).attr("data-id")); });
-            //}
-            //else {
-            //    showMessage('La fecha de inicio de vigencia debe estar situada en el futuro', 'error');
-            //}
-
+            callWS("googleAdManager", "createLineItems", JSON.stringify(Detalles[($(r).attr("data-id")) - 1]), function (data) { onSendLinea(data, $(r).attr("data-id")); });
         }
         //AGREGUE:
         function onSendLinea(data, rId) {
@@ -3421,7 +3416,8 @@
                     optionFunc: ""
                 }
             ];
-            showModal("¿Está seguro de borrar el archivo?", options);
+            var mensaje = "<div class='d-flex justify-content-center'>¿Está seguro de borrar el archivo?</div>";
+            showModal(mensaje, options);
         }
 
         function deleteFile(filepath) {
@@ -4103,7 +4099,8 @@
                     optionFunc: ""
                 }
             ];
-            showModal("¿Está seguro de anular la órden?", options);
+            var mensaje = "<div class='d-flex justify-content-center'>¿Está seguro de anular la órden?</div>";
+            showModal(mensaje, options);
         }
 
         function anularOrden() {
@@ -4186,45 +4183,27 @@
             }
         }
 
-        //        var body = document.getElementById("bodyOp");
-        //body.addEventListener('visibilitychange', function logData() {
-        //    if (document.visibilityState === 'hidden') {
-        //         if (OpYaAbierta == false) {
-        //                var opBloq = {}
-        //                opBloq.id_op_dg = $("#inpOrderNumber").attr("id_op_dg");
-        //                opBloq.id_usuario = $("#NombreUsuario").attr("data-id");
-        //             //callWS("dg_orden_pub_aps", "desbloquearOp", JSON.stringify(opBloq), onDesbloquearOp);
-        //             navigator.sendBeacon('http://localhost:5000/dg_orden_pub_aps/desbloquearOp', opBloq);
-        //            }
-        //  }
-        //});
+        function prevClonarOrden() {
+            options = [
+                {
+                    optionDesc: "Ir a clonación",
+                    optionFunc: "clonarOrden()"
+                },
+                {
+                    optionDesc: "Cancelar",
+                    optionFunc: ""
+                }
+            ];
+            var mensaje = "<div class='d-flex justify-content-center'>Está a punto de salir de la edición de la órden. ¿Desea ir a Clonación de OP?</div>";
+            showModal(mensaje, options);
+        }
 
-        //        var body = document.getElementById("bodyOp");
-        //        body.addEventListener('beforeunload', function () {
-        //    bas_disconnect_only();
-        //});
+        function clonarOrden() {
+            var idOp = $("#inpOrderNumber").attr("id_op_dg");
 
-        //function bas_disconnect_only () {
-        //    if (OpYaAbierta == false) {
-        //                var opBloq = {}
-        //                opBloq.id_op_dg = $("#inpOrderNumber").attr("id_op_dg");
-        //                opBloq.id_usuario = $("#NombreUsuario").attr("data-id");
-        //             //callWS("dg_orden_pub_aps", "desbloquearOp", JSON.stringify(opBloq), onDesbloquearOp);
-        //             navigator.sendBeacon('http://localhost:5000/dg_orden_pub_aps/desbloquearOp', opBloq);
-        //            }
-        //}
+            location.href = "/orden.html?orderClon=" + idOp;
+        }
 
     </script>
 </body>
-<!--<script>
-    function desbloquearOp() {
-        if (OpYaAbierta == false) {
-            var opBloq = {}
-            opBloq.id_op_dg = $("#inpOrderNumber").attr("id_op_dg");
-            opBloq.id_usuario = $("#NombreUsuario").attr("data-id");
-            callWS("dg_orden_pub_aps", "desbloquearOp", JSON.stringify(opBloq));
-            //navigator.sendBeacon("http://localhost:5000/dg_orden_pub_aps/desbloquearOp", JSON.stringify(opBloq));
-        }
-    }
-</script>-->
 </html>
