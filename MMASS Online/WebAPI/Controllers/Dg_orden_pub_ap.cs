@@ -90,5 +90,12 @@ namespace WebApi.Controllers
             return Ok(result);
         }
 
+        [HttpPost("existeOpNombre")]
+        public IActionResult existeOpNombre(Dg_orden_pub_ap op)
+        {
+            var result = _Dg_orden_pub_apService.existeOpNombre(op.Id_op_dg, op.Bitacora);
+            return Ok(result);
+        }
+
     }
 }

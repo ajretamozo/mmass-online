@@ -505,6 +505,7 @@ namespace WebApi.Entities
                 Id_moneda = 1;
                 /*Id_concepto_negocio = 2;*///Orden Digitales
                 Id_cond_iva = getCondicionIva();
+
                 // Si es nuevo va insert, sino update
                 if (Id_op_dg == 0)
                 {
@@ -937,7 +938,6 @@ namespace WebApi.Entities
             DataTable t = DB.Select(sqlCommand, parametros);
             if (t.Rows.Count == 1)
             {
-                //idRed = DB.DInt(t.Rows[0]["id_red"].ToString());
                 existe = true;
             }
             return existe;
@@ -959,6 +959,27 @@ namespace WebApi.Entities
             }
             return resultado;
         }
-  
+
+        public static bool existeOpNombre(int idOp, string nom)
+        {
+            bool resultado = false;
+            string sqlCommand;
+
+            if (idOp == 0) {
+                sqlCommand = "SELECT id_op_dg FROM dg_orden_pub_ap WHERE bitacora like '" + nom + "'";
+            }
+            else
+            {
+                sqlCommand = "SELECT id_op_dg FROM dg_orden_pub_ap WHERE bitacora like '" + nom + "' and id_op_dg != " + idOp;
+            }
+
+            DataTable t = DB.Select(sqlCommand);
+            if (t.Rows.Count == 1)
+            {
+                resultado = true;
+            }
+            return resultado;
+        }
+
     }
 }
