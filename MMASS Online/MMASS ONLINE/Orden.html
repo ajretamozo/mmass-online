@@ -1375,6 +1375,9 @@
                 $("#inpOrderNumber").val("");
                 $("#inpFechaAlta").val("");
                 $("#inpEsFacturada").val("NO");
+                $("#bSendOrdenAddServer").attr("disabled", true);
+                $("#bAnular").attr("disabled", true);
+                $("#bClonar").attr("disabled", true);
                 document.body.style.backgroundImage = "url(./Clonacion.png)";
             }
 
@@ -1722,6 +1725,10 @@
                 //    comprobarModificaciones(data.op.id_op_dg, data.op.id_Google_Ad_Manager);
                 //}
 
+                document.body.style.backgroundImage = "none";
+
+                $("#bAnular").attr("disabled", false);
+                $("#bClonar").attr("disabled", false);
                 $('#inpOrderNumber').val(data.op.nro_orden);
                 $("#inpOrderNumber").attr("id_op_dg", data.op.id_op_dg);
                 $("#inpOrderMonth").val(data.op.mes);
