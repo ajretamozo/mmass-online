@@ -251,6 +251,8 @@ namespace WebApi.Entities
                         mifiltro = mifiltro + " and ((dg.nro_orden = " + p.Value + " and op.id_op is null)";
                         mifiltro = mifiltro + " or op.nro_orden = " + p.Value + ") ";
                     }
+                    if ((p.ParameterName == "bitacora") && (p.Value.ToString() != ""))
+                        mifiltro = mifiltro + " and dg.bitacora like '%" + p.Value + "%'";
                     if ((p.ParameterName == "nro_orden_ag") && (p.Value.ToString() != ""))
                         mifiltro = mifiltro + " and dg.nro_orden_ag = '" + p.Value + "'";
                     if ((p.ParameterName == "fecha_desde") && (p.Value.ToString() != ""))
@@ -294,6 +296,8 @@ namespace WebApi.Entities
                     {
                         mifiltro = mifiltro + " and dg.es_anulada = 0";
                     }
+                    if ((p.ParameterName == "id_empresa") && (p.Value.ToString() != ""))
+                        mifiltro = mifiltro + " and dg.id_empresa = " + p.Value;
                     if ((p.ParameterName == "id_red") && (p.Value.ToString() != ""))
                         mifiltro = mifiltro + " and dg.id_red = " + p.Value;
                 }

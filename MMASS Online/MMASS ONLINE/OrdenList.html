@@ -164,7 +164,7 @@
                 <div id="divOrderData">
                     <!--Filtros-->
                     <div class="row justify-content-around">
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <label>Número de Orden:</label>
                             <div id="OrderNumberComplete" class="row">
                                 <div class="col-md-4 "> <div class="input-group"> <input type="text" id="inpOrderYear" class="form-control enterSearch"></div> </div>
@@ -181,36 +181,48 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-3">
                             <label>Agencia:</label>
                             <div class="row align-items-center">
-                                <div class="col-md-10"> <div class="input-group enterSearch" style="width: 280px;"> <input type="text" id="inpDescAgencia" class="form-control"> </div> </div>
+                                <div class="col-md-12"> <div class="input-group enterSearch"> <input type="text" id="inpDescAgencia" class="form-control"> </div> </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <label>Descripción:</label>
+                            <div class="row align-items-center">
+                                <div class="col-md-12"> <div class="input-group enterSearch"> <input type="text" id="inpDescripcion" class="form-control"> </div> </div>
+                            </div>
+                            <label>Empresa: </label>
+                            <div class="row align-items-center">
+                                <div class="col-md-12"> <select class="form-control enterSearch" id="selEmpresa"> </select> </div>
                             </div>
                             <label>Anunciante:</label>
                             <div class="row align-items-center">
-                                <div class="col-md-10"> <div class="input-group enterSearch" style="width: 280px;"> <input type="text" id="inpDescAnunciante" class="form-control"> </div> </div>
+                                <div class="col-md-12"> <div class="input-group enterSearch"> <input type="text" id="inpDescAnunciante" class="form-control"> </div> </div>
                             </div>
                         </div>
-                        <div class="col-md-5">
+                        <div class="col-md-6">
                             <div class="row">
-                                <div class="col-md-7">
-                                    <label>Producto:</label>
-                                    <div class="row align-items-center">
-                                        <div class="col-md-10"> <div class="input-group enterSearch" style="width: 280px;"> <input type="text" id="inpDescProducto" class="form-control"> </div> </div>
-                                    </div>
+                                <div class="col-md-6">
                                     <label>Número de Orden Cliente:</label>
                                     <div class="row align-items-center">
-                                        <div class="col-md-10"> <div class="input-group enterSearch" style="width: 280px;"> <input type="text" id="inpOrderNumberClient" class="form-control"> </div> </div>
+                                        <div class="col-md-12"> <div class="input-group enterSearch"> <input type="text" id="inpOrderNumberClient" class="form-control"> </div> </div>
+                                    </div>
+                                    <label>Red AdServer: </label>
+                                    <div class="row align-items-center">
+                                        <div class="col-md-12"> <select class="form-control enterSearch" id="selRedes"> </select> </div>
+                                    </div>
+                                    <label>Producto:</label>
+                                    <div class="row align-items-center">
+                                        <div class="col-md-12"> <div class="input-group enterSearch"> <input type="text" id="inpDescProducto" class="form-control"> </div> </div>
                                     </div>
                                 </div>
-                                <div class="col-md-5" style="padding-left: 30px;">
-                                    <div class="card" style="height: 140px; border-color: #ced4da;">
+                                <div class="col-md-6" style="padding-left: 80px;padding-top: 32px;">
+                                    <div class="card" style="height: 177px; border-color: #ced4da;">
                                         <div class="card-header" style="background-color: #e9ecef;">
                                             Para Facturar
                                         </div>
                                         <div class="card-body" style="        margin-top: 0px;
-                                                                              padding-top: 10px;
+                                                                              padding-top: 25px;
                                                                               background-color: #e9ecef;
                                                                               height: 85px;
                                                                               padding-bottom: 0px;">
@@ -238,12 +250,18 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row">
+                    <!--<div class="row">
                         <div class="col-md-4">
                             <label for="descFiltro">Red AdServer: </label>
                             <select class="form-control enterSearch" id="selRedes"> <option value=''>(Todas) </option></select>
                         </div>
-                    </div>
+                        <div class="col-md-4">
+                            <label>Producto:</label>
+                            <div class="row align-items-center">
+                                <div class="col-md-10"> <div class="input-group enterSearch" style="width: 280px;"> <input type="text" id="inpDescProducto" class="form-control"> </div> </div>
+                            </div>
+                        </div>
+                    </div>-->
                     <div class="row justify-content-end py-3">
                         <div class="col-md-4">
                             <input type="checkbox" id="checkAnuladas" style="margin-bottom: .8rem; margin-right: .2rem">
@@ -274,7 +292,7 @@
                             <tr>
                                 <th>N Orden</th>
                                 <th>Vigencia</th>
-                                <th>Nombre</th>
+                                <th>Descripción</th>
                                 <th>Agencia</th>
                                 <th>Anunciante</th>
                                 <th>Producto</th>
@@ -309,6 +327,7 @@
                 searchOrders();
             }
         });
+        getEmpresas(); 
         getRedesGAM();
     });
 
@@ -394,6 +413,7 @@
         params.anio = $('#inpOrderYear').val();
         params.mes = $('#inpOrderMonth').val();
         params.nro_orden = $('#inpOrderNumber').val();
+        params.bitacora = $('#inpDescripcion').val();
         if (document.getElementById("checkAnuladas").checked == false) {
             params.anuladas = "1";
         };
@@ -428,6 +448,7 @@
         params.agencia_nombre = $('#inpDescAgencia').val();
         params.anunciante_nombre = $('#inpDescAnunciante').val();
         params.producto_nombre = $('#inpDescProducto').val();
+        params.id_empresa = $('#selEmpresa').val();
         params.id_red = $('#selRedes').val();
 
         for (param in params) {
@@ -490,27 +511,36 @@
             //callWS("googleAdManager", "reporteTest");
         }
 
-    function formatearMonto(x) {
-        return Number.parseFloat(x).toFixed(2);
+        function formatearMonto(x) {
+            return Number.parseFloat(x).toFixed(2);
         }
 
         function getRedesGAM() {
             callWS("medios", "getAllRedes", '', function (data) { onCargarSelect(data, 'selRedes', 'id_red', 'descripcion', 'codigo_red'); });
         }
 
-         function onCargarSelect(data, idSelect) {
+        function getEmpresas() {
+            callWS("empresas", "getall", '', function (data) { onCargarSelect(data, 'selEmpresa', 'id_empresa', 'razon_social'); });
+        }
+
+        function onCargarSelect(data, idSelect, colId, colDesc) {
             var pObj = data;
             var listitems = '';
             $.each(pObj, function (it, iObj) {
-                listitems += '<option  codigo_red= ' + iObj['codigo_red'] + ' value=' + iObj['id_red'] + '>' + iObj["descripcion"] + '</option>';
+                if (idSelect == 'selRedes') {
+                    listitems += '<option  codigo_red= ' + iObj['codigo_red'] + ' value=' + iObj['id_red'] + '>' + iObj["descripcion"] + '</option>';
+                }
+                else if (idSelect == 'selEmpresa') {
+                    listitems += '<option value=' + iObj[colId] + '>' + iObj[colDesc] + '</option>';
+                }
             });
             $("#" + idSelect).empty();
             $("#" + idSelect).append("<option value=''>(Todas) </option>");
             $("#" + idSelect).append(listitems);
-            if (pObj.length > 1) {
-            $("#" + idSelect).val([]);
-            }
-         }
+            //if (pObj.length > 1) {
+            //$("#" + idSelect).val([]);
+            //}
+        }
 
 
     </script>
