@@ -13,6 +13,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400&display=swap" rel="stylesheet">
     <script src="./js/autentificar.js"></script>
     <script src="./js/export.js"></script>
     <script src="./js/filedownloader.js"></script>
@@ -1356,7 +1357,7 @@
                 $("#checkListaParaFact").change();
             }
 
-            if (data.id_Google_Ad_Manager > 0 && (data.id_op_dg != undefined && data.id_op_dg != 0) && data.es_anulada == 0 && data.es_facturada == false) {
+            if (data.id_Google_Ad_Manager > 0 && (data.id_op_dg != undefined && data.id_op_dg != 0) && data.es_anulada == 0 && data.es_facturada == false && OpClon == false) {
                 comprobarModificaciones(data.id_op_dg, data.id_Google_Ad_Manager);
             }
 
@@ -1726,6 +1727,7 @@
                 //}
 
                 document.body.style.backgroundImage = "none";
+                OpClon = false;
 
                 $("#bAnular").attr("disabled", false);
                 $("#bClonar").attr("disabled", false);
@@ -2621,7 +2623,7 @@
             str = str + "<td id='tdMod" + id + "' style='padding-top: 16px;'><span class='fa fa-refresh fa-pulse invisible' id='spanCompActD" + id + "' title='Hay modificaciones en AdServer'></span></td></tr>";
             $("#TableRenglones").append(str);
             //  Colorear verde renglon enviado a AdServer
-            if (det.id_Google_Ad_Manager != undefined && det.id_Google_Ad_Manager != 0) {
+            if (det.id_Google_Ad_Manager != undefined && det.id_Google_Ad_Manager != 0 && OpClon == false) {
                 $("#row" + id).addClass("table-success");
             }
 
@@ -2912,7 +2914,7 @@
             //}, function data() { });
 
             //AGREGUE:
-            if (rDetalle.id_Google_Ad_Manager != 0 && rDetalle.id_Google_Ad_Manager != null) {
+            if (rDetalle.id_Google_Ad_Manager != 0 && rDetalle.id_Google_Ad_Manager != null && OpClon == false) {
                 $("#inpIdAdServer").val(rDetalle.id_Google_Ad_Manager);
                 $('#inpIdAdServer').css("background-color", "#c3e6cb");
                 //var idOrden = $("#inpOrderNumber").attr("id_op_dg");
