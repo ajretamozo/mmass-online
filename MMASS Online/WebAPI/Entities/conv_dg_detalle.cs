@@ -87,6 +87,7 @@ namespace WebApi.Entities
         public float Porc_conf_nc { get; set; }
         public float Porc_conf_fc { get; set; }
         public int Id_area { get; set; }
+        public int Id_empresa { get; set; }
         public List<Dg_tipos_avisos> Tipos_aviso;
         public List<Dg_orden_pub_medios> Medios;
         public List<Dg_emplazamientos> Emplazamientos;
@@ -144,7 +145,7 @@ namespace WebApi.Entities
                 resultado.Tipos_aviso = new List<Dg_tipos_avisos>();
                 det = DB.Select(@"select ta.* 
                                   from dg_conv_dg_detalle_tipo_Avisos cta 
-                                  inner join dg_tipos_avisos ta on ta.id_tipo_aviso_dg = cta.id_tipo_aviso_dg
+                                  inner join categorias ta on ta.id_categoria = cta.id_tipo_aviso_dg
                                   where cta.id_convenio = " + id_convenio.ToString() + " and cta.id_detalle = " + id_detalle.ToString());
                 foreach (DataRow item2 in det.Rows)
                 {
@@ -187,11 +188,19 @@ namespace WebApi.Entities
         }
 
 
-        public static List<Conv_dg_detalle> getByIdConv(int id_convenio)
+        public List<Conv_dg_detalle> getByIdConv()
         {
-            string sqlCommand = " select id_det_conv, id_convenio, id_detalle, descripcion, fecha_desde, fecha_hasta, id_tipo_aviso_dg, forma_uso, precio_unitario," +
-                                " porc_desc, porc_conf_nc, porc_conf_fc, id_area" +
-                                " from conv_dg_detalle where id_convenio = " + id_convenio.ToString();
+            //string sqlCommand = " select id_det_conv, id_convenio, id_detalle, descripcion, fecha_desde, fecha_hasta, id_tipo_aviso_dg, forma_uso, precio_unitario," +
+            //                    " porc_desc, porc_conf_nc, porc_conf_fc, id_area" +
+            //                    " from conv_dg_detalle where id_convenio = " + id_convenio.ToString();
+
+            string sqlCommand = @"select distinct id_det_conv, cd.id_convenio, cd.id_detalle, descripcion, fecha_desde, fecha_hasta, id_tipo_aviso_dg,
+                                  forma_uso, precio_unitario, porc_desc, porc_conf_nc, porc_conf_fc, id_area 
+                                  from conv_dg_detalle cd 
+                                  inner join dg_conv_dg_detalle_medios cdm on cdm.id_convenio=cd.id_convenio 
+                                  and cdm.id_detalle=cd.id_detalle inner join medios m on m.ID_MEDIO=cdm.id_medio 
+                                  where m.ID_EMPRESA = " + Id_empresa + " and cd.id_convenio = " + Id_convenio;
+
             List<Conv_dg_detalle> col = new List<Conv_dg_detalle>();
             Conv_dg_detalle elem;
             DataTable det = new DataTable();
@@ -249,7 +258,7 @@ namespace WebApi.Entities
                 elem.Tipos_aviso = new List<Dg_tipos_avisos>();
                 det = DB.Select(@"select ta.* 
                                   from dg_conv_dg_detalle_tipo_Avisos cta 
-                                  inner join dg_tipos_avisos ta on ta.id_tipo_aviso_dg = cta.id_tipo_aviso_dg
+                                  inner join categorias ta on ta.id_categoria = cta.id_tipo_aviso_dg
                                   where cta.id_convenio = " + item["id_convenio"].ToString() + " and cta.id_detalle = " + item["id_detalle"].ToString());
                 foreach (DataRow item2 in det.Rows)
                 {

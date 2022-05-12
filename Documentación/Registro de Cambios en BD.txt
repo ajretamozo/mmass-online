@@ -27,6 +27,8 @@ Agregado campo [id_red] a tabla [dg_emplazamientos]
 Agregado campo [id_red] a tabla [dg_tarifas] 
 Agregado campo [parafacturar] a tabla [dg_orden_pub_ap] 
 Creada tabla [dg_orden_pub_bloqueo]
+Agregados campos [TipoMedio] y [permite_envio_ads] a tabla [categorias]
+Dejado de usar tabla [dg_tipos_avisos] (ahora se usa [categorias])
 
 
 TABLAS SIN DATOS:

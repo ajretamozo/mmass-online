@@ -676,7 +676,7 @@
                                         </div>
                                         <div class="col-lg-1" style="padding-right: 20px;padding-left: 20px;padding-top: 4px;">
                                             <label for="bConvenios" class="invisible">Convenios</label>
-                                            <button type="button" data-id="convenios" id="bConvenios" class="btn actions btn-outline-dark btn-sm mr-1" onclick="prevGetConvenios()" style="width: 33px;" title="Buscar Convenios">
+                                            <button type="button" data-id="convenios" id="bConvenios" class="btn actions btn-outline-dark btn-sm mr-1" onclick="getConvenios()" style="width: 33px;" title="Buscar Convenios">
                                                 <span class="fa fa-handshake-o" id="brow"></span>
                                             </button>
                                         </div>
@@ -2068,6 +2068,10 @@
                 showMessage("Seleccione un Producto", "info");
                 return 0;
             }
+            if ($("#selEmpresa").val() == null) {
+                showMessage("Seleccione una Empresa", "info");
+                return 0;
+            }
             idRed = $('#selRedes').val();
             idEmpresa = $('#selEmpresa').val();
 
@@ -2109,8 +2113,11 @@
             //callWS("tarifas", "filter", JSON.stringify(setListaParametros(params)), function (data) { onTarifasGetAll(data, 'selTarifaD', 'id_tarifa_dg', 'descripcion'); })
 
             //nuev
-            if (idConvenio != 0) {
-                callWS("medios", "GetDetConveniosByIdConv", JSON.stringify(idConvenio), function (data) { onPopulateSelectDetConv(data, 'selDetConvenio', 'id_det_conv', 'descripcion', 'id_detalle'); });
+            if (idConvenio > 0) {
+                data = {};
+                data.id_convenio = idConvenio;
+                data.id_empresa = idEmpresa;
+                callWS("medios", "GetDetConveniosByIdConv", JSON.stringify(data), function (data) { onPopulateSelectDetConv(data, 'selDetConvenio', 'id_det_conv', 'descripcion', 'id_detalle'); });
                 bloquearCamposDetalle();
             }
             else {
@@ -3051,17 +3058,17 @@
             return ret;
         }
 
-        function prevGetConvenios() {
-            callWS("medios", "getBD", '', function (bd) { getConvenios(bd); });
-        }
+        //function prevGetConvenios() {
+        //    callWS("medios", "getBD", '', function (bd) { getConvenios(bd); });
+        //}
 
-        function getConvenios(base) {
-            if (base == 1) {
+        function getConvenios(/*base*/) {
+            /*if (base == 1) {*/
                 callWS("empresas", "getall", '', function (data) { onPopulateSelectDone(data, 'selEmpresaC', 'id_empresa', 'razon_social'); });
-            }
-            else if (base == 2) {
-                $("#selEmpresaC").attr("disabled", true);
-            }
+            //}
+            //else if (base == 2) {
+            //    $("#selEmpresaC").attr("disabled", true);
+            //}
 
             $('#inpDescConv').val("");
             $('#inpDescAgencia').val("");
@@ -3111,10 +3118,6 @@
 
             $('#inpDescConvenio').val("");
 
-            //$.when(limpiaVinculados()).then(function () {
-            //    callWS("medios", "GetConvenioById", JSON.stringify(id), function (data) { onSeleccionarConvenio(data); });
-            //}, function data() { });
-
             callWS("medios", "GetConvenioById", JSON.stringify(id), function (data) { onSeleccionarConvenio(data); });
         }
 
@@ -3143,7 +3146,13 @@
                 callWS("productos", "getProductosPorAnunciante", JSON.stringify(an), function (productos) { onPopulateSelectDone(productos, 'selProducto', 'id_producto', 'desc_producto'); });
                 /*      $("#selAnunciante").change(); *///para que cargue los productos
             }
-            $("#selEmpresa option[value=" + data.id_empresa + "]").attr("selected", "selected");
+            if (data.empresas.length == 1) {
+                $("#selEmpresa option[value=" + data.empresas[0].id_empresa + "]").attr("selected", "selected");
+                $("#selEmpresa").attr("disabled", true);
+            } else {
+                $("#selEmpresa").attr("disabled", false);
+                onPopulateSelectDone(data.empresas, 'selEmpresa', 'id_empresa', 'razon_social');
+            }
 
             //an = data.id_anunciante;
 
@@ -3177,7 +3186,6 @@
             $("#bBorrConvenios").attr("disabled", false);
             $("#selFacturar").attr("disabled", true);
             $("#selFPago").attr("disabled", true);
-            $("#selEmpresa").attr("disabled", true);
 
             idConvenio = data.id_convenio;
 
@@ -3220,7 +3228,7 @@
 
             var parametros = setListaParametros(params);
             if (error == '') {
-                callWS("medios", "filter", JSON.stringify(parametros), function (data) {
+                callWS("medios", "filterConvenios", JSON.stringify(parametros), function (data) {
                     if (data.length > 0) {
                         onPopulateTableConvenios(data);
                     } else {
@@ -3802,6 +3810,12 @@
         function onEmpresaSelected() {
             idEmpresa = $('#selEmpresa').val();
             callWS("medios", "getPorEmpresa", JSON.stringify(idEmpresa), function (data) { onPopulateSelectDone(data, 'selMediosD', 'id_medio', 'desc_medio'); });
+            if (idConvenio > 0) {
+                data = {};
+                data.id_convenio = idConvenio;
+                data.id_empresa = idEmpresa;
+                callWS("medios", "GetDetConveniosByIdConv", JSON.stringify(data), function (data) { onPopulateSelectDetConv(data, 'selDetConvenio', 'id_det_conv', 'descripcion', 'id_detalle'); });
+            }
         }
 
         function agregarIconos() {

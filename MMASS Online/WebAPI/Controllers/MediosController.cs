@@ -82,10 +82,10 @@ namespace WebApi.Controllers
             return Ok(convenio);
         }
 
-        [HttpPost("filter")]
-        public IActionResult filter(ListaParametro parametros)
+        [HttpPost("filterConvenios")]
+        public IActionResult filterConvenios(ListaParametro parametros)
         {
-            var fu = _medioService.filter(parametros.Parametros);
+            var fu = _medioService.filterConvenios(parametros.Parametros);
             return Ok(fu);
         }
 
@@ -97,9 +97,9 @@ namespace WebApi.Controllers
         }
 
         [HttpPost("getDetConveniosByIdConv")]
-        public IActionResult getDetConveniosByIdConv([FromBody] int IdConv)
+        public IActionResult getDetConveniosByIdConv(Conv_dg_detalle detConv)
         {
-            var detConvenios = _medioService.getDetConveniosByIdConv(IdConv);
+            var detConvenios = _medioService.getDetConveniosByIdConv(detConv);
             return Ok(detConvenios);
         }
 

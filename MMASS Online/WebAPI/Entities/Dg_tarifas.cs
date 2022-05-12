@@ -120,7 +120,7 @@ namespace WebApi.Entities
                 }
                 // Tipos de Aviso
                 resultado.Tipos_Avisos = new List<Dg_tipos_avisos>();
-                det = DB.Select("select dta.id_tarifa_dg, dta.id_tipo_aviso_dg, ta.* from dg_tarifas_tipos_avisos_dg dta inner join dg_tipos_avisos ta on dta.id_tipo_aviso_dg = ta.id_tipo_aviso_dg where dta.id_tarifa_dg =" + t.Rows[0]["id_tarifa_dg"].ToString());
+                det = DB.Select("select dta.id_tarifa_dg, dta.id_tipo_aviso_dg, ta.* from dg_tarifas_tipos_avisos_dg dta inner join categorias ta on dta.id_tipo_aviso_dg = ta.id_categoria where dta.id_tarifa_dg =" + t.Rows[0]["id_tarifa_dg"].ToString());
                 foreach (DataRow item in det.Rows)
                 {
                     Dg_tipos_avisos elem = Dg_tipos_avisos.getDg_tipos_avisos(item);

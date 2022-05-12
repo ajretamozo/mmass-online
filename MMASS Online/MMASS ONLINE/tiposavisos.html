@@ -285,6 +285,8 @@
                         location.href = "/tiposavisoslist.html";
                     } else {
                         console.log(data);
+                        message = "Ocurrió un error al guardar el Tipo de Aviso";
+                        showMessage(message, "error");
                     }
                 });
 
