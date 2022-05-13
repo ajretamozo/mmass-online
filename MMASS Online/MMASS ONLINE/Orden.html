@@ -696,9 +696,9 @@
                                     <div id="OrderDateSpam" class="row">
                                         <div class="col-lg-12">
                                             <div class="input-group input-daterange">
-                                                <input type="text" class="form-control datetimepicker-input" id="fechaDesde" data-toggle="datetimepicker" data-target="#fechaDesde" />
+                                                <input type="text" class="form-control datetimepicker-input" id="fechaDesde" data-toggle="datetimepicker" data-target="#fechaDesde" onchange="validarFechasConvenio('fechaD')" />
                                                 <span class="input-group-addon">hasta</span>
-                                                <input type="text" class="form-control datetimepicker-input" autocomplete="off" id="fechaHasta" data-toggle="datetimepicker" data-target="#fechaHasta" />
+                                                <input type="text" class="form-control datetimepicker-input" autocomplete="off" id="fechaHasta" data-toggle="datetimepicker" data-target="#fechaHasta" onchange="validarFechasConvenio('fechaH')" />
                                             </div>
                                         </div>
                                     </div>
@@ -826,9 +826,9 @@
                                         <div class="col-lg-6">
                                             <label>Vigencia</label>
                                             <div class="input-group input-daterange">
-                                                <input type="text" class="form-control" id="fechaDesdeD" data-toggle="datetimepicker" data-target="#fechaDesdeD" value="01/08/2019" onchange="calcularNetoD()" />
+                                                <input type="text" class="form-control" id="fechaDesdeD" data-toggle="datetimepicker" data-target="#fechaDesdeD" value="01/08/2019" onchange="calcularNetoD();  validarFechasConvenioD('fechaDD');" />
                                                 <span class="input-group-addon">hasta</span>
-                                                <input type="text" class="form-control" id="fechaHastaD" data-toggle="datetimepicker" data-target="#fechaHastaD" value="02/09/2019" onchange="calcularNetoD()" />
+                                                <input type="text" class="form-control" id="fechaHastaD" data-toggle="datetimepicker" data-target="#fechaHastaD" value="02/09/2019" onchange="calcularNetoD(); validarFechasConvenioD('fechaHD');" />
                                             </div>
                                         </div>
                                         <div class="col-lg-2"></div>
@@ -1333,7 +1333,6 @@
                 callWS("medios", "GetConvenioById", JSON.stringify(idConvenio), function (data) { $('#inpDescConvenio').val(data.desc_convenio); });
                 $("#selFacturar").attr("disabled", true);
                 $("#selFPago").attr("disabled", true);
-                $("#selEmpresa").attr("disabled", true);
                 $("#selProducto").attr("disabled", true);
             }
 
@@ -1381,6 +1380,8 @@
                 $("#bClonar").attr("disabled", true);
                 document.body.style.backgroundImage = "url(./Clonacion.png)";
             }
+
+            $("#selEmpresa").attr("disabled", true);
 
             //data.Id_condpagoap = 1; //Arreglar
 
@@ -1754,7 +1755,7 @@
                     $("#inpFechaAlta").val(today);
                 }
 
-                $("#selRedes").attr("disabled", true);
+                /*$("#selRedes").attr("disabled", true);*/
                 //AGREGUE:
                 //if (data.es_facturada) {
                 //    $("#inpEsFacturada").val("SI");
@@ -2255,6 +2256,7 @@
             else {
                 addRenglon(id);
             }
+                $("#selEmpresa").attr("disabled", true);
         }
 
         //AGREGUE:
@@ -2538,12 +2540,12 @@
             var d2 = new Date(dateToSqlFormat($('#fechaHastaD').val()));
 
             if (o2 < o1) {
-                showMessage("La fecha Hasta es menor que la fecha Desde en vigencia de la Orden");
+                showMessage("La fecha Hasta es menor que la fecha Desde en vigencia de la Orden", "error");
                 return false;
             }
 
             if (d1 < o1 || d2 > o2) {
-                showMessage("La vigencia del detalle debe estar incluida en la vigencia de la orden");
+                showMessage("La vigencia del detalle debe estar incluida en la vigencia de la orden", "error");
                 return false;
             }
 
@@ -3042,6 +3044,7 @@
                 $("#selAnunciante").attr("disabled", false);
                 $("#botLimpiar").attr("disabled", false);
                 $("#botLimpiar").attr("title", "Limpiar Agencia - Anunciante");
+                $("#selEmpresa").attr("disabled", false);
             }
             calculateTotals();
         }
@@ -3121,10 +3124,14 @@
             callWS("medios", "GetConvenioById", JSON.stringify(id), function (data) { onSeleccionarConvenio(data); });
         }
 
-        //Parametro global para mantener el idConvenio, el idDetConvenio y si el det tiene tarifa
+        //Parametro global para mantener el idConvenio, fechas conv y convD, idDetConvenio y si el det tiene tarifa
         var idConvenio = 0;
         var idDetConvenio = 0;
         var tieneTarifa = false;
+        var fechaDConv = '';
+        var fechaHConv = '';
+        var fechaDConvD = '';
+        var fechaHConvD = '';
 
         function onSeleccionarConvenio(data) {
             ag = data.id_agencia
@@ -3169,6 +3176,8 @@
             //callWS("productos", "getProductosPorAnunciante", JSON.stringify(an), function (data) { onPopulateSelectDone(data, 'selProducto', 'id_producto', 'desc_producto'); });
             $('#fechaDesde').datetimepicker('date', moment(dateToFieldFormat(data.fecha_desde), 'DD/MM/YYYY'));
             $('#fechaHasta').datetimepicker('date', moment(dateToFieldFormat(data.fecha_hasta), 'DD/MM/YYYY'));
+            fechaDConv = data.fecha_desde;
+            fechaHConv = data.fecha_hasta;
             $("#selFacturar option[value=" + data.facturar_a + "]").attr("selected", "selected");
             $("#selFPago option[value=" + data.id_formapago + "]").attr("selected", "selected");
             $('#inpDescConvenio').val(data.desc_convenio);
@@ -3342,6 +3351,8 @@
             $('#fechaHastaD').datetimepicker('date', moment(dateToFieldFormat(data.fecha_hasta), 'DD/MM/YYYY'));
             //    $("#fechaHastaD").attr("disabled", true);
             //}
+            fechaDConvD = data.fecha_desde;
+            fechaHConvD = data.fecha_hasta;
 
             //$("#fechaDesdeD").attr("disabled", true);
             //$("#fechaHastaD").attr("disabled", true);
@@ -3805,6 +3816,10 @@
 
             //recargar emplazamientos
             callWS("medios", "getAllE", JSON.stringify(idRed), function (data) { onPopulateSelectEmplaza(data, 'selEmplazaD', 'id_emplazamiento', 'descripcion', 'codigo_emplazamiento'); });
+
+            if ($("#inpOrderNumber").attr("id_op_dg") > 0) {
+                showMessage("Alerta! Emplazamientos reseteados", "info");
+            }
         }
 
         function onEmpresaSelected() {
@@ -4157,6 +4172,7 @@
             $("#fechaHasta").attr("disabled", true);
             $("#selEmpresa").attr("disabled", true);
             $("#selConceptoN").attr("disabled", true);
+            $("#selAgencia").attr("disabled", true);
             $("#selProducto").attr("disabled", true);
             $("#selFacturar").attr("disabled", true);
             $("#selFPago").attr("disabled", true);
@@ -4292,6 +4308,54 @@
             var idOp = $("#inpOrderNumber").attr("id_op_dg");
 
             location.href = "/orden.html?orderClon=" + idOp;
+        }
+
+        function validarFechasConvenio(fecha) {
+            if (idConvenio > 0) {
+                var c1 = new Date(fechaDConv);
+                var c2 = new Date(fechaHConv);
+
+                if (fecha == 'fechaD') {
+                    var o1 = new Date(dateToSqlFormat($('#fechaDesde').val()));
+
+                    if (o1 < c1 || o1 > c2) {
+                        showMessage("La Vigencia de la OP debe estar dentro de la Vigencia del Convenio", "error");
+                        $('#fechaDesde').datetimepicker('date', moment(dateToFieldFormat(fechaDConv), 'DD/MM/YYYY'));
+                    }
+                }
+                else {
+                    var o2 = new Date(dateToSqlFormat($('#fechaHasta').val()));
+
+                    if (o2 < c1 || o2 > c2) {
+                        showMessage("La Vigencia de la OP debe estar dentro de la Vigencia del Convenio", "error");
+                        $('#fechaHasta').datetimepicker('date', moment(dateToFieldFormat(fechaHConv), 'DD/MM/YYYY'));
+                    }
+                }
+            }
+        }
+
+        function validarFechasConvenioD(fecha) {
+            if (idDetConvenio > 0) {
+                var c1 = new Date(fechaDConvD);
+                var c2 = new Date(fechaHConvD);
+
+                if (fecha == 'fechaDD') {
+                    var o1 = new Date(dateToSqlFormat($('#fechaDesdeD').val()));
+
+                    if (o1 < c1 || o1 > c2) {
+                        showMessage("La Vigencia de la Campaña debe estar dentro de la Vigencia del Detalle de Convenio", "error");
+                        $('#fechaDesdeD').datetimepicker('date', moment(dateToFieldFormat(fechaDConv), 'DD/MM/YYYY'));
+                    }
+                }
+                else {
+                    var o2 = new Date(dateToSqlFormat($('#fechaHastaD').val()));
+
+                    if (o2 < c1 || o2 > c2) {
+                        showMessage("La Vigencia de la Campaña debe estar dentro de la Vigencia del Detalle de Convenio", "error");
+                        $('#fechaHastaD').datetimepicker('date', moment(dateToFieldFormat(fechaHConv), 'DD/MM/YYYY'));
+                    }
+                }
+            }
         }
 
     </script>
