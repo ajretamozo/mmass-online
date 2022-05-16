@@ -1330,7 +1330,11 @@
 
             if (data.id_convenio > 0) {
                 idConvenio = data.id_convenio;
-                callWS("medios", "GetConvenioById", JSON.stringify(idConvenio), function (data) { $('#inpDescConvenio').val(data.desc_convenio); });
+                callWS("medios", "GetConvenioById", JSON.stringify(idConvenio), function (data) {
+                    $('#inpDescConvenio').val(data.desc_convenio);
+                    fechaDConv = data.fecha_desde;
+                    fechaHConv = data.fecha_hasta;
+                });
                 $("#selFacturar").attr("disabled", true);
                 $("#selFPago").attr("disabled", true);
                 $("#selProducto").attr("disabled", true);
@@ -2747,15 +2751,20 @@
             idEmpresa = $('#selEmpresa').val();
             $("#checkTarifaManualD")[0].checked = false;
             $("#checkTarifaManualD").change();
-
+            detConv = {}
+            detConv.Id_convenio = idConvenio;
+            detConv.id_empresa = $('#selEmpresa').val();
             //nuev
-            if (idConvenio != 0) {
-                callWS("medios", "GetDetConveniosByIdConv", JSON.stringify(idConvenio), function (data) { onPopulateSelectDetConv(data, 'selDetConvenio', 'id_det_conv', 'descripcion', 'id_detalle'); });
-                //$("#selDetConvenio").attr("disabled", true);
-            }
-            else {
-                $("#selDetConvenio").attr("disabled", true);
-            }
+            //if (idConvenio > 0) {
+            //    detConv = {}
+            //    detConv.Id_convenio = idConvenio;
+            //    detConv.id_empresa = $('#selEmpresa').val();
+            //    /*callWS("medios", "GetDetConveniosByIdConv", JSON.stringify(detConv), function (data) { onPopulateSelectDetConv(data, 'selDetConvenio', 'id_det_conv', 'descripcion', 'id_detalle'); });*/
+            //    //$("#selDetConvenio").attr("disabled", true);
+            //}
+            //else {
+            //    $("#selDetConvenio").attr("disabled", true);
+            //}
             idRed = $('#selRedes').val();
 
             if ($("#inpEsFacturada").val() == 'SI' || document.body.style.backgroundImage == 'url("./Anulada.png")' || OpYaAbierta == true) {
@@ -2763,6 +2772,7 @@
             }
 
             $.when(
+                callWS("medios", "GetDetConveniosByIdConv", JSON.stringify(detConv), function (data) { onPopulateSelectDetConv(data, 'selDetConvenio', 'id_det_conv', 'descripcion', 'id_detalle'); }),
                 //callWS("medios", "getAll", '', function (data) { onPopulateSelectDone(data, 'selMediosD', 'id_medio', 'desc_medio'); }),
                 callWS("medios", "getPorEmpresa", JSON.stringify(idEmpresa), function (data) { onPopulateSelectDone(data, 'selMediosD', 'id_medio', 'desc_medio'); }),
                 callWS("tarifas", "getFormasUsoAll", '', function (data) { onPopulateSelectDone(data, 'selTipoTarifaD', 'id', 'descripcion'); }),
@@ -2953,6 +2963,8 @@
             //nuev
             if (rDetalle.id_det_conv > 1) {
                 $("#selDetConvenio option[value=" + rDetalle.id_det_conv + "]").attr("selected", "selected");
+            }
+            if (OpClon == false) {
                 $("#selDetConvenio").attr("disabled", true);
             }
         }
