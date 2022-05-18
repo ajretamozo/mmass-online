@@ -819,7 +819,7 @@
                                         </div>
                                         <div class="col-lg-3">
                                             <label>Convenio</label>
-                                            <select class="form-control" id="selDetConvenio" onchange="seleccionarDetConvenio()"></select>
+                                            <select class="form-control" id="selDetConvenio" onchange="prevSeleccionarDetConvenio()"></select>
                                         </div>
                                     </div>
                                     <div class="row">
@@ -1892,9 +1892,9 @@
             listitems += '<option forma_uso_desc=' + data['forma_uso']['descripcion'] + ' forma_uso_id=' + data['forma_uso']['id'] + ' precio_unitario= ' + data['precio_unitario'] + ' value=' + data[colId] + '>' + data[colDesc] + '</option>';
 
             $("#" + idSelect).empty();
-            //$("#" + idSelect).append("<option value=''>(Todos) </option>");
+            $("#" + idSelect).append("<option value=''></option>");
             $("#" + idSelect).append(listitems);
-
+            $("#selTarifaD option[value='" + data[colId] + "']").attr("selected", "selected");
             //$("#" + idSelect).change();
         }
 
@@ -2710,6 +2710,7 @@
         }
 
         function cargarModificarRenglon(r) {
+            desbloquearCamposDetalle();
             if ($("#fechaHasta").val() == "" || $("#fechaDesde").val() == "") {
                 showMessage("Debe seleccionar la vigencia de la orden", "info");
                 return 0;
@@ -2751,9 +2752,6 @@
             idEmpresa = $('#selEmpresa').val();
             $("#checkTarifaManualD")[0].checked = false;
             $("#checkTarifaManualD").change();
-            detConv = {}
-            detConv.Id_convenio = idConvenio;
-            detConv.id_empresa = $('#selEmpresa').val();
             //nuev
             //if (idConvenio > 0) {
             //    detConv = {}
@@ -2771,22 +2769,29 @@
                 bloquearCamposDetalle();
             }
 
-            $.when(
-                callWS("medios", "GetDetConveniosByIdConv", JSON.stringify(detConv), function (data) { onPopulateSelectDetConv(data, 'selDetConvenio', 'id_det_conv', 'descripcion', 'id_detalle'); }),
-                //callWS("medios", "getAll", '', function (data) { onPopulateSelectDone(data, 'selMediosD', 'id_medio', 'desc_medio'); }),
-                callWS("medios", "getPorEmpresa", JSON.stringify(idEmpresa), function (data) { onPopulateSelectDone(data, 'selMediosD', 'id_medio', 'desc_medio'); }),
-                callWS("tarifas", "getFormasUsoAll", '', function (data) { onPopulateSelectDone(data, 'selTipoTarifaD', 'id', 'descripcion'); }),
-                //AGREGUE callws medidas, areasgeo, emplaza:
-                callWS("medios", "getAllM", '', function (data) { onPopulateSelectMedidas(data, 'selMedidasD', 'id_medidadigital', 'ancho', 'alto'); }),
-                callWS("medios", "getAllA", '', function (data) { onAreasGeoGetAll(data, 'selAreasGeo', 'Id_area', 'descripcion', 'Codigo_area', 'tipo'); }),
-                callWS("medios", "getAllE", JSON.stringify(idRed), function (data) { onPopulateSelectEmplaza(data, 'selEmplazaD', 'id_emplazamiento', 'descripcion', 'codigo_emplazamiento'); }),
-                //callWS("programa", "getAllProgramasMedio", "1", function (data) {onPopulateSelectDone(data,'selPrograma','id_programa','desc_programa')}),
-                ///callWS("tarifas", "getAll", '', function (data) { onTarifasGetAll(data, 'selTarifaD', 'id_tarifa_dg', 'descripcion'); }),
-                callWS("Tipos_avisos", "getAll", '', function (data) { onTipoAvisoGetAll(data, 'selTipoAvisoD', 'Id_tipo_aviso_dg', 'descripcion', 'Permite_envio_ads'); })
-            ).then(function () { onCargarModificarRenglon($(r).attr("data-id")) }, function (data1, data2, data3) {
-                console.log("Medios: " + data1[2].statusText + "; Formas de uso: " + data2[2].statusText + "Tipo Aviso: " + data3[2].statusText + ";");
-                showMessage("Se produjo un error al cargar los campos, intentelo nuevamente", type = "alert");
-            });
+            var rId = $(r).attr("data-id");
+            rId--;
+            var rDetalle = Detalles[rId];
+
+            if (rDetalle.id_det_conv > 0) {
+                cargarSelectMultiConv($(r).attr("data-id"));
+            }
+            else {
+                $.when(
+                    callWS("medios", "getPorEmpresa", JSON.stringify(idEmpresa), function (data) { onPopulateSelectDone(data, 'selMediosD', 'id_medio', 'desc_medio'); }),
+                    callWS("tarifas", "getFormasUsoAll", '', function (data) { onPopulateSelectDone(data, 'selTipoTarifaD', 'id', 'descripcion'); }),
+                    //AGREGUE callws medidas, areasgeo, emplaza:
+                    callWS("medios", "getAllM", '', function (data) { onPopulateSelectMedidas(data, 'selMedidasD', 'id_medidadigital', 'ancho', 'alto'); }),
+                    callWS("medios", "getAllA", '', function (data) { onAreasGeoGetAll(data, 'selAreasGeo', 'Id_area', 'descripcion', 'Codigo_area', 'tipo'); }),
+                    callWS("medios", "getAllE", JSON.stringify(idRed), function (data) { onPopulateSelectEmplaza(data, 'selEmplazaD', 'id_emplazamiento', 'descripcion', 'codigo_emplazamiento'); }),
+                    //callWS("programa", "getAllProgramasMedio", "1", function (data) {onPopulateSelectDone(data,'selPrograma','id_programa','desc_programa')}),
+                    //callWS("tarifas", "getAll", '', function (data) { onTarifasGetAll(data, 'selTarifaD', 'id_tarifa_dg', 'descripcion'); }),
+                    callWS("Tipos_avisos", "getAll", '', function (data) { onTipoAvisoGetAll(data, 'selTipoAvisoD', 'Id_tipo_aviso_dg', 'descripcion', 'Permite_envio_ads'); })
+                ).then(function () { onCargarModificarRenglon($(r).attr("data-id")) }, function (data1, data2, data3) {
+                    console.log("Medios: " + data1[2].statusText + "; Formas de uso: " + data2[2].statusText + "Tipo Aviso: " + data3[2].statusText + ";");
+                    showMessage("Se produjo un error al cargar los campos, intentelo nuevamente", type = "alert");
+                });
+            }          
         }
 
         function onCargarModificarRenglon(rId) {
@@ -2961,8 +2966,11 @@
             $('#totalD').val(rDetalle.monto_neto);
 
             //nuev
-            if (rDetalle.id_det_conv > 1) {
+            if (rDetalle.id_det_conv > 0) {
                 $("#selDetConvenio option[value=" + rDetalle.id_det_conv + "]").attr("selected", "selected");
+                $("#selTipoTarifaD").attr("disabled", true);
+                $("#selTipoAvisoD").attr("disabled", true);
+                $("#selProductoD").attr("disabled", true);
             }
             if (OpClon == false) {
                 $("#selDetConvenio").attr("disabled", true);
@@ -3271,19 +3279,30 @@
             callWS("medios", "getPorEmpresa", JSON.stringify(idEmpresa), function (data) { onPopulateSelectDone(data, 'selMediosD', 'id_medio', 'desc_medio'); });
         }
 
-        function seleccionarDetConvenio() {
+        function prevSeleccionarDetConvenio() {
             desbloquearCamposDetalle();
             detConv = {}
-            detConv.Id_convenio = idConvenio;
-            //nuev
-            detConv.Id_detalle = $('#selDetConvenio>option:selected').attr("id_detalle");
+            //detConv.Id_convenio = idConvenio;
+            ////nuev
+            //detConv.Id_detalle = $('#selDetConvenio>option:selected').attr("id_detalle");
+            detConv.id_det_conv = $('#selDetConvenio').val()
+            idDetConvenio = $('#selDetConvenio').val()
 
-            idDetConvenio = detConv.Id_detalle;
+            //$.when(cargarSelectMultiples()).then(function () {
+            //    callWS("medios", "GetDetConvenioById", JSON.stringify(detConv), function (data) { seleccionarDetConvenio(data); });
+            //}, function data() { });
+            callWS("medios", "GetDetConvenioById", JSON.stringify(detConv), function (data) { seleccionarDetConvenio(data); });
+        }
 
-            $.when(LimpiarSelectMultiples()).then(function () {
-                callWS("medios", "GetDetConvenioById", JSON.stringify(detConv), function (data) { onSeleccionarDetConvenio(data); });
-            }, function data() { });
+        function seleccionarDetConvenio(data) {
+            $.when(cargarSelectMultiples(data)).then(onSeleccionarDetConvenio(data));
+        }
 
+        function cargarSelectMultiples(data) {
+            onPopulateSelectMedidas(data.medidas, 'selMedidasD', 'id_medidadigital', 'ancho', 'alto');
+            onPopulateSelectEmplaza(data.emplazamientos, 'selEmplazaD', 'id_emplazamiento', 'descripcion', 'codigo_emplazamiento');
+            onPopulateSelectDone(data.medios, 'selMediosD', 'id_medio', 'desc_medio');
+            onTipoAvisoGetAll(data.tipos_aviso, 'selTipoAvisoD', 'Id_tipo_aviso_dg', 'descripcion', 'Permite_envio_ads');
         }
 
         function onSeleccionarDetConvenio(data) {
@@ -3297,12 +3316,13 @@
 
             //Carga Tipos de Aviso
             tiposAviso = data.tipos_aviso;
-            if (tiposAviso.length > 0) {
-                onTipoAvisoGetAll(tiposAviso, 'selTipoAvisoD', 'Id_tipo_aviso_dg', 'descripcion', 'Permite_envio_ads')
-                $("#selTipoAvisoD").attr("disabled", false);
-            }
             if (tiposAviso.length == 1) {
+                $("#selTipoAvisoD option[value=" + tiposAviso[0].id_tipo_aviso_dg + "]").attr("selected", "selected");
                 $("#selTipoAvisoD").attr("disabled", true);
+            }
+            else {
+/*                onTipoAvisoGetAll(tiposAviso, 'selTipoAvisoD', 'Id_tipo_aviso_dg', 'descripcion', 'Permite_envio_ads')*/
+                $("#selTipoAvisoD").attr("disabled", false);
             }
 
             //Carga Medios
@@ -3381,17 +3401,21 @@
                 var tarifa = {};
                 tarifa.Id_tarifa_dg = data.tarifa_dg.id_tarifa_dg;
                 callWS("tarifas", "getById", JSON.stringify(tarifa), function (data2) { onTarifasGetAllConv(data2, 'selTarifaD', 'id_tarifa_dg', 'descripcion'); })
-                $("#selTarifaD").attr("disabled", true);
+                /*$("#selTarifaD").attr("disabled", true);*/
                 tieneTarifa = true;
                 $("#checkTarifaManualD")[0].checked = false;
-                $("#checkTarifaManualD")[0].disabled = true;
+                /*$("#checkTarifaManualD")[0].disabled = true;*/
             }
             else {
-                $("#selTarifaD").attr("disabled", false);
-                $("#checkTarifaManualD")[0].disabled = false;
-                filterTarifas();
+                //$("#selTarifaD").attr("disabled", false);
+                //$("#checkTarifaManualD")[0].disabled = false;
+                //filterTarifas();
+                $("#selTarifaD option[value='']").attr("selected", "selected");
                 tieneTarifa = false;
+                $("#checkTarifaManualD")[0].checked = true;
             }
+            $("#selTarifaD").attr("disabled", true);
+            $("#checkTarifaManualD")[0].disabled = true;
 
             //Carga Precio
             $('#precioUnitarioD').val(data.precio_unitario);
@@ -4368,6 +4392,26 @@
                     }
                 }
             }
+        }
+
+        function cargarSelectMultiConv(rId) {
+            rId--;
+            var rDetalle = Detalles[rId];
+            detConv = {}
+            detConv.Id_convenio = idConvenio;
+            detConv.id_det_conv = rDetalle.id_det_conv;
+            detConv.id_empresa = $('#selEmpresa').val();
+            rId++;
+
+                $.when(
+                    callWS("medios", "getAllA", '', function (data) { onAreasGeoGetAll(data, 'selAreasGeo', 'Id_area', 'descripcion', 'Codigo_area', 'tipo'); }),
+                    callWS("medios", "GetDetConveniosByIdConv", JSON.stringify(detConv), function (data) { onPopulateSelectDetConv(data, 'selDetConvenio', 'id_det_conv', 'descripcion', 'id_detalle'); }),
+                    callWS("medios", "GetDetConvenioById", JSON.stringify(detConv), function (data) { cargarSelectMultiples(data); }),
+                    callWS("tarifas", "getFormasUsoAll", '', function (data) { onPopulateSelectDone(data, 'selTipoTarifaD', 'id', 'descripcion'); })
+                ).then(function () { onCargarModificarRenglon(rId) }, function (data1, data2, data3) {
+                    console.log("Medios: " + data1[2].statusText + "; Formas de uso: " + data2[2].statusText + "Tipo Aviso: " + data3[2].statusText + ";");
+                    showMessage("Se produjo un error al cargar los campos, intentelo nuevamente", type = "alert");
+                });
         }
 
     </script>

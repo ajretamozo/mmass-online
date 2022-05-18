@@ -14,6 +14,7 @@ namespace WebApi.Entities
         public int Id_detalle { get; set; }
         public int Id_medio { get; set; }       
         public float Porcentaje { get; set; }
+        public string Desc_medio { get; set; }
         public static Dg_orden_pub_medios getDg_orden_pub_medios(DataRow item)
         {
             Dg_orden_pub_medios mi = new Dg_orden_pub_medios
@@ -23,6 +24,10 @@ namespace WebApi.Entities
                 Id_medio = DB.DInt(item["Id_medio"].ToString()),
                 Porcentaje = DB.DFloat(item["Porcentaje"].ToString())
             };
+            //if (item["Desc_medio"].ToString() != "")
+            //{
+            //    mi.Desc_medio = item["Desc_medio"].ToString();
+            //}
             return mi;
         }
 

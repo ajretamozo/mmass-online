@@ -94,11 +94,11 @@ namespace WebApi.Entities
         public List<Dg_medidas> Medidas;
 
        
-        public static Conv_dg_detalle getById(int id_convenio, int id_detalle)
+        public static Conv_dg_detalle getById(int id_det_conv)
         {
             string sqlCommand = " select id_det_conv, id_convenio, id_detalle, descripcion, fecha_desde, fecha_hasta, forma_uso, id_tarifa_dg, precio_unitario," +
                                 " porc_desc, porc_conf_nc, porc_conf_fc, id_area" +
-                                " from conv_dg_detalle where id_convenio = " + id_convenio.ToString() + " and id_detalle = " + id_detalle.ToString();
+                                " from conv_dg_detalle where id_det_conv = " + id_det_conv.ToString();
            
             Conv_dg_detalle resultado = null;
             DataTable t = DB.Select(sqlCommand);
@@ -146,7 +146,7 @@ namespace WebApi.Entities
                 det = DB.Select(@"select ta.* 
                                   from dg_conv_dg_detalle_tipo_Avisos cta 
                                   inner join categorias ta on ta.id_categoria = cta.id_tipo_aviso_dg
-                                  where cta.id_convenio = " + id_convenio.ToString() + " and cta.id_detalle = " + id_detalle.ToString());
+                                  where cta.id_convenio = " + resultado.Id_convenio.ToString() + " and cta.id_detalle = " + resultado.Id_detalle.ToString());
                 foreach (DataRow item2 in det.Rows)
                 {
                     Dg_tipos_avisos elem = Dg_tipos_avisos.getDg_tipos_avisos(item2);
@@ -154,19 +154,28 @@ namespace WebApi.Entities
                 }
                 // Medios
                 resultado.Medios = new List<Dg_orden_pub_medios>();
-                det = DB.Select("select cm.id_convenio as id_op_dg, cm.id_detalle, cm.porcentaje, m.* from dg_conv_dg_detalle_medios cm inner join medios m on m.id_medio = cm.id_medio where cm.id_convenio = " + id_convenio.ToString() + " and cm.id_detalle = " + id_detalle.ToString());
+                det = DB.Select("select cm.id_convenio as id_op_dg, cm.id_detalle, cm.porcentaje, m.* from dg_conv_dg_detalle_medios cm inner join medios m on m.id_medio = cm.id_medio where cm.id_convenio = " + resultado.Id_convenio.ToString() + " and cm.id_detalle = " + resultado.Id_detalle.ToString());
                 foreach (DataRow item2 in det.Rows)
                 {
                     //Medio elem = Medio.getMedio(item2);
                     //resultado.Medios.Add(elem);
-                    resultado.Medios.Add(Dg_orden_pub_medios.getDg_orden_pub_medios(item2));
+                    //resultado.Medios.Add(Dg_orden_pub_medios.getDg_orden_pub_medios(item2));
+                    Dg_orden_pub_medios mi = new Dg_orden_pub_medios
+                    {
+                        Id_op_dg = DB.DInt(item2["id_op_dg"].ToString()),
+                        Id_detalle = DB.DInt(item2["id_detalle"].ToString()),
+                        Id_medio = DB.DInt(item2["id_medio"].ToString()),
+                        Porcentaje = DB.DFloat(item2["porcentaje"].ToString()),
+                        Desc_medio = item2["desc_medio"].ToString()
+                    };
+                    resultado.Medios.Add(mi);
                 }
                 // Emplazamientos
                 resultado.Emplazamientos = new List<Dg_emplazamientos>();
                 det = DB.Select(@"select ce.id_convenio, ce.id_detalle, e.* 
                                   from dg_conv_dg_detalle_emplazamientos ce 
                                   inner join dg_emplazamientos e on e.id_emplazamiento = ce.id_emplazamiento
-                                  where ce.id_convenio = " + id_convenio.ToString() + " and ce.id_detalle = " + id_detalle.ToString());
+                                  where ce.id_convenio = " + resultado.Id_convenio.ToString() + " and ce.id_detalle = " + resultado.Id_detalle.ToString());
                 foreach (DataRow item2 in det.Rows)
                 {
                     Dg_emplazamientos elem = Dg_emplazamientos.getDg_emplazamientos(item2);
@@ -177,7 +186,7 @@ namespace WebApi.Entities
                 det = DB.Select(@"select cme.id_convenio, cme.id_detalle, m.* 
                                   from dg_conv_dg_detalle_medidas cme 
                                   inner join dg_medidas m on m.id_medidadigital = cme.id_medidadigital 
-                                  where cme.id_convenio = " + id_convenio.ToString() + " and cme.id_detalle = " + id_detalle.ToString());
+                                  where cme.id_convenio = " + resultado.Id_convenio.ToString() + " and cme.id_detalle = " + resultado.Id_detalle.ToString());
                 foreach (DataRow item2 in det.Rows)
                 {
                     Dg_medidas elem = Dg_medidas.getDg_medidas(item2);

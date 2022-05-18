@@ -92,7 +92,7 @@ namespace WebApi.Controllers
         [HttpPost("getDetConvenioById")]
         public IActionResult getDetConvenioById(Conv_dg_detalle detConv)
         {
-            var detConvenio = _medioService.getDetConvenioById(detConv.Id_convenio, detConv.Id_detalle);
+            var detConvenio = _medioService.getDetConvenioById(detConv.Id_det_conv);
             return Ok(detConvenio);
         }
 

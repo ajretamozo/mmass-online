@@ -28,7 +28,7 @@ namespace WebApi.Services
         IEnumerable<Convenios> getAllConvenios();
         Convenios getConvenioById(int Id);
         IEnumerable<Convenios> filterConvenios(List<Parametro> parametros);
-        Conv_dg_detalle getDetConvenioById(int IdConv, int IdDet);
+        Conv_dg_detalle getDetConvenioById(int IdDetConv);
         IEnumerable<Conv_dg_detalle> getDetConveniosByIdConv(Conv_dg_detalle detConv);
         IEnumerable<Dg_red_GAM> getAllRedes();
         Dg_red_GAM getRedByCodigo(long netCode);
@@ -104,9 +104,9 @@ namespace WebApi.Services
             return Convenios.filter(parametros);
         }
 
-        public Conv_dg_detalle getDetConvenioById(int IdConv, int IdDet)
+        public Conv_dg_detalle getDetConvenioById(int IdDetConv)
         {
-            return Conv_dg_detalle.getById(IdConv, IdDet);
+            return Conv_dg_detalle.getById(IdDetConv);
         }
 
         public IEnumerable<Conv_dg_detalle> getDetConveniosByIdConv(Conv_dg_detalle detConv)
