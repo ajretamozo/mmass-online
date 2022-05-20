@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.1.32421.90
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "MMASS ONLINE", "MMASS ONLINE\", "{87DA629E-89CD-4B8F-B6A0-0B8C9B569307}"
+	ProjectSection(ProjectDependencies) = postProject
+		{B767C19F-283E-4057-B828-AE11D61173A3} = {B767C19F-283E-4057-B828-AE11D61173A3}
+	EndProjectSection
 	ProjectSection(WebsiteProperties) = preProject
 		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.8"
 		Debug.AspNetCompiler.VirtualPath = "/localhost_6854"
@@ -23,9 +26,6 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "MMASS ONLINE", "MMASS ONLIN
 		VWDPort = "6854"
 		SlnRelativePath = "MMASS ONLINE\"
 		DefaultWebSiteLanguage = "Visual C#"
-	EndProjectSection
-	ProjectSection(ProjectDependencies) = postProject
-		{B767C19F-283E-4057-B828-AE11D61173A3} = {B767C19F-283E-4057-B828-AE11D61173A3}
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApi", "WebAPI\WebApi.csproj", "{B767C19F-283E-4057-B828-AE11D61173A3}"

@@ -181,6 +181,12 @@ namespace WebApi.Controllers
             return Ok(JsonConvert.SerializeObject(cn));
         }
 
+        [HttpPost("getAllPlazos")]
+        public IActionResult GetAllPlazos()
+        {
+            var pp = _medioService.GetAllPlazos();
+            return Ok(pp);
+        }
 
     }
 }

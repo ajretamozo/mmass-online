@@ -30,13 +30,14 @@ namespace WebApi.Entities
         public string Formapago_nombre { get; set; }
         public float Porc_conf_nc { get; set; }
         public float Porc_conf_fc { get; set; }
+        public int Id_condpago_facturar { get; set; }
 
 
         public static Convenios getByIdC9(int id_convenio)
         {
             string sqlCommand = @"select top 1 c.id_convenio, c.desc_convenio, cpa.id_formapago, c.id_agencia, c.id_anunciante, cp.id_producto, c.importe_total,
                                     c.fecha_desde, c.fecha_hasta, c.estado, c.observaciones, c.facturar_a, c.id_empresa, c.porc_conf_nc, c.porc_conf_fc, 
-                                    ag.razon_social as agencia_nombre, an.razon_social as anunciante_nombre, fp.desc_formapago as formapago_nombre
+                                    ag.razon_social as agencia_nombre, an.razon_social as anunciante_nombre, fp.desc_formapago as formapago_nombre, c.Id_PlazoPago  
                                     from convenio_anual_precios c
                                     left outer join contactos ag on ag.id_contacto = c.id_agencia
                                     left outer join contactos an on an.id_contacto = c.id_anunciante
@@ -89,6 +90,10 @@ namespace WebApi.Entities
                 }
                 resultado.Porc_conf_nc = float.Parse(t.Rows[0]["porc_conf_nc"].ToString());
                 resultado.Porc_conf_fc = float.Parse(t.Rows[0]["porc_conf_fc"].ToString());
+                if (t.Rows[0]["Id_PlazoPago"].ToString() != "")
+                {
+                    resultado.Id_condpago_facturar = int.Parse(t.Rows[0]["Id_PlazoPago"].ToString());
+                }
             }
             return resultado;
         }
@@ -97,7 +102,7 @@ namespace WebApi.Entities
         {
             string sqlCommand = @"select top 1 c.id_convenio, c.desc_convenio, cpa.id_formapago, c.id_agencia, c.id_anunciante, cp.id_producto, c.importe_total,
                                     c.fecha_desde, c.fecha_hasta, c.estado, c.observaciones, c.facturar_a, c.porc_conf_nc, c.porc_conf_fc, 
-                                    ag.razon_social as agencia_nombre, an.razon_social as anunciante_nombre, fp.desc_formapago as formapago_nombre
+                                    ag.razon_social as agencia_nombre, an.razon_social as anunciante_nombre, fp.desc_formapago as formapago_nombre, c.id_condpago_facturar  
                                     from convenio_anual_precios c
                                     left outer join contactos ag on ag.id_contacto = c.id_agencia
                                     left outer join contactos an on an.id_contacto = c.id_anunciante
@@ -155,6 +160,10 @@ namespace WebApi.Entities
                 }
                 resultado.Porc_conf_nc = float.Parse(t.Rows[0]["porc_conf_nc"].ToString());
                 resultado.Porc_conf_fc = float.Parse(t.Rows[0]["porc_conf_fc"].ToString());
+                if (t.Rows[0]["id_condpago_facturar"].ToString() != "")
+                {
+                    resultado.Id_condpago_facturar = int.Parse(t.Rows[0]["id_condpago_facturar"].ToString());
+                }
             }
             return resultado;
         }
@@ -170,7 +179,7 @@ namespace WebApi.Entities
                                     left outer join contactos an on an.id_contacto = c.id_anunciante
 									left outer join convenios_pagos cpa on cpa.id_convenio = c.id_convenio
 									left outer join formas_pago fp on fp.id_formapago = cpa.id_formapago
-                                    where c.es_borrado = 0 and (@fechaActual >= c.fecha_desde and @fechaActual <= c.fecha_hasta)
+                                    where c.es_borrado = 0 and c.estado = 3 and (@fechaActual >= c.fecha_desde and @fechaActual <= c.fecha_hasta)
 									and exists (select id_convenio from conv_dg_detalle where id_convenio=c.id_convenio)";
 
             List<Convenios> col = new List<Convenios>();
@@ -240,18 +249,22 @@ namespace WebApi.Entities
                         mifiltro = mifiltro + " and exists (select id_convenio from dg_conv_dg_detalle_medios cdm inner join MEDIOS m on cdm.id_medio = m.ID_MEDIO where cdm.id_convenio = c.Id_Convenio and m.ID_EMPRESA = " + p.Value + ")";
                     if ((p.ParameterName == "desc_convenio") && (p.Value.ToString() != ""))
                         mifiltro = mifiltro + " and c.desc_convenio like '%" + p.Value + "%'";
+                    //if ((p.ParameterName == "fecha_desde") && (p.Value.ToString() != ""))
+                    //{
+                    //    DateTime fecha = DateTime.Parse(p.Value);
+                    //    string formatted = fecha.ToString("dd-MM-yyyy");
+                    //    mifiltro = mifiltro + " and fecha_desde >='" + formatted + "'";
+                    //}
+                    //if ((p.ParameterName == "fecha_hasta") && (p.Value.ToString() != ""))
+                    //{
+                    //    DateTime fecha = DateTime.Parse(p.Value);
+                    //    string formatted = fecha.ToString("dd-MM-yyyy");
+                    //    mifiltro = mifiltro + " and fecha_hasta <='" + formatted + "'";
+                    //}
                     if ((p.ParameterName == "fecha_desde") && (p.Value.ToString() != ""))
-                    {
-                        DateTime fecha = DateTime.Parse(p.Value);
-                        string formatted = fecha.ToString("dd-MM-yyyy");
-                        mifiltro = mifiltro + " and fecha_desde >='" + formatted + "'";
-                    }
+                        mifiltro = mifiltro + " and fecha_desde >= '" + p.Value.ToString() + "'";
                     if ((p.ParameterName == "fecha_hasta") && (p.Value.ToString() != ""))
-                    {
-                        DateTime fecha = DateTime.Parse(p.Value);
-                        string formatted = fecha.ToString("dd-MM-yyyy");
-                        mifiltro = mifiltro + " and fecha_hasta <='" + formatted + "'";
-                    }
+                        mifiltro = mifiltro + " and fecha_hasta <= '" + p.Value.ToString() + "'";
                     if ((p.ParameterName == "agencia_nombre") && (p.Value.ToString() != ""))
                         mifiltro = mifiltro + " and ag.razon_social like '%" + p.Value + "%'";
                     if ((p.ParameterName == "anunciante_nombre") && (p.Value.ToString() != ""))

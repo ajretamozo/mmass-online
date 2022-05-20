@@ -306,6 +306,15 @@
             font-family: 'Roboto';
             font-size: 20px;
         }
+
+        .jumbotron {
+            background-color: #f5f5f5 !important;
+        }
+
+        .rounded {
+            border-radius: 1.5rem !important;
+        }
+
     </style>
 
     <script>
@@ -344,7 +353,7 @@
         <div class="modal " id="pleaseWaitDialog" data-backdrop="static" data-keyboard="false" style="        display: none
 ">
             <div class="modal-dialog" role="document">
-                <div class="modal-content">
+                <div class="modal-content shadow p-3 mb-5 bg-white rounded">
                     <div class="modal-header">
                         <h4 class="modal-title" onclick='hidePleaseWait();'>Procesando...</h4>
                     </div>
@@ -361,7 +370,7 @@
         <!-- Modal -->
         <div class="modal fade" id="modalCenter" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
+                <div class="modal-content shadow p-3 mb-5 bg-white rounded">
                     <div class="modal-header d-flex justify-content-center">
                         <h5 class="modal-title" id="modalCenterTitle">Advertencia</h5>
                     </div>
@@ -377,7 +386,7 @@
         <div class="modal fade" id="largeModal">
 
             <div class="modal-dialog modal-xl">
-                <div class="modal-content">
+                <div class="modal-content shadow p-3 mb-5 bg-white rounded">
 
                     <!-- Modal Header -->
                     <div class="modal-header">
@@ -401,7 +410,7 @@
         <!--Modal Convenios-->
         <div class="modal fade" id="conveniosModal">
             <div class="modal-dialog modal-xl modalConv">
-                <div class="modal-content">
+                <div class="modal-content shadow p-3 mb-5 bg-white rounded">
 
                     <!-- Modal Header -->
                     <div class="modal-header">
@@ -494,7 +503,7 @@
         <!--Modal Modificaciones Cabecera-->
         <div class="modal fade" id="modifModal">
             <div class="modal-dialog modal-xl modalConv">
-                <div class="modal-content">
+                <div class="modal-content shadow p-3 mb-5 bg-white rounded">
 
                     <!-- Modal Header -->
                     <div class="modal-header">
@@ -538,7 +547,7 @@
         <!--Modal Modificaciones Detalles-->
         <div class="modal fade" id="modifModalD">
             <div class="modal-dialog modal-xl modalConv">
-                <div class="modal-content">
+                <div class="modal-content shadow p-3 mb-5 bg-white rounded">
 
                     <!-- Modal Header -->
                     <div class="modal-header">
@@ -587,7 +596,7 @@
         </div>
 
         <div id="divMessage" class="alert" style="display:none;cursor:pointer;z-index:10000;" title="Click para cerrar"> </div>
-        <div class="jumbotron mt-4 py-4" id="divOrderMain">
+        <div class="jumbotron mt-4 py-4 shadow p-3 mb-5 bg-white rounded" id="divOrderMain">
             <p class="dataTitle">ORDEN PUBLICITARIA</p>
             <!-- TABS -->
             <nav class="nav nav-tabs mb-3">
@@ -664,7 +673,7 @@
                                 </div>
                                 <div class="col-lg-4">
                                     <!--<label>Orden Relacionada</label>
-                                    <select class="form-control" id="selOrdenRelacionada" onchange="enableConf()" disabled="disabled"></select>-->
+                <select class="form-control" id="selOrdenRelacionada" onchange="enableConf()" disabled="disabled"></select>-->
                                     <label>Descripción</label>
                                     <div class="input-group"> <input type="text" id="inpDescOP" class="form-control"> </div>
                                 </div>
@@ -752,8 +761,20 @@
                                 <select class="form-control" id="selFPago"></select>
                             </div>
                             <div class="col-lg-4">
+                                <label>Plazo de Pago</label>
+                                <select class="form-control" id="selPlazoP"></select>
+                            </div>
+                        </div>
+                        <hr>
+                        <!-- GRUPO 4 -->
+                        <div class="row">
+                            <div class="col-lg-4">
                                 <label>Ejecutivo</label>
                                 <select class="form-control" id="selEjecutivo"></select>
+                            </div>
+                            <div class="col-lg-4">
+                            </div>
+                            <div class="col-lg-4">
                             </div>
                         </div>
 
@@ -774,8 +795,8 @@
                                         </button>
                                     </div>
                                     <!--<div class="col-lg-1" style="left: -10;left: -10;right: 40px;top: 2px;">
-                                        <span class="fa fa-refresh fa-pulse invisible" id="spanCompActD" title="Hay modificaciones en AdServer"></span>
-                                    </div>-->
+                    <span class="fa fa-refresh fa-pulse invisible" id="spanCompActD" title="Hay modificaciones en AdServer"></span>
+                </div>-->
                                 </div>
 
                                 <div class="table-responsive mt-2">
@@ -1153,6 +1174,7 @@
                 //    $("#precioUnitarioD").val(0);
                 //}
             });
+            document.body.style.backgroundImage = "url(./fondoM3.png)";
         });
 
         function onTarifaDSelected() {
@@ -1302,6 +1324,9 @@
             if (data.formasPago.length > 0) {
                 $("#selFPago option[value=" + data.formasPago[0].forma_pago.id_formapago + "]").attr("selected", "selected");
             }
+            if (data.id_condpagoap != null) {
+                $("#selPlazoP option[value=" + data.id_condpagoap + "]").attr("selected", "selected");
+            }
             if (data.ejecutivos.length > 0) {
                 $("#selEjecutivo option[value=" + data.ejecutivos[0].id_ejecutivo + "]").attr("selected", "selected");
             }
@@ -1337,16 +1362,19 @@
                 });
                 $("#selFacturar").attr("disabled", true);
                 $("#selFPago").attr("disabled", true);
+                $("#selPlazoP").attr("disabled", true);
                 $("#selProducto").attr("disabled", true);
             }
 
             $("#selConceptoN option[value=" + data.id_concepto_negocio + "]").attr("selected", "selected");
 
             if (data.es_anulada == 1) {
+                OpAnulada = true;
                 $("#bGuardarOrden").attr("disabled", true);
                 $("#bGuardarOrden").attr("title", "No se pueden guardar ordenes que estén anuladas");
                 bloquearCamposCabecera()
-                document.body.style.backgroundImage = "url(./Anulada.png)";
+                $('p').append('<span id="sTituloDinamico"> - </span>');
+                $('p').append('<span id="sTituloDinamico" style="color: red;">ANULADA</span>');
             }
 
             if (data.parafacturar == 0 && data.nro_orden > 0) {
@@ -1382,7 +1410,8 @@
                 $("#bSendOrdenAddServer").attr("disabled", true);
                 $("#bAnular").attr("disabled", true);
                 $("#bClonar").attr("disabled", true);
-                document.body.style.backgroundImage = "url(./Clonacion.png)";
+                $('p').append('<span id="sTituloDinamico"> - </span>');
+                $('p').append('<span id="sTituloDinamico" style="color: #007bff;">CLONACION</span>');
             }
 
             $("#selEmpresa").attr("disabled", true);
@@ -1474,6 +1503,10 @@
             if ($("#fechaDesde").val() == "" || $("#fechaHasta").val() == "") { showMessage("Seleccione las fechas de vigencia de la orden", "error"); return false; }
             if ($("#selFPago").val() == null) {
                 showMessage("Seleccione una Forma de Pago", "error");
+                return false;
+            }
+            if ($("#selPlazoP").val() == null) {
+                showMessage("Seleccione un Plazo de Pago", "error");
                 return false;
             }
             if ($("#selConceptoN").val() == null) {
@@ -1636,7 +1669,7 @@
             fp = {};
             fp.forma_pago = {};
             fp.forma_pago.Id_formapago = $("#selFPago").val();
-            data.Id_condpagoap = fp.forma_pago.Id_formapago;
+            data.Id_condpagoap = $("#selPlazoP").val();
             fp.Porcentaje = 100;
             formaspago.push(fp);
             data.FormasPago = formaspago;
@@ -1731,7 +1764,7 @@
                 //    comprobarModificaciones(data.op.id_op_dg, data.op.id_Google_Ad_Manager);
                 //}
 
-                document.body.style.backgroundImage = "none";
+                /*document.body.style.backgroundImage = "none";*/
                 OpClon = false;
 
                 $("#bAnular").attr("disabled", false);
@@ -2077,6 +2110,22 @@
                 showMessage("Seleccione una Empresa", "info");
                 return 0;
             }
+            if ($("#selConceptoN").val() == null) {
+                showMessage("Seleccione un Concepto de Negocio", "info");
+                return 0;
+            }
+            if ($("#selFPago").val() == null) {
+                showMessage("Seleccione una Forma de Pago", "info");
+                return 0;
+            }
+            if ($("#selPlazoP").val() == null) {
+                showMessage("Seleccione un Plazo de Pago", "info");
+                return 0;
+            }
+            if ($("#selEjecutivo").val() == null || $("#selEjecutivo").val() == 0) {
+                showMessage("Seleccione un Ejecutivo", "info");
+                return 0;
+            }
             idRed = $('#selRedes').val();
             idEmpresa = $('#selEmpresa').val();
 
@@ -2144,8 +2193,8 @@
                     //$("#cantidadD").attr("disabled", true);
                 }
                 else {
-                    //$("#cantidadD").val("");
-                    if ($("#inpEsFacturada").val() == 'NO' && document.body.style.backgroundImage != 'url("./Anulada.png")') {
+                    /* if ($("#inpEsFacturada").val() == 'NO' && $("#divOrderMain").css("background-image") != 'url("./Anulada.png")') {*/
+                    if ($("#inpEsFacturada").val() == 'NO' && OpAnulada == false) {
                         $("#cantidadD").attr("disabled", false);
                     }
                     $("#cantidadL").text("Cantidad");
@@ -2235,6 +2284,7 @@
         OpYaAbierta = false;
         OpBloqueada = false;
         OpClon = false;
+        OpAnulada = false;
         //Parametro global para llevar los detalles, ver como mejorar esto
         Detalles = [];
 
@@ -2620,7 +2670,8 @@
                 }
             }
             //  Botón eliminar renglon
-            if ($("#inpEsFacturada").val() == 'SI' || document.body.style.backgroundImage == 'url("./Anulada.png")' || OpBloqueada == true) {
+            //if ($("#inpEsFacturada").val() == 'SI' || $("#divOrderMain").css("background-image") != 'url("./Anulada.png")' || OpBloqueada == true) {
+            if ($("#inpEsFacturada").val() == 'SI' || OpAnulada == true || OpBloqueada == true) {
                 str = str + " <button type='button' data-id='" + id + "' disabled id='bEliminar" + id + "' class='btn actions btn-outline-dark btn-sm mr-1'  onclick='deleteRenglon(this, " + det.id_Google_Ad_Manager + ")' title='Eliminar Renglon'> <span class='fa fa-remove'></span></button>";
             }
             else {
@@ -2739,6 +2790,10 @@
                 showMessage("Seleccione una Forma de Pago", "info");
                 return 0;
             }
+            if ($("#selPlazoP").val() == null) {
+                showMessage("Seleccione un Plazo de Pago", "info");
+                return 0;
+            }
             if ($("#selEjecutivo").val() == null || $("#selEjecutivo").val() == 0) {
                 showMessage("Seleccione un Ejecutivo", "info");
                 return 0;
@@ -2763,9 +2818,9 @@
             //else {
             //    $("#selDetConvenio").attr("disabled", true);
             //}
-            idRed = $('#selRedes').val();
-
-            if ($("#inpEsFacturada").val() == 'SI' || document.body.style.backgroundImage == 'url("./Anulada.png")' || OpYaAbierta == true) {
+            idRed = $('#selRedes').val(); 
+            //if ($("#inpEsFacturada").val() == 'SI' || $("#divOrderMain").css("background-image") != 'url("./Anulada.png")' || OpYaAbierta == true) {
+            if ($("#inpEsFacturada").val() == 'SI' || OpAnulada == true || OpYaAbierta == true) {
                 bloquearCamposDetalle();
             }
 
@@ -2796,9 +2851,9 @@
 
         function onCargarModificarRenglon(rId) {
             //cargarNuevoRenglon();
-
             //AGREGUE:
-            if ($("#inpEsFacturada").val() == 'SI' || document.body.style.backgroundImage == 'url("./Anulada.png")') {
+            /*if ($("#inpEsFacturada").val() == 'SI' || $("#divOrderMain").css("background-image") != 'url("./Anulada.png")') {*/
+            if ($("#inpEsFacturada").val() == 'SI' || OpAnulada == true) {
                 $("#cantidadD").attr("disabled", true);
             }
             else {
@@ -3200,6 +3255,7 @@
             fechaHConv = data.fecha_hasta;
             $("#selFacturar option[value=" + data.facturar_a + "]").attr("selected", "selected");
             $("#selFPago option[value=" + data.id_formapago + "]").attr("selected", "selected");
+            $("#selPlazoP option[value=" + data.id_condpago_facturar + "]").attr("selected", "selected");
             $('#inpDescConvenio').val(data.desc_convenio);
             if (data.porc_conf_nc != null && data.porc_conf_nc != 0) {
                 $('#conf_nc').val(data.porc_conf_nc);
@@ -3215,6 +3271,7 @@
             $("#bBorrConvenios").attr("disabled", false);
             $("#selFacturar").attr("disabled", true);
             $("#selFPago").attr("disabled", true);
+            $("#selPlazoP").attr("disabled", true);
 
             idConvenio = data.id_convenio;
 
@@ -3499,6 +3556,7 @@
                 callWS("contactos", "getEjecutivos", '', function (data) { onPopulateSelectDone(data, 'selEjecutivo', 'id', 'razonSocial'); }),
                 //callWS("archivos", "getArchivosPorOP", id_op , function (data) { populateFilesTable(data); }),
                 callWS("forma_pagos", "getAll", '', function (data) { onPopulateSelectDone(data, 'selFPago', 'id_formapago', 'desc_formapago'); }),
+                callWS("medios", "getAllPlazos", '', function (data) { onPopulateSelectDone(data, 'selPlazoP', 'id_condpagoap', 'desc_condpagoap'); }),
                 callWS("medios", "getAllRedes", '', function (data) { onCargarSelect(data, 'selRedes', 'id_red', 'descripcion', 'codigo_red'); }),
                 callWS("medios", "getAllConceptos", '', function (data) { onPopulateSelectDone(data, 'selConceptoN', 'id_concepto_negocio', 'desc_concepto_negocio'); })
             ).then(function () { checkParameters(); }, function (data1, data2, data3, data4, data5, data6) {
@@ -3728,8 +3786,8 @@
             }
             $("#modalCenterBody").html(content);
             footer = '';
-
-            if ($("#inpEsFacturada").val() == 'SI' || document.body.style.backgroundImage == 'url("./Anulada.png")' || OpBloqueada == true) {
+            //if ($("#inpEsFacturada").val() == 'SI' || $("#divOrderMain").css("background-image") != 'url("./Anulada.png")' || OpBloqueada == true) {
+            if ($("#inpEsFacturada").val() == 'SI' || OpAnulada == true) {
                 footer += "<button type='button' disabled id='aceptar' class='btn btn-secondary' onClick=\"setDetailRon($('#ronTableBody').html());\"> Aceptar </button>";
             }
             else {
@@ -4212,13 +4270,15 @@
             $("#selProducto").attr("disabled", true);
             $("#selFacturar").attr("disabled", true);
             $("#selFPago").attr("disabled", true);
+            $("#selPlazoP").attr("disabled", true);
             $("#selEjecutivo").attr("disabled", true);
             $("#bCargarNuevoRenglon").attr("disabled", true);
             $("#conf_nc").attr("disabled", true);
             $("#conf_fc").attr("disabled", true);
             $("#bSendOrdenAddServer").attr("disabled", true);
             $("#bAnular").attr("disabled", true);
-            $("#checkListaParaFact")[0].disabled = true;
+            $("#checkListaParaFact")[0].disabled = true; 
+            $("#bcomprobarModificaciones").attr("disabled", true);
         }
 
         function prevAnularOrden() {
@@ -4253,7 +4313,9 @@
 
         function onAnularOrden(data) {
             if (data == true) {
-                document.body.style.backgroundImage = "url(./Anulada.png)";
+                OpAnulada == true;
+                $('p').append('<span id="sTituloDinamico"> - </span>');
+                $('p').append('<span id="sTituloDinamico" style="color: red;">ANULADA</span>');
                 bloquearCamposCabecera();
                 $("#bGuardarOrden").attr("disabled", true);
                 $("#bGuardarOrden").attr("title", "No se pueden guardar ordenes que estén anuladas");

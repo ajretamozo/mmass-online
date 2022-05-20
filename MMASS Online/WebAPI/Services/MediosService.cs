@@ -41,6 +41,7 @@ namespace WebApi.Services
         Dg_emplazamientos getEmplazaByCodigo(long cod, int idRed);
         int getBD();
         String getConString();
+        IEnumerable<Plazos_Pagos> GetAllPlazos();
     }
 
     public class MedioService : IMedioService
@@ -173,6 +174,11 @@ namespace WebApi.Services
             csEdit = arrIp[1] + " - " + arrBd[1];
 
             return csEdit;
+        }
+
+        public IEnumerable<Plazos_Pagos> GetAllPlazos()
+        {
+            return Plazos_Pagos.getAll();
         }
 
     }

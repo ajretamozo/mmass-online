@@ -255,22 +255,22 @@ namespace WebApi.Entities
                         mifiltro = mifiltro + " and dg.bitacora like '%" + p.Value + "%'";
                     if ((p.ParameterName == "nro_orden_ag") && (p.Value.ToString() != ""))
                         mifiltro = mifiltro + " and dg.nro_orden_ag = '" + p.Value + "'";
-                    if ((p.ParameterName == "fecha_desde") && (p.Value.ToString() != ""))
-                    {
-                        DateTime fecha = DateTime.Parse(p.Value);
-                        string formatted = fecha.ToString("dd-MM-yyyy");
-                        mifiltro = mifiltro + " and dg.fecha >='" + formatted + "'";
-                    }
-                    if ((p.ParameterName == "fecha_hasta") && (p.Value.ToString() != ""))
-                    {
-                        DateTime fecha = DateTime.Parse(p.Value);
-                        string formatted = fecha.ToString("dd-MM-yyyy");
-                        mifiltro = mifiltro + " and dg.fecha_expiracion <='" + formatted + "'";
-                    }
                     //if ((p.ParameterName == "fecha_desde") && (p.Value.ToString() != ""))
-                    //    mifiltro = mifiltro + " and dg.fecha >= '" + p.Value.ToString() + "'";
+                    //{
+                    //    DateTime fecha = DateTime.Parse(p.Value);
+                    //    string formatted = fecha.ToString("dd-MM-yyyy");
+                    //    mifiltro = mifiltro + " and dg.fecha >='" + formatted + "'";
+                    //}
                     //if ((p.ParameterName == "fecha_hasta") && (p.Value.ToString() != ""))
-                    //    mifiltro = mifiltro + " and dg.fecha_expiracion <= '" + p.Value.ToString() + "'";
+                    //{
+                    //    DateTime fecha = DateTime.Parse(p.Value);
+                    //    string formatted = fecha.ToString("dd-MM-yyyy");
+                    //    mifiltro = mifiltro + " and dg.fecha_expiracion <='" + formatted + "'";
+                    //}
+                    if ((p.ParameterName == "fecha_desde") && (p.Value.ToString() != ""))
+                        mifiltro = mifiltro + " and dg.fecha >= '" + p.Value.ToString() + "'";
+                    if ((p.ParameterName == "fecha_hasta") && (p.Value.ToString() != ""))
+                        mifiltro = mifiltro + " and dg.fecha_expiracion <= '" + p.Value.ToString() + "'";
                     if ((p.ParameterName == "agencia_nombre") && (p.Value.ToString() != ""))
                         mifiltro = mifiltro + " and ag.razon_social like '%" + p.Value + "%'";
                     if ((p.ParameterName == "anunciante_nombre") && (p.Value.ToString() != ""))
