@@ -68,7 +68,7 @@
     </style>
 
 </head>
-<body style="padding-top: 80px;">
+<body style="padding-top: 80px; font-family: 'Roboto';">
     <!--MENU-->
     <div id="divNavBar"></div>
 
@@ -202,7 +202,7 @@
 
             parametros.Parametros = listaParametros;
 
-                callWS("googleAdManager", "getMedidasTodasRedes", JSON.stringify(parametros), function (data1) { onCargarTabla('TableGAM', data1); });
+            callWS("googleAdManager", "getMedidasTodasRedes", JSON.stringify(parametros), function (data1) { onCargarTabla('TableGAM', data1); });
         }
 
         function getMedidasMMASS() {
@@ -225,7 +225,7 @@
 
             parametros.Parametros = listaParametros;
 
-            callWS("googleAdManager", "getMedidasTodasRedes", JSON.stringify(parametros),function (data) { onSincronizar(data); });
+            callWS("googleAdManager", "getMedidasTodasRedes", JSON.stringify(parametros), function (data) { onSincronizar(data); });
             callWS("googleAdManager", "getMedidasTodasRedes", JSON.stringify(parametros), function (data1) { onCargarTabla('TableGAM', data1); });
 
             //callWS("googleAdManager", "getMedidas", '', function (data) { onSincronizar(data); });
@@ -239,7 +239,7 @@
 
             MedidasList.Medidas = data;
 
-            callWS("medios", "saveMedidas", JSON.stringify(MedidasList), function (data2){
+            callWS("medios", "saveMedidas", JSON.stringify(MedidasList), function (data2) {
                 if (data2 == true) {
                     RecargarTablas();
                 }
@@ -273,12 +273,14 @@
             hidePleaseWait();
         }
 
-        //function GetData() {
-        //    getMedidasGAM();
-        //    getMedidasMMASS();
-        //}
+            //function GetData() {
+            //    getMedidasGAM();
+            //    getMedidasMMASS();
+            //}
 
     </script>
+    <footer>
+        <p style="text-align: center; font-size: x-small;">Powered by <b style="font-size: small;">Strategy Zone S.A. </b></p>
+    </footer>
 </body>
-
 </html>

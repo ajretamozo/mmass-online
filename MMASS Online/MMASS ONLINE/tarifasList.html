@@ -83,7 +83,7 @@
     </style>
 
 </head>
-<body style="padding-top: 80px;">
+<body style="padding-top: 80px; font-family: 'Roboto';">
     <!--MENU-->
     <div id="divNavBar"></div>
 
@@ -167,13 +167,13 @@
                     </div>
                 </div>
                 <!--<div class="row justify-content-end align-items-end">
-                <button type="button" class="btn btn-dark btn-sm mx-1" onclick="searchTarifas()">
-                    <span class="fa fa-check"></span> Buscar
-                </button>
-                <button type="button" class="btn btn-dark btn-sm mx-1" onclick="nuevaTarifa()">
-                    <span class="fa fa-check"></span> Nueva Tarifa
-                </button>
-            </div>-->
+                    <button type="button" class="btn btn-dark btn-sm mx-1" onclick="searchTarifas()">
+                        <span class="fa fa-check"></span> Buscar
+                    </button>
+                    <button type="button" class="btn btn-dark btn-sm mx-1" onclick="nuevaTarifa()">
+                        <span class="fa fa-check"></span> Nueva Tarifa
+                    </button>
+                </div>-->
                 <!--Tabla-->
                 <div class="table-responsive mt-2">
                     <table class='table table-hover'>
@@ -197,155 +197,155 @@
 
     <!--Scripts-->
     <script type="text/javascript">
-    var globalBearer = "1";
-    //DatePickers Initialization
-    $(function () {
-        $("#divNavBar").load("navBar.html");
-        $('#fechaDesde').datetimepicker({ format: 'L', locale: 'es' });
-        $('#fechaHasta').datetimepicker({ format: 'L', locale: 'es' });
-        $('input[type=text]').attr('autocomplete', 'off');
-        ///autentificar();
-        populateFields();
-        $(".enterSearch").on("keydown", function (e) {
-            if (event.which == 13) {
-                searchTarifas();
-            }
-        });
-        document.body.style.backgroundImage = "url(./fondoM3.png)";
-    });
-
-	
-  
-    function populateFields() {    
-
-    $.when(
-        // Llenar select Medios
-        callWS("medios", "getAll", '', function (data) { onPopulateSelectDone(data, 'selMedios', 'id_medio', 'desc_medio'); }),
-        // Llenar select Tipos de Aviso
-        callWS("tipos_avisos", "getAll", '', function (data) { onPopulateSelectDone(data, 'selTipoPublicidad', 'id_tipo_aviso_dg', 'descripcion'); }),
-        // Llenar select Formas de uso
-        callWS("tarifas", "getFormasUsoAll", '', function (data) { onPopulateSelectDone(data, 'selFormaUso', 'id', 'descripcion'); }),
-    ).then(function () { searchTarifas() },function (data1, data2, data3) {
-        console.log("Medios: " + data1[2].statusText + "; Tipos de aviso: " + data2[2].statusText + "Formas de uso: " + data3[2].statusText + ";");
-        showMessage("Se produjo un error al cargar los campos, intentelo nuevamente", type = "alert");
-    });
-
-    //// Llenar tabla con tarifas existentes
-    //callWS("tarifas", "getAll", '', function (data) { populateTable(data, 'TableTarifas'); });
-    }
-
-    function populateTable(data, idTable) {
-        listTar = data;
-        rowHTML = ''
-        $.each(listTar, function (it, itar) {
-            rowHTML += "<tr id-tar=\"" + itar.id_tarifa_dg + "\">"
-            //rowHTML += "<tr onclick='openTarifa(this)'>"
-            rowHTML += "<td class='col-xs-1'>" + itar.id_tarifa_dg + "</td>";
-            rowHTML += "<td class='col-xs-1'>" + itar.descripcion + "</td>";
-            rowHTML += "<td class='col-xs-1'>" + dateToFieldFormat(itar.fecha_desde) + ' - ' + dateToFieldFormat(itar.fecha_hasta) + "</td>";
-            rowHTML += "<td class='col-xs-1'>" + itar.forma_uso.descripcion + "</td>";
-            rowHTML += "<td class='col-xs-1'>" + itar.precio_unitario + "</td>";
-            //Acciones
-            rowHTML += "<td id='colAcciones' class='col-xs-2 d-flex justify-content-center'>"
-            rowHTML += "<div class='divAcciones' id='divAcciones_" + itar.id_tarifa_dg + "'>"
-            rowHTML += "<button type='button' title='Ver' class='btn btn-outline-dark btn-sm mx-1' onclick=\"openTarifa("+itar.id_tarifa_dg+",'view')\"><span class='fa fa-eye'></span> </button>"
-            rowHTML += "<button type='button' title='Editar' class='btn btn-outline-dark btn-sm mx-1' onclick=\"openTarifa("+itar.id_tarifa_dg+",'edit')\"><span class='fa fa-edit'></span> </button>"
-            rowHTML += "<button type='button' title='Eliminar' class='btn btn-outline-dark btn-sm mx-1' onclick=\"checkBorrarTarifa("+itar.id_tarifa_dg+")\"><span class='fa fa-times'></span> </button>"
-            rowHTML += "</div>"
-            rowHTML += "</td>"
-            rowHTML += '</tr>'
-        })
-        $("#" + idTable).html(rowHTML);
-    }
-   
-
-    function onPopulateSelectDone(data, idSelect, colId, colDesc) {
-        var pObj = data;
-        var listitems = '';
-        $.each(pObj, function (it, iObj) {
-            listitems += '<option value=' + iObj[ colId ] + '>' + iObj[ colDesc ] + '</option>';
-        });
-        $("#" + idSelect).empty();
-        $("#" + idSelect).append("<option value=''>(Todos) </option>");
-        $("#" + idSelect).append(listitems);
-        if (pObj.length > 1) {
-            $("#" + idSelect).val([]);
-        }
-    }
-
-    function searchTarifas() {
-        error = '';
-        params = {};
-        params.descripcion = $('#descFiltro').val();
-        if ($('#fechaDesde').val() != "") {
-            fDesde = new Date(moment($("#fechaDesde").val(), 'DD/MM/YYYY', true).format());
-            mfDesde = moment(fDesde);
-            if (mfDesde.isValid()) {
-                params.fecha_desde = dateToSqlFormat($('#fechaDesde').val());
-            } else {
-                error += "Formato 'Fecha Desde' invalido";
-            }
-        }
-        if ($('#fechaHasta').val() != "") {
-            fHasta = new Date(moment($("#fechaHasta").val(), 'DD/MM/YYYY', true).format());
-            mfHasta = moment(fHasta);
-            if (mfHasta.isValid()) {
-                params.fecha_hasta = dateToSqlFormat($('#fechaHasta').val());
-            } else {
-                if (error != '') { error += ' / '}
-                error += "Formato 'Fecha Hasta' invalido";
-            }
-        }
-        params.forma_uso = $('#selFormaUso').val();
-        params.id_tipo_aviso_dg = $('#selTipoPublicidad').val();
-        params.id_medio = $('#selMedios').val();
-        if (document.getElementById("checkEsVigente").checked) {
-            params.vigente = "1";
-        };
-
-        for (param in params) {
-            if (params[param] == null) {
-                params[param] = '';
-            }
-        };
-
-        var parametros = setListaParametros(params);
-        if (error == '') {
-            callWS("tarifas", "filter", JSON.stringify(parametros), function (data) {
-                if (data.length > 0) {
-                    populateTable(data, 'TableTarifas');
-                } else {
-                    message = 'La búsqueda no produjo ningun resultado';
-                    showMessage(message, "info");
+        var globalBearer = "1";
+        //DatePickers Initialization
+        $(function () {
+            $("#divNavBar").load("navBar.html");
+            $('#fechaDesde').datetimepicker({ format: 'L', locale: 'es' });
+            $('#fechaHasta').datetimepicker({ format: 'L', locale: 'es' });
+            $('input[type=text]').attr('autocomplete', 'off');
+            ///autentificar();
+            populateFields();
+            $(".enterSearch").on("keydown", function (e) {
+                if (event.which == 13) {
+                    searchTarifas();
                 }
             });
-        } else {
-            showMessage(error, "info");
-        }
-    }
-
-    function setListaParametros(data) {
-        var parametros = {};
-        var listaParametros = [];
-
-        Object.keys(data).forEach(function(key) {
-            var objParametro = {};
-            objParametro.ParameterName = key;
-            objParametro.Value = data[key];
-            listaParametros.push(objParametro);
+            document.body.style.backgroundImage = "url(./fondoM3.png)";
         });
-        parametros.Parametros = listaParametros;
-        return parametros;
-    }
 
-    function nuevaTarifa() {
-        location.href = "/tarifas.html?mode=new";
-    }
-   
-    function openTarifa(data, mode) {
-        var newURL = "/Tarifas.html?idTarifa=" + data + '&mode=' + mode;
-        location.href = newURL;
-    }
+
+
+        function populateFields() {
+
+            $.when(
+                // Llenar select Medios
+                callWS("medios", "getAll", '', function (data) { onPopulateSelectDone(data, 'selMedios', 'id_medio', 'desc_medio'); }),
+                // Llenar select Tipos de Aviso
+                callWS("tipos_avisos", "getAll", '', function (data) { onPopulateSelectDone(data, 'selTipoPublicidad', 'id_tipo_aviso_dg', 'descripcion'); }),
+                // Llenar select Formas de uso
+                callWS("tarifas", "getFormasUsoAll", '', function (data) { onPopulateSelectDone(data, 'selFormaUso', 'id', 'descripcion'); }),
+            ).then(function () { searchTarifas() }, function (data1, data2, data3) {
+                console.log("Medios: " + data1[2].statusText + "; Tipos de aviso: " + data2[2].statusText + "Formas de uso: " + data3[2].statusText + ";");
+                showMessage("Se produjo un error al cargar los campos, intentelo nuevamente", type = "alert");
+            });
+
+            //// Llenar tabla con tarifas existentes
+            //callWS("tarifas", "getAll", '', function (data) { populateTable(data, 'TableTarifas'); });
+        }
+
+        function populateTable(data, idTable) {
+            listTar = data;
+            rowHTML = ''
+            $.each(listTar, function (it, itar) {
+                rowHTML += "<tr id-tar=\"" + itar.id_tarifa_dg + "\">"
+                //rowHTML += "<tr onclick='openTarifa(this)'>"
+                rowHTML += "<td class='col-xs-1'>" + itar.id_tarifa_dg + "</td>";
+                rowHTML += "<td class='col-xs-1'>" + itar.descripcion + "</td>";
+                rowHTML += "<td class='col-xs-1'>" + dateToFieldFormat(itar.fecha_desde) + ' - ' + dateToFieldFormat(itar.fecha_hasta) + "</td>";
+                rowHTML += "<td class='col-xs-1'>" + itar.forma_uso.descripcion + "</td>";
+                rowHTML += "<td class='col-xs-1'>" + itar.precio_unitario + "</td>";
+                //Acciones
+                rowHTML += "<td id='colAcciones' class='col-xs-2 d-flex justify-content-center'>"
+                rowHTML += "<div class='divAcciones' id='divAcciones_" + itar.id_tarifa_dg + "'>"
+                rowHTML += "<button type='button' title='Ver' class='btn btn-outline-dark btn-sm mx-1' onclick=\"openTarifa(" + itar.id_tarifa_dg + ",'view')\"><span class='fa fa-eye'></span> </button>"
+                rowHTML += "<button type='button' title='Editar' class='btn btn-outline-dark btn-sm mx-1' onclick=\"openTarifa(" + itar.id_tarifa_dg + ",'edit')\"><span class='fa fa-edit'></span> </button>"
+                rowHTML += "<button type='button' title='Eliminar' class='btn btn-outline-dark btn-sm mx-1' onclick=\"checkBorrarTarifa(" + itar.id_tarifa_dg + ")\"><span class='fa fa-times'></span> </button>"
+                rowHTML += "</div>"
+                rowHTML += "</td>"
+                rowHTML += '</tr>'
+            })
+            $("#" + idTable).html(rowHTML);
+        }
+
+
+        function onPopulateSelectDone(data, idSelect, colId, colDesc) {
+            var pObj = data;
+            var listitems = '';
+            $.each(pObj, function (it, iObj) {
+                listitems += '<option value=' + iObj[colId] + '>' + iObj[colDesc] + '</option>';
+            });
+            $("#" + idSelect).empty();
+            $("#" + idSelect).append("<option value=''>(Todos) </option>");
+            $("#" + idSelect).append(listitems);
+            if (pObj.length > 1) {
+                $("#" + idSelect).val([]);
+            }
+        }
+
+        function searchTarifas() {
+            error = '';
+            params = {};
+            params.descripcion = $('#descFiltro').val();
+            if ($('#fechaDesde').val() != "") {
+                fDesde = new Date(moment($("#fechaDesde").val(), 'DD/MM/YYYY', true).format());
+                mfDesde = moment(fDesde);
+                if (mfDesde.isValid()) {
+                    params.fecha_desde = dateToSqlFormat($('#fechaDesde').val());
+                } else {
+                    error += "Formato 'Fecha Desde' invalido";
+                }
+            }
+            if ($('#fechaHasta').val() != "") {
+                fHasta = new Date(moment($("#fechaHasta").val(), 'DD/MM/YYYY', true).format());
+                mfHasta = moment(fHasta);
+                if (mfHasta.isValid()) {
+                    params.fecha_hasta = dateToSqlFormat($('#fechaHasta').val());
+                } else {
+                    if (error != '') { error += ' / ' }
+                    error += "Formato 'Fecha Hasta' invalido";
+                }
+            }
+            params.forma_uso = $('#selFormaUso').val();
+            params.id_tipo_aviso_dg = $('#selTipoPublicidad').val();
+            params.id_medio = $('#selMedios').val();
+            if (document.getElementById("checkEsVigente").checked) {
+                params.vigente = "1";
+            };
+
+            for (param in params) {
+                if (params[param] == null) {
+                    params[param] = '';
+                }
+            };
+
+            var parametros = setListaParametros(params);
+            if (error == '') {
+                callWS("tarifas", "filter", JSON.stringify(parametros), function (data) {
+                    if (data.length > 0) {
+                        populateTable(data, 'TableTarifas');
+                    } else {
+                        message = 'La búsqueda no produjo ningun resultado';
+                        showMessage(message, "info");
+                    }
+                });
+            } else {
+                showMessage(error, "info");
+            }
+        }
+
+        function setListaParametros(data) {
+            var parametros = {};
+            var listaParametros = [];
+
+            Object.keys(data).forEach(function (key) {
+                var objParametro = {};
+                objParametro.ParameterName = key;
+                objParametro.Value = data[key];
+                listaParametros.push(objParametro);
+            });
+            parametros.Parametros = listaParametros;
+            return parametros;
+        }
+
+        function nuevaTarifa() {
+            location.href = "/tarifas.html?mode=new";
+        }
+
+        function openTarifa(data, mode) {
+            var newURL = "/Tarifas.html?idTarifa=" + data + '&mode=' + mode;
+            location.href = newURL;
+        }
 
         function checkBorrarTarifa(id) {
 
@@ -365,49 +365,51 @@
             showModal(mensaje, options);
         }
 
-    function borrarTarifa(id) {
-        var data = {};
-        data.id_tarifa_dg = id;
-        callWS("tarifas", "remove", JSON.stringify(data), function (data) {
-            if (data == true) {
-                searchTarifas();
-            } else {
-                message = 'Ocurrió un problema al borrar la tarifa';
-                showMessage(message, "alert");
-            }
-            
-        });
-    }
+        function borrarTarifa(id) {
+            var data = {};
+            data.id_tarifa_dg = id;
+            callWS("tarifas", "remove", JSON.stringify(data), function (data) {
+                if (data == true) {
+                    searchTarifas();
+                } else {
+                    message = 'Ocurrió un problema al borrar la tarifa';
+                    showMessage(message, "alert");
+                }
 
-    function selectToJson(idSelect, idCol) {
-        ret = [];
-            
-        values = $('#' + idSelect).val();
-        values.forEach(function (value) {
-            item = {};
-            item[idCol] = value;
-            ret.push(item);
-        });
-        return ret;
-    }
+            });
+        }
 
-    function dateToSqlFormat(date) {
-        arr = date.split("/");
-        sqlFormatDate = '';
-        sqlFormatDate = arr[2] + '-' + arr[1] + '-' + arr[0];
-        return sqlFormatDate; 
-    }
+        function selectToJson(idSelect, idCol) {
+            ret = [];
 
-    function dateToFieldFormat(date) {
-        date = date.split('T')[0];
-        arr = date.split("-");
-        fieldFormatDate = '';
-        fieldFormatDate = arr[2] + '/' + arr[1] + '/' + arr[0];
-        return fieldFormatDate;
-    }
-     
-    
+            values = $('#' + idSelect).val();
+            values.forEach(function (value) {
+                item = {};
+                item[idCol] = value;
+                ret.push(item);
+            });
+            return ret;
+        }
+
+        function dateToSqlFormat(date) {
+            arr = date.split("/");
+            sqlFormatDate = '';
+            sqlFormatDate = arr[2] + '-' + arr[1] + '-' + arr[0];
+            return sqlFormatDate;
+        }
+
+        function dateToFieldFormat(date) {
+            date = date.split('T')[0];
+            arr = date.split("-");
+            fieldFormatDate = '';
+            fieldFormatDate = arr[2] + '/' + arr[1] + '/' + arr[0];
+            return fieldFormatDate;
+        }
+
+
     </script>
+    <footer>
+        <p style="text-align: center; font-size: x-small;">Powered by <b style="font-size: small;">Strategy Zone S.A. </b></p>
+    </footer>
 </body>
-
 </html>

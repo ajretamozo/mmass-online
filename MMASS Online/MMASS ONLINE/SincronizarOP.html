@@ -74,7 +74,7 @@
     </style>
 
 </head>
-<body style="padding-top: 80px;">
+<body style="padding-top: 80px; font-family: 'Roboto';">
     <!--MENU-->
     <div id="divNavBar"></div>
 
@@ -184,38 +184,38 @@
             </div>
 
             <!--<div class="row">
-        <div class="col-md-4">
-            <label for="descFiltro">Descripción OP: </label>
-            <div class="input-group enterSearch"> <input type="text" id="descFiltro" class="form-control"></div>
-        </div>
-        <div class="col-md-4">
-            <label for="descFiltro">Red AdServer: </label>
-            <select class="form-control enterSearch" id="selRedes" onchange="onRedSelected()"></select>
-        </div>
-        <div class="col-md-4 d-flex justify-content-end align-items-end">
-            <button type="button" class="btn btn-dark btn-sm mx-1" onclick="filter()">
-                <span class="fa fa-search"></span> Buscar
-            </button>
-        </div>
-    </div>
-    <div class="table-responsive mt-2">
-        <table class="table table-hover table-sm " id="tablaOPGAM">
-            <thead>
-                <tr id="header">
-                    <th class="col-xs-3">ID AdServer</th>
-                    <th class="col-xs-9">Nombre</th>
-                    <th class="col-xs-9">Anunciante</th>
-                    <th class="col-xs-9">Fecha Desde</th>
-                    <th class="col-xs-9">Fecha Hasta</th>
-                    <th class="col-xs-9">Neto</th>
-                </tr>
-            </thead>
-            <tbody id="TableRenglones" class="small"></tbody>
-        </table>
-    </div>-->
+                <div class="col-md-4">
+                    <label for="descFiltro">Descripción OP: </label>
+                    <div class="input-group enterSearch"> <input type="text" id="descFiltro" class="form-control"></div>
+                </div>
+                <div class="col-md-4">
+                    <label for="descFiltro">Red AdServer: </label>
+                    <select class="form-control enterSearch" id="selRedes" onchange="onRedSelected()"></select>
+                </div>
+                <div class="col-md-4 d-flex justify-content-end align-items-end">
+                    <button type="button" class="btn btn-dark btn-sm mx-1" onclick="filter()">
+                        <span class="fa fa-search"></span> Buscar
+                    </button>
+                </div>
+            </div>
+            <div class="table-responsive mt-2">
+                <table class="table table-hover table-sm " id="tablaOPGAM">
+                    <thead>
+                        <tr id="header">
+                            <th class="col-xs-3">ID AdServer</th>
+                            <th class="col-xs-9">Nombre</th>
+                            <th class="col-xs-9">Anunciante</th>
+                            <th class="col-xs-9">Fecha Desde</th>
+                            <th class="col-xs-9">Fecha Hasta</th>
+                            <th class="col-xs-9">Neto</th>
+                        </tr>
+                    </thead>
+                    <tbody id="TableRenglones" class="small"></tbody>
+                </table>
+            </div>-->
 
         </div>
-</main>
+    </main>
 
 
     <!--Scripts-->
@@ -229,11 +229,11 @@
         });
 
 
-         function getRedesGAM() {
+        function getRedesGAM() {
             callWS("medios", "getAllRedes", '', function (data) { onCargarSelect(data, 'selRedes', 'id_red', 'descripcion', 'codigo_red'); });
-         }
+        }
 
-         function onCargarSelect(data, idSelect) {
+        function onCargarSelect(data, idSelect) {
             var pObj = data;
             var listitems = '';
             $.each(pObj, function (it, iObj) {
@@ -242,13 +242,13 @@
             $("#" + idSelect).empty();
             $("#" + idSelect).append(listitems);
             $("#" + idSelect).val('');
-         }
+        }
 
         //function getOrdenesGAM(codRed) {
         //    callWS("googleAdManager", "getOpNuevas", '', function (data) { onCargarTabla('TableRenglones', data); });
         //}
 
-        //function onRedSelected() {     
+        //function onRedSelected() {
         //    $("#pleaseWaitDialog").modal();
         //    //idRed = $('#selRedes').val();
         //    codRed = $('#selRedes>option:selected').attr("codigo_red");
@@ -267,16 +267,16 @@
             rows = $("tr").not("#header");
             params = {};
             params.id = $("#idFiltro").val();
-            params.descripcion = $('#descFiltro').val();  
-            params.red = $('#selRedes').val();  
-      
+            params.descripcion = $('#descFiltro').val();
+            params.red = $('#selRedes').val();
+
             //id = $("#idFiltro").val();
             //desc = $("#descFiltro").val();
             //red = $("#selRedes").val();
 
             if (params.red != 0 && params.red != null) {
                 //var objParametro = {};
-              
+
                 //objParametro.ParameterName = "nombre";
                 //objParametro.Value = desc;
                 //objParametro.ParameterName = "id";
@@ -317,14 +317,14 @@
                 rowHTML += "<td class='col-xs-1'> " + dateToFieldFormat(ordenGAM.fecha) + "</td > ";
                 rowHTML += "<td class='col-xs-1'> " + dateToFieldFormat(ordenGAM.fecha_expiracion) + "</td > ";
                 rowHTML += "<td class='col-xs-1'>$ " + formatearMonto(ordenGAM.seg_neto) + "</td > ";
-                rowHTML += "<td class='col-xs-2' > <button type='button' id=button" + ordenGAM.id_Google_Ad_Manager + " class='btn btn-primary' onClick='comprobarAnunciante(" + ordenGAM.id_Google_Ad_Manager +", " + ordenGAM.id_red + ", " + ordenGAM.anunciante.idContactoDigital + ")'>Importar</button> </td ></tr>";
+                rowHTML += "<td class='col-xs-2' > <button type='button' id=button" + ordenGAM.id_Google_Ad_Manager + " class='btn btn-primary' onClick='comprobarAnunciante(" + ordenGAM.id_Google_Ad_Manager + ", " + ordenGAM.id_red + ", " + ordenGAM.anunciante.idContactoDigital + ")'>Importar</button> </td ></tr>";
                 rowHTML += "</tr>";
 
             });
 
             $("#" + tablaID).html(rowHTML);
 
-             $("#pleaseWaitDialog").modal('hide');
+            $("#pleaseWaitDialog").modal('hide');
         }
 
         function comprobarAnunciante(idOP, idRed, idContDig) {
@@ -342,9 +342,9 @@
                 showMessage("El Contacto no esta sincronizado con Google Ad Manager", "error");
             }
         }
-      
+
         function Redireccion(data, idOP) {
-               location.href = "/orden.html?orderAdServer=" + idOP + "," + data.codigo_red;
+            location.href = "/orden.html?orderAdServer=" + idOP + "," + data.codigo_red;
         }
 
         function GetData() {
@@ -362,18 +362,18 @@
             else {
                 fieldFormatDate = '';
             }
-           return fieldFormatDate;
+            return fieldFormatDate;
         }
 
         function formatearMonto(x) {
-           return Number.parseFloat(x).toFixed(2);
+            return Number.parseFloat(x).toFixed(2);
         }
 
         function setListaParametros(data) {
             var parametros = {};
             var listaParametros = [];
 
-            Object.keys(data).forEach(function(key) {
+            Object.keys(data).forEach(function (key) {
                 var objParametro = {};
                 objParametro.ParameterName = key;
                 objParametro.Value = data[key];
@@ -384,6 +384,8 @@
         }
 
     </script>
+    <footer>
+        <p style="text-align: center; font-size: x-small;">Powered by <b style="font-size: small;">Strategy Zone S.A. </b></p>
+    </footer>
 </body>
-
 </html>

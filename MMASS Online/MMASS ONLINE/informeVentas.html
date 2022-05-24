@@ -100,7 +100,7 @@
     </style>
 
 </head>
-<body style="padding-top: 80px;">
+<body style="padding-top: 80px; font-family: 'Roboto';">
 
     <!--MENU-->
     <div id="divNavBar"></div>
@@ -263,7 +263,7 @@
                 </div>
             </div>
         </div>
-            
+
 
 
 
@@ -409,10 +409,10 @@
         function populateTable(data, idTable, tipo) {
             orderlist = data;
 
-            listaxAg = groupBy(orderlist,"agencia")
+            listaxAg = groupBy(orderlist, "agencia")
 
-            $.each(listaxAg, function(it,rowAg) {
-	            listaxAg[it] = groupBy(rowAg, "anunciante");
+            $.each(listaxAg, function (it, rowAg) {
+                listaxAg[it] = groupBy(rowAg, "anunciante");
             })
 
             rowHTML = '';
@@ -421,25 +421,25 @@
             sumSubtotal1Gral = 0;
             sumTotalGral = 0;
             //grupo agencia
-            $.each(listaxAg, function(itAg, groupAg) {
-	            sumImpresionesAg = 0;
-	            sumSubtotalAg = 0;
-	            sumSubtotal1Ag = 0;
-	            sumTotalAg = 0;
-	            rowHTML += "<tr class='tableexport-ignore table-secondary agGroup' agencia='" + itAg + "'>"
-	            rowHTML += "<td colspan='13'> AGENCIA: " + itAg + "</td>";
-	            rowHTML += "</tr>"
-	            //grupo anunciante
-	            $.each(groupAg, function (itAn, groupAn) {
-		            sumImpresionesAn = 0;
-		            sumSubtotalAn = 0;
-		            sumSubtotal1An = 0;
-		            sumTotalAn = 0;
-		            rowHTML += "<tr class='tableexport-ignore table-secondary anGroup' anunciante='" + itAn + "'>"
-		            rowHTML += "<td></td><td colspan='12'>         ANUNCIANTE: " + itAn + "</td>";
-		            rowHTML += "</tr>"
-		            //filas detalle
-		            $.each(groupAn, function(it, iord) {
+            $.each(listaxAg, function (itAg, groupAg) {
+                sumImpresionesAg = 0;
+                sumSubtotalAg = 0;
+                sumSubtotal1Ag = 0;
+                sumTotalAg = 0;
+                rowHTML += "<tr class='tableexport-ignore table-secondary agGroup' agencia='" + itAg + "'>"
+                rowHTML += "<td colspan='13'> AGENCIA: " + itAg + "</td>";
+                rowHTML += "</tr>"
+                //grupo anunciante
+                $.each(groupAg, function (itAn, groupAn) {
+                    sumImpresionesAn = 0;
+                    sumSubtotalAn = 0;
+                    sumSubtotal1An = 0;
+                    sumTotalAn = 0;
+                    rowHTML += "<tr class='tableexport-ignore table-secondary anGroup' anunciante='" + itAn + "'>"
+                    rowHTML += "<td></td><td colspan='12'>         ANUNCIANTE: " + itAn + "</td>";
+                    rowHTML += "</tr>"
+                    //filas detalle
+                    $.each(groupAn, function (it, iord) {
                         if (iord.primer_neto != 0) {
                             var porcNC = (iord.imp_conf_nc / iord.primer_neto * 100);
                             var porcFC = (iord.imp_conf_fc / iord.primer_neto * 100);
@@ -452,11 +452,11 @@
                             var subtotal = (iord.monto_neto_det * iord.porc_ron / 100);
                         }
                         else
-                        if (tipo == 1) {
-                            subtotal = iord.monto_neto_det;
-                        } else {
-                            subtotal = iord.primer_neto;
-                        }
+                            if (tipo == 1) {
+                                subtotal = iord.monto_neto_det;
+                            } else {
+                                subtotal = iord.primer_neto;
+                            }
 
                         var subtotal1 = (subtotal - (subtotal * porcNC / 100));
                         var total = (subtotal1 - (subtotal * porcFC / 100));
@@ -467,10 +467,10 @@
                         rowHTML += "<td class='col-xs-1'>" + iord.producto + "</td>";
                         rowHTML += "<td style='mso-number-format:\"\@\";' class='col-xs-1'>" + iord.nro_orden + "</td>";
                         rowHTML += "<td class='col-xs-1'>" + iord.nro_orden_agencia + "</td>";
-                        
+
 
                         if (tipo == 2) {
-                            rowHTML += "<td class='align-center col-xs-1'>" + roundSinFormato(impXmedio,2) + "</td>";
+                            rowHTML += "<td class='align-center col-xs-1'>" + roundSinFormato(impXmedio, 2) + "</td>";
                             rowHTML += "<td class='col-xs-1'>" + iord.medio + "</td>";
                             rowHTML += "<td class='monto col-xs-1'>" + iord.porc_ron + "%</td>";
                         } else {
@@ -478,64 +478,64 @@
                         }
 
                         rowHTML += "<td class='monto col-xs-1'>$" + round(subtotal, 2) + "</td>";
-                        rowHTML += "<td class='monto col-xs-1'>"+ round(porcNC,2) + "%</td>";
+                        rowHTML += "<td class='monto col-xs-1'>" + round(porcNC, 2) + "%</td>";
                         rowHTML += "<td class='monto col-xs-1'>$" + round(subtotal1, 2) + "</td>";
-                        rowHTML += "<td class='monto col-xs-1'>" + round(porcFC,2) + "%</td>";
-                        rowHTML += "<td class='monto col-xs-1'>$" + round(total,2) + "</td>";
+                        rowHTML += "<td class='monto col-xs-1'>" + round(porcFC, 2) + "%</td>";
+                        rowHTML += "<td class='monto col-xs-1'>$" + round(total, 2) + "</td>";
                         rowHTML += '</tr>'
-			
+
                         //incremento totales anunciante
                         if (tipo == 2) {
                             sumImpresionesAn += impXmedio;
                         } else {
                             sumImpresionesAn += iord.cantidad_impresiones;
                         }
-			            
-			            sumSubtotalAn += subtotal;
-			            sumSubtotal1An += subtotal1;
-			            sumTotalAn += total;
 
-		            })
-		            //totales anunciante
-		            rowHTML += "<tr class='tableexport-ignore table-secondary anGroup' anunciante='" + itAn + "'>"
+                        sumSubtotalAn += subtotal;
+                        sumSubtotal1An += subtotal1;
+                        sumTotalAn += total;
+
+                    })
+                    //totales anunciante
+                    rowHTML += "<tr class='tableexport-ignore table-secondary anGroup' anunciante='" + itAn + "'>"
                     rowHTML += "<td></td><td colspan='4'> TOTALES ANUNCIANTE: " + itAn + "</td>";
-                    rowHTML += "<td class='align-center'>" + roundSinFormato(sumImpresionesAn,2) + "</td>";
+                    rowHTML += "<td class='align-center'>" + roundSinFormato(sumImpresionesAn, 2) + "</td>";
 
                     if (tipo == 2) {
                         rowHTML += "<td></td><td></td>";
                     }
 
-		            rowHTML += "<td class='monto'>$" + round(sumSubtotalAn,2) + "</td><td></td>";
-		            rowHTML += "<td class='monto'>$" + round(sumSubtotal1An,2) + "</td><td></td>";
-		            rowHTML += "<td class='monto'>$" + round(sumTotalAn,2) + "</td>";
-		            rowHTML += "</tr>"
-		            
-		
-		            //incremento totales agencia
-		            sumImpresionesAg += sumImpresionesAn;
-		            sumSubtotalAg += sumSubtotalAn;
-		            sumSubtotal1Ag += sumSubtotal1An;
-		            sumTotalAg += sumTotalAn;
-	            })
-	            //totales agencia
-	            rowHTML += "<tr class='tableexport-ignore table-secondary agGroup' agencia='" + itAg + "'>"
-	            rowHTML += "<td colspan='5'> TOTALES AGENCIA: " + itAg + "</td>";
+                    rowHTML += "<td class='monto'>$" + round(sumSubtotalAn, 2) + "</td><td></td>";
+                    rowHTML += "<td class='monto'>$" + round(sumSubtotal1An, 2) + "</td><td></td>";
+                    rowHTML += "<td class='monto'>$" + round(sumTotalAn, 2) + "</td>";
+                    rowHTML += "</tr>"
+
+
+                    //incremento totales agencia
+                    sumImpresionesAg += sumImpresionesAn;
+                    sumSubtotalAg += sumSubtotalAn;
+                    sumSubtotal1Ag += sumSubtotal1An;
+                    sumTotalAg += sumTotalAn;
+                })
+                //totales agencia
+                rowHTML += "<tr class='tableexport-ignore table-secondary agGroup' agencia='" + itAg + "'>"
+                rowHTML += "<td colspan='5'> TOTALES AGENCIA: " + itAg + "</td>";
                 rowHTML += "<td class='align-center'>" + sumImpresionesAg + "</td>";
 
                 if (tipo == 2) {
                     rowHTML += "<td></td><td></td>";
                 }
 
-	            rowHTML += "<td class='monto'>$" + round(sumSubtotalAg,2) + "</td><td></td>";
-	            rowHTML += "<td class='monto'>$" + round(sumSubtotal1Ag,2) + "</td><td></td>";
-	            rowHTML += "<td class='monto'>$" + round(sumTotalAg,2) + "</td>";
-	            rowHTML += "</tr>"
-	
-	            //incremento totales generales
-	            sumImpresionesGral += sumImpresionesAg;
-	            sumSubtotalGral += sumSubtotalAg;
-	            sumSubtotal1Gral += sumSubtotal1Ag;
-	            sumTotalGral += sumTotalAg;
+                rowHTML += "<td class='monto'>$" + round(sumSubtotalAg, 2) + "</td><td></td>";
+                rowHTML += "<td class='monto'>$" + round(sumSubtotal1Ag, 2) + "</td><td></td>";
+                rowHTML += "<td class='monto'>$" + round(sumTotalAg, 2) + "</td>";
+                rowHTML += "</tr>"
+
+                //incremento totales generales
+                sumImpresionesGral += sumImpresionesAg;
+                sumSubtotalGral += sumSubtotalAg;
+                sumSubtotal1Gral += sumSubtotal1Ag;
+                sumTotalGral += sumTotalAg;
             })
             //totales
             rowHTML += "<tr class='tableexport-ignore table-secondary'>"
@@ -546,9 +546,9 @@
                 rowHTML += "<td></td><td></td>";
             }
 
-            rowHTML += "<td class='monto'>$" + round(sumSubtotalGral,2) + "</td><td></td>";
-            rowHTML += "<td class='monto'>$" + round(sumSubtotal1Gral,2) + "</td><td></td>";
-            rowHTML += "<td class='monto'>$" + round(sumTotalGral,2) + "</td>";
+            rowHTML += "<td class='monto'>$" + round(sumSubtotalGral, 2) + "</td><td></td>";
+            rowHTML += "<td class='monto'>$" + round(sumSubtotal1Gral, 2) + "</td><td></td>";
+            rowHTML += "<td class='monto'>$" + round(sumTotalGral, 2) + "</td>";
             rowHTML += "</tr>"
             $("#" + idTable).html(rowHTML);
 
@@ -596,77 +596,76 @@
         }
 
         function groupBy(xs, key) {
-        return xs.reduce(function(rv, x) {
-        (rv[x[key]] = rv[x[key]] || []).push(x);
-        return rv;
-        }, {});
-            };
+            return xs.reduce(function (rv, x) {
+                (rv[x[key]] = rv[x[key]] || []).push(x);
+                return rv;
+            }, {});
+        };
 
-    function imprimir() {
-        //selecciono el div de la tabla para ajustar el tamaño por la impresion
-        t = document.getElementById("divTablaAgrup");
-        t2 = document.getElementById("divTablaDet");
-        t.classList.remove("vh-100");
-        t2.classList.remove("vh-100");
-        $(".printOnly").show();
-        window.print();
-        $(".printOnly").hide();
-        t.classList.add("vh-100");
-        t2.classList.add("vh-100");
-    }
+        function imprimir() {
+            //selecciono el div de la tabla para ajustar el tamaño por la impresion
+            t = document.getElementById("divTablaAgrup");
+            t2 = document.getElementById("divTablaDet");
+            t.classList.remove("vh-100");
+            t2.classList.remove("vh-100");
+            $(".printOnly").show();
+            window.print();
+            $(".printOnly").hide();
+            t.classList.add("vh-100");
+            t2.classList.add("vh-100");
+        }
 
-    function populateFields() {
+        function populateFields() {
 
-        //Llenar select Medios
-        //callWS("medios", "getAll", '', function (data) { onPopulateSelectDone(data, 'selMedios', 'id_medio', 'desc_medio'); });
-        //// Llenar select Tipos de Aviso
-        //callWS("tipos_avisos", "getAll", '', function (data) { onPopulateSelectDone(data, 'selTipoPublicidad', 'id_tipo_aviso_dg', 'descripcion'); });
-        //// Llenar select Formas de uso
-        //callWS("tarifas", "getFormasUsoAll", '', function (data) { onPopulateSelectDone(data, 'selFormaUso', 'id', 'descripcion'); });
+            //Llenar select Medios
+            //callWS("medios", "getAll", '', function (data) { onPopulateSelectDone(data, 'selMedios', 'id_medio', 'desc_medio'); });
+            //// Llenar select Tipos de Aviso
+            //callWS("tipos_avisos", "getAll", '', function (data) { onPopulateSelectDone(data, 'selTipoPublicidad', 'id_tipo_aviso_dg', 'descripcion'); });
+            //// Llenar select Formas de uso
+            //callWS("tarifas", "getFormasUsoAll", '', function (data) { onPopulateSelectDone(data, 'selFormaUso', 'id', 'descripcion'); });
 
 
-        $.when(
-            callWS("contactos", "getAgencias", '', function (data) { onPopulateSelectDone(data, 'selAgencias', 'id_contacto', 'razonSocial'); }),
-            callWS("contactos", "getAnunciantes", '', function (data) { onPopulateSelectDone(data, 'selAnunciantes', 'id_contacto', 'razonSocial'); }),
-            callWS("productos", "getAll", '', function (data) { onPopulateSelectDone(data, 'selProductos', 'id_producto', 'desc_producto'); }),
-            $('#fechaDesde').val(moment().startOf('month').format('DD/MM/YYYY')),
-            $('#fechaHasta').val(moment().endOf('month').format('DD/MM/YYYY'))
-        ).then(function () {  }, function (data1, data2) {
-            console.log("Medios: " + data1[2].statusText + "; Tipos de Aviso: " + data2[2].statusText + "Formas de uso: " + data3[2].statusText + ";");
-            showMessage("Se produjo un error al cargar los campos, intentelo nuevamente", type = "alert");
-        });
+            $.when(
+                callWS("contactos", "getAgencias", '', function (data) { onPopulateSelectDone(data, 'selAgencias', 'id_contacto', 'razonSocial'); }),
+                callWS("contactos", "getAnunciantes", '', function (data) { onPopulateSelectDone(data, 'selAnunciantes', 'id_contacto', 'razonSocial'); }),
+                callWS("productos", "getAll", '', function (data) { onPopulateSelectDone(data, 'selProductos', 'id_producto', 'desc_producto'); }),
+                $('#fechaDesde').val(moment().startOf('month').format('DD/MM/YYYY')),
+                $('#fechaHasta').val(moment().endOf('month').format('DD/MM/YYYY'))
+            ).then(function () { }, function (data1, data2) {
+                console.log("Medios: " + data1[2].statusText + "; Tipos de Aviso: " + data2[2].statusText + "Formas de uso: " + data3[2].statusText + ";");
+                showMessage("Se produjo un error al cargar los campos, intentelo nuevamente", type = "alert");
+            });
+        }
+
+        function onPopulateSelectDone(data, idSelect, colId, colDesc) {
+            var pObj = data;
+            var listitems = '';
+            $.each(pObj, function (it, iObj) {
+                listitems += '<option value=' + iObj[colId] + '>' + iObj[colDesc] + '</option>';
+            });
+            $("#" + idSelect).empty();
+            $("#" + idSelect).append(listitems);
+            if (pObj.length > 1) {
+                $("#" + idSelect).val([]);
             }
+            if ($("#" + idSelect).attr('multiple') == 'multiple') {
+                $('.selectpicker').selectpicker('refresh');
+            }
+        }
 
-    function onPopulateSelectDone(data, idSelect, colId, colDesc) {
-        var pObj = data;
-        var listitems = '';
-        $.each(pObj, function (it, iObj) {
-            listitems += '<option value=' + iObj[colId] + '>' + iObj[colDesc] + '</option>';
-        });
-        $("#" + idSelect).empty();
-        $("#" + idSelect).append(listitems);
-        if (pObj.length > 1) {
-            $("#" + idSelect).val([]);
+        function excel() {
+            tipo = $('input[type=radio]:checked').val();
+            if (tipo == 2) {
+                idTable = "table"
+            } else {
+                idTable = "tablaAgrup"
+            }
+            exportTableToExcel(idTable, 'Informe de Ventas ' + moment().format("YYYYMMDD") + "_" + moment().hour() + "" + moment().minute() + "" + moment().second());
         }
-        if ($("#" + idSelect).attr('multiple') == 'multiple') {
-            $('.selectpicker').selectpicker('refresh');
-        }
-    }
-
-    function excel() {
-        tipo = $('input[type=radio]:checked').val(); 
-        if (tipo == 2) {
-            idTable = "table"
-        } else {
-            idTable = "tablaAgrup"
-        }
-        exportTableToExcel(idTable, 'Informe de Ventas ' + moment().format("YYYYMMDD")+ "_" + moment().hour() + "" + moment().minute() + "" + moment().second());
-    }
 
     </script>
-
-
-
-
+    <footer>
+        <p style="text-align: center; font-size: x-small;">Powered by <b style="font-size: small;">Strategy Zone S.A. </b></p>
+    </footer>
 </body>
 </html >

@@ -68,7 +68,7 @@
     </style>
 
 </head>
-<body style="padding-top: 80px;">
+<body style="padding-top: 80px; font-family: 'Roboto';">
     <!--MENU-->
     <div id="divNavBar"></div>
 
@@ -180,11 +180,11 @@
         });
 
 
-         function getRedesGAM() {
+        function getRedesGAM() {
             callWS("medios", "getAllRedes", '', function (data) { onCargarSelect(data, 'selRedes', 'id_red', 'descripcion', 'codigo_red'); });
-         }
+        }
 
-         function onCargarSelect(data, idSelect) {
+        function onCargarSelect(data, idSelect) {
             var pObj = data;
             var listitems = '';
             $.each(pObj, function (it, iObj) {
@@ -193,7 +193,7 @@
             $("#" + idSelect).empty();
             $("#" + idSelect).append(listitems);
             $("#" + idSelect).val('');
-         }
+        }
 
         function onRedSelected() {
             idRed = $('#selRedes').val();
@@ -211,7 +211,7 @@
             var str = '<option value="-1">  </option>';
             $.each(anunciantes, function (it, anun) {
 
-                str = str + '<option idContacto="' +anun.id +'" value="' + anun.idContactoDigital + '">' + anun.razonSocial + ' </option>';
+                str = str + '<option idContacto="' + anun.id + '" value="' + anun.idContactoDigital + '">' + anun.razonSocial + ' </option>';
 
 
             });
@@ -230,12 +230,12 @@
                 cont.IdContactoDigital = idGAM;
                 cont.IdRed = idRed;
                 callWS("contactos", "saveASRelation", JSON.stringify(cont), function (data) { onVincular(data, idGAM) });
-            }            
-            
+            }
+
         }
 
 
-        function onVincular(data,idGAM) {
+        function onVincular(data, idGAM) {
             if (data == true) {
                 var idButton = "#button" + idGAM;
                 $(idButton).removeClass("btn-primary").addClass("btn-success");
@@ -258,7 +258,7 @@
 
             if (red != 0 && red != null) {
                 var objParametro = {};
-              
+
                 objParametro.ParameterName = "nombre";
                 objParametro.Value = desc;
 
@@ -274,27 +274,27 @@
             var strCabeceraOption = ' <select class="form-control" style="width: 426px;" ';
             var strOption = llenarStrOption(data);
             //showPleaseWait();
-            
+
             $.each(anunciantesGAM, function (it, anuncianteGAM) {
                 var str = '';
                 str = "<tr>";
                 str = str + "<td class='col-xs-2' > " + anuncianteGAM.idContactoDigital + "</td > ";
                 str = str + "<td class='col-xs-4' > " + anuncianteGAM.razonSocial + "</td >";
                 str = str + '<td class="col-xs-4" >' + strCabeceraOption + " id='sel" + anuncianteGAM.idContactoDigital + "' >" + strOption + '</td >';
-                str = str + "<td class='col-xs-2' > <button type='button' id=button" + anuncianteGAM.idContactoDigital + " class='btn btn-primary' onClick='vincular(" + anuncianteGAM.idContactoDigital +", " + idRed + ")'>Vincular</button> </td >";
+                str = str + "<td class='col-xs-2' > <button type='button' id=button" + anuncianteGAM.idContactoDigital + " class='btn btn-primary' onClick='vincular(" + anuncianteGAM.idContactoDigital + ", " + idRed + ")'>Vincular</button> </td >";
                 str = str + "</tr>";
 
                 $("#TableRenglones").append(str);
-              
-                $("#sel" + anuncianteGAM.idContactoDigital + " option[value=" + anuncianteGAM.idContactoDigital + "]").attr('selected', 'selected'); 
-              
+
+                $("#sel" + anuncianteGAM.idContactoDigital + " option[value=" + anuncianteGAM.idContactoDigital + "]").attr('selected', 'selected');
+
                 var idAGam = "#sel" + anuncianteGAM.idContactoDigital;
                 var idButton = "#button" + anuncianteGAM.idContactoDigital;
                 $(idAGam).val(anuncianteGAM.idContactoDigital);
                 if ($(idAGam).val() != undefined) {
                     $(idButton).removeClass("btn-primary").addClass("btn-success");
                     $(idButton).css("background-color", "#c3e6cb");
-                }     
+                }
             });
             //hidePleaseWait();
             $("#pleaseWaitDialog").modal('hide');
@@ -313,7 +313,7 @@
             //Cuando me trae los anunciantes con los codigos de Google Ad Manager cargo los anunciantes de MMASS
 
             if (data.length != 0) {
-                 getAnunciantes(data);
+                getAnunciantes(data);
             }
             else {
                 onCargarTabla(data)
@@ -322,6 +322,8 @@
         }
 
     </script>
+    <footer>
+        <p style="text-align: center; font-size: x-small;">Powered by <b style="font-size: small;">Strategy Zone S.A. </b></p>
+    </footer>
 </body>
-
 </html>

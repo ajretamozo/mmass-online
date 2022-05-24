@@ -17,6 +17,7 @@
     <script src="./js/autentificar.js"></script>
     <script src="./dist/duallistbox/jquery.bootstrap-duallistbox.min.js"></script>
     <link href="./dist/duallistbox/bootstrap-duallistbox.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400&display=swap" rel="stylesheet">
 
 
 
@@ -175,7 +176,7 @@
         }
     </style>
 </head>
-<body>
+<body style="font-family: 'Roboto';">
     <!--MENU-->
     <div id="divNavBar"></div>
 
@@ -233,7 +234,7 @@
                 <div class="card card-signin my-5">
                     <div class="card-body">
                         <div class="row d-flex justify-content-center">
-                        <img class="card-img-top pb-4" src="/img/logoMmassOnlineFC.svg">
+                            <img class="card-img-top pb-4" src="/img/logoMmassOnlineFC.svg">
                         </div>
                         <h5 class="card-title text-center">Inicio de Sesion</h5>
                         <div class="form-signin">
@@ -247,7 +248,7 @@
                                 <label for="inputPassword">Password</label>
                             </div>
                             <button class="btn btn-lg btn-primary btn-block text-uppercase" onclick="submit()">Iniciar Sesion</button>
-                            <p class="card-text text-right"><small class="text-muted">Strategy Zone S.A.</small></p>
+                            <!--<p class="card-text text-right"><small class="text-muted">Strategy Zone S.A.</small></p>-->
                         </div>
                     </div>
                 </div>
@@ -262,13 +263,13 @@
     <!--Scripts-->
     <script type="text/javascript">
 
-       
+
 
         $(function () {
             //autentificar();
             $("#inputUser").on("keydown", function (event) {
                 if (event.which == 13) {
-                    document.getElementById("inputPassword").focus(); 
+                    document.getElementById("inputPassword").focus();
                 }
             });
             $("#inputPassword").on("keydown", function (event) {
@@ -282,7 +283,7 @@
 
         function submit() {
             if ($("#inputUser").val() == "" || $("#inputPassword").val() == "") {
-                showMessage("Complete el usuario y el password","error");
+                showMessage("Complete el usuario y el password", "error");
 
             } else {
                 autentificar($("#inputUser").val(), $("#inputPassword").val(), onAutentificar, onError);
@@ -291,10 +292,10 @@
 
         function onError() {
             showMessage("Usuario o Clave incorrecta", "error");
-           
+
 
         }
-        function onAutentificar(data){
+        function onAutentificar(data) {
             location.href = '/ordenList.html';
             //callWS("contactos", "getAgencias", '', function (data) { test(data); });
         }
@@ -302,6 +303,9 @@
 
 
     </script>
+    <footer>
+        <p style="text-align: center; font-size: x-small;">Powered by <b style="font-size: small;">Strategy Zone S.A. </b></p>
+    </footer>
 </body>
 
 </html>

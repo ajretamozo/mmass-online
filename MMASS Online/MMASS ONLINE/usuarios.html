@@ -80,7 +80,7 @@
     </style>
 
 </head>
-<body style="padding-top: 30px;">
+<body style="padding-top: 30px; font-family: 'Roboto';">
     <!--MENU-->
     <div id="divNavBar"></div>
 
@@ -146,8 +146,8 @@
                 </div>
                 <div class="row justify-content-end py-3">
                     <div class="col-lg-3" style="padding-left: 130px;">
-                            <input class="enableOnEdit" type="checkbox" id="checkAdmin" title="Los Administradores pueden crear, modificar y eliminar Usuarios">
-                            <label for="checkAdmin" title="Los Administradores pueden crear, modificar y eliminar Usuarios"> Administrador</label>
+                        <input class="enableOnEdit" type="checkbox" id="checkAdmin" title="Los Administradores pueden crear, modificar y eliminar Usuarios">
+                        <label for="checkAdmin" title="Los Administradores pueden crear, modificar y eliminar Usuarios"> Administrador</label>
                     </div>
                 </div>
             </div>
@@ -256,7 +256,7 @@
             location.href = "/usuarios.html?mode=new"
         }
 
-         function checkBorrarUser(id) {
+        function checkBorrarUser(id) {
 
             options = [
                 {
@@ -272,7 +272,7 @@
             var mensaje = "<div class='d-flex justify-content-center'>¿Esta seguro de borrar el Usuario?</div>";
 
             showModal(mensaje, options);
-         }
+        }
 
         function borrarUser(id) {
             var data = {};
@@ -310,7 +310,7 @@
                     data.usrrol = 1;
                 }
                 else {
-                     data.usrrol = 0;
+                    data.usrrol = 0;
                 }
 
                 if (data.id_usuario == 0) {
@@ -323,12 +323,10 @@
                                 if (data == 0) {
                                     location.href = "/usuariosList.html";
                                 }
-                                else if (data == 1)
-                                {
-                                  showMessage("El nombre de usuario ya existe", "error");
-                                }   
-                                else
-                                {
+                                else if (data == 1) {
+                                    showMessage("El nombre de usuario ya existe", "error");
+                                }
+                                else {
                                     console.log(data);
                                 }
                             });
@@ -336,13 +334,13 @@
                     });
                 }
                 else {
-                  callWS("users", "saveUser", JSON.stringify(data), function (data) {
-                    if (data == 0) {
-                        location.href = "/usuariosList.html";
-                    } else {
-                        console.log(data);
-                    }
-                  });
+                    callWS("users", "saveUser", JSON.stringify(data), function (data) {
+                        if (data == 0) {
+                            location.href = "/usuariosList.html";
+                        } else {
+                            console.log(data);
+                        }
+                    });
                 }
 
             } else {
@@ -357,7 +355,9 @@
         }
 
     </script>
-
+    <footer>
+        <p style="text-align: center; font-size: x-small;">Powered by <b style="font-size: small;">Strategy Zone S.A. </b></p>
+    </footer>
 </body>
 </html>
 

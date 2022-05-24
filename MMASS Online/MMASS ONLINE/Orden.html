@@ -333,8 +333,8 @@
     </script>
 
 </head>
-<!--<body style="padding-top: 80px;" onbeforeunload="desbloquearOp()">-->
-<body style="padding-top: 80px;" onbeforeunload="desbloquearOp()">
+
+<body style="padding-top: 80px; font-family: 'Roboto';" onbeforeunload="desbloquearOp()">
     <!--MENU-->
     <div id="divNavBar"></div>
 
@@ -597,7 +597,7 @@
 
         <div id="divMessage" class="alert" style="display:none;cursor:pointer;z-index:10000;" title="Click para cerrar"> </div>
         <div class="jumbotron mt-4 py-4 shadow p-3 mb-5 bg-white rounded" id="divOrderMain">
-            <p class="dataTitle">ORDEN PUBLICITARIA</p>
+            <p class="dataTitle" id="pTitulo">ORDEN PUBLICITARIA</p>
             <!-- TABS -->
             <nav class="nav nav-tabs mb-3">
                 <a class="nav-link active" id="principal-tab" data-toggle="tab" href="#principal" role="tab" aria-controls="principal" aria-selected="true">General</a>
@@ -673,7 +673,7 @@
                                 </div>
                                 <div class="col-lg-4">
                                     <!--<label>Orden Relacionada</label>
-                <select class="form-control" id="selOrdenRelacionada" onchange="enableConf()" disabled="disabled"></select>-->
+                                    <select class="form-control" id="selOrdenRelacionada" onchange="enableConf()" disabled="disabled"></select>-->
                                     <label>Descripción</label>
                                     <div class="input-group"> <input type="text" id="inpDescOP" class="form-control"> </div>
                                 </div>
@@ -795,8 +795,8 @@
                                         </button>
                                     </div>
                                     <!--<div class="col-lg-1" style="left: -10;left: -10;right: 40px;top: 2px;">
-                    <span class="fa fa-refresh fa-pulse invisible" id="spanCompActD" title="Hay modificaciones en AdServer"></span>
-                </div>-->
+                                        <span class="fa fa-refresh fa-pulse invisible" id="spanCompActD" title="Hay modificaciones en AdServer"></span>
+                                    </div>-->
                                 </div>
 
                                 <div class="table-responsive mt-2">
@@ -1013,10 +1013,10 @@
                         <div class="card-footer mt-2 ">
                             <div class="row">
                                 <div class="col-lg-4">
-                                    <button type="button" id="bClonar" class="btn actions btn-dark btn-sm mx-1" onclick="prevClonarOrden()">
+                                    <button type="button" id="bClonar" disabled="disabled" class="btn actions btn-dark btn-sm mx-1" onclick="prevClonarOrden()">
                                         <span class="fa fa-clone"></span> Clonar OP
                                     </button>
-                                    <button type="button" id="bAnular" class="btn actions btn-dark btn-sm mx-1" onclick="prevAnularOrden()">
+                                    <button type="button" id="bAnular" disabled="disabled" class="btn actions btn-dark btn-sm mx-1" onclick="prevAnularOrden()">
                                         <span class="fa fa-ban"></span> Anular OP
                                     </button>
                                     <div class="form-check-inline mr-0">
@@ -1283,6 +1283,8 @@
             //$('#fechaHasta').datetimepicker({ format: 'L', locale: 'es' });
             $('#fechaDesde').datetimepicker('date', moment(dateToFieldFormat(data.fecha), 'DD/MM/YYYY'));
             $('#fechaHasta').datetimepicker('date', moment(dateToFieldFormat(data.fecha_expiracion), 'DD/MM/YYYY'));
+            $("#bAnular").attr("disabled", false);
+            $("#bClonar").attr("disabled", false);
             if (data.es_facturada) {
                 $("#inpEsFacturada").val("SI");
                 $("#bGuardarOrden").attr("disabled", true);
@@ -1373,8 +1375,8 @@
                 $("#bGuardarOrden").attr("disabled", true);
                 $("#bGuardarOrden").attr("title", "No se pueden guardar ordenes que estén anuladas");
                 bloquearCamposCabecera()
-                $('p').append('<span id="sTituloDinamico"> - </span>');
-                $('p').append('<span id="sTituloDinamico" style="color: red;">ANULADA</span>');
+                $('#pTitulo').append('<span id="sTituloDinamico"> - </span>');
+                $('#pTitulo').append('<span id="sTituloDinamico" style="color: red;">ANULADA</span>');
             }
 
             if (data.parafacturar == 0 && data.nro_orden > 0) {
@@ -1410,8 +1412,8 @@
                 $("#bSendOrdenAddServer").attr("disabled", true);
                 $("#bAnular").attr("disabled", true);
                 $("#bClonar").attr("disabled", true);
-                $('p').append('<span id="sTituloDinamico"> - </span>');
-                $('p').append('<span id="sTituloDinamico" style="color: #007bff;">CLONACION</span>');
+                $('#pTitulo').append('<span id="sTituloDinamico"> - </span>');
+                $('#pTitulo').append('<span id="sTituloDinamico" style="color: #007bff;">CLONACION</span>');
             }
 
             $("#selEmpresa").attr("disabled", true);
@@ -1555,12 +1557,12 @@
             }
             data.Bitacora = $("#inpDescOP").val();
             callWS("dg_orden_pub_aps", "existeOpNombre", JSON.stringify(data), function (data) {
-                    if (data == true) {
-                        message = "Ya existe una OP con la Descripción ingresada";
-                        showMessage(message, "error");;
-                    } else {
-                        saveOrder();
-                    }
+                if (data == true) {
+                    message = "Ya existe una OP con la Descripción ingresada";
+                    showMessage(message, "error");;
+                } else {
+                    saveOrder();
+                }
             });
             //if ($("#selOrdenRelacionada").val() != "" && $("#selOrdenRelacionada").val() != undefined) {
             //    var primer_neto = $("#neto1").val();
@@ -2310,7 +2312,7 @@
             else {
                 addRenglon(id);
             }
-                $("#selEmpresa").attr("disabled", true);
+            $("#selEmpresa").attr("disabled", true);
         }
 
         //AGREGUE:
@@ -2714,42 +2716,42 @@
 
                 $("#cantidadD").val(cantD);
 
-            if (descD == "") {
-                descD = 0;
-            }
-            if (resultD == "" || resultD < 0) {
-                //showMessage("El precio no puede ser menor a 0 ni estar vacio");
-                $("#resultD").val("");
-                $("#totalD").val("");
-                return;
-            }
-            if (cantD == "" || cantD <= 0) {
-                //showMessage("La cantidad no puede ser menor o igual a 0");
-                $("#cantidadD").val("");
-                $("#totalD").val("");
-                return;
-            }
-            if (descD < -100 || descD > 100) {
-                showMessage("El descuento no puede ser superior a 100");
-                $("#descuentoD").val("");
-                $("#totalD").val("");
-                return;
-            }
+                if (descD == "") {
+                    descD = 0;
+                }
+                if (resultD == "" || resultD < 0) {
+                    //showMessage("El precio no puede ser menor a 0 ni estar vacio");
+                    $("#resultD").val("");
+                    $("#totalD").val("");
+                    return;
+                }
+                if (cantD == "" || cantD <= 0) {
+                    //showMessage("La cantidad no puede ser menor o igual a 0");
+                    $("#cantidadD").val("");
+                    $("#totalD").val("");
+                    return;
+                }
+                if (descD < -100 || descD > 100) {
+                    showMessage("El descuento no puede ser superior a 100");
+                    $("#descuentoD").val("");
+                    $("#totalD").val("");
+                    return;
+                }
 
 
-            //var divD = 1;
-            //if ($("#selTipoTarifaD option:selected").text() == "CPM") {
-            //    divD = 1000;
-            //}
+                //var divD = 1;
+                //if ($("#selTipoTarifaD option:selected").text() == "CPM") {
+                //    divD = 1000;
+                //}
 
-            //if ($('#selTipoTarifaD').val() == 1) {
-            //    var day1 = new Date(dateToSqlFormat($('#fechaDesdeD').val()));
-            //    var day2 = new Date(dateToSqlFormat($('#fechaHastaD').val()));
+                //if ($('#selTipoTarifaD').val() == 1) {
+                //    var day1 = new Date(dateToSqlFormat($('#fechaDesdeD').val()));
+                //    var day2 = new Date(dateToSqlFormat($('#fechaHastaD').val()));
 
-            //    var difference = Math.abs(day2 - day1);
-            //    cantD = difference / (1000 * 3600 * 24);
+                //    var difference = Math.abs(day2 - day1);
+                //    cantD = difference / (1000 * 3600 * 24);
 
-            //    $("#cantidadD").val(cantD);
+                //    $("#cantidadD").val(cantD);
             }
 
             brutoD = resultD * (cantD / divD)
@@ -2818,7 +2820,7 @@
             //else {
             //    $("#selDetConvenio").attr("disabled", true);
             //}
-            idRed = $('#selRedes').val(); 
+            idRed = $('#selRedes').val();
             //if ($("#inpEsFacturada").val() == 'SI' || $("#divOrderMain").css("background-image") != 'url("./Anulada.png")' || OpYaAbierta == true) {
             if ($("#inpEsFacturada").val() == 'SI' || OpAnulada == true || OpYaAbierta == true) {
                 bloquearCamposDetalle();
@@ -2846,7 +2848,7 @@
                     console.log("Medios: " + data1[2].statusText + "; Formas de uso: " + data2[2].statusText + "Tipo Aviso: " + data3[2].statusText + ";");
                     showMessage("Se produjo un error al cargar los campos, intentelo nuevamente", type = "alert");
                 });
-            }          
+            }
         }
 
         function onCargarModificarRenglon(rId) {
@@ -3142,7 +3144,7 @@
 
         function getConvenios(/*base*/) {
             /*if (base == 1) {*/
-                callWS("empresas", "getall", '', function (data) { onPopulateSelectDone(data, 'selEmpresaC', 'id_empresa', 'razon_social'); });
+            callWS("empresas", "getall", '', function (data) { onPopulateSelectDone(data, 'selEmpresaC', 'id_empresa', 'razon_social'); });
             //}
             //else if (base == 2) {
             //    $("#selEmpresaC").attr("disabled", true);
@@ -3378,7 +3380,7 @@
                 $("#selTipoAvisoD").attr("disabled", true);
             }
             else {
-/*                onTipoAvisoGetAll(tiposAviso, 'selTipoAvisoD', 'Id_tipo_aviso_dg', 'descripcion', 'Permite_envio_ads')*/
+                /*                onTipoAvisoGetAll(tiposAviso, 'selTipoAvisoD', 'Id_tipo_aviso_dg', 'descripcion', 'Permite_envio_ads')*/
                 $("#selTipoAvisoD").attr("disabled", false);
             }
 
@@ -4277,7 +4279,7 @@
             $("#conf_fc").attr("disabled", true);
             $("#bSendOrdenAddServer").attr("disabled", true);
             $("#bAnular").attr("disabled", true);
-            $("#checkListaParaFact")[0].disabled = true; 
+            $("#checkListaParaFact")[0].disabled = true;
             $("#bcomprobarModificaciones").attr("disabled", true);
         }
 
@@ -4314,8 +4316,8 @@
         function onAnularOrden(data) {
             if (data == true) {
                 OpAnulada == true;
-                $('p').append('<span id="sTituloDinamico"> - </span>');
-                $('p').append('<span id="sTituloDinamico" style="color: red;">ANULADA</span>');
+                $('#pTitulo').append('<span id="sTituloDinamico"> - </span>');
+                $('#pTitulo').append('<span id="sTituloDinamico" style="color: red;">ANULADA</span>');
                 bloquearCamposCabecera();
                 $("#bGuardarOrden").attr("disabled", true);
                 $("#bGuardarOrden").attr("title", "No se pueden guardar ordenes que estén anuladas");
@@ -4465,17 +4467,20 @@
             detConv.id_empresa = $('#selEmpresa').val();
             rId++;
 
-                $.when(
-                    callWS("medios", "getAllA", '', function (data) { onAreasGeoGetAll(data, 'selAreasGeo', 'Id_area', 'descripcion', 'Codigo_area', 'tipo'); }),
-                    callWS("medios", "GetDetConveniosByIdConv", JSON.stringify(detConv), function (data) { onPopulateSelectDetConv(data, 'selDetConvenio', 'id_det_conv', 'descripcion', 'id_detalle'); }),
-                    callWS("medios", "GetDetConvenioById", JSON.stringify(detConv), function (data) { cargarSelectMultiples(data); }),
-                    callWS("tarifas", "getFormasUsoAll", '', function (data) { onPopulateSelectDone(data, 'selTipoTarifaD', 'id', 'descripcion'); })
-                ).then(function () { onCargarModificarRenglon(rId) }, function (data1, data2, data3) {
-                    console.log("Medios: " + data1[2].statusText + "; Formas de uso: " + data2[2].statusText + "Tipo Aviso: " + data3[2].statusText + ";");
-                    showMessage("Se produjo un error al cargar los campos, intentelo nuevamente", type = "alert");
-                });
+            $.when(
+                callWS("medios", "getAllA", '', function (data) { onAreasGeoGetAll(data, 'selAreasGeo', 'Id_area', 'descripcion', 'Codigo_area', 'tipo'); }),
+                callWS("medios", "GetDetConveniosByIdConv", JSON.stringify(detConv), function (data) { onPopulateSelectDetConv(data, 'selDetConvenio', 'id_det_conv', 'descripcion', 'id_detalle'); }),
+                callWS("medios", "GetDetConvenioById", JSON.stringify(detConv), function (data) { cargarSelectMultiples(data); }),
+                callWS("tarifas", "getFormasUsoAll", '', function (data) { onPopulateSelectDone(data, 'selTipoTarifaD', 'id', 'descripcion'); })
+            ).then(function () { onCargarModificarRenglon(rId) }, function (data1, data2, data3) {
+                console.log("Medios: " + data1[2].statusText + "; Formas de uso: " + data2[2].statusText + "Tipo Aviso: " + data3[2].statusText + ";");
+                showMessage("Se produjo un error al cargar los campos, intentelo nuevamente", type = "alert");
+            });
         }
 
     </script>
+    <footer>
+        <p style="text-align: center; font-size: x-small;">Powered by <b style="font-size: small;">Strategy Zone S.A. </b></p>
+    </footer>
 </body>
 </html>

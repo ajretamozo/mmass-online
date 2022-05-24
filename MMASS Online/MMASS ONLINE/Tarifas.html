@@ -82,7 +82,7 @@
     </style>
 
 </head>
-<body style="padding-top: 30px;">
+<body style="padding-top: 30px; font-family: 'Roboto';">
     <!--MENU-->
     <div id="divNavBar"></div>
     <main role="main" class="container">
@@ -200,7 +200,7 @@
     <script type="text/javascript">
 
 
-        
+
 
         var getUrlParameter = function getUrlParameter(sParam) {
             var sPageURL = window.location.search.substring(1),
@@ -227,18 +227,18 @@
             $("#divNavBar").load("navBar.html");
             //input number >= 0
             $("input[type=number]").attr("onkeydown", "return event.keyCode !== 69 && event.keyCode !== 109");
-            $("input[type=number]").attr("min","0");
+            $("input[type=number]").attr("min", "0");
             //autentificar();
- 
-            callWS("medios", "getAllRedes", '', function (data) { onCargarSelectRedes(data, 'selRedes', 'id_red', 'descripcion', 'codigo_red'); });                  
+
+            callWS("medios", "getAllRedes", '', function (data) { onCargarSelectRedes(data, 'selRedes', 'id_red', 'descripcion', 'codigo_red'); });
             document.body.style.backgroundImage = "url(./fondoM3.png)";
         });
 
         function formatMultipleSelects() {
 
             var demo1 = $('.custom-select').bootstrapDualListbox({
-            filterPlaceHolder: 'Filtrar'
-        });
+                filterPlaceHolder: 'Filtrar'
+            });
         }
 
         function agregarIconos() {
@@ -435,7 +435,7 @@
             return res;
         }
 
-         function onCargarSelectRedes(data, idSelect) {
+        function onCargarSelectRedes(data, idSelect) {
             var pObj = data;
             var listitems = '';
             listitems += '<option  codigo_red= ' + 0 + ' value=' + 0 + '> Todas </option>';
@@ -444,10 +444,10 @@
             });
             $("#" + idSelect).empty();
             $("#" + idSelect).append(listitems);
-             $("#" + idSelect).val(0);
+            $("#" + idSelect).val(0);
 
-             populateFields()
-         }
+            populateFields()
+        }
 
         function onPopulateSelectDone(data, idSelect, colId, colDesc) {
             var pObj = data;
@@ -465,7 +465,7 @@
             }
         }
 
-        //AGREGUE:           
+        //AGREGUE:
         function onPopulateSelectEmplaza(data, idSelect, colId, colDesc, colCod) {
 
             var pObj = data;
@@ -484,7 +484,7 @@
             }
         }
 
-        //AGREGUE:           
+        //AGREGUE:
         function onPopulateSelectMedidas(data, idSelect, colId, colDesc, colAncho, colAlto) {
 
             var pObj = data;
@@ -653,5 +653,8 @@
         }
 
     </script>
+    <footer>
+        <p style="text-align: center; font-size: x-small;">Powered by <b style="font-size: small;">Strategy Zone S.A. </b></p>
+    </footer>
 </body>
 </html>
