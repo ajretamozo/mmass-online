@@ -787,7 +787,7 @@
 
                                 <div class="row">
                                     <div class="col-lg-1">
-                                        <label>Campañas</label>
+                                        <label>DETALLES</label>
                                     </div>
                                     <div class="col-lg-1">
                                         <button type="button" class="btn  actions btn-outline-dark btn-sm" id="bCargarNuevoRenglon" onclick="cargarNuevoRenglon()">
@@ -820,7 +820,7 @@
 
 
                             <div id="divAddRow" class="card" style="display:none;">
-                                <div class="card-header">Nueva Campaña</div>
+                                <div class="card-header" id="chDetalle">Nuevo Detalle</div>
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-lg-3">
@@ -958,7 +958,12 @@
 
                                     <div class="card-footer mt-2 ">
                                         <div class="row">
-                                            <div class="col-lg-8"></div>
+                                            <div class="col-lg-4">
+                                                <!--<button type="button" id="bClonarD" disabled="disabled" class="btn actions btn-dark btn-sm mx-1" onclick="prevClonarD()">
+                                                    <span class="fa fa-clone"></span> Clonar Detalle
+                                                </button>-->
+                                            </div>
+                                            <div class="col-lg-4"></div>
                                             <div class="col-lg-4 d-flex justify-content-end">
                                                 <button type="button" id="GuardarRenglon" class="btn btn-dark btn-sm mx-1" onclick="prevAddRenglon(-1);">
                                                     <span class="fa fa-check"></span> Aceptar
@@ -1437,7 +1442,7 @@
             if (Detalles.length > 0) {
                 $("#selAnunciante").attr("disabled", true);
                 $("#botLimpiar").attr("disabled", true);
-                $("#botLimpiar").attr("title", "No es posible limpiar Agencia - Anunciante si existen campañas cargadas");
+                $("#botLimpiar").attr("title", "No es posible limpiar Agencia - Anunciante si existen Detalles cargados");
                 if (data.nro_orden > 0)
                     $("#selAgencia").attr("disabled", true);
             }
@@ -1525,7 +1530,7 @@
             }
 
             if (Detalles.length < 1) {
-                showMessage("La orden tiene que tener al menos una campaña", "error");
+                showMessage("La orden tiene que tener al menos un Detalle", "error");
                 return false;
             }
             if (parseFloat($("#total").val()) < 0) {
@@ -2091,7 +2096,7 @@
 
 
         function cargarNuevoRenglon() {
-
+            $('#chDetalle').text('NUEVO DETALLE');
             if ($("#fechaHasta").val() == "" || $("#fechaDesde").val() == "") {
                 showMessage("Debe seleccionar la vigencia de la orden", "info");
                 return 0;
@@ -2282,11 +2287,12 @@
         }
 
         //punto de control
-        //Parametro global para saber si la OP está abierta por otro usuario
+        //Parametro global para saber si la OP está abierta por otro usuario, bloqueada, si esta clonandose, si es anulada y si se esta clonando Detalle
         OpYaAbierta = false;
         OpBloqueada = false;
         OpClon = false;
         OpAnulada = false;
+        DetalleClon = false;
         //Parametro global para llevar los detalles, ver como mejorar esto
         Detalles = [];
 
@@ -2313,6 +2319,7 @@
                 addRenglon(id);
             }
             $("#selEmpresa").attr("disabled", true);
+            DetalleClon = false;
         }
 
         //AGREGUE:
@@ -2614,7 +2621,7 @@
                 //$("#selAgencia").attr("disabled", true);
                 $("#selAnunciante").attr("disabled", true);
                 $("#botLimpiar").attr("disabled", true);
-                $("#botLimpiar").attr("title", "No es posible limpiar Agencia - Anunciante si existen campañas cargadas");
+                $("#botLimpiar").attr("title", "No es posible limpiar Agencia - Anunciante si existen Detalles cargados");
             }
 
             Detalles.forEach(generarTablaDetalles);
@@ -2665,22 +2672,24 @@
             }
             else {
                 if ((det.tipo_aviso_dg.permite_envio_ads === true || det.tipo_aviso_dg.permite_envio_ads == "true") && (det.id_op_dg != 0) && ($('#inpIdOrdenAdServer').val() !== 0 && $('#inpIdOrdenAdServer').val() !== "") && $("#inpEsFacturada").val() == 'NO') {
-                    str = str + " <button type='button' data-id='" + id + "'  id='bSendAddServer" + id + "' class='btn actions btn-outline-dark btn-sm mr-1' onclick='enviarLineaAddServer(this)' title='Enviar AddServer'> <span class='fa fa-cloud ' id='brow" + id + "'></span></button>";
+                    str = str + " <button type='button' data-id='" + id + "'  id='bSendAddServer" + id + "' class='btn actions btn-outline-dark btn-sm mr-1' onclick='enviarLineaAddServer(this)' title='Enviar a AddServer'> <span class='fa fa-cloud ' id='brow" + id + "'></span></button>";
                 }
                 else {
-                    str = str + " <button type='button' data-id='" + id + "' disabled id='bSendAddServer" + id + "' class='btn actions btn-outline-dark btn-sm mr-1' onclick='enviarLineaAddServer(this)' title='Enviar AddServer'> <span class='fa fa-cloud ' id='brow" + id + "'></span></button>";
+                    str = str + " <button type='button' data-id='" + id + "' disabled id='bSendAddServer" + id + "' class='btn actions btn-outline-dark btn-sm mr-1' onclick='enviarLineaAddServer(this)' title='Enviar a AddServer'> <span class='fa fa-cloud ' id='brow" + id + "'></span></button>";
                 }
             }
             //  Botón eliminar renglon
             //if ($("#inpEsFacturada").val() == 'SI' || $("#divOrderMain").css("background-image") != 'url("./Anulada.png")' || OpBloqueada == true) {
             if ($("#inpEsFacturada").val() == 'SI' || OpAnulada == true || OpBloqueada == true) {
-                str = str + " <button type='button' data-id='" + id + "' disabled id='bEliminar" + id + "' class='btn actions btn-outline-dark btn-sm mr-1'  onclick='deleteRenglon(this, " + det.id_Google_Ad_Manager + ")' title='Eliminar Renglon'> <span class='fa fa-remove'></span></button>";
+                str = str + " <button type='button' data-id='" + id + "' disabled id='bEliminar" + id + "' class='btn actions btn-outline-dark btn-sm mr-1'  onclick='deleteRenglon(this, " + det.id_Google_Ad_Manager + ")' title='Eliminar Detalle'> <span class='fa fa-remove'></span></button>";
             }
             else {
-                str = str + " <button type='button' data-id='" + id + "' class='btn actions btn-outline-dark btn-sm mr-1'  onclick='deleteRenglon(this, " + det.id_Google_Ad_Manager + ")' title='Eliminar Renglon'> <span class='fa fa-remove'></span></button>";
+                str = str + " <button type='button' data-id='" + id + "' class='btn actions btn-outline-dark btn-sm mr-1'  onclick='deleteRenglon(this, " + det.id_Google_Ad_Manager + ")' title='Eliminar Detalle'> <span class='fa fa-remove'></span></button>";
             }
             //  Botón modificar renglon
-            str = str + " <button type='button' data-id='" + id + "' class='btn actions btn-outline-dark btn-sm mr-1'  onclick='cargarModificarRenglon(this)' title='Modificar Renglon'> <span class='fa fa-edit'></span></button>";
+            str = str + " <button type='button' data-id='" + id + "' class='btn actions btn-outline-dark btn-sm mr-1'  onclick='cargarModificarRenglon(this)' title='Modificar Detalle'> <span class='fa fa-edit'></span></button>";
+            //  Botón clonar renglon
+            str = str + " <button type='button' data-id='" + id + "' class='btn actions btn-outline-dark btn-sm mr-1'  onclick='prevClonarD(this)' title='Clonar Detalle'> <span class='fa fa-clone'></span></button>";
             //  Alerta renglon no guardado
             str = str + "</td> <td class='col-xs-1 pl-0' style='padding-top: 16px'>";
             if (det.id_op_dg == 0) {
@@ -2862,7 +2871,13 @@
                 $("#cantidadD").attr("disabled", false);
             }
 
-            $("#GuardarRenglon").attr("onclick", "prevAddRenglon(" + rId + ")");
+            if (DetalleClon == true) {
+                $("#GuardarRenglon").attr("onclick", "prevAddRenglon(-1)");
+            }
+            else {
+                $("#GuardarRenglon").attr("onclick", "prevAddRenglon(" + rId + ")");
+            }
+
             rId--;
             var rDetalle = Detalles[rId];
             //$('#fechaDesdeD').attr("value", dateToFieldFormat(rDetalle.Fecha_desde));
@@ -3703,11 +3718,11 @@
                         });
                     }
                     else {
-                        showMessage('No hay Campañas enviadas para certificar', 'info');
+                        showMessage('No hay Detalles enviados para certificar', 'info');
                     }
                 });
             } else {
-                showMessage('No hay Campañas enviadas para certificar', 'info')
+                showMessage('No hay Detalles enviados para certificar', 'info')
             }
         }
 
@@ -3887,6 +3902,7 @@
             $("#GuardarRenglon").attr("onclick", "prevAddRenglon(-1)");
             $('#divDetailsRows').show();
             $('#divAddRow').hide();
+            DetalleClon = false;
         }
 
         function nuevaOrden() {
@@ -4400,7 +4416,7 @@
                     optionFunc: ""
                 }
             ];
-            var mensaje = "<div class='d-flex justify-content-center'>Está a punto de salir de la edición de la órden. ¿Desea ir a Clonación de OP?</div>";
+            var mensaje = "<div class='d-flex justify-content-center'>Está a punto de salir de la edición de la Orden. ¿Desea ir a Clonación de OP?</div>";
             showModal(mensaje, options);
         }
 
@@ -4408,6 +4424,18 @@
             var idOp = $("#inpOrderNumber").attr("id_op_dg");
 
             location.href = "/orden.html?orderClon=" + idOp;
+        }
+
+        function prevClonarD(idDet) {
+            DetalleClon = true;
+            /*$('#chDetalle').append('<span id="sTituloDinamicoD"> - </span>');*/
+            $('#chDetalle').text('NUEVO DETALLE - ')
+            $('#chDetalle').append('<span id="sTituloDinamicoD" style="color: #007bff;">CLONACION</span>');           
+            clonarD(idDet);
+        }
+
+        function clonarD(IdDet) {         
+            cargarModificarRenglon(IdDet);
         }
 
         function validarFechasConvenio(fecha) {
@@ -4443,7 +4471,7 @@
                     var o1 = new Date(dateToSqlFormat($('#fechaDesdeD').val()));
 
                     if (o1 < c1 || o1 > c2) {
-                        showMessage("La Vigencia de la Campaña debe estar dentro de la Vigencia del Detalle de Convenio", "error");
+                        showMessage("La Vigencia del Detalle de OP debe estar dentro de la Vigencia del Detalle de Convenio", "error");
                         $('#fechaDesdeD').datetimepicker('date', moment(dateToFieldFormat(fechaDConv), 'DD/MM/YYYY'));
                     }
                 }
@@ -4451,7 +4479,7 @@
                     var o2 = new Date(dateToSqlFormat($('#fechaHastaD').val()));
 
                     if (o2 < c1 || o2 > c2) {
-                        showMessage("La Vigencia de la Campaña debe estar dentro de la Vigencia del Detalle de Convenio", "error");
+                        showMessage("La Vigencia del Detalle de OP debe estar dentro de la Vigencia del Detalle de Convenio", "error");
                         $('#fechaHastaD').datetimepicker('date', moment(dateToFieldFormat(fechaHConv), 'DD/MM/YYYY'));
                     }
                 }

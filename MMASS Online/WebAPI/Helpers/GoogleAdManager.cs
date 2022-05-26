@@ -273,7 +273,7 @@ namespace WebApi.Helpers
             Order camp = GetOrder(orderId);
             string result = @"<div class='breakBefore'><div class='divImgCert add-mb-6'></div><p><span style='font-weight: bold;'>Orden Publicitaria: </span>" + camp.name + "</p><p class='add-mb-6'><span style='font-weight: bold;'>Anunciante: </span ><span id='txtAnunciante'>" + anunciante + "</span></p>";
             result = result + "<table id='detailsTable' class='table add-mb-6'>";
-            result = result + " <thead><tr><th class='certTableHeader'> Campaña </th> <th class='sitio certTableHeader'> Sitio </th> <th class='pautado certTableHeader headerObjetivo'> Objetivo </th><th class='impreso certTableHeader'> Impresiones </th><th class='certTableHeader'> Clicks </th><th class='ctr pautado certTableHeader'> CTR </th> <th class='ctr impreso certTableHeader'> CTR </th><th class='certTableHeader' width='1px'></th>";
+            result = result + " <thead><tr><th class='certTableHeader'> Detalle </th> <th class='sitio certTableHeader'> Sitio </th> <th class='pautado certTableHeader headerObjetivo'> Objetivo </th><th class='impreso certTableHeader'> Impresiones </th><th class='certTableHeader'> Clicks </th><th class='ctr pautado certTableHeader'> CTR </th> <th class='ctr impreso certTableHeader'> CTR </th><th class='certTableHeader' width='1px'></th>";
             result = result + "</tr></thead><tbody>";
             using (LineItemService lineItemService = user.GetService<LineItemService>())
             {
