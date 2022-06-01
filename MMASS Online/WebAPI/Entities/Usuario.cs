@@ -126,7 +126,7 @@ namespace WebApi.Entities
                 {
                     if (existeUserTrafico(Nombre) == true)
                     {
-                        sql = "update usuarios set clave_web = @clave_web where nombre = @nombre, usrrol = @usrrol";
+                        sql = "update usuarios set clave_web = @clave_web, usrrol = @usrrol where nombre = @nombre";
                     }
                     else
                     {
