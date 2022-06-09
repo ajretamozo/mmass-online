@@ -414,7 +414,7 @@
 
                     <!-- Modal Header -->
                     <div class="modal-header">
-                        <h4 class="modal-title" id="conveniosModalTitle">Convenios</h4>
+                        <h4 class="modal-title" id="conveniosModalTitle">CONVENIOS</h4>
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                     </div>
 
@@ -494,7 +494,7 @@
 
                     <!-- Modal footer -->
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
                     </div>
 
                 </div>
@@ -507,7 +507,7 @@
 
                     <!-- Modal Header -->
                     <div class="modal-header">
-                        <h4 class="modal-title" id="modifModalTitle">Modificaciones OP en AdServer</h4>
+                        <h4 class="modal-title" id="modifModalTitle">MODIFICACIONES OP EN ADSERVER</h4>
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                     </div>
 
@@ -551,7 +551,7 @@
 
                     <!-- Modal Header -->
                     <div class="modal-header">
-                        <h4 class="modal-title" id="modifModalDTitle">Modificaciones OP en AdServer</h4>
+                        <h4 class="modal-title" id="modifModalDTitle">MODIFICACIONES OP EN ADSERVER</h4>
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                     </div>
 
@@ -588,6 +588,56 @@
                     <div class="modal-footer">
                         <!--<button type="button" class="btn btn-danger" onclick="ActualizarOrden()">Aplicar todo</button>-->
                         <!--<button type="button" class="btn btn-danger" data-dismiss="modal">Aplicar cambios</button>-->
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <!--Modal Sincronizar Anunciantes-->
+        <div class="modal fade" id="sincAnunModal" style="overflow-y: auto">
+            <div class="modal-dialog modal-xl modalConv">
+                <div class="modal-content shadow p-3 mb-5 bg-white rounded">
+
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="sincAnunModalTitle">SINCRONIZAR ANUNCIANTES</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+
+                    <!-- Modal body -->
+                    <div class="modal-body" id="sincAnunModalBody">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label for="descFiltro">Anunciante AdServer: </label>
+                                <div class="input-group enterSearch"> <input type="text" id="descFiltro" class="form-control"></div>
+                            </div>
+                            <div class="col-md-4 d-flex align-items-end">
+                                <button type="button" class="btn btn-dark btn-sm mx-1" onclick="buscarAnunGam()">
+                                    <span class="fa fa-search"></span> Buscar
+                                </button>
+                            </div>
+                        </div>
+                        <div class="row" style="padding-left: 20px; padding-right: 20px;">
+                            <!--Tabla Sincronizar Anunciantes-->
+                            <div class="table-responsive mt-2 tableFixHead">
+                                <table class="table table-fixed table-striped" id="tModifCabecera">
+                                    <thead class="thead-dark">
+                                        <tr id="header" align="center">
+                                            <th class="col-xs-2">ID</th>
+                                            <th class="col-xs-4">Anunciante Ad Server</th>
+                                            <th class="col-xs-4">Contacto MMASS</th>
+                                            <th class="col-xs-2"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="TableSincAnun" align="center"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
                         <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
                     </div>
 
@@ -673,7 +723,7 @@
                                 </div>
                                 <div class="col-lg-4">
                                     <!--<label>Orden Relacionada</label>
-                                    <select class="form-control" id="selOrdenRelacionada" onchange="enableConf()" disabled="disabled"></select>-->
+                                <select class="form-control" id="selOrdenRelacionada" onchange="enableConf()" disabled="disabled"></select>-->
                                     <label>Descripción</label>
                                     <div class="input-group"> <input type="text" id="inpDescOP" class="form-control"> </div>
                                 </div>
@@ -795,8 +845,8 @@
                                         </button>
                                     </div>
                                     <!--<div class="col-lg-1" style="left: -10;left: -10;right: 40px;top: 2px;">
-                                        <span class="fa fa-refresh fa-pulse invisible" id="spanCompActD" title="Hay modificaciones en AdServer"></span>
-                                    </div>-->
+                                    <span class="fa fa-refresh fa-pulse invisible" id="spanCompActD" title="Hay modificaciones en AdServer"></span>
+                                </div>-->
                                 </div>
 
                                 <div class="table-responsive mt-2">
@@ -960,8 +1010,8 @@
                                         <div class="row">
                                             <div class="col-lg-4">
                                                 <!--<button type="button" id="bClonarD" disabled="disabled" class="btn actions btn-dark btn-sm mx-1" onclick="prevClonarD()">
-                                                    <span class="fa fa-clone"></span> Clonar Detalle
-                                                </button>-->
+                                                <span class="fa fa-clone"></span> Clonar Detalle
+                                            </button>-->
                                             </div>
                                             <div class="col-lg-4"></div>
                                             <div class="col-lg-4 d-flex justify-content-end">
@@ -2689,7 +2739,12 @@
             //  Botón modificar renglon
             str = str + " <button type='button' data-id='" + id + "' class='btn actions btn-outline-dark btn-sm mr-1'  onclick='cargarModificarRenglon(this)' title='Modificar Detalle'> <span class='fa fa-edit'></span></button>";
             //  Botón clonar renglon
-            str = str + " <button type='button' data-id='" + id + "' class='btn actions btn-outline-dark btn-sm mr-1'  onclick='prevClonarD(this)' title='Clonar Detalle'> <span class='fa fa-clone'></span></button>";
+            if ($("#inpEsFacturada").val() == 'SI' || OpAnulada == true || OpBloqueada == true) {
+                str = str + " <button type='button' data-id='" + id + "' disabled id='bClonarReng" + id + "' class='btn actions btn-outline-dark btn-sm mr-1'  onclick='prevClonarD(this)' title='Clonar Detalle'> <span class='fa fa-clone'></span></button>";
+            }
+            else {
+                str = str + " <button type='button' data-id='" + id + "' class='btn actions btn-outline-dark btn-sm mr-1'  onclick='prevClonarD(this)' title='Clonar Detalle'> <span class='fa fa-clone'></span></button>";
+            }
             //  Alerta renglon no guardado
             str = str + "</td> <td class='col-xs-1 pl-0' style='padding-top: 16px'>";
             if (det.id_op_dg == 0) {
@@ -3010,7 +3065,7 @@
             //}, function data() { });
 
             //AGREGUE:
-            if (rDetalle.id_Google_Ad_Manager != 0 && rDetalle.id_Google_Ad_Manager != null && OpClon == false) {
+            if (rDetalle.id_Google_Ad_Manager != 0 && rDetalle.id_Google_Ad_Manager != null && OpClon == false && DetalleClon == false) {
                 $("#inpIdAdServer").val(rDetalle.id_Google_Ad_Manager);
                 $('#inpIdAdServer').css("background-color", "#c3e6cb");
                 //var idOrden = $("#inpOrderNumber").attr("id_op_dg");
@@ -3066,9 +3121,9 @@
             if ($('#selRedes').val() == 0) {
                 mensaje += "Debe seleccionar una red AdServer";
             }
-            if ($("#inpDescOP").val() == "") {
-                mensaje += "\r\n Debe indicar una Descripción de OP";
-            }
+            //if ($("#inpDescOP").val() == "") {
+            //    mensaje += "\r\n Debe indicar una Descripción de OP";
+            //}
             return mensaje;
         }
 
@@ -3113,8 +3168,19 @@
             }
             else {
                 if (r == -2) {
-                    //DEBERIA PREGUNTAR SI QUIERE CREAR EL ANUNCIANTE EN GOOGLE AD MANAGER
-                    showMessage("El Contacto no esta sincronizado con Google Ad Manager", "error");
+                    options = [
+                        {
+                            optionDesc: "Aceptar",
+                            optionFunc: "sincAnunciante()"
+                        },
+                        {
+                            optionDesc: "Cancelar",
+                            optionFunc: ""
+                        }
+                    ];
+                    var mensaje = "<div class='d-flex justify-content-center' style='text-align: center;'>El Contacto no está sincronizado con Google Ad Manager. ¿Desea sincronizarlo?</div>";
+                    showModal(mensaje, options);
+                    /*showMessage("El Contacto no esta sincronizado con Google Ad Manager", "error");*/
                 } else {
                     showMessage("Ocurrio un error al intentar guardar la Orden en Google Ad Manager", "error");
                 }
@@ -4416,7 +4482,7 @@
                     optionFunc: ""
                 }
             ];
-            var mensaje = "<div class='d-flex justify-content-center'>Está a punto de salir de la edición de la Orden. ¿Desea ir a Clonación de OP?</div>";
+            var mensaje = "<div class='d-flex justify-content-center' style='text-align: center;'>Está a punto de salir de la edición de la Orden. ¿Desea ir a Clonación de OP?</div>";
             showModal(mensaje, options);
         }
 
@@ -4504,6 +4570,106 @@
                 console.log("Medios: " + data1[2].statusText + "; Formas de uso: " + data2[2].statusText + "Tipo Aviso: " + data3[2].statusText + ";");
                 showMessage("Se produjo un error al cargar los campos, intentelo nuevamente", type = "alert");
             });
+        }
+
+        function sincAnunciante() {
+
+            $.when($("#modalCenter").modal('hide')).then(function () {
+                sincAnunciante2();
+            });
+
+            //$("#modalCenter").modal('hide'); 
+            //$("#sincAnunModal").modal('show'); 
+        }
+
+        function sincAnunciante2() {
+            $("#sincAnunModal").modal('show');
+        }
+
+        function buscarAnunGam() {
+            /*rows = $("tr").not("#header");*/
+            desc = $("#descFiltro").val();
+            red = $("#selRedes").val();
+
+            if (red != 0 && red != null) {
+                var objParametro = {};
+
+                objParametro.ParameterName = "nombre";
+                objParametro.Value = desc;
+
+                callWS("googleAdManager", "getAnunciantes", JSON.stringify(objParametro), onGetAnuncianteGAM);
+            }
+            else {
+                showMessage("Seleccione una Red AdServer", "alert");
+            }
+        }
+
+        function onGetAnuncianteGAM(data) {
+            if (data.length != 0) {
+                getAnunciantes(data);
+            }
+            else {
+                onCargarTablaSinc(data)
+                showMessage("No se enontraron Anunciantes", "info");
+            }
+        }
+
+        function getAnunciantes(anunciantesGAM) {
+            idRed = $('#selRedes').val();
+            anunciante = {};
+            anunciante.id = $("#selAnunciante").val();
+            anunciante.razonSocial = $("#selAnunciante option:selected").text();
+            /*$("#pleaseWaitDialog").modal();*/
+            onCargarTablaSinc(anunciante, anunciantesGAM, idRed);
+        }
+
+        function onCargarTablaSinc(anunciante, anunciantesGAM, idRed) {
+            $("#TableSincAnun tr").remove()       
+
+            $.each(anunciantesGAM, function (it, anuncianteGAM) {
+                var str = '';
+                str = "<tr>";
+                str = str + "<td class='col-xs-2' > " + anuncianteGAM.idContactoDigital + "</td > ";
+                str = str + "<td class='col-xs-4' > " + anuncianteGAM.razonSocial + "</td >";
+                str = str + "<td class='col-xs-4' > <select class='form-control' style = 'width: 426px;' id=sel" + anuncianteGAM.idContactoDigital + "> <option value=" + anunciante.id + ">" + anunciante.razonSocial + " </option> </select > </td >";
+                str = str + "<td class='col-xs-2' > <button type='button' id=button" + anuncianteGAM.idContactoDigital + " class='btn btn-secondary' onClick='vincular(" + anuncianteGAM.idContactoDigital + ", " + idRed + ")'>Vincular</button> </td >";
+                str = str + "</tr>";
+   
+                $("#TableSincAnun").append(str);
+
+                var idAGam = "#sel" + anuncianteGAM.idContactoDigital;
+                var idButton = "#button" + anuncianteGAM.idContactoDigital;
+                $(idAGam).val(anuncianteGAM.idContactoDigital);
+                if ($(idAGam).val() != undefined) {
+                    $(idButton).removeClass("btn-primary").addClass("btn-success");
+                    $(idButton).css("background-color", "#c3e6cb");
+                }
+            });
+        }
+
+        function vincular(idGAM, idRed) {
+            var idGAMSel = "#sel" + idGAM;
+            idGAMSel = idGAMSel + ">option:selected";
+            if ($(idGAMSel).val() == undefined) {
+                showMessage("Seleccione un anunciante en el dropdown", "info");
+            } else {
+                var cont = {};
+                cont.Id = $(idGAMSel).val();
+                cont.IdContactoDigital = idGAM;
+                cont.IdRed = idRed;
+                callWS("contactos", "saveASRelation", JSON.stringify(cont), function (data) { onVincular(data, idGAM) });
+            }
+        }
+
+        function onVincular(data, idGAM) {
+            if (data == true) {
+                var idButton = "#button" + idGAM;
+                $(idButton).removeClass("btn-primary").addClass("btn-success");
+                $(idButton).css("background-color", "#c3e6cb");
+                showMessage("Anunciante vinculado", "success");
+            } else {
+                showMessage("Ocurrio un error al vincular el Anunciante", "alert");
+            }
         }
 
     </script>
