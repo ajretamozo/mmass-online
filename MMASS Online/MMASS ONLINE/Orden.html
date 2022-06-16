@@ -1267,6 +1267,7 @@
             }
 
             //si la OP viene de SincronizarOP
+            OpSinc = true;
             var op1 = getUrlParameter("orderAdServer")
             if (op1 != undefined) {
                 arr = op1.split(",");
@@ -1471,7 +1472,13 @@
                 $('#pTitulo').append('<span id="sTituloDinamico" style="color: #007bff;">CLONACION</span>');
             }
 
-            $("#selEmpresa").attr("disabled", true);
+            if (OpSinc == true) {
+                $("#bAnular").attr("disabled", true);
+                $("#bClonar").attr("disabled", true);
+            }
+            else {
+                $("#selEmpresa").attr("disabled", true);
+            }
 
             //data.Id_condpagoap = 1; //Arreglar
 
@@ -1714,6 +1721,11 @@
                 }
             })
 
+            if (DetallesASDelete.length > 0) {
+                var Orden = {};
+                Orden.Detalles = DetallesASDelete;
+                callWS("googleAdManager", "archivarLineItems", JSON.stringify(Orden));
+            }
 
             //if ($("#selOrdenRelacionada").val() == "" || $("#selOrdenRelacionada").val() == undefined) {
             data.id_op_relacionada = -1;
@@ -1823,6 +1835,7 @@
 
                 /*document.body.style.backgroundImage = "none";*/
                 OpClon = false;
+                OpSinc = false;
 
                 $("#bAnular").attr("disabled", false);
                 $("#bClonar").attr("disabled", false);
@@ -1863,7 +1876,7 @@
                 //if ($('#inpIdOrdenAdServer').val() !== 0 && $('#inpIdOrdenAdServer').val() !== "") {
                 //    $("#bSendOrdenAddServer").attr("disabled", true);
                 //}
-                //punto de control
+                DetallesASDelete.length = 0;
                 Detalles = data.op.detalles;
                 recargarRenglones();
 
@@ -2342,7 +2355,10 @@
         OpBloqueada = false;
         OpClon = false;
         OpAnulada = false;
+        OpSinc = false;
         DetalleClon = false;
+        //Parametro global para llevar los detalles sincronizados con AdServer a eliminar
+        DetallesASDelete = [];
         //Parametro global para llevar los detalles, ver como mejorar esto
         Detalles = [];
 
@@ -2401,9 +2417,9 @@
 
         //punto de control
         function addRenglon(id) {
-            if (id > 0) {
-                id--;
-            }
+            //if (id > 0) {
+            //    id--;
+            //}
 
             var cantMedios = $("#selMediosD option:selected").length;
             if ($("#selAnunciante").val() == null) {
@@ -2422,7 +2438,8 @@
             var rDetalle = {};
 
             if (id >= 0) {
-                rDetalle = Detalles[id];
+                /*rDetalle = Detalles[id];*/
+                var rDetalle = Detalles.find(detalle => detalle.id_detalle == id);
                 rDetalleCopy = JSON.parse(JSON.stringify(rDetalle));
             }
 
@@ -2885,14 +2902,14 @@
             //    $("#selDetConvenio").attr("disabled", true);
             //}
             idRed = $('#selRedes').val();
-            //if ($("#inpEsFacturada").val() == 'SI' || $("#divOrderMain").css("background-image") != 'url("./Anulada.png")' || OpYaAbierta == true) {
             if ($("#inpEsFacturada").val() == 'SI' || OpAnulada == true || OpYaAbierta == true) {
                 bloquearCamposDetalle();
             }
 
             var rId = $(r).attr("data-id");
-            rId--;
-            var rDetalle = Detalles[rId];
+            //rId--;
+            //var rDetalle = Detalles[rId];
+            var rDetalle = Detalles.find(detalle => detalle.id_detalle == rId);
 
             if (rDetalle.id_det_conv > 0) {
                 cargarSelectMultiConv($(r).attr("data-id"));
@@ -2901,21 +2918,22 @@
                 $.when(
                     callWS("medios", "getPorEmpresa", JSON.stringify(idEmpresa), function (data) { onPopulateSelectDone(data, 'selMediosD', 'id_medio', 'desc_medio'); }),
                     callWS("tarifas", "getFormasUsoAll", '', function (data) { onPopulateSelectDone(data, 'selTipoTarifaD', 'id', 'descripcion'); }),
-                    //AGREGUE callws medidas, areasgeo, emplaza:
                     callWS("medios", "getAllM", '', function (data) { onPopulateSelectMedidas(data, 'selMedidasD', 'id_medidadigital', 'ancho', 'alto'); }),
                     callWS("medios", "getAllA", '', function (data) { onAreasGeoGetAll(data, 'selAreasGeo', 'Id_area', 'descripcion', 'Codigo_area', 'tipo'); }),
                     callWS("medios", "getAllE", JSON.stringify(idRed), function (data) { onPopulateSelectEmplaza(data, 'selEmplazaD', 'id_emplazamiento', 'descripcion', 'codigo_emplazamiento'); }),
                     //callWS("programa", "getAllProgramasMedio", "1", function (data) {onPopulateSelectDone(data,'selPrograma','id_programa','desc_programa')}),
                     //callWS("tarifas", "getAll", '', function (data) { onTarifasGetAll(data, 'selTarifaD', 'id_tarifa_dg', 'descripcion'); }),
                     callWS("Tipos_avisos", "getAll", '', function (data) { onTipoAvisoGetAll(data, 'selTipoAvisoD', 'Id_tipo_aviso_dg', 'descripcion', 'Permite_envio_ads'); })
-                ).then(function () { onCargarModificarRenglon($(r).attr("data-id")) }, function (data1, data2, data3) {
+                    /*).then(function () { onCargarModificarRenglon($(r).attr("data-id")) }, function (data1, data2, data3) {*/
+                    ).then(function () { onCargarModificarRenglon(rDetalle) }, function (data1, data2, data3) {
                     console.log("Medios: " + data1[2].statusText + "; Formas de uso: " + data2[2].statusText + "Tipo Aviso: " + data3[2].statusText + ";");
                     showMessage("Se produjo un error al cargar los campos, intentelo nuevamente", type = "alert");
                 });
             }
         }
 
-        function onCargarModificarRenglon(rId) {
+        /*function onCargarModificarRenglon(rId) {*/
+        function onCargarModificarRenglon(rDetalle) {
             //cargarNuevoRenglon();
             //AGREGUE:
             /*if ($("#inpEsFacturada").val() == 'SI' || $("#divOrderMain").css("background-image") != 'url("./Anulada.png")') {*/
@@ -2929,12 +2947,15 @@
             if (DetalleClon == true) {
                 $("#GuardarRenglon").attr("onclick", "prevAddRenglon(-1)");
             }
+            //else {
+            //    $("#GuardarRenglon").attr("onclick", "prevAddRenglon(" + rId + ")");
+            //}
             else {
-                $("#GuardarRenglon").attr("onclick", "prevAddRenglon(" + rId + ")");
+                $("#GuardarRenglon").attr("onclick", "prevAddRenglon(" + rDetalle.id_detalle + ")");
             }
 
-            rId--;
-            var rDetalle = Detalles[rId];
+            /*rId--;*/
+            /*var rDetalle = Detalles[rId];*/
             //$('#fechaDesdeD').attr("value", dateToFieldFormat(rDetalle.Fecha_desde));
             //$('#fechaHastaD').attr("value", dateToFieldFormat(rDetalle.Fecha_hasta));
             $('#fechaDesdeD').datetimepicker('date', moment(dateToFieldFormat(rDetalle.fecha_desde), 'DD/MM/YYYY'));
@@ -3182,21 +3203,35 @@
                     showModal(mensaje, options);
                     /*showMessage("El Contacto no esta sincronizado con Google Ad Manager", "error");*/
                 } else {
-                    showMessage("Ocurrio un error al intentar guardar la Orden en Google Ad Manager", "error");
+                    showMessage("Ocurrio un error al intentar exportar la Orden a Google Ad Manager", "error");
                 }
             }
 
         }
 
         function deleteRenglon(r, id_Google_Ad_Manager) {
-            //archivo la linea de pedido en GAM
+            //sumo el detalle a la lista para archivar las lineas de pedidos en GAM
             if (id_Google_Ad_Manager > 0) {
-                callWS("googleAdManager", "archivarLineItems", JSON.stringify(id_Google_Ad_Manager));
+                var Det = {}
+                Det.id_Google_Ad_Manager = id_Google_Ad_Manager;
+                DetallesASDelete.push(Det);
             }
 
             r.parentElement.parentElement.remove();
 
-            Detalles.splice(($(r).attr("data-id")) - 1, 1)
+            /*Detalles.splice(($(r).attr("data-id")) - 1, 1)*/
+           
+            var idr = $(r).attr("data-id");
+            var indexOfObject;
+       
+                for (let index = 0; index < Detalles.length; index++) {
+                    if (Detalles[index].id_detalle == idr) {
+                        indexOfObject = index;
+                    }
+                }           
+
+            Detalles.splice(indexOfObject, 1);
+
             if (Detalles.length == 0) {
                 $("#selAgencia").attr("disabled", false);
                 $("#selAnunciante").attr("disabled", false);

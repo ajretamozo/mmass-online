@@ -199,7 +199,7 @@ namespace WebApi.Helpers
                 // Create a statement to select placements.
                 int pageSize = StatementBuilder.SUGGESTED_PAGE_LIMIT;
                 StatementBuilder statementBuilder = new StatementBuilder()
-                   .Where("OrderId = :oID").OrderBy("id ASC")
+                   .Where("OrderId = :oID and status != 'ARCHIVED'").OrderBy("id ASC")
                    .Limit(pageSize)
                    .AddValue("oID", idOrder);
 

@@ -122,9 +122,9 @@ namespace WebApi.Controllers
         }
 
         [HttpPost("archivarLineItems")]
-        public IActionResult ArchivarLineItems([FromBody] long lineItemId)
+        public IActionResult ArchivarLineItems(Dg_orden_pub_ap op)
         {
-            var res = _GoogleAdManagerService.ArchivarLineItems(lineItemId);
+            var res = _GoogleAdManagerService.ArchivarLineItems(op);
             return Ok(res);
         }
 

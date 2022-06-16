@@ -33,7 +33,7 @@ namespace WebApi.Services
         IEnumerable<Dg_emplazamientos> GetEmplazamientos();
         IEnumerable<Dg_medidas> GetMedidas();
         IEnumerable<Dg_medidas> GetMedidasTodasRedes(List<Parametro> parametros);
-        long ArchivarLineItems(long lineItemIdt);
+        long ArchivarLineItems(Dg_orden_pub_ap op);
         void CambiarRed(string netCode);
         long GetRedActual();
         IEnumerable<Dg_orden_pub_ap> GetOpNuevas(List<Parametro> parametros);
@@ -199,12 +199,13 @@ namespace WebApi.Services
             return GoogleAdManager.GetMedidasTodasRedes(parametros);
         }
 
-        public long ArchivarLineItems(long lineItemId)
+        public long ArchivarLineItems(Dg_orden_pub_ap op)
         {
             long result = 0;
-
-            result = GoogleAdManager.ArchivarLineItem(lineItemId);
-
+            foreach(Dg_orden_pub_as det in op.Detalles)
+            {
+                result = GoogleAdManager.ArchivarLineItem(det.Id_Google_Ad_Manager);
+            }
             return result;
         }
 
