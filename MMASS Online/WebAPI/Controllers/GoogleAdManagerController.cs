@@ -161,5 +161,12 @@ namespace WebApi.Controllers
             var res = _GoogleAdManagerService.ComprobarModificacionesD(idGam);
             return Ok(res);
         }
+
+        [HttpPost("obtenerProgresoLineasGam")]
+        public IActionResult obtenerProgresoLineasGam([FromBody] Dg_orden_pub_ap order)
+        {
+            var res = _GoogleAdManagerService.obtenerProgresoLineasGam(order);
+            return Ok(res);
+        }
     }
 }

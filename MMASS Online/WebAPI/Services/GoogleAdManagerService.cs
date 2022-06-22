@@ -39,6 +39,7 @@ namespace WebApi.Services
         IEnumerable<Dg_orden_pub_ap> GetOpNuevas(List<Parametro> parametros);
         ListaParametro ComprobarModificaciones(Dg_orden_pub_ap order);
         ListaParametro ComprobarModificacionesD(long idGam);
+        List<Parametro> obtenerProgresoLineasGam(Dg_orden_pub_ap order);
     }
 
     public class GoogleAdManagerService : IGoogleAdManagerService
@@ -907,5 +908,36 @@ namespace WebApi.Services
             return cambiosL;
         }
 
+        public List<Parametro> obtenerProgresoLineasGam(Dg_orden_pub_ap order)
+        {
+            List<Parametro> parametros =new List<Parametro>();
+            List<LineItem> lineasGAM = new List<LineItem>();
+            lineasGAM = GoogleAdManager.getLineItemsByOrder(order.Id_Google_Ad_Manager);
+            foreach (LineItem linea in lineasGAM)
+            {
+                Parametro parametro=new Parametro();
+                foreach (Dg_orden_pub_as det in order.Detalles)
+                {
+                    if (linea.id == det.Id_Google_Ad_Manager && linea.lineItemType != LineItemType.SPONSORSHIP)
+                    {
+                        double porcentaje;
+                        if (linea.deliveryIndicator != null)
+                        {
+                            porcentaje = Math.Floor((linea.deliveryIndicator.actualDeliveryPercentage / linea.deliveryIndicator.expectedDeliveryPercentage) * 100);
+
+                        }
+                        else
+                        {
+                            porcentaje = 0;
+                        }
+                        parametro.ParameterName=det.Id_detalle.ToString();
+                        parametro.Value = porcentaje.ToString();
+                        parametros.Add(parametro);
+                    }
+                }
+            }
+            
+            return parametros;
+        }
     }
 }

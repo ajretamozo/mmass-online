@@ -1479,6 +1479,44 @@ namespace WebApi.Helpers
             }
             return result;
         }
+        //public static List<long> obtenerProgresoLineasGam(long idOrder)
+        //{
+        //     List<LineItem> Lineas = new List<LineItem>();
+
+        //    using (LineItemService lineItemService = user.GetService<LineItemService>())
+        //    {
+        //        // Create a statement to select placements.
+        //        int pageSize = StatementBuilder.SUGGESTED_PAGE_LIMIT;
+        //        StatementBuilder statementBuilder = new StatementBuilder()
+        //           .Where("OrderId = :oID and status != 'ARCHIVED'").OrderBy("id ASC")
+        //           .Limit(pageSize)
+        //           .AddValue("oID", idOrder);
+
+        //        // Retrieve a small amount of placements at a time, paging through until all
+        //        // placements have been retrieved.
+        //        int totalResultSetSize = 0;
+        //        do
+        //        {
+        //            LineItemPage page =
+        //                lineItemService.getLineItemsByStatement(statementBuilder.ToStatement());
+
+        //            // Print out some information for each placement.
+        //            if (page.results != null)
+        //            {
+        //                totalResultSetSize = page.totalResultSetSize;
+        //                int i = page.startIndex;
+        //                foreach (LineItem lineItem in page.results)
+        //                {
+        //                    Lineas.Add(lineItem);
+        //                }
+        //            }
+
+        //            statementBuilder.IncreaseOffsetBy(pageSize);
+        //        } while (statementBuilder.GetOffset() < totalResultSetSize);
+
+        //    }
+        //    return Lineas;
+        //}
 
     }
 }

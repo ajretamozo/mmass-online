@@ -1448,6 +1448,7 @@
 
             if (data.id_Google_Ad_Manager > 0 && (data.id_op_dg != undefined && data.id_op_dg != 0) && data.es_anulada == 0 && data.es_facturada == false && OpClon == false) {
                 comprobarModificaciones(data.id_op_dg, data.id_Google_Ad_Manager);
+                obtenerProgresoLineasGam(data);
             }
 
             if (data.bloqueado == 0 && OpClon == false) {
@@ -1508,6 +1509,8 @@
             getArchivos(data.id_op_dg.toString());
             calculateTotals();
         }
+
+
 
         function cargarProductosyOPRelacionada(idAgencia, idAnunciante, idProducto, idOpRelacionada) {
             data = {};
@@ -2695,6 +2698,10 @@
             calculateTotals();
             if ($('#inpIdOrdenAdServer').val() !== 0 && $('#inpIdOrdenAdServer').val() !== "" && $("#inpOrderNumber").attr("id_op_dg") > 0) {
                 comprobarModificaciones($("#inpOrderNumber").attr("id_op_dg"), $('#inpIdOrdenAdServer').val());
+                var op = {};
+                op.Id_Google_Ad_Manager = $('#inpIdOrdenAdServer').val();
+                op.Detalles = Detalles;
+                obtenerProgresoLineasGam(op);
             }
         }
 
@@ -2734,7 +2741,7 @@
             str = str + "<td class='col-xs-2 pr-0 actions d-flex justify-content-center align-content-start'>";
             $('.disableOnEdit').attr("disabled", false);
             //  Botón enviar renglon a AdServer
-            if (det.tipo_aviso_dg == "" || det.tipo_aviso_dg == undefined || det.tipo_aviso_dg == null) {
+            if (det.tipo_aviso_dg == "" || det.tipo_aviso_dg == undefined || det.tipo_aviso_dg == null || OpAnulada == true || OpBloqueada == true) {
                 str = str + " <button type='button' data-id='" + id + "' disabled id='bSendAddServer" + id + "' class='btn actions btn-outline-dark btn-sm mr-1' onclick='enviarLineaAddServer(this)' title='Enviar AddServer'> <span class='fa fa-cloud ' id='brow" + id + "'></span></button>";
             }
             else {
@@ -2762,12 +2769,17 @@
             else {
                 str = str + " <button type='button' data-id='" + id + "' class='btn actions btn-outline-dark btn-sm mr-1'  onclick='prevClonarD(this)' title='Clonar Detalle'> <span class='fa fa-clone'></span></button>";
             }
+            str = str + "</td>";
+            //  Progreso de Linea de Pedido en AdServer
+            str = str + "<td id='tdProg" + id + "' style='padding-top: 16px;'><span class='fa fa-square invisible' id='spanProg" + id + "' title=''></span></td>";
+            str = str + "<td id='tdPorc" + id + "' style='padding-top: 18px;padding-left: 0px;font-size: smaller;'></td>";
             //  Alerta renglon no guardado
-            str = str + "</td> <td class='col-xs-1 pl-0' style='padding-top: 16px'>";
+            str = str + "<td class='col-xs-1 pl-0' style='padding-top: 16px'>";
             if (det.id_op_dg == 0) {
                 str = str + "<span class='fa fa-exclamation fa-pulse' id='brow" + id + "' title='Detalle no guardado''></span></td>";
             }
-            str = str + "<td id='tdMod" + id + "' style='padding-top: 16px;'><span class='fa fa-refresh fa-pulse invisible' id='spanCompActD" + id + "' title='Hay modificaciones en AdServer'></span></td></tr>";
+            // Alerta Modificaciones en Linea de Pedido en AdServer
+            str = str + "<td id='tdMod" + id + "' style='padding-top: 16px;'><span class='fa fa-refresh fa-pulse invisible' id='spanCompActD" + id + "' title='Hay modificaciones en AdServer'></span></td></td></tr>";
             $("#TableRenglones").append(str);
             //  Colorear verde renglon enviado a AdServer
             if (det.id_Google_Ad_Manager != undefined && det.id_Google_Ad_Manager != 0 && OpClon == false) {
@@ -4705,6 +4717,25 @@
             } else {
                 showMessage("Ocurrio un error al vincular el Anunciante", "alert");
             }
+        }
+
+        function obtenerProgresoLineasGam(op) {
+            callWS("googleAdManager", "obtenerProgresoLineasGam", JSON.stringify(op), function (data) { onObtenerProg(data) });
+        }
+
+        function onObtenerProg(data) {
+            $.each(data, function (it, parametro) {
+                var valorInt = parseInt(parametro.value);
+                if (valorInt < 100) {
+                    $("#spanProg" + parametro.parameterName).css("color", "crimson");
+                }
+                else {
+                    $("#spanProg" + parametro.parameterName).css("color", "forestgreen");
+                }
+                $("#spanProg" + parametro.parameterName).prop('title', 'Progreso de Linea de Pedido: ' + parametro.value + '%');
+                $("#tdPorc" + parametro.parameterName).html(parametro.value + "%");
+                $("#spanProg" + parametro.parameterName).removeClass("invisible");
+            }); 
         }
 
     </script>

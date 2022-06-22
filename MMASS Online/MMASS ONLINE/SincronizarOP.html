@@ -518,22 +518,20 @@
 
         function getAnunciantes(anunciantesGAM) {
             idRed = $('#selRedes').val();
-            anunciante = {};
-            anunciante.id = $("#selAnunciante").val();
-            anunciante.razonSocial = $("#selAnunciante option:selected").text();
-            /*$("#pleaseWaitDialog").modal();*/
-            onCargarTablaSinc(anunciante, anunciantesGAM, idRed);
+            $("#pleaseWaitDialog").modal();
+            callWS("contactos", "getAnunciantes", '', function (data) { onCargarTablaSinc(data, anunciantesGAM, idRed); });
         }
 
-        function onCargarTablaSinc(anunciante, anunciantesGAM, idRed) {
+        function onCargarTablaSinc(data, anunciantesGAM, idRed) {
             $("#TableSincAnun tr").remove()
+            var strOption = llenarStrOption(data);
 
             $.each(anunciantesGAM, function (it, anuncianteGAM) {
                 var str = '';
                 str = "<tr>";
                 str = str + "<td class='col-xs-2' > " + anuncianteGAM.idContactoDigital + "</td > ";
                 str = str + "<td class='col-xs-4' > " + anuncianteGAM.razonSocial + "</td >";
-                str = str + "<td class='col-xs-4' > <select class='form-control' style = 'width: 426px;' id=sel" + anuncianteGAM.idContactoDigital + "> <option value=" + anunciante.id + ">" + anunciante.razonSocial + " </option> </select > </td >";
+                str = str + "<td class='col-xs-4' > <select class='form-control' style = 'width: 426px;' id=sel" + anuncianteGAM.idContactoDigital + ">" + strOption + "</td >";
                 str = str + "<td class='col-xs-2' > <button type='button' id=button" + anuncianteGAM.idContactoDigital + " class='btn btn-secondary' onClick='vincular(" + anuncianteGAM.idContactoDigital + ", " + idRed + ")'>Vincular</button> </td >";
                 str = str + "</tr>";
 
@@ -549,6 +547,18 @@
             });
         }
 
+        function llenarStrOption(anunciantes) {
+            var str = '<option value="-1">  </option>';
+            $.each(anunciantes, function (it, anun) {
+
+                str = str + '<option idContacto="' + anun.id + '" value="' + anun.idContactoDigital + '">' + anun.razonSocial + ' </option>';
+
+            });
+            str = str + "</select >";
+            return str;
+
+        }
+
         function vincular(idGAM, idRed) {
             var idGAMSel = "#sel" + idGAM;
             idGAMSel = idGAMSel + ">option:selected";
@@ -556,7 +566,7 @@
                 showMessage("Seleccione un anunciante en el dropdown", "info");
             } else {
                 var cont = {};
-                cont.Id = $(idGAMSel).val();
+                cont.Id = $(idGAMSel).attr("idContacto");
                 cont.IdContactoDigital = idGAM;
                 cont.IdRed = idRed;
                 callWS("contactos", "saveASRelation", JSON.stringify(cont), function (data) { onVincular(data, idGAM) });
