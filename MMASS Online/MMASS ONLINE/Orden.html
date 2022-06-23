@@ -2367,7 +2367,17 @@
 
         //Modifica o agrega un renglon segun el id
         function prevAddRenglon(id) {
-            //AGREGUE:
+            //se chequea que el nombre no exista ya
+            var descripcionYaExiste = false;
+            Detalles.forEach(function (item, index) {
+                if (($('#descripcionD').val() == item.descripcion) && (id != item.id_detalle)) {
+                    descripcionYaExiste = true;
+                }
+            });
+            if (descripcionYaExiste == true) {
+                showMessage("La Descripción indicada ya existe para otro Detalle", "info");
+                return;
+            }
             var detalle = {};
             detalle.fecha_desde = dateToSqlFormat($('#fechaDesdeD').val());
             detalle.fecha_hasta = dateToSqlFormat($('#fechaHastaD').val());
@@ -3179,6 +3189,9 @@
                     Detalles[rId].id_Google_Ad_Manager = idGAM
                 }
                 recargarRenglones();
+            }
+            else if (idGAM == -2) {
+                showMessage('La fecha de Inicio del Detalle debe ser desde el día de hoy en adelante', 'error');
             }
             else {
                 showMessage('Ocurrio un error al intentar guardar la Línea de pedido en Google Ad Manager', 'error');

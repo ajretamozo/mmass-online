@@ -115,6 +115,10 @@ namespace WebApi.Services
             Dg_orden_pub_ap dg = Dg_orden_pub_ap.getById(det.Id_op_dg);
             long result = 0;
 
+            if(det.Fecha_desde < System.DateTime.Now.Date)
+            {
+                return result = -2;
+            }
             if (det.Id_Google_Ad_Manager > 0)
             {
                 result = GoogleAdManager.UpdateLineItem(det.Descripcion, det.Importe_unitario, det.Cantidad, det.Porc_dto, det.Fecha_desde, det.Fecha_hasta, det.Medidas, det.areaGeo, det.Emplazamientos, det.Tipo_tarifa, det.Id_Google_Ad_Manager);
@@ -124,7 +128,7 @@ namespace WebApi.Services
                 result = GoogleAdManager.CreateLineItems(det.Descripcion, dg.Id_Google_Ad_Manager, det.Importe_unitario, det.Cantidad, det.Porc_dto, det.Fecha_desde, det.Fecha_hasta, det.Medidas, det.areaGeo, det.Emplazamientos, det.Tipo_tarifa);
             }
 
-            if (result > 1)
+            if (result > 0)
             {
                 foreach (var item in dg.Detalles)
                 {
