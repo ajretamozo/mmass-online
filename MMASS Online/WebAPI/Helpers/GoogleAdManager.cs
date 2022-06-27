@@ -692,6 +692,10 @@ namespace WebApi.Helpers
                     }
 
                 }
+                //catch (Exception e)
+                //{
+                //    Console.WriteLine("Failed to create line items. Exception says \"{0}\"", e.Message);
+                //}
                 catch (Exception e)
                 {
                     Console.WriteLine("Failed to create line items. Exception says \"{0}\"", e.Message);
@@ -1033,7 +1037,14 @@ namespace WebApi.Helpers
         public static long UpdateLineItem(String name, float cost, long units, double discount, System.DateTime? fechaDesde, System.DateTime? fechaHasta, List<Dg_orden_pub_medidas> medidas, Dg_areas_geo areaGeo, List<Dg_orden_pub_emplazamientos> emplazamientos, int tipoTarifa, long Id)
         {
             long result = -1;
+            string rootId = "";
             //AdManagerUser user = new AdManagerUser();
+
+            using (NetworkService networkService = user.GetService<NetworkService>())
+            {
+                Network network = networkService.getCurrentNetwork();
+                rootId = network.effectiveRootAdUnitId;
+            }
 
             using (LineItemService lineItemService = user.GetService<LineItemService>())
             {
@@ -1068,7 +1079,7 @@ namespace WebApi.Helpers
                 {
                     //Bloques de anuncio (Ad Units) - En toda la red
                     AdUnitTargeting adUnitTargeting = new AdUnitTargeting();
-                    adUnitTargeting.adUnitId = "";
+                    adUnitTargeting.adUnitId = rootId;
                     adUnitTargeting.includeDescendants = true;
                     AdUnitTargeting[] targetPlacementIds = new AdUnitTargeting[]
                     {

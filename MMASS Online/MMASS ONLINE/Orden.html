@@ -4739,11 +4739,14 @@
         function onObtenerProg(data) {
             $.each(data, function (it, parametro) {
                 var valorInt = parseInt(parametro.value);
-                if (valorInt < 100) {
+                if (valorInt < 50) {
                     $("#spanProg" + parametro.parameterName).css("color", "crimson");
                 }
-                else {
+                else if (valorInt > 99) {
                     $("#spanProg" + parametro.parameterName).css("color", "forestgreen");
+                }
+                else {
+                    $("#spanProg" + parametro.parameterName).css("color", "#fbbc04");
                 }
                 $("#spanProg" + parametro.parameterName).prop('title', 'Progreso de Linea de Pedido: ' + parametro.value + '%');
                 $("#tdPorc" + parametro.parameterName).html(parametro.value + "%");

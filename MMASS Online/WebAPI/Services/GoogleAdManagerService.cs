@@ -928,7 +928,6 @@ namespace WebApi.Services
                         if (linea.deliveryIndicator != null)
                         {
                             porcentaje = Math.Floor((linea.deliveryIndicator.actualDeliveryPercentage / linea.deliveryIndicator.expectedDeliveryPercentage) * 100);
-
                         }
                         else
                         {
@@ -939,8 +938,7 @@ namespace WebApi.Services
                         parametros.Add(parametro);
                     }
                 }
-            }
-            
+            }          
             return parametros;
         }
     }
