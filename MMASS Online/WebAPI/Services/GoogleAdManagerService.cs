@@ -119,6 +119,10 @@ namespace WebApi.Services
             {
                 return result = -2;
             }
+            if (det.Tipo_tarifa!=0 && det.Tipo_tarifa != 1&& det.Tipo_tarifa != 3)
+            {
+                return result = -3;
+            }
             if (det.Id_Google_Ad_Manager > 0)
             {
                 result = GoogleAdManager.UpdateLineItem(det.Descripcion, det.Importe_unitario, det.Cantidad, det.Porc_dto, det.Fecha_desde, det.Fecha_hasta, det.Medidas, det.areaGeo, det.Emplazamientos, det.Tipo_tarifa, det.Id_Google_Ad_Manager);
@@ -395,7 +399,7 @@ namespace WebApi.Services
                                 //break;
                             }
 
-                            else if ((linea.costPerUnit.microAmount / 1000000) != detalle.Importe_unitario)
+                            else if ((linea.costPerUnit.microAmount / 1000000.0) != detalle.Importe_unitario)
                             {
                                 //Parametro cambioLImpUni = new Parametro();
                                 //cambioLImpUni.ParameterName = "Precio Unitario";
@@ -543,7 +547,7 @@ namespace WebApi.Services
             ordenNueva.Id_Google_Ad_Manager = ordenGam.id;
             ordenNueva.Bitacora = ordenGam.name;
             ordenNueva.anunciante = Contacto.getContactoByIdGAMyRed(ordenGam.advertiserId.ToString(), red.Id_red);
-            ordenNueva.Seg_neto = ordenGam.totalBudget.microAmount / 1000000;
+            ordenNueva.Seg_neto = (float)(ordenGam.totalBudget.microAmount / 1000000.0);
             ordenNueva.FormasPago = formasPago;
             ordenNueva.Ejecutivos = ejecutivos;
             string start = DateTimeUtilities.ToString(ordenGam.startDateTime, "yyyy/MM/dd");
@@ -612,10 +616,10 @@ namespace WebApi.Services
                     detalle.Medidas = medidas;
                 }
                 detalle.Tarifa_manual = 1;
-                detalle.Importe_unitario = linea.costPerUnit.microAmount / 1000000;
+                detalle.Importe_unitario = (float)(linea.costPerUnit.microAmount / 1000000.0);
                 detalle.Porc_dto = (float)linea.discount;
                 detalle.Cantidad = (int)linea.primaryGoal.units;
-                detalle.Monto_neto = linea.budget.microAmount / 1000000;
+                detalle.Monto_neto = (float)(linea.budget.microAmount / 1000000.0);
                 string startD = DateTimeUtilities.ToString(linea.startDateTime, "yyyy/MM/dd");
                 string endD = DateTimeUtilities.ToString(linea.endDateTime, "yyyy/MM/dd");
 
@@ -862,11 +866,11 @@ namespace WebApi.Services
                 }
             }
 
-            if ((linea.costPerUnit.microAmount / 1000000) != detalle.Importe_unitario)
+            if ((linea.costPerUnit.microAmount / 1000000.0) != detalle.Importe_unitario)
             {
                 Parametro cambioLImpUni = new Parametro();
                 cambioLImpUni.ParameterName = "Precio Unitario";
-                cambioLImpUni.Value = detalle.Importe_unitario.ToString() + "@@@" + (linea.costPerUnit.microAmount / 1000000).ToString();
+                cambioLImpUni.Value = detalle.Importe_unitario.ToString() + "@@@" + (linea.costPerUnit.microAmount / 1000000.0).ToString();
                 cambiosL.Parametros.Add(cambioLImpUni);
             }
 

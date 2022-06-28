@@ -3191,7 +3191,10 @@
                 recargarRenglones();
             }
             else if (idGAM == -2) {
-                showMessage('La fecha de Inicio del Detalle debe ser desde el día de hoy en adelante', 'error');
+                showMessage('La Fecha de Inicio del Detalle debe ser desde el día de hoy en adelante', 'error');
+            }
+            else if (idGAM == -3) {
+                showMessage('La Forma de Uso debe ser CPM, CPD o CPC', 'error');
             }
             else {
                 showMessage('Ocurrio un error al intentar guardar la Línea de pedido en Google Ad Manager', 'error');
@@ -4209,18 +4212,22 @@
                         case 'CPM':
                             $("#selTipoTarifaD").val(0);
                             $("#cantidadL").text("Cantidad");
+                            calcularNetoD();
                             break;
                         case 'CPD':
                             $("#selTipoTarifaD").val(1);
                             $("#cantidadL").text("Cantidad (días)");
+                            calcularNetoD();
                             break;
                         case 'CPC':
                             $("#selTipoTarifaD").val(3);
                             $("#cantidadL").text("Cantidad");
+                            calcularNetoD();
                             break;
                         case 'CPA':
                             $("#selTipoTarifaD").val(4);
                             $("#cantidadL").text("Cantidad");
+                            calcularNetoD();
                             break;
                     }
                     $("#btnApl" + paramName).addClass('btn-blue');
