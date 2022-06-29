@@ -20,9 +20,9 @@ namespace WebApi.Services
         String GetOrderDetails(long idGAM);
         String GetOrderDetails2(Dg_orden_pub_ap orden);
         Dg_orden_pub_ap GetOrderById(long idGAM);
-        long CreateOrder(long idOrden);
+        Parametro CreateOrder(long idOrden);
         //AGREGUE:
-        long CreateLineItems(Dg_orden_pub_as det);
+        Parametro CreateLineItems(Dg_orden_pub_as det);
         List<long> GetLineItemCreatives(long lineItemId);
         //AGREGUE:
         void RunAdExchangeReport();
@@ -63,89 +63,77 @@ namespace WebApi.Services
         }
 
         //AGREGUE:
-        public long CreateOrder(long idOrden)
+        public Parametro CreateOrder(long idOrden)
         {
-
+            Parametro resultado = new Parametro();
             Dg_orden_pub_ap op = Dg_orden_pub_ap.getById(Convert.ToInt32(idOrden));
 
-            if (op.anunciante.IdContactoDigital == null)
+            if (op.anunciante.IdContactoDigital == null || DB.DLong(op.anunciante.IdContactoDigital) < 1)
             {
-                return -2; //El contacto no esta sincronizado
+                resultado.ParameterName = "El Contacto no está sincronizado con Google Ad Manager. ¿Desea sincronizarlo?";
+                resultado.Value = "-2";
             }
-            else if (DB.DLong(op.anunciante.IdContactoDigital) < 1)
-            {
-                return -2; //El contacto no esta sincronizado
-            }
-
-            //string nombreOrden;
-            //if (op.Bitacora == "")
+            //else if (DB.DLong(op.anunciante.IdContactoDigital) < 1)
             //{
-            //    nombreOrden = op.Producto_nombre + " " + op.Anio.ToString() + " " + op.Mes.ToString() + " " + op.Nro_orden.ToString();
+            //    return -2; //El contacto no esta sincronizado
             //}
-            //else
-            //{
-            //    nombreOrden = op.Bitacora;
-            //}
-            long result = 0;
 
             if (op.Id_Google_Ad_Manager > 0)
             {
-                result = GoogleAdManager.UpdateOrder(op.Bitacora, DB.DLong(op.anunciante.IdContactoDigital), op.Id_Google_Ad_Manager);
+                resultado = GoogleAdManager.UpdateOrder(op.Bitacora, DB.DLong(op.anunciante.IdContactoDigital), op.Id_Google_Ad_Manager);
 
             }
             else
             {
-                result = GoogleAdManager.CreateOrder(op.Bitacora, DB.DLong(op.anunciante.IdContactoDigital));
+                resultado = GoogleAdManager.CreateOrder(op.Bitacora, DB.DLong(op.anunciante.IdContactoDigital));
 
             }
 
-            if (result > 1)
+            if (long.Parse(resultado.Value) > 1)
             {
-                //op.Id_Google_Ad_Manager = result;
-                //op.save();
-                //op.saveId_Google_Ad_Manager(idOrden , result);
-                Dg_orden_pub_ap.saveId_Google_Ad_Manager(idOrden, result);
+                Dg_orden_pub_ap.saveId_Google_Ad_Manager(idOrden, long.Parse(resultado.Value));
             }
-            return result;
-
+            return resultado;
         }
-        //AGREGUE:
-        public long CreateLineItems(Dg_orden_pub_as det)
+
+        public Parametro CreateLineItems(Dg_orden_pub_as det)
         {
             Dg_orden_pub_ap dg = Dg_orden_pub_ap.getById(det.Id_op_dg);
-            long result = 0;
+            Parametro resultado = new Parametro();
 
             if(det.Fecha_desde < System.DateTime.Now.Date)
             {
-                return result = -2;
+                resultado.ParameterName = "La Fecha de Inicio del Detalle no puede estar en el pasado";
+                resultado.Value = "-2";
+                return resultado;
             }
             if (det.Tipo_tarifa!=0 && det.Tipo_tarifa != 1&& det.Tipo_tarifa != 3)
             {
-                return result = -3;
+                resultado.ParameterName = "La Forma de Uso debe ser CPM, CPD o CPC";
+                resultado.Value = "-3";
+                return resultado;
             }
             if (det.Id_Google_Ad_Manager > 0)
             {
-                result = GoogleAdManager.UpdateLineItem(det.Descripcion, det.Importe_unitario, det.Cantidad, det.Porc_dto, det.Fecha_desde, det.Fecha_hasta, det.Medidas, det.areaGeo, det.Emplazamientos, det.Tipo_tarifa, det.Id_Google_Ad_Manager);
+                resultado = GoogleAdManager.UpdateLineItem(det.Descripcion, det.Importe_unitario, det.Cantidad, det.Porc_dto, det.Fecha_desde, det.Fecha_hasta, det.Medidas, det.areaGeo, det.Emplazamientos, det.Tipo_tarifa, det.Id_Google_Ad_Manager);
             }
             else
             {
-                result = GoogleAdManager.CreateLineItems(det.Descripcion, dg.Id_Google_Ad_Manager, det.Importe_unitario, det.Cantidad, det.Porc_dto, det.Fecha_desde, det.Fecha_hasta, det.Medidas, det.areaGeo, det.Emplazamientos, det.Tipo_tarifa);
+                resultado = GoogleAdManager.CreateLineItems(det.Descripcion, dg.Id_Google_Ad_Manager, det.Importe_unitario, det.Cantidad, det.Porc_dto, det.Fecha_desde, det.Fecha_hasta, det.Medidas, det.areaGeo, det.Emplazamientos, det.Tipo_tarifa);
             }
 
-            if (result > 0)
+            if (long.Parse(resultado.Value) > 0)
             {
                 foreach (var item in dg.Detalles)
                 {
                     if (item.Id_detalle == det.Id_detalle)
                     {
-                        //item.Id_Google_Ad_Manager = result;
-                        //dg.save();
-                        Dg_orden_pub_as.saveId_Google_Ad_Manager(item.Id_op_dg, item.Id_detalle, result);
+                        Dg_orden_pub_as.saveId_Google_Ad_Manager(item.Id_op_dg, item.Id_detalle, long.Parse(resultado.Value));
                     }
                 }
             }
 
-            return result;
+            return resultado;
         }
         //AGREGUE:
         public void RunAdExchangeReport()

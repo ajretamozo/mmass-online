@@ -375,10 +375,12 @@ namespace WebApi.Helpers
             }
         }
 
-        //AGREGUE:
-        public static long CreateOrder(String name, long advertiserId)
+        public static Parametro CreateOrder(String name, long advertiserId)
         {
+            Parametro resultado = new Parametro();
             long result = -1;
+            string msj = "";
+
             //AdManagerUser user = new AdManagerUser();
             using (OrderService orderService = user.GetService<OrderService>())
             {
@@ -406,6 +408,7 @@ namespace WebApi.Helpers
                                 "An order with ID ='{0}' and named '{1}' was created.", op.id,
                                 op.name);
                             result = op.id;
+                            msj = "La Orden en Google Ad Manager se ha guardado con éxito con el ID: " + op.id;
                         }
                     }
                     else
@@ -413,17 +416,23 @@ namespace WebApi.Helpers
                         Debug.WriteLine("No orders created.");
                     }
                 }
-                catch (Exception e)
+                catch (AdManagerApiException e)
                 {
-                    Debug.WriteLine("Failed to create orders. Exception says \"{0}\"", e.Message);
+                    ApiException innerException = e.ApiException as ApiException;
+                    msj = "Ocurrio un error al intentar guardar la Orden en Google Ad Manager: " + innerException.message;
                 }
             }
-            return result;
+            resultado.ParameterName = msj;
+            resultado.Value = result.ToString();
+
+            return resultado;
         }
-        //AGREGUE:
-        public static long CreateLineItems(String name, long orderId, float cost, long units, double discount, System.DateTime? fechaDesde, System.DateTime? fechaHasta, List<Dg_orden_pub_medidas> medidas, Dg_areas_geo areaGeo, List<Dg_orden_pub_emplazamientos> emplazamientos, int tipoTarifa)
+
+        public static Parametro CreateLineItems(String name, long orderId, float cost, long units, double discount, System.DateTime? fechaDesde, System.DateTime? fechaHasta, List<Dg_orden_pub_medidas> medidas, Dg_areas_geo areaGeo, List<Dg_orden_pub_emplazamientos> emplazamientos, int tipoTarifa)
         {
+            Parametro resultado = new Parametro();
             long result = -1;
+            string msj = "";
             string rootId = "";
 
             //AdManagerUser user = new AdManagerUser();
@@ -684,6 +693,7 @@ namespace WebApi.Helpers
                                 li.name);
 
                             result = li.id;
+                            msj = "La Línea de pedido en Google Ad Manager se ha guardado con éxito con el ID: " + li.id;
                         }
                     }
                     else
@@ -692,16 +702,16 @@ namespace WebApi.Helpers
                     }
 
                 }
-                //catch (Exception e)
-                //{
-                //    Console.WriteLine("Failed to create line items. Exception says \"{0}\"", e.Message);
-                //}
-                catch (Exception e)
+                catch (AdManagerApiException e)
                 {
-                    Console.WriteLine("Failed to create line items. Exception says \"{0}\"", e.Message);
+                    ApiException innerException = e.ApiException as ApiException;
+                    msj = "Ocurrio un error al intentar guardar la Línea de pedido en Google Ad Manager: " + innerException.message;
                 }
             }
-            return result;
+            resultado.ParameterName = msj;
+            resultado.Value = result.ToString();
+          
+            return resultado;
         }
 
         public static List<long> GetLineItemCreatives(long lineItemId)
@@ -1034,11 +1044,12 @@ namespace WebApi.Helpers
         }
 
         //UPDATE LINE ITEM
-        public static long UpdateLineItem(String name, float cost, long units, double discount, System.DateTime? fechaDesde, System.DateTime? fechaHasta, List<Dg_orden_pub_medidas> medidas, Dg_areas_geo areaGeo, List<Dg_orden_pub_emplazamientos> emplazamientos, int tipoTarifa, long Id)
+        public static Parametro UpdateLineItem(String name, float cost, long units, double discount, System.DateTime? fechaDesde, System.DateTime? fechaHasta, List<Dg_orden_pub_medidas> medidas, Dg_areas_geo areaGeo, List<Dg_orden_pub_emplazamientos> emplazamientos, int tipoTarifa, long Id)
         {
+            Parametro resultado = new Parametro();
             long result = -1;
+            string msj = "";
             string rootId = "";
-            //AdManagerUser user = new AdManagerUser();
 
             using (NetworkService networkService = user.GetService<NetworkService>())
             {
@@ -1245,6 +1256,7 @@ namespace WebApi.Helpers
                                 updatedLineItem.deliveryRateType);
 
                             result = updatedLineItem.id;
+                            msj = "La Línea de pedido en Google Ad Manager se ha guardado con éxito con el ID: " + updatedLineItem.id;
                         }
                     }
                     else
@@ -1252,20 +1264,26 @@ namespace WebApi.Helpers
                         Console.WriteLine("No line items updated.");
                     }
                 }
-                catch (Exception e)
+
+                catch (AdManagerApiException e)
                 {
-                    Console.WriteLine("Failed to update line items. Exception says \"{0}\"",
-                        e.Message);
+                    ApiException innerException = e.ApiException as ApiException;
+                    msj = "Ocurrio un error al intentar guardar la Línea de pedido en Google Ad Manager: " + innerException.message;
                 }
             }
-            return result;
+            resultado.ParameterName = msj;
+            resultado.Value = result.ToString();
+
+            return resultado;
         }
 
         //UPDATE ORDER:
-        public static long UpdateOrder(String name, long advertiserId, long orderId)
+        public static Parametro UpdateOrder(String name, long advertiserId, long orderId)
         {
+            Parametro resultado = new Parametro();
             long result = -1;
-            //AdManagerUser user = new AdManagerUser();
+            string msj = "";
+
             using (OrderService orderService = user.GetService<OrderService>())
             {
                 // Create a statement to get the order.
@@ -1303,6 +1321,7 @@ namespace WebApi.Helpers
                                 updatedOrder.name, updatedOrder.advertiserId);
 
                             result = updatedOrder.id;
+                            msj = "La Orden en Google Ad Manager se ha guardado con éxito con el ID: " + updatedOrder.id;
                         }
                     }
                     else
@@ -1310,12 +1329,16 @@ namespace WebApi.Helpers
                         Console.WriteLine("No orders updated.");
                     }
                 }
-                catch (Exception e)
+                catch (AdManagerApiException e)
                 {
-                    Console.WriteLine("Failed to update orders. Exception says \"{0}\"", e.Message);
+                    ApiException innerException = e.ApiException as ApiException;
+                    msj = "Ocurrio un error al intentar guardar la Orden en Google Ad Manager: " + innerException.message;
                 }
             }
-            return result;
+            resultado.ParameterName = msj;
+            resultado.Value = result.ToString();
+
+            return resultado;
         }
 
         public static long ArchivarLineItem(long Id)
@@ -1490,44 +1513,6 @@ namespace WebApi.Helpers
             }
             return result;
         }
-        //public static List<long> obtenerProgresoLineasGam(long idOrder)
-        //{
-        //     List<LineItem> Lineas = new List<LineItem>();
-
-        //    using (LineItemService lineItemService = user.GetService<LineItemService>())
-        //    {
-        //        // Create a statement to select placements.
-        //        int pageSize = StatementBuilder.SUGGESTED_PAGE_LIMIT;
-        //        StatementBuilder statementBuilder = new StatementBuilder()
-        //           .Where("OrderId = :oID and status != 'ARCHIVED'").OrderBy("id ASC")
-        //           .Limit(pageSize)
-        //           .AddValue("oID", idOrder);
-
-        //        // Retrieve a small amount of placements at a time, paging through until all
-        //        // placements have been retrieved.
-        //        int totalResultSetSize = 0;
-        //        do
-        //        {
-        //            LineItemPage page =
-        //                lineItemService.getLineItemsByStatement(statementBuilder.ToStatement());
-
-        //            // Print out some information for each placement.
-        //            if (page.results != null)
-        //            {
-        //                totalResultSetSize = page.totalResultSetSize;
-        //                int i = page.startIndex;
-        //                foreach (LineItem lineItem in page.results)
-        //                {
-        //                    Lineas.Add(lineItem);
-        //                }
-        //            }
-
-        //            statementBuilder.IncreaseOffsetBy(pageSize);
-        //        } while (statementBuilder.GetOffset() < totalResultSetSize);
-
-        //    }
-        //    return Lineas;
-        //}
-
+        
     }
 }

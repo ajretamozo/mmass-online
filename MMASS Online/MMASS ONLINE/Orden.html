@@ -3135,7 +3135,6 @@
             $('#descuentoD').val(rDetalle.porc_dto);
             $('#totalD').val(rDetalle.monto_neto);
 
-            //nuev
             if (rDetalle.id_det_conv > 0) {
                 $("#selDetConvenio option[value=" + rDetalle.id_det_conv + "]").attr("selected", "selected");
                 $("#selTipoTarifaD").attr("disabled", true);
@@ -3147,7 +3146,6 @@
             }
         }
 
-        //AGREGUE:
         function enviarOrdenAddServer() {
             var msj = validarOrdenGam();
             if (msj != "") {
@@ -3164,48 +3162,39 @@
             if ($('#selRedes').val() == 0) {
                 mensaje += "Debe seleccionar una red AdServer";
             }
-            //if ($("#inpDescOP").val() == "") {
-            //    mensaje += "\r\n Debe indicar una Descripción de OP";
-            //}
             return mensaje;
         }
 
-        //AGREGUE:
         function enviarLineaAddServer(r) {
             //callWS("googleAdManager", "runAdExchangeReport"); //para probar el reporte de adexchange
             callWS("googleAdManager", "createLineItems", JSON.stringify(Detalles[($(r).attr("data-id")) - 1]), function (data) { onSendLinea(data, $(r).attr("data-id")); });
         }
-        //AGREGUE:
+
         function onSendLinea(data, rId) {
-            var idGAM = data;
+            var msj = data.parameterName;
+            var idGAM = data.value;
             rId--;
 
             if (idGAM > 0) {
-                showMessage("La Línea de pedido en Google Ad Manager se ha guardado con éxito con el ID: " + idGAM);
                 $("#inpIdAdServer").val(idGAM);
-                //addRenglon(rId);
+
+                showMessage(msj,'success');
 
                 for (var i = 0; i < Detalles.length; i++) {
                     Detalles[rId].id_Google_Ad_Manager = idGAM
                 }
                 recargarRenglones();
             }
-            else if (idGAM == -2) {
-                showMessage('La Fecha de Inicio del Detalle debe ser desde el día de hoy en adelante', 'error');
-            }
-            else if (idGAM == -3) {
-                showMessage('La Forma de Uso debe ser CPM, CPD o CPC', 'error');
-            }
             else {
-                showMessage('Ocurrio un error al intentar guardar la Línea de pedido en Google Ad Manager', 'error');
+                showMessage(msj,'error');
             }
         }
 
-        //AGREGUE:
         function onSendOrder(data) {
-            var r = data;
+            var msj = data.parameterName;
+            var r = data.value;
             if (r > 0) {
-                showMessage("La Orden en Google Ad Manager se ha guardado con éxito con el ID: " + r);
+                showMessage(msj);
 
                 $("#bSendOrdenAddServer").attr("disabled", true);
                 $('#inpIdOrdenAdServer').val(r);
@@ -3213,7 +3202,6 @@
                 $('#inpIdOrdenAdServer').css("background-color", "#c3e6cb");
                 $("#bgetOrderASDetais").attr("disabled", false);
                 recargarRenglones();
-                //comprobarModificaciones($("#inpOrderNumber").attr("id_op_dg"), r);
             }
             else {
                 if (r == -2) {
@@ -3227,14 +3215,12 @@
                             optionFunc: ""
                         }
                     ];
-                    var mensaje = "<div class='d-flex justify-content-center' style='text-align: center;'>El Contacto no está sincronizado con Google Ad Manager. ¿Desea sincronizarlo?</div>";
+                    var mensaje = "<div class='d-flex justify-content-center' style='text-align: center;'>" + msj + "</div>";
                     showModal(mensaje, options);
-                    /*showMessage("El Contacto no esta sincronizado con Google Ad Manager", "error");*/
                 } else {
-                    showMessage("Ocurrio un error al intentar exportar la Orden a Google Ad Manager", "error");
+                    showMessage(msj, "error");
                 }
             }
-
         }
 
         function deleteRenglon(r, id_Google_Ad_Manager) {
