@@ -137,5 +137,27 @@ namespace WebApi.Entities
             //}          
         }
 
+        public static bool desbloquearTodas(int idUsuario)
+        {
+            DateTime fechaDesbloqueo = DateTime.Now;
+
+            string sql = "update dg_orden_pub_bloqueo set bloqueado=0, id_usuario_desbl = @id_usuario_desbl, ultimoDesbloqueo=@ultimoDesbloqueo where bloqueado=1 ";
+
+            List<SqlParameter> parametros = new List<SqlParameter>();
+            parametros.Add(new SqlParameter() { ParameterName = "@id_usuario_desbl", SqlDbType = SqlDbType.Int, Value = DB.DInt(idUsuario) });
+            parametros.Add(new SqlParameter() { ParameterName = "@ultimoDesbloqueo", SqlDbType = SqlDbType.DateTime, Value = fechaDesbloqueo });
+
+            try
+            {
+                DB.Execute(sql, parametros);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+            return true;
+        }
+
     }
 }

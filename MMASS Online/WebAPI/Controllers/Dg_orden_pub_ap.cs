@@ -97,5 +97,12 @@ namespace WebApi.Controllers
             return Ok(result);
         }
 
+        [HttpPost("desbloquearTodas")]
+        public IActionResult desbloquearTodas([FromBody] int idUsuario)
+        {
+            var result = _Dg_orden_pub_apService.desbloquearTodas(idUsuario);
+            return Ok(result);
+        }
+
     }
 }

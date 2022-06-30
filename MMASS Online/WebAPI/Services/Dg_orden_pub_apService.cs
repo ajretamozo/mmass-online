@@ -31,6 +31,7 @@ namespace WebApi.Services
         IEnumerable<Dg_orden_pub_ap> filter(List<Parametro> parametros);
         bool bloquearOP(Dg_orden_pub_bloqueo opb);
         bool desbloquearOP(Dg_orden_pub_bloqueo opb);
+        bool desbloquearTodas(int id);
         //bool removeTarifa(Dg_tarifas miobj);
         //IEnumerable<Dg_tarifa_forma_uso> getFormasUso();
         //IEnumerable<Dg_tarifas> filter(List<Parametro> parametros);
@@ -145,6 +146,11 @@ namespace WebApi.Services
         public bool desbloquearOP(Dg_orden_pub_bloqueo opb)
         {
             return opb.desbloquear();
+        }
+
+        public bool desbloquearTodas(int idUsuario)
+        {
+            return Dg_orden_pub_bloqueo.desbloquearTodas(idUsuario);
         }
 
         public bool existeOpNombre(int id, string nom)

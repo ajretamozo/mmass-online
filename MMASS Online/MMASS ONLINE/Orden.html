@@ -870,7 +870,7 @@
 
 
                             <div id="divAddRow" class="card" style="display:none;">
-                                <div class="card-header" id="chDetalle">Nuevo Detalle</div>
+                                <div class="card-header" id="chDetalle">NUEVO DETALLE</div>
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-lg-3">
@@ -1009,9 +1009,6 @@
                                     <div class="card-footer mt-2 ">
                                         <div class="row">
                                             <div class="col-lg-4">
-                                                <!--<button type="button" id="bClonarD" disabled="disabled" class="btn actions btn-dark btn-sm mx-1" onclick="prevClonarD()">
-                                                <span class="fa fa-clone"></span> Clonar Detalle
-                                            </button>-->
                                             </div>
                                             <div class="col-lg-4"></div>
                                             <div class="col-lg-4 d-flex justify-content-end">
@@ -1559,27 +1556,41 @@
                 showMessage("Seleccione un Anunciante", "error");
                 return false;
             }
+
             if ($("#selProducto").val() == null) {
                 showMessage("Seleccione un Producto", "error");
                 return false;
             }
+
             if ($("#selAgencia").val() == null) {
                 showMessage("Seleccione una Agencia", "error");
                 return false;
             }
+
             if ($("#fechaDesde").val() == "" || $("#fechaHasta").val() == "") { showMessage("Seleccione las fechas de vigencia de la orden", "error"); return false; }
+
+            var o1 = new Date(dateToSqlFormat($('#fechaDesde').val()));
+            var o2 = new Date(dateToSqlFormat($('#fechaHasta').val()));
+            if (o2 < o1) {
+                showMessage("La Fecha Hasta es menor que la Fecha Desde en la Vigencia de la Orden", "error");
+                return false;
+            }
+
             if ($("#selFPago").val() == null) {
                 showMessage("Seleccione una Forma de Pago", "error");
                 return false;
             }
+
             if ($("#selPlazoP").val() == null) {
                 showMessage("Seleccione un Plazo de Pago", "error");
                 return false;
             }
+
             if ($("#selConceptoN").val() == null) {
                 showMessage("Seleccione un Concepto de Negocio", "error");
                 return false;
             }
+
             if ($("#selEmpresa").val() == null) {
                 showMessage("Seleccione una Empresa", "error");
                 return false;
@@ -1593,10 +1604,12 @@
                 showMessage("La orden tiene que tener al menos un Detalle", "error");
                 return false;
             }
+
             if (parseFloat($("#total").val()) < 0) {
                 showMessage("El total de la orden debe ser igual o mayor a cero", "error");
                 return false;
             }
+
             if ($("#selFacturar").val() != "2" && parseFloat($("#total").val()) <= 0) {
                 showMessage("El total de la orden debe ser mayor a cero", "error");
                 return false;
@@ -2569,10 +2582,10 @@
 
             var error = validarDetalle(rDetalle);
 
-            if (error.length == 0 && validarFechas()) {
+            if (error.length == 0 && validarFechasD()) {
                 $('#divDetailsRows').show();
                 $('#divAddRow').hide();
-                //Limpio la tabla renglones antes de volver a generarla
+                //Guardo un Detalle Nuevo
                 if (id == -1) {
                     id = Detalles.length + 1;
                     rDetalle.id_detalle = id;
@@ -2583,8 +2596,17 @@
                 recargarRenglones();
             }
             else {
+                //Modifico el Detalle
                 if (id >= 0) {
-                    Detalles[id] = JSON.parse(JSON.stringify(rDetalleCopy));
+                    var indexOfObject;
+
+                    for (let index = 0; index < Detalles.length; index++) {
+                        if (Detalles[index].id_detalle == id) {
+                            indexOfObject = index;
+                        }
+                    }    
+
+                    Detalles[indexOfObject] = JSON.parse(JSON.stringify(rDetalleCopy));
                 }
                 if (error.length > 0) {
                     message = "Falta completar/indicar los siguientes datos: "
@@ -2675,20 +2697,19 @@
 
 
 
-        function validarFechas() {
-
+        function validarFechasD() {
             var o1 = new Date(dateToSqlFormat($('#fechaDesde').val()));
             var o2 = new Date(dateToSqlFormat($('#fechaHasta').val()));
             var d1 = new Date(dateToSqlFormat($('#fechaDesdeD').val()));
             var d2 = new Date(dateToSqlFormat($('#fechaHastaD').val()));
 
-            if (o2 < o1) {
-                showMessage("La fecha Hasta es menor que la fecha Desde en vigencia de la Orden", "error");
+            if (d2 < d1) {
+                showMessage("La Fecha Hasta es menor que la Fecha Desde en la Vigencia del Detalle", "error");
                 return false;
             }
 
             if (d1 < o1 || d2 > o2) {
-                showMessage("La vigencia del detalle debe estar incluida en la vigencia de la orden", "error");
+                showMessage("La Vigencia del Detalle debe estar incluida en la Vigencia de la Orden", "error");
                 return false;
             }
 
@@ -2771,13 +2792,13 @@
                 str = str + " <button type='button' data-id='" + id + "' class='btn actions btn-outline-dark btn-sm mr-1'  onclick='deleteRenglon(this, " + det.id_Google_Ad_Manager + ")' title='Eliminar Detalle'> <span class='fa fa-remove'></span></button>";
             }
             //  Botón modificar renglon
-            str = str + " <button type='button' data-id='" + id + "' class='btn actions btn-outline-dark btn-sm mr-1'  onclick='cargarModificarRenglon(this)' title='Modificar Detalle'> <span class='fa fa-edit'></span></button>";
+            str = str + " <button type='button' data-id='" + id + "' class='btn actions btn-outline-dark btn-sm mr-1'  onclick='cargarModificarRenglon(this)' title='Editar Detalle'> <span class='fa fa-edit'></span></button>";
             //  Botón clonar renglon
             if ($("#inpEsFacturada").val() == 'SI' || OpAnulada == true || OpBloqueada == true) {
-                str = str + " <button type='button' data-id='" + id + "' disabled id='bClonarReng" + id + "' class='btn actions btn-outline-dark btn-sm mr-1'  onclick='prevClonarD(this)' title='Clonar Detalle'> <span class='fa fa-clone'></span></button>";
+                str = str + " <button type='button' data-id='" + id + "' disabled id='bClonarReng" + id + "' class='btn actions btn-outline-dark btn-sm mr-1'  onclick='clonarD(this)' title='Clonar Detalle'> <span class='fa fa-clone'></span></button>";
             }
             else {
-                str = str + " <button type='button' data-id='" + id + "' class='btn actions btn-outline-dark btn-sm mr-1'  onclick='prevClonarD(this)' title='Clonar Detalle'> <span class='fa fa-clone'></span></button>";
+                str = str + " <button type='button' data-id='" + id + "' class='btn actions btn-outline-dark btn-sm mr-1'  onclick='clonarD(this)' title='Clonar Detalle'> <span class='fa fa-clone'></span></button>";
             }
             str = str + "</td>";
             //  Progreso de Linea de Pedido en AdServer
@@ -2866,6 +2887,13 @@
         }
 
         function cargarModificarRenglon(r) {
+            if (DetalleClon == true) {
+                $('#chDetalle').text('NUEVO DETALLE - ')
+                $('#chDetalle').append('<span id="sTituloDinamicoD" style="color: #007bff;">CLONACION</span>');
+            }
+            else {
+                $('#chDetalle').text('EDITAR DETALLE')
+            }
             desbloquearCamposDetalle();
             if ($("#fechaHasta").val() == "" || $("#fechaDesde").val() == "") {
                 showMessage("Debe seleccionar la vigencia de la orden", "info");
@@ -3167,13 +3195,20 @@
 
         function enviarLineaAddServer(r) {
             //callWS("googleAdManager", "runAdExchangeReport"); //para probar el reporte de adexchange
-            callWS("googleAdManager", "createLineItems", JSON.stringify(Detalles[($(r).attr("data-id")) - 1]), function (data) { onSendLinea(data, $(r).attr("data-id")); });
+            var indexOfObject;
+
+            for (let index = 0; index < Detalles.length; index++) {
+                if (Detalles[index].id_detalle == $(r).attr("data-id")) {
+                    indexOfObject = index;
+                }
+            } 
+            callWS("googleAdManager", "createLineItems", JSON.stringify(Detalles[indexOfObject]), function (data) { onSendLinea(data, indexOfObject);});
         }
 
         function onSendLinea(data, rId) {
             var msj = data.parameterName;
             var idGAM = data.value;
-            rId--;
+            /*rId--;*/
 
             if (idGAM > 0) {
                 $("#inpIdAdServer").val(idGAM);
@@ -4545,15 +4580,16 @@
             location.href = "/orden.html?orderClon=" + idOp;
         }
 
-        function prevClonarD(idDet) {
-            DetalleClon = true;
-            /*$('#chDetalle').append('<span id="sTituloDinamicoD"> - </span>');*/
-            $('#chDetalle').text('NUEVO DETALLE - ')
-            $('#chDetalle').append('<span id="sTituloDinamicoD" style="color: #007bff;">CLONACION</span>');           
-            clonarD(idDet);
-        }
+        //function prevClonarD(idDet) {
+        //    DetalleClon = true;
 
-        function clonarD(IdDet) {         
+        //    $('#chDetalle').text('NUEVO DETALLE - ')
+        //    $('#chDetalle').append('<span id="sTituloDinamicoD" style="color: #007bff;">CLONACION</span>');           
+        //    clonarD(idDet);
+        //}
+
+        function clonarD(IdDet) {
+            DetalleClon = true;
             cargarModificarRenglon(IdDet);
         }
 
