@@ -844,9 +844,13 @@
                                             <span class="fa fa-plus"></span>
                                         </button>
                                     </div>
-                                    <!--<div class="col-lg-1" style="left: -10;left: -10;right: 40px;top: 2px;">
-                                    <span class="fa fa-refresh fa-pulse invisible" id="spanCompActD" title="Hay modificaciones en AdServer"></span>
-                                </div>-->
+                                    <div class="col-lg-6">
+                                    </div>
+                                    <div class="col-lg-4 d-flex justify-content-end">
+                                        <button type="button" id="6667" class="btn actions btn-dark btn-sm mx-1" onclick="prevSaveOrder()">
+                                            <span class="fa fa-refresh"></span> Comprobar nuevos Detalles
+                                        </button>
+                                    </div>
                                 </div>
 
                                 <div class="table-responsive mt-2">
@@ -860,6 +864,9 @@
                                                 <th class="col-xs-1">Cant.</th>
                                                 <th class="col-xs-1">Neto</th>
                                                 <th class="col-xs-2 actions" style="text-align:center;">Acciones</th>
+                                                <th width="1px"></th>
+                                                <th width="1px"></th>
+                                                <th width="1px"></th>
                                                 <th width="1px"></th>
                                             </tr>
                                         </thead>
@@ -1079,7 +1086,6 @@
                                 </div>
                                 <div class="col-lg-4"></div>
                                 <div class="col-lg-4 d-flex justify-content-end">
-                                    <!--AGREGUÉ BOTON:-->
                                     <button type="button" data-id="sendOrderAS" id="bSendOrdenAddServer" class="btn actions btn-outline-dark btn-sm mr-1" disabled="disabled" onclick="enviarOrdenAddServer()" title="Enviar ordenAddServer">
                                         <span class="fa fa-cloud" id="brow"></span>
                                     </button>
@@ -1388,8 +1394,6 @@
 
             $("#selRedes option[value=" + data.id_red + "]").attr("selected", "selected");
             if (data.id_red > 0) {
-                codRed = $('#selRedes>option:selected').attr("codigo_red");
-                callWS("googleAdManager", "cambiarRed", codRed);
                 $("#selRedes").attr("disabled", true);
             }
 
@@ -1444,8 +1448,12 @@
             }
 
             if (data.id_Google_Ad_Manager > 0 && (data.id_op_dg != undefined && data.id_op_dg != 0) && data.es_anulada == 0 && data.es_facturada == false && OpClon == false) {
-                comprobarModificaciones(data.id_op_dg, data.id_Google_Ad_Manager);
-                obtenerProgresoLineasGam(data);
+                codRed = $('#selRedes>option:selected').attr("codigo_red");
+                
+                $.when(CambiarRed(codRed)).then(
+                    comprobarModificaciones(data.id_op_dg, data.id_Google_Ad_Manager),
+                    obtenerProgresoLineasGam(data));
+
             }
 
             if (data.bloqueado == 0 && OpClon == false) {
@@ -4781,6 +4789,10 @@
                 $("#tdPorc" + parametro.parameterName).html(parametro.value + "%");
                 $("#spanProg" + parametro.parameterName).removeClass("invisible");
             }); 
+        }
+
+        function CambiarRed(codRed) {
+            callWS("googleAdManager", "cambiarRed", codRed);
         }
 
     </script>
