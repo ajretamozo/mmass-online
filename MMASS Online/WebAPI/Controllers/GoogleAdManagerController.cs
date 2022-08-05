@@ -168,5 +168,19 @@ namespace WebApi.Controllers
             var res = _GoogleAdManagerService.obtenerProgresoLineasGam(order);
             return Ok(res);
         }
+
+        [HttpPost("comprobarNuevosDetalles")]
+        public IActionResult comprobarNuevosDetalles([FromBody] Dg_orden_pub_ap order)
+        {
+            var res = _GoogleAdManagerService.comprobarNuevosDetalles(order);
+            return Ok(res);
+        }
+
+        [HttpPost("getDetNuevos")]
+        public IActionResult getDetNuevos(ListaParametro parametros)
+        {
+            var detalles = _GoogleAdManagerService.getDetNuevos(parametros.Parametros);
+            return Ok(detalles);
+        }
     }
 }

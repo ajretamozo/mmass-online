@@ -29,11 +29,14 @@ namespace WebApi.Services
         {
             List<Programa> listaProgramas = new List<Programa>();
             var mediosRadio = Dg_medios_asociados.getAllmediosAsociados(listaMedios);
-            foreach (Dg_medios_asociados medio in mediosRadio)
-            {
-                List<Programa> lista = Programa.getAllProgramasMedio(medio.Id_medio_asociado);
-                listaProgramas = listaProgramas.Concat(lista).ToList();
-            }
+            //foreach (Dg_medios_asociados medio in mediosRadio)
+            //{
+            //    List<Programa> lista = Programa.getAllProgramasMedio(medio.Id_medio_asociado);
+            //    listaProgramas = listaProgramas.Concat(lista).ToList();
+            //}
+                
+            List<Programa> lista = Programa.getAllProgramasMedio(listaMedios);
+            listaProgramas = listaProgramas.Concat(lista).ToList();
 
             return listaProgramas;
         }

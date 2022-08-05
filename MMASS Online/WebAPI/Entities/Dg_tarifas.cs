@@ -281,7 +281,7 @@ namespace WebApi.Entities
                     Precio_unitario = float.Parse(item["precio_unitario"].ToString()),
                     Es_borrado = (item["Es_borrado"].ToString()=="1"),
                     Id_red = int.Parse(t.Rows[0]["id_red"].ToString())
-            };
+                };
                 col.Add(elem);
             }
             return col;

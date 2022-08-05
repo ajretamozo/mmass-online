@@ -343,13 +343,16 @@ namespace WebApi.Entities
             {
                 sqlCommand = @"select codigo,nombre,razon,cuit,dgr,inicio,domicilio,localidad,provincia,pais,telefono,fax,email,web,
                              ingreso,cliente,ciemail,citel,cifax,ciweb,version,denom,minutos_hora,es_borrado,kla,installdate,lastaccessdate,
-	                         cod_sociedad_sap,direc_exten,cond_iva,id_localidad,Id_cond_ib,logo,usa_certif from empresa where es_borrado=0";
+	                         cod_sociedad_sap,direc_exten,cond_iva,id_localidad,Id_cond_ib,logo,usa_certif from empresa
+							 where es_borrado=0 and (select COUNT(*) from MEDIOS m where m.ID_EMPRESA = codigo and m.tipo_medio=2) > 0";
             }
             else if (BD == 2)
             {
-                sqlCommand = " select id_empresa,nombre,razon_social,cuit,dgr,inicio,domicilio,localidad,provincia,pais,telefono,fax,email,web," +
-                             " ingreso,cliente,ciemail,citel,cifax,ciweb,version,denom,minutos_hora,es_borrado,kla,installdate,lastaccessdate," +
-                             " cod_sociedad_sap,direc_exten,id_cond_iva,id_localidad,Id_cond_ib,logo_url from empresa where es_borrado=0";
+                sqlCommand = @" select e.id_empresa,nombre,razon_social,cuit,dgr,inicio,domicilio,localidad,provincia,pais,telefono,fax,email,web,
+                             ingreso,cliente,ciemail,citel,cifax,ciweb,version,denom,minutos_hora,e.es_borrado,kla,installdate,lastaccessdate,
+                             cod_sociedad_sap,direc_exten,id_cond_iva,e.id_localidad,Id_cond_ib,logo_url
+                             from empresa e
+                             where e.es_borrado = 0 and(select COUNT(*) from MEDIOS m where m.ID_EMPRESA = e.id_empresa and m.tipo_medio = 2) > 0";
             }
 
             List<Empresa> col = new List<Empresa>();

@@ -55,11 +55,28 @@ namespace WebApi.Entities
             return resultado;
         }
 
-        public static List<Programa> getAllProgramasMedio(int Id_m)
+        //public static List<Programa> getAllProgramasMedio(int Id_m)
+        //{
+        //    string sqlCommand = "select distinct p.id_programa, p.id_tipo_trans, p.desc_programa, p.es_espacio, p.es_borrado, p.id_medio, p.id_familia_programa, " +
+        //                        "p.hrs_variable, p.Abrev, p.id_representacion, p.habilitado_bonificacion " +
+        //                        " from programas p where p.es_borrado = 0 and p.id_medio =" + Id_m.ToString();
+        //    List<Programa> col = new List<Programa>();
+        //    Programa elem;
+        //    DataTable t = DB.Select(sqlCommand);
+
+        //    foreach (DataRow item in t.Rows)
+        //    {
+        //        elem = getPrograma(item);
+        //        col.Add(elem);
+        //    }
+        //    return col;
+        //}
+
+        public static List<Programa> getAllProgramasMedio(string listaMedios)
         {
             string sqlCommand = "select distinct p.id_programa, p.id_tipo_trans, p.desc_programa, p.es_espacio, p.es_borrado, p.id_medio, p.id_familia_programa, " +
                                 "p.hrs_variable, p.Abrev, p.id_representacion, p.habilitado_bonificacion " +
-                                " from programas p where p.es_borrado = 0 and p.id_medio =" + Id_m.ToString();
+                                " from programas p where p.es_borrado = 0 and p.id_medio in ( " + listaMedios + ")";
             List<Programa> col = new List<Programa>();
             Programa elem;
             DataTable t = DB.Select(sqlCommand);
@@ -71,6 +88,7 @@ namespace WebApi.Entities
             }
             return col;
         }
+
         public static List<Programa> getAllProgramasMedioxFecha(int Id_m, string Fecha)
         {
             string sqlCommand = "select distinct p.id_programa, p.id_tipo_trans, p.desc_programa, p.es_espacio, p.es_borrado, p.id_medio, p.id_familia_programa, " +

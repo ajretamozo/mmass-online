@@ -126,27 +126,58 @@ namespace WebApi.Helpers
                 // Retrieve a small amount of companies at a time, paging through until all
                 // companies have been retrieved.
                 int totalResultSetSize = 0;
-                do
+
+                try
                 {
-                    CompanyPage page =
-                        companyService.getCompaniesByStatement(statementBuilder.ToStatement());
-
-                    // Print out some information for each company.
-                    if (page.results != null)
+                    do
                     {
-                        totalResultSetSize = page.totalResultSetSize;
-                        int i = page.startIndex;
-                        foreach (Company company in page.results)
-                        {
-                            Anunciante = new Contacto();
-                            Anunciante.IdContactoDigital = company.id.ToString();
-                            Anunciante.RazonSocial = company.name;
-                            Anunciantes.Add(Anunciante);
-                        }
-                    }
+                        CompanyPage page =
+                            companyService.getCompaniesByStatement(statementBuilder.ToStatement());
 
-                    statementBuilder.IncreaseOffsetBy(pageSize);
-                } while (statementBuilder.GetOffset() < totalResultSetSize);
+                        // Print out some information for each company.
+                        if (page.results != null)
+                        {
+                            totalResultSetSize = page.totalResultSetSize;
+                            int i = page.startIndex;
+                            foreach (Company company in page.results)
+                            {
+                                Anunciante = new Contacto();
+                                Anunciante.IdContactoDigital = company.id.ToString();
+                                Anunciante.RazonSocial = company.name;
+                                Anunciantes.Add(Anunciante);
+                            }
+                        }
+
+                        statementBuilder.IncreaseOffsetBy(pageSize);
+                    } while (statementBuilder.GetOffset() < totalResultSetSize);
+                }
+                catch (AdManagerApiException e)
+                {
+                    ApiException innerException = e.ApiException as ApiException;
+                    string msj = "Ocurrio un error al intentar guardar la Orden en Google Ad Manager: " + innerException.message;
+                }
+
+                //do
+                //{
+                //    CompanyPage page =
+                //        companyService.getCompaniesByStatement(statementBuilder.ToStatement());
+
+                //    // Print out some information for each company.
+                //    if (page.results != null)
+                //    {
+                //        totalResultSetSize = page.totalResultSetSize;
+                //        int i = page.startIndex;
+                //        foreach (Company company in page.results)
+                //        {
+                //            Anunciante = new Contacto();
+                //            Anunciante.IdContactoDigital = company.id.ToString();
+                //            Anunciante.RazonSocial = company.name;
+                //            Anunciantes.Add(Anunciante);
+                //        }
+                //    }
+
+                //    statementBuilder.IncreaseOffsetBy(pageSize);
+                //} while (statementBuilder.GetOffset() < totalResultSetSize);
 
             }
 
@@ -202,6 +233,65 @@ namespace WebApi.Helpers
                    .Where("OrderId = :oID and status != 'ARCHIVED'").OrderBy("id ASC")
                    .Limit(pageSize)
                    .AddValue("oID", idOrder);
+
+                // Retrieve a small amount of placements at a time, paging through until all
+                // placements have been retrieved.
+                int totalResultSetSize = 0;
+                do
+                {
+                    LineItemPage page =
+                        lineItemService.getLineItemsByStatement(statementBuilder.ToStatement());
+
+                    // Print out some information for each placement.
+                    if (page.results != null)
+                    {
+                        totalResultSetSize = page.totalResultSetSize;
+                        int i = page.startIndex;
+                        foreach (LineItem lineItem in page.results)
+                        {
+                            Lineas.Add(lineItem);
+                        }
+                    }
+
+                    statementBuilder.IncreaseOffsetBy(pageSize);
+                } while (statementBuilder.GetOffset() < totalResultSetSize);
+
+            }
+            return Lineas;
+        }
+
+        public static List<LineItem> filterLineItems(List<Parametro> parametros)
+        {
+            List<LineItem> Lineas = new List<LineItem>();
+
+            string mifiltro = "status != 'ARCHIVED'";
+
+            foreach (Parametro p in parametros)
+            {
+                if (p.Value.ToString() != "")
+                {
+                    if ((p.ParameterName == "idOp"))
+                        mifiltro = mifiltro + " and OrderId = " + p.Value;
+                    if ((p.ParameterName == "descripcionOp") && (p.Value.ToString() != ""))
+                    {
+                        List<long> listaOP = GetOrderByName(p.Value);
+                        mifiltro = mifiltro + " and OrderId IN " + listaOP;
+                    }
+                    if ((p.ParameterName == "idDet"))
+                        mifiltro = mifiltro + " and Id = " + p.Value;
+                    if ((p.ParameterName == "descripcionDet"))
+                        mifiltro = mifiltro + " and name like '%" + p.Value + "%'";                                 
+                }
+            }
+
+            using (LineItemService lineItemService = user.GetService<LineItemService>())
+            {
+                // Create a statement to select placements.
+                int pageSize = StatementBuilder.SUGGESTED_PAGE_LIMIT;
+                StatementBuilder statementBuilder = new StatementBuilder()
+                   .Where(mifiltro).OrderBy("id ASC")
+                   .Limit(pageSize);
+                   //.AddValue("oID");
 
                 // Retrieve a small amount of placements at a time, paging through until all
                 // placements have been retrieved.
@@ -1513,6 +1603,43 @@ namespace WebApi.Helpers
             }
             return result;
         }
-        
+
+        public static List<long> GetOrderByName(string nombre)
+        {
+            List<long> result = new List<long>();
+            using (OrderService orderService = user.GetService<OrderService>())
+            {
+                // Create a statement to select orders.             
+                int pageSize = StatementBuilder.SUGGESTED_PAGE_LIMIT;
+                StatementBuilder statementBuilder =
+                    new StatementBuilder().Where("name like '%" + nombre + "%'").OrderBy("id ASC").Limit(pageSize);
+
+                // Retrieve a small amount of orders at a time, paging through until all
+                // orders have been retrieved.
+                int totalResultSetSize = 0;
+
+                OrderPage page = orderService.getOrdersByStatement(statementBuilder.ToStatement());
+
+                // Print out some information for each order.
+                if (page.results != null)
+                {
+                    totalResultSetSize = page.totalResultSetSize;
+                    int i = page.startIndex;
+                    foreach (Order order in page.results)
+                    {
+                        Debug.WriteLine("{0}) Order with ID {1} and name \"{2}\" was found.",
+                            i++, order.id, order.name);
+                        result.Add(order.id);
+                    }
+                }
+                else
+                {
+                    result = null;
+                }
+                statementBuilder.IncreaseOffsetBy(pageSize);
+            }
+            return result;
+        }
+
     }
 }

@@ -936,7 +936,7 @@ namespace WebApi.Entities
                 new SqlParameter()
                 { ParameterName="@idgam",SqlDbType = SqlDbType.BigInt, Value = idOpGAM },
                  new SqlParameter()
-                { ParameterName="@idRed",SqlDbType = SqlDbType.BigInt, Value = idRed }
+                { ParameterName="@idRed",SqlDbType = SqlDbType.Int, Value = idRed }
             };
 
             DataTable t = DB.Select(sqlCommand, parametros);

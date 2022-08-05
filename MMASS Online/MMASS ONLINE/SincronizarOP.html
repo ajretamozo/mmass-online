@@ -53,9 +53,12 @@
             }
         }
 
-        .btn {
-            font-size: inherit;
-            height: 30px;
+        .nav > a {
+            color: #17a2b8;
+        }
+
+        .nav > a:hover {
+            color: #138496;
         }
 
         .dataTitle {
@@ -168,8 +171,8 @@
                     <div class="modal-body" id="sincAnunModalBody">
                         <div class="row">
                             <div class="col-md-4">
-                                <label for="descFiltro">Anunciante AdServer: </label>
-                                <div class="input-group enterSearch"> <input type="text" id="descFiltro" class="form-control"></div>
+                                <label for="descFiltroAnun">Anunciante AdServer: </label>
+                                <div class="input-group enterSearch"> <input type="text" id="descFiltroAnun" class="form-control"></div>
                             </div>
                             <div class="col-md-4 d-flex align-items-end">
                                 <button type="button" class="btn btn-dark btn-sm mx-1" onclick="buscarAnunGam()">
@@ -209,24 +212,24 @@
             <p class="dataTitle">SINCRONIZAR ORDENES</p>
             <!-- TABS -->
             <nav class="nav nav-tabs mb-3">
-                <a class="nav-link active" id="principal-tab" data-toggle="tab" href="#principal" role="tab" aria-controls="principal" aria-selected="true">OP Nuevas</a>
-                <!--<a class="nav-link" id="archivos-tab" data-toggle="tab" href="#archivos" role="tab" aria-controls="archivos" aria-selected="false">OP Modificadas</a>-->
+                <a class="nav-link active" id="ordenes-tab" data-toggle="tab" href="#ordenes" role="tab" aria-controls="ordenes" aria-selected="true">OP Nuevas</a>
+                <a class="nav-link" id="detalles-tab" data-toggle="tab" href="#detalles" role="tab" aria-controls="detalles" aria-selected="false">Detalles Nuevos</a>
             </nav>
             <div class="tab-content" id="tabsContent">
-                <!--ORDENES NUEVAS-->
-                <div class="tab-pane fade show active" id="principal" role="tabpanel" aria-labelledby="principal-tab">
+                <!-- TAB ORDENES -->
+                <div class="tab-pane fade show active" id="ordenes" role="tabpanel" aria-labelledby="ordenes-tab">
 
                     <div class="row py-1">
                         <div class="col-md-4">
-                            <label for="descFiltro">ID: </label>
+                            <label for="idFiltro">ID OP: </label>
                             <div class="input-group enterSearch"> <input type="number" id="idFiltro" class="form-control"></div>
                         </div>
                         <div class="col-md-4">
-                            <label for="descFiltro">Nombre: </label>
+                            <label for="descFiltro">Nombre OP: </label>
                             <div class="input-group enterSearch"> <input type="text" id="descFiltro" class="form-control"></div>
                         </div>
                         <div class="col-md-4">
-                            <label for="descFiltro">Red AdServer: </label>
+                            <label for="selRedes">Red AdServer: </label>
                             <select class="form-control enterSearch" id="selRedes" onchange="onRedSelected()"></select>
                         </div>
                     </div>
@@ -245,54 +248,68 @@
                         <table class="table table-hover table-sm " id="tablaOPGAM">
                             <thead>
                                 <tr id="header">
-                                    <th class="col-xs-3">ID AdServer</th>
-                                    <th class="col-xs-9">Nombre</th>
+                                    <th class="col-xs-3">ID AdServer OP</th>
+                                    <th class="col-xs-9">Nombre OP</th>
                                     <th class="col-xs-9">Anunciante</th>
                                     <th class="col-xs-9">Fecha Desde</th>
                                     <th class="col-xs-9">Fecha Hasta</th>
                                     <th class="col-xs-9">Neto</th>
                                 </tr>
                             </thead>
-                            <tbody id="TableRenglones" class="small"></tbody>
+                            <tbody id="TableOrdenes" class="small"></tbody>
                         </table>
                     </div>
                 </div>
-                <!-- TAB CERTIFICACION -->
-                <div class="tab-pane fade" id="archivos" role="tabpanel" aria-labelledby="archivos-tab">
+                <!-- TAB DETALLES -->
+                <div class="tab-pane fade" id="detalles" role="tabpanel" aria-labelledby="detalles-tab">
+                    <div class="row py-1">
+                        <div class="col-md-4">
+                            <label for="idFiltroD">ID OP: </label>
+                            <div class="input-group enterSearch"> <input type="number" id="idFiltroOpD" class="form-control"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="descFiltroD">Nombre OP: </label>
+                            <div class="input-group enterSearch"> <input type="text" id="descFiltroOpD" class="form-control"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="selRedesD">Red AdServer: </label>
+                            <select class="form-control enterSearch" id="selRedesD" onchange="onRedSelected()"></select>
+                        </div>
+                    </div>
+                    <div class="row py-1">
+                        <div class="col-md-4">
+                            <label for="idFiltroD">ID Detalle: </label>
+                            <div class="input-group enterSearch"> <input type="number" id="idFiltroD" class="form-control"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="descFiltroD">Nombre Detalle: </label>
+                            <div class="input-group enterSearch"> <input type="text" id="descFiltroD" class="form-control"></div>
+                        </div>
+                        <div class="col-md-4 d-flex justify-content-end align-items-end">
+                            <button type="button" class="btn btn-dark btn-sm mx-1" onclick="filterD()">
+                                <span class="fa fa-search"></span> Buscar
+                            </button>
+                        </div>
+                    </div>
+                    <div class="table-responsive mt-2">
+                        <table class="table table-hover table-sm " id="tablaDetGAM">
+                            <thead>
+                                <tr id="header">
+                                    <th class="col-xs-3">ID AdServer OP</th>
+                                    <th class="col-xs-3">ID AdServer Detalle</th>
+                                    <th class="col-xs-9">Nombre</th>
+                                    <th class="col-xs-9">Anunciante</th>
+                                    <th class="col-xs-9">Fecha Desde</th>
+                                    <th class="col-xs-9">Fecha Hasta</th>
+                                    <th class="col-xs-1">Cant.</th>
+                                    <th class="col-xs-9">Neto</th>
+                                </tr>
+                            </thead>
+                            <tbody id="TableDetalles" class="small"></tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
-
-            <!--<div class="row">
-            <div class="col-md-4">
-                <label for="descFiltro">Descripción OP: </label>
-                <div class="input-group enterSearch"> <input type="text" id="descFiltro" class="form-control"></div>
-            </div>
-            <div class="col-md-4">
-                <label for="descFiltro">Red AdServer: </label>
-                <select class="form-control enterSearch" id="selRedes" onchange="onRedSelected()"></select>
-            </div>
-            <div class="col-md-4 d-flex justify-content-end align-items-end">
-                <button type="button" class="btn btn-dark btn-sm mx-1" onclick="filter()">
-                    <span class="fa fa-search"></span> Buscar
-                </button>
-            </div>
-        </div>
-        <div class="table-responsive mt-2">
-            <table class="table table-hover table-sm " id="tablaOPGAM">
-                <thead>
-                    <tr id="header">
-                        <th class="col-xs-3">ID AdServer</th>
-                        <th class="col-xs-9">Nombre</th>
-                        <th class="col-xs-9">Anunciante</th>
-                        <th class="col-xs-9">Fecha Desde</th>
-                        <th class="col-xs-9">Fecha Hasta</th>
-                        <th class="col-xs-9">Neto</th>
-                    </tr>
-                </thead>
-                <tbody id="TableRenglones" class="small"></tbody>
-            </table>
-        </div>-->
-
         </div>
     </main>
 
@@ -323,19 +340,6 @@
             $("#" + idSelect).val('');
         }
 
-        //function getOrdenesGAM(codRed) {
-        //    callWS("googleAdManager", "getOpNuevas", '', function (data) { onCargarTabla('TableRenglones', data); });
-        //}
-
-        //function onRedSelected() {
-        //    $("#pleaseWaitDialog").modal();
-        //    //idRed = $('#selRedes').val();
-        //    codRed = $('#selRedes>option:selected').attr("codigo_red");
-        //    $.when(
-        //        callWS("googleAdManager", "cambiarRed", codRed)
-        //    ).then( getOrdenesGAM());
-        //}
-
         function onRedSelected() {
             idRed = $('#selRedes').val();
             codRed = $('#selRedes>option:selected').attr("codigo_red");
@@ -349,17 +353,7 @@
             params.descripcion = $('#descFiltro').val();
             params.red = $('#selRedes').val();
 
-            //id = $("#idFiltro").val();
-            //desc = $("#descFiltro").val();
-            //red = $("#selRedes").val();
-
             if (params.red != 0 && params.red != null) {
-                //var objParametro = {};
-
-                //objParametro.ParameterName = "nombre";
-                //objParametro.Value = desc;
-                //objParametro.ParameterName = "id";
-                //objParametro.Value = id;
 
                 for (param in params) {
                     if (params[param] == null) {
@@ -377,7 +371,7 @@
         }
 
         function onGetOrdenesGAM(data) {
-            onCargarTabla('TableRenglones', data);
+            onCargarTabla('TableOrdenes', data);
             if (data.length == 0) {
                 showMessage("No se enontraron Ordenes", "info");
             }
@@ -490,7 +484,7 @@
 
         function buscarAnunGam() {
             /*rows = $("tr").not("#header");*/
-            desc = $("#descFiltro").val();
+            desc = $("#descFiltroAnun").val();
             red = $("#selRedes").val();
 
             if (red != 0 && red != null) {
@@ -563,7 +557,7 @@
             var idGAMSel = "#sel" + idGAM;
             idGAMSel = idGAMSel + ">option:selected";
             if ($(idGAMSel).val() == undefined) {
-                showMessage("Seleccione un anunciante en el dropdown", "info");
+                showMessage("Seleccione un Anunciante en el selector", "info");
             } else {
                 var cont = {};
                 cont.Id = $(idGAMSel).attr("idContacto");
@@ -580,13 +574,68 @@
                 $(idButton).css("background-color", "#c3e6cb");
                 showMessage("Anunciante vinculado", "success");
             } else {
-                showMessage("Ocurrio un error al vincular el Anunciante", "alert");
+                showMessage("Ocurrió un error al vincular el Anunciante", "alert");
             }
+        }
+
+        function filterD() {
+            rows = $("tr").not("#header");
+            params = {};
+            params.idOp = $("#idFiltroOpD").val();
+            params.descripcionOp = $('#descFiltroOpD').val();
+            params.red = $('#selRedes').val();
+            params.idDet = $("#idFiltroD").val();
+            params.descripcionDet = $('#descFiltroD').val();
+
+            if (params.red != 0 && params.red != null) {
+
+                for (param in params) {
+                    if (params[param] == null) {
+                        params[param] = '';
+                    }
+                };
+
+                var parametros = setListaParametros(params);
+
+                callWS("googleAdManager", "getDetNuevos", JSON.stringify(parametros), function (data) { onGetDetallesGAM(data); });
+            }
+            else {
+                showMessage("Seleccione una Red AdServer", "alert");
+            }
+        }
+
+        function onGetDetallesGAM(data) {
+            onCargarTablaD('TableDetalles', data);
+            if (data.length == 0) {
+                showMessage("No se enontraron Detalles", "info");
+            }
+        }
+
+        function onCargarTablaD(tablaID, data) {
+            rowHTML = ''
+
+            $.each(data, function (it, detGAM) {
+
+                rowHTML += "<tr>";
+                rowHTML += "<td class='col-xs-1'> " + detGAM.id_Google_Ad_Manager + "</td > ";
+                rowHTML += "<td class='col-xs-1'> " + detGAM.observ + "</td > ";
+                rowHTML += "<td class='col-xs-1'> " + detGAM.anunciante_nombre + "</td >";
+                rowHTML += "<td class='col-xs-1'> " + dateToFieldFormat(detGAM.fecha) + "</td > ";
+                rowHTML += "<td class='col-xs-1'> " + dateToFieldFormat(detGAM.fecha_expiracion) + "</td > ";
+                rowHTML += "<td class='col-xs-1'>$ " + formatearMonto(detGAM.seg_neto) + "</td > ";
+                rowHTML += "<td class='col-xs-2' > <button type='button' id=button" + detGAM.id_Google_Ad_Manager + " class='btn btn-danger' onClick='comprobarAnunciante(" + ordenGAM.id_Google_Ad_Manager + ", " + ordenGAM.id_red + ", " + ordenGAM.anunciante.idContactoDigital + ")'>Importar</button> </td ></tr>";
+                rowHTML += "</tr>";
+
+            });
+
+            $("#" + tablaID).html(rowHTML);
+
+            $("#pleaseWaitDialog").modal('hide');
         }
 
     </script>
     <footer>
-        <p style="text-align: center; font-size: x-small;">Powered by <b style="font-size: small;">Strategy Zone S.A. </b></p>
+        <p style="text-align: center; font-size: x-small;">Powered by <b style="font-size: small;">Strategy Zone S.A. ©</b></p>
     </footer>
 </body>
 </html>

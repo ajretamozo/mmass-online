@@ -75,7 +75,7 @@ namespace WebApi.Services
             {
                 ret.op = null;
                 ret.result = -3;
-                ret.message = "El contacto seleccionado para facturar no es facturable";
+                ret.message = "El Contacto seleccionado para facturar no es facturable";
             }
             else
             {
@@ -83,11 +83,11 @@ namespace WebApi.Services
                 if (ret.op != null)
                 {
                     ret.result = 1;
-                    ret.message = "La orden Nro: " + miobj.Anio + "-" + miobj.Mes + "-" + miobj.Nro_orden + " se genero con exito";
+                    ret.message = "La Orden Nro: " + miobj.Anio + "-" + miobj.Mes + "-" + miobj.Nro_orden + " se generó con éxito";
                 }
                 else {
                     ret.result = -1;
-                    ret.message = "Ocurrio un error al intentar guardar la orden";
+                    ret.message = "Ocurrió un error al intentar guardar la orden";
                 }
             }
             return ret;

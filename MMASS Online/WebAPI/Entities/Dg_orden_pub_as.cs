@@ -337,7 +337,7 @@ namespace WebApi.Entities
                 int i = 0;
                 float porc = ((float)100.00 / (float)count);
                 porc = (float)Math.Round(porc,2);
-                float porcSum=0;
+                //float porcSum=0;
                 foreach (Dg_orden_pub_medios elem in Medios)
                 {
                     
@@ -604,9 +604,68 @@ namespace WebApi.Entities
             Dg_orden_pub_as det = new Dg_orden_pub_as();
             if (td.Rows.Count == 1)
             {
-                det = Dg_orden_pub_as.getDg_orden_pub_as(td.Rows[0]);
+                det = getDg_orden_pub_as(td.Rows[0]);
             }
             return det;
+        }
+
+        public static List<Dg_orden_pub_as> getByIdOp(int idOp)
+        {
+            List<Dg_orden_pub_as> detalles = new List<Dg_orden_pub_as>();
+            
+            string strSql = " select id_op_dg, id_detalle, anio, mes, nro_orden, fecha_desde, fecha_hasta, id_producto, descripcion, id_programa, id_tarifa_dg," +
+                                " tarifa_manual, id_tipo_aviso_dg, tipo_tarifa, imp_tarifa, importe_unitario, cantidad, monto_bruto, porc_dto," +
+                                " monto_neto, netomanual, porcconfnc, porcconffc, impconfnc, impconffc," +
+                                " porc_dto1, imp_dto1, id_mtvo_dto1, tipo_dto1, porc_dto2, imp_dto2, id_mtvo_dto2, tipo_dto2," +
+                                " porc_dto3, imp_dto3, id_mtvo_dto3, tipo_dto3, porc_dto4, imp_dto4, id_mtvo_dto4, tipo_dto4," +
+                                " porc_dto5, imp_dto5, id_mtvo_dto5, tipo_dto5,id_google_ad_manager, ron, id_area, id_det_conv, id_red from Dg_orden_pub_as where id_op_dg = " + idOp.ToString();
+            
+            DataTable td = DB.Select(strSql);
+            Dg_orden_pub_as det;
+            foreach (DataRow r in td.Rows)
+            {
+                det = getDg_orden_pub_as(r);
+                detalles.Add(det);
+            }
+            return detalles;
+        }
+
+        public static bool existeDetGAMenBD(long idDetGAM, int idRed)
+        {
+            bool existe = false;
+            string sqlCommand = "SELECT * FROM dg_orden_pub_as WHERE id_google_ad_manager=@idgam and id_red=@idRed";
+
+            List<SqlParameter> parametros = new List<SqlParameter>()
+            {
+                new SqlParameter()
+                { ParameterName="@idgam",SqlDbType = SqlDbType.BigInt, Value = idDetGAM },
+                 new SqlParameter()
+                { ParameterName="@idRed",SqlDbType = SqlDbType.Int, Value = idRed }
+            };
+
+            DataTable t = DB.Select(sqlCommand, parametros);
+            if (t.Rows.Count == 1)
+            {
+                existe = true;
+            }
+            return existe;
+        }
+
+        public static List<Dg_orden_pub_as> getAll()
+        {
+            List<Dg_orden_pub_as> detalles = new List<Dg_orden_pub_as>();
+
+            string strSql = "SELECT id_google_ad_manager, id_red FROM dg_orden_pub_as";
+
+            DataTable td = DB.Select(strSql);
+            Dg_orden_pub_as det = new Dg_orden_pub_as();
+            foreach (DataRow r in td.Rows)
+            {
+                det.Id_Google_Ad_Manager = long.Parse(r["id_google_ad_manager"].ToString());
+                det.Id_red = int.Parse(r["id_red"].ToString());
+                detalles.Add(det);
+            }
+            return detalles;
         }
 
     }
