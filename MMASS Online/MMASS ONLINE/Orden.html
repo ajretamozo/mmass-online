@@ -681,7 +681,7 @@
                                                 <div class="col-lg-2 pt-1" style="padding-left: 0px;">
                                                     <label for="bcomprobarModificaciones" class="invisible">ModiGAM</label>
                                                     <button type="button" data-id="bcomprobarModificaciones" id="bcomprobarModificaciones" disabled="disabled" class="btn actions btn-outline-dark btn-sm mr-1" onclick="comprobarModificacionesButton()" title="No hay modificaciones en AdServer">
-                                                        <span class="fa fa-refresh" id="spanCompAct"></span>
+                                                        <span class="fa fa-cloud-download" id="spanCompAct"></span>
                                                     </button>
                                                 </div>
                                             </div>
@@ -846,11 +846,11 @@
                                     </div>
                                     <div class="col-lg-6">
                                     </div>
-                                    <div class="col-lg-4 d-flex justify-content-end">
+                                    <!--<div class="col-lg-4 d-flex justify-content-end">
                                         <button type="button" id="bComprobarNuevosDetalles" class="btn  actions btn-outline-dark btn-sm" onclick="comprobarNuevosDetalles()">
-                                            <span class="fa fa-refresh"></span> Comprobar nuevos Detalles
+                                            <span class="fa fa-cloud-download"></span> Comprobar nuevos Detalles
                                         </button>
-                                    </div>
+                                    </div>-->
                                 </div>
 
                                 <div class="table-responsive mt-2">
@@ -889,7 +889,7 @@
                                                 <div class="col-lg-2 pt-1" style="padding-left: 0px;">
                                                     <label for="bcomprobarModificacionesD" class="invisible">ModiGAM</label>
                                                     <button type="button" data-id="bcomprobarModificacionesD" id="bcomprobarModificacionesD" disabled="disabled" class="btn actions btn-outline-dark btn-sm mr-1" onclick="comprobarModificacionesDButton()" title="Comprobar modificaciones en AdServer">
-                                                        <span class="fa fa-refresh"></span>
+                                                        <span class="fa fa-cloud-download"></span>
                                                     </button>
                                                 </div>
                                             </div>
@@ -1085,8 +1085,8 @@
                                 </div>
                                 <div class="col-lg-4"></div>
                                 <div class="col-lg-4 d-flex justify-content-end">
-                                    <button type="button" data-id="sendOrderAS" id="bSendOrdenAddServer" class="btn actions btn-outline-dark btn-sm mr-1" disabled="disabled" onclick="enviarOrdenAddServer()" title="Enviar ordenAddServer">
-                                        <span class="fa fa-cloud" id="brow"></span>
+                                    <button type="button" data-id="sendOrderAS" id="bSendOrdenAddServer" class="btn actions btn-outline-dark btn-sm mr-1" disabled="disabled" onclick="enviarOrdenAddServer()" title="Exportar OP a AdServer">
+                                        <span class="fa fa-cloud-upload" id="brow"></span>
                                     </button>
                                     <button type="button" id="bGuardarOrden" class="btn actions btn-dark btn-sm mx-1" onclick="prevSaveOrder()">
                                         <span class="fa fa-save"></span> Guardar
@@ -1276,12 +1276,19 @@
                 var Id_op_gam = arr[0];
                 var codRed = arr[1];
 
-                $.when(callWS("googleAdManager", "cambiarRed", codRed)
+                $.when(CambiarRed(codRed)
                 ).then(getOrdenGAM(Id_op_gam));
             }
 
-            function getOrdenGAM(IdOpGam) {
-                callWS("googleAdManager", "getOrderById", JSON.stringify(IdOpGam), onGetOrder);
+            //si la OP viene de SincronizarLinea
+            var op3 = getUrlParameter("orderIdSinc")
+            var data = {};
+            data.Id_op_dg = op3;
+
+            if (op3 != undefined) {
+                //$.when(getOrdenSinc(data)
+                //).then(comprobarNuevosDetalles());
+                callWS("dg_orden_pub_aps", "getById", JSON.stringify(data), onGetOrder);
             }
 
             //si la OP viene de ClonarOP
@@ -1294,6 +1301,14 @@
                 callWS("dg_orden_pub_aps", "getById", JSON.stringify(data), onGetOrder);
             }
         }
+
+        function getOrdenGAM(IdOpGam) {
+            callWS("googleAdManager", "getOrderById", JSON.stringify(IdOpGam), onGetOrder);
+        }
+
+        //function getOrdenSinc(data) {
+        //    callWS("dg_orden_pub_aps", "getById", JSON.stringify(data), onGetOrder);
+        //}
 
         function onSelTipoD(sel) {
             var optionsBanner = {
@@ -1393,6 +1408,8 @@
 
             $("#selRedes option[value=" + data.id_red + "]").attr("selected", "selected");
             if (data.id_red > 0) {
+                codRed = $('#selRedes>option:selected').attr("codigo_red");
+                CambiarRed(codRed);
                 $("#selRedes").attr("disabled", true);
             }
 
@@ -1447,12 +1464,15 @@
             }
 
             if (data.id_Google_Ad_Manager > 0 && (data.id_op_dg != undefined && data.id_op_dg != 0) && data.es_anulada == 0 && data.es_facturada == false && OpClon == false) {
-                codRed = $('#selRedes>option:selected').attr("codigo_red");
+                //codRed = $('#selRedes>option:selected').attr("codigo_red");
                 
-                $.when(CambiarRed(codRed)).then(
-                    comprobarModificaciones(data.id_op_dg, data.id_Google_Ad_Manager),
-                    obtenerProgresoLineasGam(data));
+                //$.when(CambiarRed(codRed)).then(
+                //    comprobarModificaciones(data.id_op_dg, data.id_Google_Ad_Manager),
+                //    obtenerProgresoLineasGam(data));
 
+                comprobarModificaciones(data.id_op_dg, data.id_Google_Ad_Manager);
+                obtenerProgresoLineasGam(data);
+                comprobarNuevosDetalles();
             }
 
             if (data.bloqueado == 0 && OpClon == false) {
@@ -2799,14 +2819,14 @@
             $('.disableOnEdit').attr("disabled", false);
             //  Botón enviar renglon a AdServer
             if (det.tipo_aviso_dg == "" || det.tipo_aviso_dg == undefined || det.tipo_aviso_dg == null || OpAnulada == true || OpBloqueada == true) {
-                str = str + " <button type='button' data-id='" + id + "' disabled id='bSendAddServer" + id + "' class='btn actions btn-outline-dark btn-sm mr-1' onclick='enviarLineaAddServer(this)' title='Enviar AddServer'> <span class='fa fa-cloud ' id='brow" + id + "'></span></button>";
+                str = str + " <button type='button' data-id='" + id + "' disabled id='bSendAddServer" + id + "' class='btn actions btn-outline-dark btn-sm mr-1' onclick='enviarLineaAddServer(this)' title='Exportar Detalle a AdServer'> <span class='fa fa-cloud-upload ' id='brow" + id + "'></span></button>";
             }
             else {
                 if ((det.tipo_aviso_dg.permite_envio_ads === true || det.tipo_aviso_dg.permite_envio_ads == "true") && (det.id_op_dg != 0) && ($('#inpIdOrdenAdServer').val() !== 0 && $('#inpIdOrdenAdServer').val() !== "") && $("#inpEsFacturada").val() == 'NO') {
-                    str = str + " <button type='button' data-id='" + id + "'  id='bSendAddServer" + id + "' class='btn actions btn-outline-dark btn-sm mr-1' onclick='enviarLineaAddServer(this)' title='Enviar a AddServer'> <span class='fa fa-cloud ' id='brow" + id + "'></span></button>";
+                    str = str + " <button type='button' data-id='" + id + "'  id='bSendAddServer" + id + "' class='btn actions btn-outline-dark btn-sm mr-1' onclick='enviarLineaAddServer(this)' title='Exportar Detalle a AdServer'> <span class='fa fa-cloud-upload' id='brow" + id + "'></span></button>";
                 }
                 else {
-                    str = str + " <button type='button' data-id='" + id + "' disabled id='bSendAddServer" + id + "' class='btn actions btn-outline-dark btn-sm mr-1' onclick='enviarLineaAddServer(this)' title='Enviar a AddServer'> <span class='fa fa-cloud ' id='brow" + id + "'></span></button>";
+                    str = str + " <button type='button' data-id='" + id + "' disabled id='bSendAddServer" + id + "' class='btn actions btn-outline-dark btn-sm mr-1' onclick='enviarLineaAddServer(this)' title='Exportar Detalle a AdServer'> <span class='fa fa-cloud-upload' id='brow" + id + "'></span></button>";
                 }
             }
             //  Botón eliminar renglon
@@ -2836,7 +2856,7 @@
                 str = str + "<span class='fa fa-exclamation fa-pulse' id='brow" + id + "' title='Detalle no guardado''></span></td>";
             }
             // Alerta Modificaciones en Linea de Pedido en AdServer
-            str = str + "<td id='tdMod" + id + "' style='padding-top: 16px;'><span class='fa fa-refresh fa-pulse invisible' id='spanCompActD" + id + "' title='Hay modificaciones en AdServer'></span></td></td></tr>";
+            str = str + "<td id='tdMod" + id + "' style='padding-top: 16px;'><span class='fa fa-cloud-download fa-pulse invisible' id='spanCompActD" + id + "' title='Hay modificaciones en AdServer'></span></td></td></tr>";
             $("#TableRenglones").append(str);
             //  Colorear verde renglon enviado a AdServer
             if (det.id_Google_Ad_Manager != undefined && det.id_Google_Ad_Manager != 0 && OpClon == false) {
@@ -4100,7 +4120,7 @@
         function onRedSelected() {
             idRed = $('#selRedes').val();
             codRed = $('#selRedes>option:selected').attr("codigo_red");
-            callWS("googleAdManager", "cambiarRed", codRed);
+            CambiarRed(codRed);
 
             //recargar emplazamientos
             callWS("medios", "getAllE", JSON.stringify(idRed), function (data) { onPopulateSelectEmplaza(data, 'selEmplazaD', 'id_emplazamiento', 'descripcion', 'codigo_emplazamiento'); });
@@ -4108,6 +4128,8 @@
             if ($("#inpOrderNumber").attr("id_op_dg") > 0) {
                 showMessage("Alerta! Emplazamientos reseteados", "info");
             }
+
+            $('#bSendOrdenAddServer').attr("disabled", true);
         }
 
         function onEmpresaSelected() {
@@ -4713,7 +4735,7 @@
                 objParametro.ParameterName = "nombre";
                 objParametro.Value = desc;
 
-                $.when(callWS("googleAdManager", "cambiarRed", codRed)
+                $.when(CambiarRed(codRed)
                 ).then(sincAnunciante3(objParametro));
             }
             else {

@@ -926,26 +926,26 @@ namespace WebApi.Entities
             }
         }
 
-        public static bool existeOpGAMenBD(long idOpGAM, int idRed)
-        {
-            bool existe = false;
-            string sqlCommand = "SELECT id_op_dg FROM dg_orden_pub_ap WHERE id_google_ad_manager=@idgam and id_red=@idRed";
+        //public static bool existeOpGAMenBD(long idOpGAM, int idRed)
+        //{
+        //    bool existe = false;
+        //    string sqlCommand = "SELECT id_op_dg FROM dg_orden_pub_ap WHERE id_google_ad_manager=@idgam and id_red=@idRed";
 
-            List<SqlParameter> parametros = new List<SqlParameter>()
-            {
-                new SqlParameter()
-                { ParameterName="@idgam",SqlDbType = SqlDbType.BigInt, Value = idOpGAM },
-                 new SqlParameter()
-                { ParameterName="@idRed",SqlDbType = SqlDbType.Int, Value = idRed }
-            };
+        //    List<SqlParameter> parametros = new List<SqlParameter>()
+        //    {
+        //        new SqlParameter()
+        //        { ParameterName="@idgam",SqlDbType = SqlDbType.BigInt, Value = idOpGAM },
+        //         new SqlParameter()
+        //        { ParameterName="@idRed",SqlDbType = SqlDbType.Int, Value = idRed }
+        //    };
 
-            DataTable t = DB.Select(sqlCommand, parametros);
-            if (t.Rows.Count == 1)
-            {
-                existe = true;
-            }
-            return existe;
-        }
+        //    DataTable t = DB.Select(sqlCommand, parametros);
+        //    if (t.Rows.Count == 1)
+        //    {
+        //        existe = true;
+        //    }
+        //    return existe;
+        //}
 
         public static bool anularOrden(int idOp)
         {
@@ -983,6 +983,32 @@ namespace WebApi.Entities
                 resultado = true;
             }
             return resultado;
+        }
+
+        public static Dg_orden_pub_ap getOpByIdGAM(long idOpGAM, int idRed)
+        {
+            Dg_orden_pub_ap op = new Dg_orden_pub_ap();
+            string sqlCommand = "SELECT id_op_dg, anio, mes, nro_orden FROM dg_orden_pub_ap WHERE id_google_ad_manager=@idgam and id_red=@idRed";
+
+            List<SqlParameter> parametros = new List<SqlParameter>()
+            {
+                new SqlParameter()
+                { ParameterName="@idgam",SqlDbType = SqlDbType.BigInt, Value = idOpGAM },
+                 new SqlParameter()
+                { ParameterName="@idRed",SqlDbType = SqlDbType.Int, Value = idRed }
+            };
+
+            DataTable t = DB.Select(sqlCommand, parametros);
+            if (t.Rows.Count == 1)
+            {
+                DataRow item = t.Rows[0];
+
+                op.Id_op_dg = DB.DInt(item["id_op_dg"].ToString());
+                op.Anio = DB.DInt(item["anio"].ToString());
+                op.Mes = DB.DInt(item["Mes"].ToString());
+                op.Nro_orden = DB.DInt(item["nro_orden"].ToString());
+            }
+            return op;
         }
 
     }

@@ -274,8 +274,10 @@ namespace WebApi.Helpers
                         mifiltro = mifiltro + " and OrderId = " + p.Value;
                     if ((p.ParameterName == "descripcionOp") && (p.Value.ToString() != ""))
                     {
-                        List<long> listaOP = GetOrderByName(p.Value);
-                        mifiltro = mifiltro + " and OrderId IN " + listaOP;
+                        //List<long> listaOP = GetOrderByName(p.Value);
+                        //mifiltro = mifiltro + " and OrderId IN " + listaOP;
+                        string listaOP = GetOrderByName(p.Value);
+                        mifiltro = mifiltro + " and OrderId IN (" + listaOP + ")";
                     }
                     if ((p.ParameterName == "idDet"))
                         mifiltro = mifiltro + " and Id = " + p.Value;
@@ -289,7 +291,7 @@ namespace WebApi.Helpers
                 // Create a statement to select placements.
                 int pageSize = StatementBuilder.SUGGESTED_PAGE_LIMIT;
                 StatementBuilder statementBuilder = new StatementBuilder()
-                   .Where(mifiltro).OrderBy("id ASC")
+                   .Where(mifiltro).OrderBy("CreationDateTime DESC")
                    .Limit(pageSize);
                    //.AddValue("oID");
 
@@ -1604,9 +1606,46 @@ namespace WebApi.Helpers
             return result;
         }
 
-        public static List<long> GetOrderByName(string nombre)
+        //public static List<long> GetOrderByName(string nombre)
+        //{
+        //    List<long> result = new List<long>();
+        //    using (OrderService orderService = user.GetService<OrderService>())
+        //    {
+        //        // Create a statement to select orders.             
+        //        int pageSize = StatementBuilder.SUGGESTED_PAGE_LIMIT;
+        //        StatementBuilder statementBuilder =
+        //            new StatementBuilder().Where("name like '%" + nombre + "%'").OrderBy("id ASC").Limit(pageSize);
+
+        //        // Retrieve a small amount of orders at a time, paging through until all
+        //        // orders have been retrieved.
+        //        int totalResultSetSize = 0;
+
+        //        OrderPage page = orderService.getOrdersByStatement(statementBuilder.ToStatement());
+
+        //        // Print out some information for each order.
+        //        if (page.results != null)
+        //        {
+        //            totalResultSetSize = page.totalResultSetSize;
+        //            int i = page.startIndex;
+        //            foreach (Order order in page.results)
+        //            {
+        //                Debug.WriteLine("{0}) Order with ID {1} and name \"{2}\" was found.",
+        //                    i++, order.id, order.name);
+        //                result.Add(order.id);
+        //            }
+        //        }
+        //        else
+        //        {
+        //            result = null;
+        //        }
+        //        statementBuilder.IncreaseOffsetBy(pageSize);
+        //    }
+        //    return result;
+        //}
+
+        public static string GetOrderByName(string nombre)
         {
-            List<long> result = new List<long>();
+            string result = "";
             using (OrderService orderService = user.GetService<OrderService>())
             {
                 // Create a statement to select orders.             
@@ -1629,13 +1668,20 @@ namespace WebApi.Helpers
                     {
                         Debug.WriteLine("{0}) Order with ID {1} and name \"{2}\" was found.",
                             i++, order.id, order.name);
-                        result.Add(order.id);
+                        if (i == 1)
+                        {
+                            result += order.id.ToString();
+                        }
+                        else
+                        {
+                            result+=", " + order.id.ToString();
+                        }
                     }
                 }
-                else
-                {
-                    result = null;
-                }
+                //else
+                //{
+                //    result = null;
+                //}
                 statementBuilder.IncreaseOffsetBy(pageSize);
             }
             return result;

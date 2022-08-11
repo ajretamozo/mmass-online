@@ -59,15 +59,11 @@ namespace WebApi.Entities
         public long Id_Google_Ad_Manager { get; set; }
         public int Id_det_conv { get; set; }
         public int Id_red { get; set; }
-        //AGREGUE:
         public Dg_areas_geo areaGeo { get; set; }
-
-
         public List<Dg_orden_pub_medios> Medios;
-
-        //AGREGUE:
         public List<Dg_orden_pub_medidas> Medidas;
         public List<Dg_orden_pub_emplazamientos> Emplazamientos;
+        public DateTime? Fecha_creacion { get; set; }
 
         public static Dg_orden_pub_as getDg_orden_pub_as(DataRow item)
         {
@@ -658,11 +654,18 @@ namespace WebApi.Entities
             string strSql = "SELECT id_google_ad_manager, id_red FROM dg_orden_pub_as";
 
             DataTable td = DB.Select(strSql);
-            Dg_orden_pub_as det = new Dg_orden_pub_as();
             foreach (DataRow r in td.Rows)
             {
+                Dg_orden_pub_as det = new Dg_orden_pub_as();
                 det.Id_Google_Ad_Manager = long.Parse(r["id_google_ad_manager"].ToString());
-                det.Id_red = int.Parse(r["id_red"].ToString());
+                if (r["id_red"].ToString() == "")
+                {
+                    det.Id_red = 0;
+                }
+                else
+                {
+                    det.Id_red = int.Parse(r["id_red"].ToString());
+                }
                 detalles.Add(det);
             }
             return detalles;

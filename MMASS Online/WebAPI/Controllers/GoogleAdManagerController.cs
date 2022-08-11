@@ -179,7 +179,7 @@ namespace WebApi.Controllers
         [HttpPost("getDetNuevos")]
         public IActionResult getDetNuevos(ListaParametro parametros)
         {
-            var detalles = _GoogleAdManagerService.getDetNuevos(parametros.Parametros);
+            var detalles = _GoogleAdManagerService.GetDetNuevos(parametros.Parametros);
             return Ok(detalles);
         }
     }

@@ -212,8 +212,8 @@
             <p class="dataTitle">SINCRONIZAR ORDENES</p>
             <!-- TABS -->
             <nav class="nav nav-tabs mb-3">
-                <a class="nav-link active" id="ordenes-tab" data-toggle="tab" href="#ordenes" role="tab" aria-controls="ordenes" aria-selected="true">OP Nuevas</a>
-                <a class="nav-link" id="detalles-tab" data-toggle="tab" href="#detalles" role="tab" aria-controls="detalles" aria-selected="false">Detalles Nuevos</a>
+                <a class="nav-link active" id="ordenes-tab" data-toggle="tab" href="#ordenes" role="tab" aria-controls="ordenes" aria-selected="true" onclick="onRedSelected()">OP Nuevas</a>
+                <a class="nav-link" id="detalles-tab" data-toggle="tab" href="#detalles" role="tab" aria-controls="detalles" aria-selected="false" onclick="onRedSelectedD()">Detalles Nuevos</a>
             </nav>
             <div class="tab-content" id="tabsContent">
                 <!-- TAB ORDENES -->
@@ -246,7 +246,7 @@
                     </div>
                     <div class="table-responsive mt-2">
                         <table class="table table-hover table-sm " id="tablaOPGAM">
-                            <thead>
+                            <thead align="center">
                                 <tr id="header">
                                     <th class="col-xs-3">ID AdServer OP</th>
                                     <th class="col-xs-9">Nombre OP</th>
@@ -254,9 +254,11 @@
                                     <th class="col-xs-9">Fecha Desde</th>
                                     <th class="col-xs-9">Fecha Hasta</th>
                                     <th class="col-xs-9">Neto</th>
+                                    <th width="1px"></th>
+                                    <th width="1px"></th>
                                 </tr>
                             </thead>
-                            <tbody id="TableOrdenes" class="small"></tbody>
+                            <tbody id="TableOrdenes" class="small" align="center"></tbody>
                         </table>
                     </div>
                 </div>
@@ -273,7 +275,7 @@
                         </div>
                         <div class="col-md-4">
                             <label for="selRedesD">Red AdServer: </label>
-                            <select class="form-control enterSearch" id="selRedesD" onchange="onRedSelected()"></select>
+                            <select class="form-control enterSearch" id="selRedesD" onchange="onRedSelectedD()"></select>
                         </div>
                     </div>
                     <div class="row py-1">
@@ -293,19 +295,21 @@
                     </div>
                     <div class="table-responsive mt-2">
                         <table class="table table-hover table-sm " id="tablaDetGAM">
-                            <thead>
+                            <thead align="center">
                                 <tr id="header">
-                                    <th class="col-xs-3">ID AdServer OP</th>
+                                    <th>N Orden</th>
                                     <th class="col-xs-3">ID AdServer Detalle</th>
                                     <th class="col-xs-9">Nombre</th>
-                                    <th class="col-xs-9">Anunciante</th>
+                                    <th class="col-xs-3">Fecha de Creación</th>
                                     <th class="col-xs-9">Fecha Desde</th>
                                     <th class="col-xs-9">Fecha Hasta</th>
                                     <th class="col-xs-1">Cant.</th>
                                     <th class="col-xs-9">Neto</th>
+                                    <th width="1px"></th>
+                                    <th width="1px"></th>
                                 </tr>
                             </thead>
-                            <tbody id="TableDetalles" class="small"></tbody>
+                            <tbody id="TableDetalles" class="small" align="center"></tbody>
                         </table>
                     </div>
                 </div>
@@ -326,7 +330,7 @@
 
 
         function getRedesGAM() {
-            callWS("medios", "getAllRedes", '', function (data) { onCargarSelect(data, 'selRedes', 'id_red', 'descripcion', 'codigo_red'); });
+            callWS("medios", "getAllRedes", '', function (data) { onCargarSelect(data, 'selRedes', 'id_red', 'descripcion', 'codigo_red'); onCargarSelect(data, 'selRedesD', 'id_red', 'descripcion', 'codigo_red'); });
         }
 
         function onCargarSelect(data, idSelect) {
@@ -343,7 +347,17 @@
         function onRedSelected() {
             idRed = $('#selRedes').val();
             codRed = $('#selRedes>option:selected').attr("codigo_red");
-            callWS("googleAdManager", "cambiarRed", codRed);
+            if (idRed != null) {
+                callWS("googleAdManager", "cambiarRed", codRed);
+            }
+        }
+
+        function onRedSelectedD() {
+            idRed = $('#selRedesD').val();
+            codRed = $('#selRedesD>option:selected').attr("codigo_red");
+            if (idRed != null) {
+                callWS("googleAdManager", "cambiarRed", codRed);
+            }
         }
 
         function filter() {
@@ -390,7 +404,7 @@
                 rowHTML += "<td class='col-xs-1'> " + dateToFieldFormat(ordenGAM.fecha) + "</td > ";
                 rowHTML += "<td class='col-xs-1'> " + dateToFieldFormat(ordenGAM.fecha_expiracion) + "</td > ";
                 rowHTML += "<td class='col-xs-1'>$ " + formatearMonto(ordenGAM.seg_neto) + "</td > ";
-                rowHTML += "<td class='col-xs-2' > <button type='button' id=button" + ordenGAM.id_Google_Ad_Manager + " class='btn btn-danger' onClick='comprobarAnunciante(" + ordenGAM.id_Google_Ad_Manager + ", " + ordenGAM.id_red + ", " + ordenGAM.anunciante.idContactoDigital + ")'>Importar</button> </td ></tr>";
+                rowHTML += "<td class='col-xs-2' > <button type='button' id=button" + ordenGAM.id_Google_Ad_Manager + " class='btn btn-danger' style='height: 31px; width: 77.81px;font - size: inherit;' title='Importar OP' onClick='comprobarAnunciante(" + ordenGAM.id_Google_Ad_Manager + ", " + ordenGAM.id_red + ", " + ordenGAM.anunciante.idContactoDigital + ")'><span class='fa fa-cloud-download'></span></button> </td ></tr>";
                 rowHTML += "</tr>";
 
             });
@@ -583,7 +597,7 @@
             params = {};
             params.idOp = $("#idFiltroOpD").val();
             params.descripcionOp = $('#descFiltroOpD').val();
-            params.red = $('#selRedes').val();
+            params.red = $('#selRedesD').val();
             params.idDet = $("#idFiltroD").val();
             params.descripcionDet = $('#descFiltroD').val();
 
@@ -617,13 +631,15 @@
             $.each(data, function (it, detGAM) {
 
                 rowHTML += "<tr>";
+                rowHTML += "<td class='col-xs-1'>" + detGAM.anio + "-" + detGAM.mes + "-" + detGAM.nro_orden + "</td>";
                 rowHTML += "<td class='col-xs-1'> " + detGAM.id_Google_Ad_Manager + "</td > ";
-                rowHTML += "<td class='col-xs-1'> " + detGAM.observ + "</td > ";
-                rowHTML += "<td class='col-xs-1'> " + detGAM.anunciante_nombre + "</td >";
-                rowHTML += "<td class='col-xs-1'> " + dateToFieldFormat(detGAM.fecha) + "</td > ";
-                rowHTML += "<td class='col-xs-1'> " + dateToFieldFormat(detGAM.fecha_expiracion) + "</td > ";
-                rowHTML += "<td class='col-xs-1'>$ " + formatearMonto(detGAM.seg_neto) + "</td > ";
-                rowHTML += "<td class='col-xs-2' > <button type='button' id=button" + detGAM.id_Google_Ad_Manager + " class='btn btn-danger' onClick='comprobarAnunciante(" + ordenGAM.id_Google_Ad_Manager + ", " + ordenGAM.id_red + ", " + ordenGAM.anunciante.idContactoDigital + ")'>Importar</button> </td ></tr>";
+                rowHTML += "<td class='col-xs-1'> " + detGAM.descripcion + "</td > ";
+                rowHTML += "<td class='col-xs-1'> " + dateToFieldFormat(detGAM.fecha_creacion) + "</td > ";
+                rowHTML += "<td class='col-xs-1'> " + dateToFieldFormat(detGAM.fecha_desde) + "</td > ";
+                rowHTML += "<td class='col-xs-1'> " + dateToFieldFormat(detGAM.fecha_hasta) + "</td > ";
+                rowHTML += "<td class='col-xs-1'> " + detGAM.cantidad + "</td > ";
+                rowHTML += "<td class='col-xs-1'>$ " + formatearMonto(detGAM.monto_neto) + "</td > ";
+                rowHTML += "<td class='col-xs-2' > <button type='button' id=button" + detGAM.id_Google_Ad_Manager + " class='btn btn-danger' style='height: 31px; width: 77.81px;font - size: inherit;' title='Importar Detalle' onClick='RedireccionD(" + detGAM.id_op_dg + ")'> <span class='fa fa-cloud-download'></span></button> </td ></tr>";
                 rowHTML += "</tr>";
 
             });
@@ -632,6 +648,12 @@
 
             $("#pleaseWaitDialog").modal('hide');
         }
+
+        function RedireccionD(data) {
+            idOp = data;
+            location.href = "/orden.html?orderIdSinc=" + idOp;
+        }
+
 
     </script>
     <footer>
