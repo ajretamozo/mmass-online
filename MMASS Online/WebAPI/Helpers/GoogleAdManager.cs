@@ -260,7 +260,7 @@ namespace WebApi.Helpers
             return Lineas;
         }
 
-        public static List<LineItem> filterLineItems(List<Parametro> parametros)
+        public static List<LineItem> FilterLineItems(List<Parametro> parametros)
         {
             List<LineItem> Lineas = new List<LineItem>();
 
@@ -1470,11 +1470,12 @@ namespace WebApi.Helpers
             return result;
         }
 
-        public static List<Order> GetAllOrders(List<Parametro> parametros)
+        public static List<Order> FilterOrders(List<Parametro> parametros)
         {
             List<Order> OrdenesGAM = new List<Order>();
 
-            string where = "endDateTime >= :now";
+            /*string where = "endDateTime >= :now";*/
+            string where = "status != 'ARCHIVED' and endDateTime >= :now";
 
             foreach (Parametro p in parametros)
             {
@@ -1485,24 +1486,15 @@ namespace WebApi.Helpers
                     if (p.ParameterName == "id")
                         where = where + " and id = " + p.Value.ToString();
                 }
-            }
-            
-            //    if (nombre.Value == "")
-            //{
-            //    where = "endDateTime >= :now";
-            //}
-            //else
-            //{
-            //    where = "endDateTime >= :now and name like '%" + nombre.Value + "%'";
-            //}
+            }          
 
             using (OrderService orderService = user.GetService<OrderService>())
             {
                 // Create a statement to select orders.
                 int pageSize = StatementBuilder.SUGGESTED_PAGE_LIMIT;
                 StatementBuilder statementBuilder = new StatementBuilder()
-                    .Where(where) 
-                    .OrderBy("id ASC")
+                    .Where(where)
+                    .OrderBy("lastModifiedDateTime DESC")
                     .Limit(pageSize)
                     .AddValue("now", DateTimeUtilities.FromDateTime(System.DateTime.Now, "America/Argentina/Buenos_Aires"));
                 // Retrieve a small amount of orders at a time, paging through until all

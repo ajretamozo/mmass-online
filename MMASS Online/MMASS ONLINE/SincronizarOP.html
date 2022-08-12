@@ -251,6 +251,7 @@
                                     <th class="col-xs-3">ID AdServer OP</th>
                                     <th class="col-xs-9">Nombre OP</th>
                                     <th class="col-xs-9">Anunciante</th>
+                                    <th class="col-xs-3">Fecha de Creación</th>
                                     <th class="col-xs-9">Fecha Desde</th>
                                     <th class="col-xs-9">Fecha Hasta</th>
                                     <th class="col-xs-9">Neto</th>
@@ -299,7 +300,7 @@
                                 <tr id="header">
                                     <th>N Orden</th>
                                     <th class="col-xs-3">ID AdServer Detalle</th>
-                                    <th class="col-xs-9">Nombre</th>
+                                    <th class="col-xs-9">Nombre Detalle</th>
                                     <th class="col-xs-3">Fecha de Creación</th>
                                     <th class="col-xs-9">Fecha Desde</th>
                                     <th class="col-xs-9">Fecha Hasta</th>
@@ -401,6 +402,7 @@
                 rowHTML += "<td class='col-xs-1'> " + ordenGAM.id_Google_Ad_Manager + "</td > ";
                 rowHTML += "<td class='col-xs-1'> " + ordenGAM.observ + "</td > ";
                 rowHTML += "<td class='col-xs-1'> " + ordenGAM.anunciante_nombre + "</td >";
+                rowHTML += "<td class='col-xs-1'> " + dateToFieldFormat(ordenGAM.fecha_alta) + "</td > ";
                 rowHTML += "<td class='col-xs-1'> " + dateToFieldFormat(ordenGAM.fecha) + "</td > ";
                 rowHTML += "<td class='col-xs-1'> " + dateToFieldFormat(ordenGAM.fecha_expiracion) + "</td > ";
                 rowHTML += "<td class='col-xs-1'>$ " + formatearMonto(ordenGAM.seg_neto) + "</td > ";

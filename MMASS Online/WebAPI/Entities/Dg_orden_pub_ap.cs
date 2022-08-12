@@ -1011,5 +1011,31 @@ namespace WebApi.Entities
             return op;
         }
 
+        //Otro 'getAll' para traer menos campos y hacer la consulta más liviana
+        public static List<Dg_orden_pub_ap> getAll2()
+        {
+            List<Dg_orden_pub_ap> ordenes = new List<Dg_orden_pub_ap>();
+
+            string sqlCommand = " select id_google_ad_manager, id_red from Dg_orden_pub_ap where es_anulada = 0";
+
+            DataTable t = DB.Select(sqlCommand);
+
+            foreach (DataRow item in t.Rows)
+            {
+                Dg_orden_pub_ap op = new Dg_orden_pub_ap();
+                op.Id_Google_Ad_Manager = long.Parse(item["id_google_ad_manager"].ToString());
+                if (item["id_red"].ToString() == "")
+                {
+                    op.Id_red = 0;
+                }
+                else
+                {
+                    op.Id_red = int.Parse(item["id_red"].ToString());
+                }
+                ordenes.Add(op);
+            }
+            return ordenes;
+        }
+
     }
 }
