@@ -38,7 +38,7 @@ namespace WebApi.Services
         long GetRedActual();
         IEnumerable<Dg_orden_pub_ap> GetOpNuevas(List<Parametro> parametros);
         ListaParametro ComprobarModificaciones(Dg_orden_pub_ap order);
-        ListaParametro ComprobarModificacionesD(long idGam);
+        ListaParametro ComprobarModificacionesD(Dg_orden_pub_as det);
         List<Parametro> obtenerProgresoLineasGam(Dg_orden_pub_ap order);
         IEnumerable<Dg_orden_pub_as> comprobarNuevosDetalles(Dg_orden_pub_ap order);
         IEnumerable<Dg_orden_pub_as> GetDetNuevos(List<Parametro> parametros);
@@ -279,9 +279,15 @@ namespace WebApi.Services
 
             else
             {
-                long codRed = GetRedActual();
-                Dg_red_GAM red = new Dg_red_GAM();
-                red = Dg_red_GAM.getByCodigo(codRed);
+                int idRed = 0;
+                foreach (Parametro p in parametros)
+                {
+                    if (p.ParameterName == "red")
+                    {
+                        idRed = int.Parse(p.Value);
+                        break;
+                    }
+                }
                 List<Dg_orden_pub_ap> opExistentes = Dg_orden_pub_ap.getAll2();
 
                 foreach (Order order in ordenesGAM)
@@ -290,7 +296,7 @@ namespace WebApi.Services
                     foreach (Dg_orden_pub_ap OpExis in opExistentes)
                     {
                         //Si encontramos el Pedido dentro de las OP, se sale del for y buscamos el próximo Pedido
-                        if (order.id == OpExis.Id_Google_Ad_Manager && red.Id_red == OpExis.Id_red)
+                        if (order.id == OpExis.Id_Google_Ad_Manager && idRed == OpExis.Id_red)
                         {
                             existeOp = true;
                             break;
@@ -304,7 +310,7 @@ namespace WebApi.Services
                         Dg_orden_pub_ap ordenNueva = new Dg_orden_pub_ap();
                         Contacto anun = new Contacto();
 
-                        ordenNueva.Id_red = red.Id_red;
+                        ordenNueva.Id_red = idRed;
                         ordenNueva.Id_Google_Ad_Manager = order.id;
                         ordenNueva.Observ = order.name;
                         ordenNueva.Anunciante_nombre = GoogleAdManager.GetAnunciantePorId(order.advertiserId);
@@ -340,6 +346,7 @@ namespace WebApi.Services
 
         public ListaParametro ComprobarModificaciones(Dg_orden_pub_ap order)
         {
+            CambiarRed(order.Codigo_red.ToString());
             ListaParametro ordYdet = new ListaParametro();
             ordYdet.Parametros = new List<Parametro>();
             ordYdet.ListaDetalles = new List<int>();
@@ -349,9 +356,6 @@ namespace WebApi.Services
             orden = Dg_orden_pub_ap.getById(order.Id_op_dg);
             List<LineItem> lineasGAM = new List<LineItem>();
             lineasGAM = GoogleAdManager.getLineItemsByOrder(ordenGam.id);
-            long codRed = GetRedActual();
-            Dg_red_GAM red = new Dg_red_GAM();
-            red = Dg_red_GAM.getByCodigo(codRed);
 
             //se buscan diferencias entre la orden gam y la orden ap; si se encuentran, se devuelve la lista de cambios
 
@@ -542,8 +546,7 @@ namespace WebApi.Services
         {
             Dg_orden_pub_ap ordenNueva = new Dg_orden_pub_ap();
             long codRed = GetRedActual();
-            Dg_red_GAM red = new Dg_red_GAM();
-            red = Dg_red_GAM.getByCodigo(codRed);
+            Dg_red_GAM red = Dg_red_GAM.getByCodigo(codRed);
             List<Dg_orden_pub_ejecutivos> ejecutivos = new List<Dg_orden_pub_ejecutivos>();
             List<Dg_orden_pub_pagos> formasPago = new List<Dg_orden_pub_pagos>();
             List<Dg_orden_pub_as> detalles = new List<Dg_orden_pub_as>();
@@ -723,17 +726,12 @@ namespace WebApi.Services
             return fechaFormat;
         }
 
-        public ListaParametro ComprobarModificacionesD(long idGam)
+        public ListaParametro ComprobarModificacionesD(Dg_orden_pub_as det)
         {
             ListaParametro cambiosL = new ListaParametro();
             cambiosL.Parametros = new List<Parametro>();
-            long codRed = GetRedActual();
-            Dg_red_GAM red = new Dg_red_GAM();
-            red = Dg_red_GAM.getByCodigo(codRed);
-            Dg_orden_pub_as detalle = new Dg_orden_pub_as();
-            detalle = Dg_orden_pub_as.getByIdGam(idGam, red.Id_red);
-            LineItem linea = new LineItem();
-            linea = GoogleAdManager.GetLineItemById(idGam);
+            Dg_orden_pub_as detalle = Dg_orden_pub_as.getByIdGam(det.Id_Google_Ad_Manager, det.Id_red);
+            LineItem linea = GoogleAdManager.GetLineItemById(det.Id_Google_Ad_Manager);
 
             //se buscan diferencias entre la orden gam y la orden ap; si se encuentran, se devuelve la lista de cambios
             switch (detalle.Tipo_tarifa)
@@ -796,23 +794,18 @@ namespace WebApi.Services
             int cantEmpGam = 0;
             //int cantEmpDet = 0;
             long[] emplazasLinea = { };
-            //List<Dg_orden_pub_emplazamientos> emplazasDetalle = new List<Dg_orden_pub_emplazamientos>();
 
             if (linea.targeting.inventoryTargeting.targetedPlacementIds != null)
             {
                 cantEmpGam = linea.targeting.inventoryTargeting.targetedPlacementIds.Length;
                 emplazasLinea = linea.targeting.inventoryTargeting.targetedPlacementIds;
             }
-            //if (detalle.Emplazamientos != null)
-            //{
-            //    cantEmpDet = detalle.Emplazamientos.Count;
-            //    emplazasDetalle = detalle.Emplazamientos;
-            //}
+
             if (cantEmpGam != detalle.Emplazamientos.Count)
             {
-                cambiosL.Parametros.Add(ImprimirEmplazas(detalle.Emplazamientos, emplazasLinea, red.Id_red));
+                cambiosL.Parametros.Add(ImprimirEmplazas(detalle.Emplazamientos, emplazasLinea, det.Id_red));
             }
-            //else if (cantEmpGam == cantEmpDet && (cantEmpGam !=0 && cantEmpDet != 0))
+
             else
             {
                 foreach (Dg_orden_pub_emplazamientos emp in detalle.Emplazamientos)
@@ -828,25 +821,17 @@ namespace WebApi.Services
                     }
                     if (existeEmp == false)
                     {
-                        cambiosL.Parametros.Add(ImprimirEmplazas(detalle.Emplazamientos, emplazasLinea, red.Id_red));
+                        cambiosL.Parametros.Add(ImprimirEmplazas(detalle.Emplazamientos, emplazasLinea, det.Id_red));
                     }
-                    //break;
                 }
             }
 
             //Se comparan medidas
-            //int cantMedDet = 0;
-            //List<Dg_orden_pub_medidas> medidasDetalle = new List<Dg_orden_pub_medidas>();
-            //if (detalle.Medidas != null)
-            //{
-            //    cantMedDet = detalle.Medidas.Count;
-            //    medidasDetalle = detalle.Medidas;
-            //}
             if (linea.creativePlaceholders.Length != detalle.Medidas.Count)
             {
                 cambiosL.Parametros.Add(ImprimirMedidas(detalle.Medidas, linea.creativePlaceholders));
             }
-            //else if (linea.creativePlaceholders.Length == cantMedDet && cantMedDet != 0)
+
             else
             {
                 foreach (Dg_orden_pub_medidas med in detalle.Medidas)
@@ -867,7 +852,6 @@ namespace WebApi.Services
                     {
                         cambiosL.Parametros.Add(ImprimirMedidas(detalle.Medidas, linea.creativePlaceholders));
                     }
-                    //break;
                 }
             }
 
@@ -895,14 +879,6 @@ namespace WebApi.Services
                 cambiosL.Parametros.Add(cambioLCant);
             }
 
-            //if ((linea.budget.microAmount / 1000000) != detalle.Monto_neto)
-            //{
-            //    Parametro cambioLImpTotal = new Parametro();
-            //    cambioLImpTotal.ParameterName = "Total";
-            //    cambioLImpTotal.Value = detalle.Monto_neto.ToString() + "@@@" + (linea.budget.microAmount / 1000000).ToString();
-            //    cambiosL.Parametros.Add(cambioLImpTotal);
-            //}
-
             if (System.DateTime.Parse(DateTimeUtilities.ToString(linea.startDateTime, "yyyy/MM/dd")) != detalle.Fecha_desde)
             {
                 Parametro cambioLDesde = new Parametro();
@@ -924,8 +900,8 @@ namespace WebApi.Services
         public List<Parametro> obtenerProgresoLineasGam(Dg_orden_pub_ap order)
         {
             List<Parametro> parametros =new List<Parametro>();
-            List<LineItem> lineasGAM = new List<LineItem>();
-            lineasGAM = GoogleAdManager.getLineItemsByOrder(order.Id_Google_Ad_Manager);
+            List<LineItem> lineasGAM = GoogleAdManager.getLineItemsByOrder(order.Id_Google_Ad_Manager);
+
             foreach (LineItem linea in lineasGAM)
             {
                 Parametro parametro=new Parametro();
@@ -964,9 +940,6 @@ namespace WebApi.Services
             else
             {
                 List<Dg_orden_pub_as> detalles = Dg_orden_pub_as.getByIdOp(order.Id_op_dg);
-                long codRed = GetRedActual();
-                Dg_red_GAM red = new Dg_red_GAM();
-                red = Dg_red_GAM.getByCodigo(codRed);
 
                 //Se comparan Lineas de Pedido y Detalles
                 foreach (LineItem linea in lineasGAM)
@@ -1011,7 +984,7 @@ namespace WebApi.Services
                             {
                                 Dg_orden_pub_emplazamientos emplaza = new Dg_orden_pub_emplazamientos();
                                 emplaza.Codigo_emplazamiento = idEmpla;
-                                emplaza.Id_emplazamiento = Dg_emplazamientos.getByCodigo2(idEmpla, red.Id_red).Id_emplazamiento;
+                                emplaza.Id_emplazamiento = Dg_emplazamientos.getByCodigo2(idEmpla, order.Id_red).Id_emplazamiento;
                                 emplazamientos.Add(emplaza);
                             }
                             detalle.Emplazamientos = emplazamientos;
@@ -1065,9 +1038,13 @@ namespace WebApi.Services
 
             else
             {
-                long codRed = GetRedActual();
-                Dg_red_GAM red = new Dg_red_GAM();
-                red = Dg_red_GAM.getByCodigo(codRed);
+                int idRed = 0;
+                foreach (Parametro p in parametros)
+                {
+                    if (p.ParameterName == "red")
+                        idRed = int.Parse(p.Value);
+                    break;
+                }
                 List<Dg_orden_pub_as> detallesExistentes = Dg_orden_pub_as.getAll();
 
                 //Recorremos las lineas de pedido y las vamos comparando con los detalles existentes
@@ -1077,7 +1054,7 @@ namespace WebApi.Services
                     foreach (Dg_orden_pub_as detExis in detallesExistentes)
                     {
                         //Si encontramos la linea dentro de los detalles, se sale del for y buscamos la próxima linea
-                        if (linea.id == detExis.Id_Google_Ad_Manager && red.Id_red == detExis.Id_red)
+                        if (linea.id == detExis.Id_Google_Ad_Manager && idRed == detExis.Id_red)
                         {
                             existeDetalle = true;
                             break;
@@ -1087,7 +1064,7 @@ namespace WebApi.Services
                     if (!existeDetalle)
                     {
                         //Se corrobora que perteneza a una OP existente
-                        Dg_orden_pub_ap op = Dg_orden_pub_ap.getOpByIdGAM(linea.orderId, red.Id_red);
+                        Dg_orden_pub_ap op = Dg_orden_pub_ap.getOpByIdGAM(linea.orderId, idRed);
 
                         if (op.Nro_orden != 0)
                         {

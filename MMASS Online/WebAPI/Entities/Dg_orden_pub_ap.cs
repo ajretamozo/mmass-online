@@ -79,6 +79,7 @@ namespace WebApi.Entities
         public string Producto_nombre { get; set; }
         public long Id_Google_Ad_Manager { get; set; }
         public int Id_red { get; set; }
+        public long Codigo_red { get; set; }
         public int Parafacturar { get; set; }
         public int bloqueado { get; set; }
         public List<Dg_orden_pub_as> Detalles;

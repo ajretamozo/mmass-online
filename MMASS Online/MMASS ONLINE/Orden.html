@@ -742,7 +742,7 @@
                                         <div class="col-lg-1" style="padding-right: 15px;padding-left: 23px;padding-top: 4px;">
                                             <label for="bBorrConvenios" class="invisible">Convenios</label>
                                             <button type="button" data-id="borrConvenios" id="bBorrConvenios" class="btn actions btn-outline-dark btn-sm mr-1" disabled="disabled" onclick="nuevaOrden()" style="width: 33px;" title="Quitar Convenio">
-                                                <span class="fa fa-remove" id="brow"></span>
+                                                <span class="fa fa-eraser" id="brow"></span>
                                             </button>
                                         </div>
                                     </div>
@@ -790,7 +790,7 @@
                             <div class="row mt-2">
                                 <div class="col-lg-2 offset-lg-10 d-flex justify-content-end">
                                     <button id="botLimpiar" title="Limpiar Agencia - Anunciante" type="button" class="btn btn-dark btn-sm mx-1" onclick="limpiaVinculados();">
-                                        <span class="fa fa-remove"></span> Limpiar
+                                        <span class="fa fa-eraser"></span> Limpiar
                                     </button>
                                 </div>
                             </div>
@@ -1264,9 +1264,9 @@
             }
 
             //si la OP viene de SincronizarOP
-            OpSinc = true;
             var op1 = getUrlParameter("orderAdServer")
             if (op1 != undefined) {
+                OpSinc = true;
                 arr = op1.split(",");
                 var Id_op_gam = arr[0];
                 var codRed = arr[1];
@@ -1281,8 +1281,6 @@
             data.Id_op_dg = op3;
 
             if (op3 != undefined) {
-                //$.when(getOrdenSinc(data)
-                //).then(comprobarNuevosDetalles());
                 callWS("dg_orden_pub_aps", "getById", JSON.stringify(data), onGetOrder);
             }
 
@@ -1300,10 +1298,6 @@
         function getOrdenGAM(IdOpGam) {
             callWS("googleAdManager", "getOrderById", JSON.stringify(IdOpGam), onGetOrder);
         }
-
-        //function getOrdenSinc(data) {
-        //    callWS("dg_orden_pub_aps", "getById", JSON.stringify(data), onGetOrder);
-        //}
 
         function onSelTipoD(sel) {
             var optionsBanner = {
@@ -1418,7 +1412,6 @@
                 $('#inpIdOrdenAdServer').val(data.id_Google_Ad_Manager);
                 $('#inpIdOrdenAdServer').css("background-color", "#c3e6cb");
                 $("#bgetOrderASDetais").attr("disabled", false);
-                //$("#bcomprobarModificaciones").attr("disabled", false);
             }
 
             $("#bConvenios").attr("disabled", true);
@@ -1459,13 +1452,8 @@
             }
 
             if (data.id_Google_Ad_Manager > 0 && (data.id_op_dg != undefined && data.id_op_dg != 0) && data.es_anulada == 0 && data.es_facturada == false && OpClon == false) {
-                //codRed = $('#selRedes>option:selected').attr("codigo_red");
-                
-                //$.when(CambiarRed(codRed)).then(
-                //    comprobarModificaciones(data.id_op_dg, data.id_Google_Ad_Manager),
-                //    obtenerProgresoLineasGam(data));
-
-                comprobarModificaciones(data.id_op_dg, data.id_Google_Ad_Manager);
+                codRed = $('#selRedes>option:selected').attr("codigo_red");
+                comprobarModificaciones(data.id_op_dg, data.id_Google_Ad_Manager, codRed);
                 obtenerProgresoLineasGam(data);
                 comprobarNuevosDetalles();
             }
@@ -1886,11 +1874,7 @@
         function onSaveOrder(data) {
 
             if (data.result > 0) {
-                //if (data.op.id_Google_Ad_Manager > 0) {
-                //    comprobarModificaciones(data.op.id_op_dg, data.op.id_Google_Ad_Manager);
-                //}
 
-                /*document.body.style.backgroundImage = "none";*/
                 OpClon = false;
                 OpSinc = false;
 
@@ -2067,10 +2051,6 @@
             });
             $("#" + idSelect).empty();
             $("#" + idSelect).append(listitems);
-            //if (pObj.length > 1) {
-            //    $("#" + idSelect).val([]);
-            //}
-            //$("#selAreasGeo option[value=" + 1 + "]").attr("selected", "selected");
         }
 
         function onPopulateSelectDone(data, idSelect, colId, colDesc) {
@@ -2084,7 +2064,6 @@
                 listitems += '<option value=' + iObj[colId] + '>' + iObj[colDesc] + '</option>';
             });
             $("#" + idSelect).empty();
-            //$("#" + idSelect).append("<option value=''>(Todos) </option>");
             $("#" + idSelect).append(listitems);
             if (pObj.length > 1) {
                 $("#" + idSelect).val([]);
@@ -2147,7 +2126,6 @@
                 listitems += '<option medida=' + iObj[colAncho] + 'x' + iObj[colAlto] + ' value=' + iObj[colId] + '>' + iObj[colAncho] + 'x' + iObj[colAlto] + '</option>';
             });
             $("#" + idSelect).empty();
-            //$("#" + idSelect).append("<option value=''>(Todos) </option>");
             $("#" + idSelect).append(listitems);
             if (pObj.length > 1) {
                 $("#" + idSelect).val([]);
@@ -2170,7 +2148,6 @@
                 listitems += '<option codigo_emplazamiento=' + iObj[colCod] + ' value=' + iObj[colId] + '>' + iObj[colDesc] + '</option>';
             });
             $("#" + idSelect).empty();
-            //$("#" + idSelect).append("<option value=''>(Todos) </option>");
             $("#" + idSelect).append(listitems);
             if (pObj.length > 1) {
                 $("#" + idSelect).val([]);
@@ -2193,15 +2170,11 @@
                 listitems += '<option id_detalle=' + iObj[colDet] + ' value=' + iObj[colId] + '>' + iObj[colDesc] + '</option>';
             });
             $("#" + idSelect).empty();
-            //$("#" + idSelect).append("<option value=''>(Todos) </option>");
             $("#" + idSelect).append(listitems);
             if (pObj.length > 1) {
                 $("#" + idSelect).val([]);
             }
 
-            //if ($("#" + idSelect).attr('multiple') == 'multiple') {
-            //    cMultiSelect.bootstrapDualListbox('refresh');
-            //}
             $("#" + idSelect).val('');
         }
 
@@ -2769,7 +2742,7 @@
             Detalles.forEach(generarTablaDetalles);
             calculateTotals();
             if ($('#inpIdOrdenAdServer').val() !== 0 && $('#inpIdOrdenAdServer').val() !== "" && $("#inpOrderNumber").attr("id_op_dg") > 0) {
-                comprobarModificaciones($("#inpOrderNumber").attr("id_op_dg"), $('#inpIdOrdenAdServer').val());
+                comprobarModificaciones($("#inpOrderNumber").attr("id_op_dg"), $('#inpIdOrdenAdServer').val(), $('#selRedes>option:selected').attr("codigo_red"));
                 var op = {};
                 op.Id_Google_Ad_Manager = $('#inpIdOrdenAdServer').val();
                 op.Detalles = Detalles;
@@ -2825,12 +2798,11 @@
                 }
             }
             //  Botón eliminar renglon
-            //if ($("#inpEsFacturada").val() == 'SI' || $("#divOrderMain").css("background-image") != 'url("./Anulada.png")' || OpBloqueada == true) {
             if ($("#inpEsFacturada").val() == 'SI' || OpAnulada == true || OpBloqueada == true) {
-                str = str + " <button type='button' data-id='" + id + "' disabled id='bEliminar" + id + "' class='btn actions btn-outline-dark btn-sm mr-1'  onclick='deleteRenglon(this, " + det.id_Google_Ad_Manager + ")' title='Eliminar Detalle'> <span class='fa fa-remove'></span></button>";
+                str = str + " <button type='button' data-id='" + id + "' disabled id='bEliminar" + id + "' class='btn actions btn-outline-dark btn-sm mr-1'  onclick='deleteRenglon(this, " + det.id_Google_Ad_Manager + ")' title='Eliminar Detalle'> <span class='fa fa-trash'></span></button>";
             }
             else {
-                str = str + " <button type='button' data-id='" + id + "' class='btn actions btn-outline-dark btn-sm mr-1'  onclick='deleteRenglon(this, " + det.id_Google_Ad_Manager + ")' title='Eliminar Detalle'> <span class='fa fa-remove'></span></button>";
+                str = str + " <button type='button' data-id='" + id + "' class='btn actions btn-outline-dark btn-sm mr-1'  onclick='deleteRenglon(this, " + det.id_Google_Ad_Manager + ")' title='Eliminar Detalle'> <span class='fa fa-trash'></span></button>";
             }
             //  Botón modificar renglon
             str = str + " <button type='button' data-id='" + id + "' class='btn actions btn-outline-dark btn-sm mr-1'  onclick='cargarModificarRenglon(this)' title='Editar Detalle'> <span class='fa fa-edit'></span></button>";
@@ -3180,10 +3152,7 @@
             if (rDetalle.id_Google_Ad_Manager != 0 && rDetalle.id_Google_Ad_Manager != null && OpClon == false && DetalleClon == false) {
                 $("#inpIdAdServer").val(rDetalle.id_Google_Ad_Manager);
                 $('#inpIdAdServer').css("background-color", "#c3e6cb");
-                //var idOrden = $("#inpOrderNumber").attr("id_op_dg");
-                //var idOrdenGAM = $('#inpIdOrdenAdServer').val();
                 if ($("#inpOrderNumber").attr("id_op_dg") > 0) {
-                    //comprobarModificacionesD(rDetalle.id_Google_Ad_Manager);
                     if ($("#spanCompActD" + rDetalle.id_detalle).hasClass("invisible") == false) {
                         $("#bcomprobarModificacionesD").attr("disabled", false);
                     }
@@ -3794,7 +3763,7 @@
                 rowHTML += "<td class='col-sm-10'>" + file.nombre + "</td>";
                 rowHTML += "<td class='col-sm-2'>";
                 rowHTML += "<button type='button' title='Descargar' class='btn btn-outline-dark btn-sm mx-1'>" + "<a href='" + file.ruta + "' download='" + file.nombre + "' id='" + file.ruta + "'><span class='fa fa-download'></span></a>" + "</button>"
-                rowHTML += "<button type='button' title='Eliminar' class='btn btn-outline-dark btn-sm mx-1' onclick=\"checkDeleteFile('" + file.ruta + "')\";'><span class='fa fa-times'></span></button>"
+                rowHTML += "<button type='button' title='Eliminar' class='btn btn-outline-dark btn-sm mx-1' onclick=\"checkDeleteFile('" + file.ruta + "')\";'><span class='fa fa-trash'></span></button>"
                 rowHTML += "</td>";
                 rowHTML += "</tr>";
             });
@@ -4164,10 +4133,11 @@
             dualListContainer.find('.remove i').removeClass().addClass('fa fa-chevron-left');
         }
 
-        function comprobarModificaciones(idOp, idGAM) {
+        function comprobarModificaciones(idOp, idGAM, codRed) {
             var data = {};
             data.id_op_dg = idOp;
             data.id_Google_Ad_Manager = idGAM;
+            data.codigo_red = codRed;
 
             callWS("googleAdManager", "comprobarModificaciones", JSON.stringify(data), function (data) { onComprobarModificaciones(data); });
         }
@@ -4189,11 +4159,6 @@
                     $("#spanCompActD" + det).removeClass("invisible");
                 });
             }
-            //else {
-            //    if ($("#spanCompActD" + det).hasClass("invisible") == false) {
-            //        $("#spanCompActD" + det).addClass("invisible");
-            //    }
-            //}
         }
 
         function comprobarModificacionesButton() {
@@ -4225,7 +4190,6 @@
                 rowHTML += "<td class='col-xs' style='text-align: center;'> " + valNuevo + "</td >";
                 rowHTML += "<td class='col-xs pr-0 actions d-flex justify-content-center align-content-start'>";
                 rowHTML += "<button type='button' id='btnApl" + paraNameSinEsp + "'  class='btn actions btn-outline-dark btn-sm mr-1' onClick='aplicarCambio(\"" + paraNameSinEsp + "\", \"" + valNuevo + "\")' title='Aplicar cambios'><span class='fa fa-check'></span> Aplicar</button>";
-                //rowHTML += "<button type='button' id='btnDes" + parametro.parameterName + "'  class='btn actions btn-outline-dark btn-sm mr-1' onClick='descartarCambio(\"" + parametro.parameterName + "\")' title='Descartar cambio'><span class='fa fa-remove'></span></button>";
                 rowHTML += "</td>";
                 rowHTML += "</tr>";
 
@@ -4361,12 +4325,17 @@
         }
 
         function comprobarModificacionesD(idDetGAM) {
-            callWS("googleAdManager", "comprobarModificacionesD", JSON.stringify(idDetGAM), function (data) { onComprobarModificacionesD(data); });
+            var det = {};
+            det.id_Google_Ad_Manager = idDetGAM;
+            det.id_red = $('#selRedes').val();
+            callWS("googleAdManager", "comprobarModificacionesD", JSON.stringify(det), function (data) { onComprobarModificacionesD(data); });
         }
 
         function comprobarModificacionesDButton() {
-            var idDetGAM = $("#inpIdAdServer").val();
-            callWS("googleAdManager", "comprobarModificacionesD", JSON.stringify(idDetGAM), function (data) { onComprobarModificacionesD(data); });
+            var det = {};
+            det.id_Google_Ad_Manager = $("#inpIdAdServer").val();
+            det.id_red = $('#selRedes').val();
+            callWS("googleAdManager", "comprobarModificacionesD", JSON.stringify(det), function (data) { onComprobarModificacionesD(data); });
         }
 
         function onComprobarModificacionesD(data) {
@@ -4425,7 +4394,6 @@
                 rowHTML += "<td class='col-xs' style='text-align: center;'> " + valNuevo + "</td >";
                 rowHTML += "<td class='col-xs pr-0 actions d-flex justify-content-center align-content-start'>";
                 rowHTML += "<button type='button' id='btnApl" + paraNameSinEsp + "D'  class='btn actions btn-outline-dark btn-sm mr-1' onClick='aplicarCambio(\"" + paraNameSinEsp + "D\", \"" + valoresNuevos + "\")' title='Aplicar cambios'><span class='fa fa-check' ></span> Aplicar</button>";
-                //rowHTML += "<button type='button' id='btnDes" + parametro.parameterName + "D'  class='btn actions btn-outline-dark btn-sm mr-1' onClick='descartarCambio(\"" + parametro.parameterName + "D\")' title='Descartar cambio'><span class='fa fa-remove'></span></button>";
                 rowHTML += "</td>";
                 rowHTML += "</tr>";
 

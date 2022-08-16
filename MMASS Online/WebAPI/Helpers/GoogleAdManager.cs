@@ -282,7 +282,11 @@ namespace WebApi.Helpers
                     if ((p.ParameterName == "idDet"))
                         mifiltro = mifiltro + " and Id = " + p.Value;
                     if ((p.ParameterName == "descripcionDet"))
-                        mifiltro = mifiltro + " and name like '%" + p.Value + "%'";                                 
+                        mifiltro = mifiltro + " and name like '%" + p.Value + "%'";
+                    if (p.ParameterName == "fecha_desde")
+                        mifiltro = mifiltro + " and CreationDateTime >= '" + p.Value.ToString() + "'";
+                    if (p.ParameterName == "fecha_hasta")
+                        mifiltro = mifiltro + " and CreationDateTime <= '" + p.Value.ToString() + "'";
                 }
             }
 
@@ -1485,6 +1489,10 @@ namespace WebApi.Helpers
                         where = where + " and name like '%" + p.Value.ToString() + "%'";
                     if (p.ParameterName == "id")
                         where = where + " and id = " + p.Value.ToString();
+                    if (p.ParameterName == "fecha_desde")
+                        where = where + " and lastModifiedDateTime >= '" + p.Value.ToString() + "'";
+                    if (p.ParameterName == "fecha_hasta")
+                        where = where + " and lastModifiedDateTime <= '" + p.Value.ToString() + "'";
                 }
             }          
 
