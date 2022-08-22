@@ -8,8 +8,8 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using WebApi.Entities;
 using WebApi.Helpers;
-using Google.Api.Ads.AdManager.Util.v202111;
-using Google.Api.Ads.AdManager.v202111;
+using Google.Api.Ads.AdManager.Util.v202208;
+using Google.Api.Ads.AdManager.v202208;
 
 namespace WebApi.Services
 {
@@ -141,7 +141,7 @@ namespace WebApi.Services
         //AGREGUE:
         public void RunAdExchangeReport()
         {
-            GoogleAdManager.RunAdExchangeReport();
+            //GoogleAdManager.RunAdExchangeReport();
         }
         //TEST
         public void reporteTest()
@@ -223,50 +223,6 @@ namespace WebApi.Services
             return result;
         }
 
-        //public IEnumerable<Dg_orden_pub_ap> GetOpNuevas(List<Parametro> parametros)
-        //{
-        //    long codRed = GetRedActual();
-        //    Dg_red_GAM red = new Dg_red_GAM();
-        //    red = Dg_red_GAM.getByCodigo(codRed);
-        //    List<Order> ordenesGAM = new List<Order>();
-        //    List<Dg_orden_pub_ap> ordenesNuevas = new List<Dg_orden_pub_ap>();
-        //    ordenesGAM = GoogleAdManager.FilterOrders(parametros);
-
-        //    foreach (Order order in ordenesGAM)
-        //    {
-        //        Dg_orden_pub_ap ordenNueva = Dg_orden_pub_ap.getOpByIdGAM(order.id, red.Id_red);
-        //        if (ordenNueva.Nro_orden == 0)
-        //        {
-        //            Contacto anun = new Contacto();
-        //            ordenNueva.Id_red = red.Id_red;
-        //            ordenNueva.Id_Google_Ad_Manager = order.id;
-        //            ordenNueva.Observ = order.name;
-        //            ordenNueva.Anunciante_nombre = GoogleAdManager.GetAnunciantePorId(order.advertiserId);
-        //            anun.IdContactoDigital = order.advertiserId.ToString();
-        //            ordenNueva.anunciante = anun;
-        //            ordenNueva.Seg_neto = (order.totalBudget.microAmount) / 1000000;
-        //            string start = DateTimeUtilities.ToString(order.startDateTime, "yyyy/MM/dd");
-        //            string end = "";
-        //            if (order.endDateTime != null)
-        //            {
-        //                end = DateTimeUtilities.ToString(order.endDateTime, "yyyy/MM/dd");
-        //            }
-
-        //            if (start != "0")
-        //            {
-        //                ordenNueva.Fecha = System.DateTime.Parse(start);
-        //            }
-        //            if (end != "")
-        //            {
-        //                ordenNueva.Fecha_expiracion = System.DateTime.Parse(end);
-        //            }
-        //            ordenesNuevas.Add(ordenNueva);
-        //        }
-        //    }
-        //    return ordenesNuevas;
-        //}
-
-        //NUEVO METODO, HACIENDO UNA SOLA CONSULTA A LA BD PARA TRAER TODAS LAS OP Y COMPARARLAS ACA
         public IEnumerable<Dg_orden_pub_ap> GetOpNuevas(List<Parametro> parametros)
         {
             List<Order> ordenesGAM = GoogleAdManager.FilterOrders(parametros);

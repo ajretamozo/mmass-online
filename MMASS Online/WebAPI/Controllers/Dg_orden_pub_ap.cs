@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using WebApi.Services;
 using WebApi.Entities;
-using Google.Api.Ads.AdManager.v202105;
+//using Google.Api.Ads.AdManager.v202208;
 
 namespace WebApi.Controllers
 {

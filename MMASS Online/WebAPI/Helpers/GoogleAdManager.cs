@@ -4,12 +4,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using WebApi.Entities;
 using Google.Api.Ads.AdManager.Lib;
-using Google.Api.Ads.AdManager.Util.v202111;
-using Google.Api.Ads.AdManager.v202111;
+using Google.Api.Ads.AdManager.Util.v202208;
+using Google.Api.Ads.AdManager.v202208;
 using Google.Api.Ads.Common.Util.Reports;
 using System.Diagnostics;
 using System.Configuration;
-using User = Google.Api.Ads.AdManager.v202111.User;
+using User = Google.Api.Ads.AdManager.v202208.User;
 
 namespace WebApi.Helpers
 {
@@ -866,71 +866,71 @@ namespace WebApi.Helpers
             }
         }
         //AGREGUE:
-        public static void RunAdExchangeReport()
-        {
-            //if (user == null)
-            //{
-            //    user = new AdManagerUser();
-            //}
-            using (ReportService reportService = user.GetService<ReportService>())
-            {
-                // Set the file path where the report will be saved.
-                String filePath = (@"C:\Users\linov\Desktop");
+        //public static void RunAdExchangeReport()
+        //{
+        //    //if (user == null)
+        //    //{
+        //    //    user = new AdManagerUser();
+        //    //}
+        //    using (ReportService reportService = user.GetService<ReportService>())
+        //    {
+        //        // Set the file path where the report will be saved.
+        //        String filePath = (@"C:\Users\linov\Desktop");
 
-                // Create report query.
-                ReportQuery reportQuery = new ReportQuery();
-                reportQuery.dimensions = new Dimension[]
-                {
-                    Dimension.AD_EXCHANGE_DATE,
-                    Dimension.AD_EXCHANGE_COUNTRY_NAME
-                };
-                reportQuery.columns = new Column[]
-                {
-                    Column.AD_EXCHANGE_AD_REQUESTS,
-                    Column.AD_EXCHANGE_IMPRESSIONS,
-                    Column.AD_EXCHANGE_ESTIMATED_REVENUE
-                };
+        //        // Create report query.
+        //        ReportQuery reportQuery = new ReportQuery();
+        //        reportQuery.dimensions = new Dimension[]
+        //        {
+        //            Dimension.AD_EXCHANGE_DATE,
+        //            Dimension.AD_EXCHANGE_COUNTRY_NAME
+        //        };
+        //        reportQuery.columns = new Column[]
+        //        {
+        //            Column.AD_EXCHANGE_AD_REQUESTS,
+        //            Column.AD_EXCHANGE_IMPRESSIONS,
+        //            Column.AD_EXCHANGE_ESTIMATED_REVENUE
+        //        };
 
-                reportQuery.dateRangeType = DateRangeType.LAST_WEEK;
+        //        reportQuery.dateRangeType = DateRangeType.LAST_WEEK;
 
-                // Run in pacific time.
-                reportQuery.timeZoneType = TimeZoneType.AD_EXCHANGE;
-                //reportQuery.adxReportCurrency = "ARS";
-                reportQuery.adxReportCurrency = null;
+        //        // Run in pacific time.
+        //        reportQuery.timeZoneType = TimeZoneType.AD_EXCHANGE;
+        //        //reportQuery.adxReportCurrency = "ARS";
+        //        reportQuery.adxReportCurrency = null;
 
-                // Create report job.
-                ReportJob reportJob = new ReportJob();
-                reportJob.reportQuery = reportQuery;
+        //        // Create report job.
+        //        ReportJob reportJob = new ReportJob();
+        //        reportJob.reportQuery = reportQuery;
 
-                try
-                {
-                    // Run report.
-                    reportJob = reportService.runReportJob(reportJob);
+        //        try
+        //        {
+        //            // Run report.
+        //            reportJob = reportService.runReportJob(reportJob);
 
-                    ReportUtilities reportUtilities =
-                        new ReportUtilities(reportService, reportJob.id);
+        //            ReportUtilities reportUtilities =
+        //                new ReportUtilities(reportService, reportJob.id);
 
-                    // Set download options.
-                    ReportDownloadOptions options = new ReportDownloadOptions();
-                    options.exportFormat = ExportFormat.CSV_DUMP;
-                    options.useGzipCompression = true;
-                    reportUtilities.reportDownloadOptions = options;
+        //            // Set download options.
+        //            ReportDownloadOptions options = new ReportDownloadOptions();
+        //            options.exportFormat = ExportFormat.CSV_DUMP;
+        //            options.useGzipCompression = true;
+        //            reportUtilities.reportDownloadOptions = options;
 
-                    // Download the report.
-                    using (ReportResponse reportResponse = reportUtilities.GetResponse())
-                    {
-                        reportResponse.Save(filePath);
-                    }
+        //            // Download the report.
+        //            using (ReportResponse reportResponse = reportUtilities.GetResponse())
+        //            {
+        //                reportResponse.Save(filePath);
+        //            }
 
-                    Console.WriteLine("Report saved to \"{0}\".", filePath);
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine("Failed to run Ad Exchange report. Exception says \"{0}\"",
-                        e.Message);
-                }
-            }
-        }
+        //            Console.WriteLine("Report saved to \"{0}\".", filePath);
+        //        }
+        //        catch (Exception e)
+        //        {
+        //            Console.WriteLine("Failed to run Ad Exchange report. Exception says \"{0}\"",
+        //                e.Message);
+        //        }
+        //    }
+        //}
         
         public static List<Dg_emplazamientos> getEmplazamientos()
         {
