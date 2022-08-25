@@ -33,6 +33,7 @@ namespace WebApi.Services
         IEnumerable<Dg_emplazamientos> GetEmplazamientos();
         IEnumerable<Dg_medidas> GetMedidas();
         IEnumerable<Dg_medidas> GetMedidasTodasRedes(List<Parametro> parametros);
+        IEnumerable<Dg_medidas> GetMedidasVideoTodasRedes(List<Parametro> parametros);
         long ArchivarLineItems(Dg_orden_pub_ap op);
         void CambiarRed(string netCode);
         long GetRedActual();
@@ -197,6 +198,11 @@ namespace WebApi.Services
         public IEnumerable<Dg_medidas> GetMedidasTodasRedes(List<Parametro> parametros)
         {
             return GoogleAdManager.GetMedidasTodasRedes(parametros);
+        }
+
+        public IEnumerable<Dg_medidas> GetMedidasVideoTodasRedes(List<Parametro> parametros)
+        {
+            return GoogleAdManager.GetMedidasVideoTodasRedes(parametros);
         }
 
         public long ArchivarLineItems(Dg_orden_pub_ap op)

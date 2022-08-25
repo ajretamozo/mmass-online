@@ -121,6 +121,13 @@ namespace WebApi.Controllers
             return Ok(res);
         }
 
+        [HttpPost("getMedidasVideoTodasRedes")]
+        public IActionResult GetMedidasVideoTodasRedes(ListaParametro parametros)
+        {
+            var res = _GoogleAdManagerService.GetMedidasVideoTodasRedes(parametros.Parametros);
+            return Ok(res);
+        }
+
         [HttpPost("archivarLineItems")]
         public IActionResult ArchivarLineItems(Dg_orden_pub_ap op)
         {

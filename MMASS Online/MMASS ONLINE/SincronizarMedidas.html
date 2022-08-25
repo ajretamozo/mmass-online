@@ -9,11 +9,13 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment-with-locales.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/js/tempusdominus-bootstrap-4.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/css/tempusdominus-bootstrap-4.min.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Roboto:400&display=swap" rel="stylesheet">
     <script src="./js/autentificar.js"></script>
+    <script src="./js/export.js"></script>
 
 
     <style>
@@ -64,6 +66,31 @@
         .rounded {
             border-radius: 1.5rem !important;
         }
+
+        .btn-danger {
+            color: #fff;
+            background-color: #fc9a00;
+            border-color: #fc9a00
+        }
+
+            .btn-danger:hover {
+                color: #fff;
+                background-color: #e08902;
+                border-color: #e08902
+            }
+
+        .input-group-addon {
+            padding: 5px;
+            background: #b3c1cc;
+        }
+
+        .nav > a {
+            color: #17a2b8;
+        }
+
+            .nav > a:hover {
+                color: #138496;
+            }
 
     </style>
 
@@ -121,47 +148,96 @@
         </div>
         <div id="divMessage" class="alert" style="display:none;cursor:pointer;z-index:10000;" title="Click para cerrar"> </div>
         <div class="jumbotron mt-4 py-4 col-12 shadow p-3 mb-5 bg-white rounded" id="divGeneral">
-            <p class="dataTitle">SINCRONIZAR MEDIDAS</p>
-            <div class="row">
-                <div class="col-md-5">
-                    <label><b>AdServer:</b></label>
-                    <!--Tabla GAM-->
-                    <div id="tabla" class="table-responsive mt-2">
-                        <table class='table table-hover table-sm '>
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Medida</th>
-                                </tr>
-                            </thead>
-                            <tbody id="TableGAM" class="small"></tbody>
-                        </table>
+                <p class="dataTitle">SINCRONIZAR MEDIDAS</p>
+                <!-- TABS -->
+                <nav class="nav nav-tabs mb-3">
+                    <a class="nav-link active" id="medidas-tab" data-toggle="tab" href="#medidas" role="tab" aria-controls="medidas" aria-selected="true" onclick="iniMedidas()">Medidas Banner</a>
+                    <a class="nav-link" id="medidasV-tab" data-toggle="tab" href="#medidasV" role="tab" aria-controls="medidasV" aria-selected="false" onclick="getMedidasVGAM()">Medidas Video</a>
+                </nav>
+                <div class="tab-content" id="tabsContent">
+                    <!-- TAB MED BANNER -->
+                    <div class="tab-pane fade show active" id="medidas" role="tabpanel" aria-labelledby="medidas-tab">
+                        <div class="row">
+                            <div class="col-md-5">
+                                <label><b>AdServer:</b></label>
+                                <!--Tabla GAM-->
+                                <div id="tabla1" class="table-responsive mt-2">
+                                    <table class='table table-hover table-sm '>
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Medida</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="TableGAM" class="small"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="col-md-2" style="padding-left: 30px;padding-right: 30px;padding-top: 40px;">
+                                <!--Botón Sincronizar-->
+                                <button type="button" class="btn btn-dark btn-sm mx-1" onclick="sincronizar()">
+                                    Sincronizar <span class="fa fa-chevron-right"></span><span class="fa fa-chevron-right"></span>
+                                </button>
+                            </div>
+                            <div class="col-md-5">
+                                <label><b>MMASSOnline:</b></label>
+                                <!--Tabla MMASSOnline-->
+                                <div id="tabla2" class="table-responsive mt-2">
+                                    <table class='table table-hover table-sm '>
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Medida</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="TableMMASS" class="small"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div class="col-md-2" style="padding-left: 30px;padding-right: 30px;padding-top: 40px;">
-                    <!--Botón Sincronizar-->
-                    <button type="button" class="btn btn-dark btn-sm mx-1" onclick="sincronizar()">
-                        Sincronizar <span class="fa fa-chevron-right"></span><span class="fa fa-chevron-right"></span>
-                    </button>
-                </div>
-                <div class="col-md-5">
-                    <label><b>MMASSOnline:</b></label>
-                    <!--Tabla MMASSOnline-->
-                    <div id="tabla" class="table-responsive mt-2">
-                        <table class='table table-hover table-sm '>
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Medida</th>
-                                </tr>
-                            </thead>
-                            <tbody id="TableMMASS" class="small"></tbody>
-                        </table>
+                    <!-- TAB MED VIDEO -->
+                    <div class="tab-pane fade" id="medidasV" role="tabpanel" aria-labelledby="medidasV-tab">
+                        <div class="row">
+                            <div class="col-md-5">
+                                <label><b>AdServer:</b></label>
+                                <!--Tabla GAM-->
+                                <div id="tablaV1" class="table-responsive mt-2">
+                                    <table class='table table-hover table-sm '>
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Medida</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="TableGAMV" class="small"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="col-md-2" style="padding-left: 30px;padding-right: 30px;padding-top: 40px;">
+                                <!--Botón Sincronizar-->
+                                <button type="button" class="btn btn-dark btn-sm mx-1" onclick="sincronizarV()">
+                                    Sincronizar <span class="fa fa-chevron-right"></span><span class="fa fa-chevron-right"></span>
+                                </button>
+                            </div>
+                            <div class="col-md-5">
+                                <label><b>MMASS Online:</b></label>
+                                <!--Tabla MMASSOnline-->
+                                <div id="tablaV2" class="table-responsive mt-2">
+                                    <table class='table table-hover table-sm '>
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Medida</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="TableMMASSV" class="small"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-
-            </div>
-
+                </div>                
         </div>
     </main>
 
@@ -172,20 +248,26 @@
         //ONLOAD se ejecuta cuando se termina de cargar la pagina
         $(function () {
             $("#divMessage").on("click", function () { $("#divMessage").hide(); });
-
-            getRedesGAM();
-            //getMedidasGAM();
-            getMedidasMMASS();
+            iniMedidas();
+            //getRedesGAM();
+            //getMedidasMMASS();
             var redes;
             document.body.style.backgroundImage = "url(./fondoM3.png)";
         });
 
+        function iniMedidas() {
+
+            $.when(getRedesGAM())
+                .then(getMedidasMMASS());
+        }
+
         function getRedesGAM() {
+
             callWS("medios", "getCodigosRed", '', function (data) { getMedidasGAM(data); });
         }
 
         function getMedidasGAM(data) {
-            //callWS("googleAdManager", "getMedidas", '', function (data) { onCargarTabla('TableGAM', data); });
+
             redes = data;
 
             var parametros = {};
@@ -206,6 +288,7 @@
         }
 
         function getMedidasMMASS() {
+
             callWS("medios", "getAllM", '', function (data) { onCargarTabla('TableMMASS', data); });
         }
 
@@ -227,14 +310,11 @@
 
             callWS("googleAdManager", "getMedidasTodasRedes", JSON.stringify(parametros), function (data) { onSincronizar(data); });
             callWS("googleAdManager", "getMedidasTodasRedes", JSON.stringify(parametros), function (data1) { onCargarTabla('TableGAM', data1); });
-
-            //callWS("googleAdManager", "getMedidas", '', function (data) { onSincronizar(data); });
-            //callWS("googleAdManager", "getMedidas", '', function (data) { onCargarTabla('TableGAM', data); });
-
         }
 
 
         function onSincronizar(data) {
+
             var MedidasList = {};
 
             MedidasList.Medidas = data;
@@ -247,6 +327,7 @@
         }
 
         function RecargarTablas() {
+
             $("#TableMMASS").empty();
             callWS("medios", "getAllM", '', function (data) { onCargarTabla('TableMMASS', data); });
 
@@ -254,6 +335,7 @@
         }
 
         function onCargarTabla(tablaID, data) {
+
             rowHTML = ''
             showPleaseWait();
             var idRenglon = 1;
@@ -273,10 +355,67 @@
             hidePleaseWait();
         }
 
-            //function GetData() {
-            //    getMedidasGAM();
-            //    getMedidasMMASS();
-            //}
+        function getMedidasVGAM() {
+
+            var parametros = {};
+            var listaParametros = [];
+            var objParametro = {};
+            params = {}
+
+            redes.forEach(function (dat) {
+                objParametro = {};
+                objParametro.ParameterName = "cod_red";
+                objParametro.Value = dat;
+                listaParametros.push(objParametro);
+            });
+
+            parametros.Parametros = listaParametros;
+
+            callWS("googleAdManager", "getMedidasVideoTodasRedes", JSON.stringify(parametros), function (data1) { onCargarTabla('TableGAMV', data1); });
+            callWS("medios", "getAllMV", '', function (data2) { onCargarTabla('TableMMASSV', data2); });
+        }
+
+        function sincronizarV() {
+
+            var parametros = {};
+            var listaParametros = [];
+            var objParametro = {};
+            params = {}
+
+            redes.forEach(function (red) {
+                objParametro = {};
+                objParametro.ParameterName = "cod_red";
+                objParametro.Value = red;
+                listaParametros.push(objParametro);
+            });
+
+            parametros.Parametros = listaParametros;
+
+            callWS("googleAdManager", "getMedidasVideoTodasRedes", JSON.stringify(parametros), function (data) { onSincronizarV(data); });
+            callWS("googleAdManager", "getMedidasVideoTodasRedes", JSON.stringify(parametros), function (data1) { onCargarTabla('TableGAMV', data1); });
+        }
+
+
+        function onSincronizarV(data) {
+
+            var MedidasList = {};
+
+            MedidasList.Medidas = data;
+
+            callWS("medios", "saveMedidasV", JSON.stringify(MedidasList), function (data2) {
+                if (data2 == true) {
+                    RecargarTablasV();
+                }
+            });
+        }
+
+        function RecargarTablasV() {
+
+            $("#TableMMASSV").empty();
+            callWS("medios", "getAllMV", '', function (data) { onCargarTabla('TableMMASSV', data); });
+
+            showMessage("Medidas actualizadas", "info");
+        }
 
     </script>
     <footer>

@@ -1072,6 +1072,61 @@ namespace WebApi.Helpers
             return TamOrdenados;
         }
 
+        public static List<Dg_medidas> GetMedidasVideoTodasRedes(List<Parametro> redes)
+        {
+            List<Dg_medidas> Tamaños = new List<Dg_medidas>();
+
+            foreach (Parametro red in redes)
+            {
+                CambiarRed(red.Value);
+
+                Dg_medidas Tamaño = null;
+
+                using (InventoryService inventoryService = user.GetService<InventoryService>())
+                {
+                    // Create a statement to select ad unit sizes.
+                    StatementBuilder statementBuilder = new StatementBuilder();
+                    //.OrderBy("size.height ASC");
+
+                    AdUnitSize[] adUnitSizes = inventoryService.getAdUnitSizesByStatement(statementBuilder.ToStatement());
+
+                    // Print out some information for each ad unit size.
+                    int i = 0;
+                    foreach (AdUnitSize adUnitSize in adUnitSizes)
+                    {
+                        //Controla que sea banner
+                        if (adUnitSize.environmentType.ToString() == "VIDEO_PLAYER" && adUnitSize.isAudio == false && adUnitSize.size.isAspectRatio == false && adUnitSize.fullDisplayString != null && adUnitSize.size.height != 0)
+                        {
+                            Tamaño = new Dg_medidas();
+
+                            Tamaño.Descripcion = adUnitSize.fullDisplayString;
+
+                            Console.WriteLine("{0}) Ad unit size with dimensions \"{1}\" was found.", i++, adUnitSize.fullDisplayString);
+
+                            bool existe = false;
+                            foreach (Dg_medidas tam in Tamaños)
+                            {
+                                if (Tamaño.Descripcion == tam.Descripcion)
+                                {
+                                    existe = true;
+                                }
+                            }
+                            if (existe == false)
+                            {
+                                Tamaño.Alto = adUnitSize.size.height;
+                                Tamaño.Ancho = adUnitSize.size.width;
+                                Tamaño.Tipo = 2;
+                                Tamaños.Add(Tamaño);
+                            }
+                        }
+                    }
+                    Console.WriteLine("Number of results found: {0}", adUnitSizes.Length);
+                }
+            }
+            List<Dg_medidas> TamOrdenados = Tamaños.OrderBy(tamaño => tamaño.Ancho).ThenBy(tamaño => tamaño.Alto).ToList();
+            return TamOrdenados;
+        }
+
         //REPORTE INVENTARIO (error en el archivo que descarga)
         public static void ReporteInventario()
         {

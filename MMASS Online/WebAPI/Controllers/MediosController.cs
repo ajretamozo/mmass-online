@@ -32,11 +32,17 @@ namespace WebApi.Controllers
             return Ok(medios);
         }
 
-        //AGREGUE (getallm, getalla, getalle):
         [HttpPost("getAllM")]
         public IActionResult getAllM()
         {
             var medidas = _medioService.getAllM();
+            return Ok(medidas);
+        }
+
+        [HttpPost("getAllMV")]
+        public IActionResult getAllMV()
+        {
+            var medidas = _medioService.getAllMV();
             return Ok(medidas);
         }
 
@@ -65,6 +71,13 @@ namespace WebApi.Controllers
         public IActionResult saveMedidas(Dg_medidas miobj)
         {
             var med = _medioService.saveMedidas(miobj);
+            return Ok(med);
+        }
+
+        [HttpPost("saveMedidasV")]
+        public IActionResult saveMedidasV(Dg_medidas miobj)
+        {
+            var med = _medioService.saveMedidasV(miobj);
             return Ok(med);
         }
 

@@ -21,10 +21,12 @@ namespace WebApi.Services
         IEnumerable<Medio> getPorEmpresa(int idEmp);
         //AGREGUE (getallm, getalla, getalle):
         IEnumerable<Dg_medidas> getAllM();
+        IEnumerable<Dg_medidas> getAllMV();
         IEnumerable<Dg_areas_geo> getAllA();
         IEnumerable<Dg_emplazamientos> getAllE(int redGAM);
         bool saveE(EmplazamientosList emplazamientos);
         bool saveMedidas(Dg_medidas miObj);
+        bool saveMedidasV(Dg_medidas miObj);
         IEnumerable<Convenios> getAllConvenios();
         Convenios getConvenioById(int Id);
         IEnumerable<Convenios> filterConvenios(List<Parametro> parametros);
@@ -57,10 +59,14 @@ namespace WebApi.Services
             return Medio.getPorEmpresa(idEmp);
         }
 
-        //AGREGUE (getallm, getalla, getalle):
         public IEnumerable<Dg_medidas> getAllM()
         {
             return Dg_medidas.getAll();
+        }
+
+        public IEnumerable<Dg_medidas> getAllMV()
+        {
+            return Dg_medidas.getAllV();
         }
 
         public IEnumerable<Dg_areas_geo> getAllA()
@@ -81,6 +87,11 @@ namespace WebApi.Services
         public bool saveMedidas(Dg_medidas miObj)
         {
             return miObj.saveMedidas();
+        }
+
+        public bool saveMedidasV(Dg_medidas miObj)
+        {
+            return miObj.saveMedidasV();
         }
 
         public IEnumerable<Convenios> getAllConvenios()

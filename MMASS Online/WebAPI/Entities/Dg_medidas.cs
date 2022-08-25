@@ -46,7 +46,22 @@ namespace WebApi.Entities
         }
         public static List<Dg_medidas> getAll()
         {
-            string sqlCommand = " select id_medidadigital, descripcion, ancho, alto, tipo from dg_medidas order by ancho, alto";
+            string sqlCommand = " select id_medidadigital, descripcion, ancho, alto, tipo from dg_medidas where tipo = 1 and es_borrado = 0 order by ancho, alto";
+            List<Dg_medidas> col = new List<Dg_medidas>();
+            Dg_medidas elem;
+            DataTable t = DB.Select(sqlCommand);
+
+            foreach (DataRow item in t.Rows)
+            {
+                elem = getDg_medidas(item);
+                col.Add(elem);
+            }
+            return col;
+        }
+
+        public static List<Dg_medidas> getAllV()
+        {
+            string sqlCommand = " select id_medidadigital, descripcion, ancho, alto, tipo from dg_medidas where tipo = 2 and es_borrado = 0 order by ancho, alto";
             List<Dg_medidas> col = new List<Dg_medidas>();
             Dg_medidas elem;
             DataTable t = DB.Select(sqlCommand);
@@ -130,7 +145,25 @@ namespace WebApi.Entities
         public bool saveMedidas()
         {
             bool ret = true;
-            DB.Execute("update dg_medidas set es_borrado = 1");
+            DB.Execute("update dg_medidas set es_borrado = 1 where tipo = 1");
+            foreach (Dg_medidas med in Medidas)
+            {
+                if (Dg_medidas.getByDesc(med.Descripcion) == false)
+                {
+                    med.save();
+                }
+                else
+                {
+                    med.updateMedidas();
+                }
+            }
+            return ret;
+        }
+
+        public bool saveMedidasV()
+        {
+            bool ret = true;
+            DB.Execute("update dg_medidas set es_borrado = 1 where tipo = 2");
             foreach (Dg_medidas med in Medidas)
             {
                 if (Dg_medidas.getByDesc(med.Descripcion) == false)
