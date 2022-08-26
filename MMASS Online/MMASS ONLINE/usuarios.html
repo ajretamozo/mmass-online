@@ -324,7 +324,7 @@
                                     location.href = "/usuariosList.html";
                                 }
                                 else if (data == 1) {
-                                    showMessage("El nombre de usuario ya existe", "error");
+                                    showMessage("El nombre de Usuario ya existe", "error");
                                 }
                                 else {
                                     showMessage("No fue posible crear el Usuario", "error");
@@ -337,8 +337,12 @@
                     callWS("users", "saveUser", JSON.stringify(data), function (data) {
                         if (data == 0) {
                             location.href = "/usuariosList.html";
-                        } else {
-                            console.log(data);
+                        }
+                        else if (data == 1) {
+                            showMessage("El nombre de Usuario ya existe", "error");
+                        }
+                        else {
+                            showMessage("No fue posible crear el Usuario", "error");
                         }
                     });
                 }

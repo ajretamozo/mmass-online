@@ -115,44 +115,43 @@ namespace WebApi.Entities
             string sql = "";
             F_alta = DateTime.Now;
 
-            if (Id_usuario == 0)
+            if (existeUserOnline(Nombre) == true)
             {
-                if (existeUserOnline(Nombre) == true)
-                {
-                    respuesta = 1;
-                    return respuesta;
-                }
-                else
-                {
-                    if (existeUserTrafico(Nombre) == true)
-                    {
-                        sql = "update usuarios set clave_web = @clave_web, usrrol = @usrrol where nombre = @nombre";
-                    }
-                    else
-                    {
-                        string sqlId = "select max(id_usuario) as maximo from usuarios";
-                        int nuevoId = 0;
-                        DataTable t = DB.Select(sqlId);
-
-                        if (t.Rows.Count == 1)
-                        {
-                            nuevoId = DB.DInt(t.Rows[0]["maximo"].ToString());
-                            nuevoId++;
-                            Id_usuario = nuevoId;
-                        }
-
-                        sql = "insert into usuarios (id_usuario, nombre, nombrel, tipodoc, nrodoc, f_alta, clave, clave_web, email, adusuario, usrrol)" +
-                                           " values (@id_usuario, @nombre, @nombrel, 0, '', @f_alta, '', @clave_web, '', '', @usrrol)";
-                    }
-                }
+                respuesta = 1;
+                return respuesta;
             }
-
             else
             {
-                sql = "update usuarios set nombre = @nombre, nombrel = @nombrel, clave_web = @clave_web, usrrol = @usrrol where id_usuario = @id_usuario";
-            }
+                if (Id_usuario == 0)
+                {
+                        if (existeUserTrafico(Nombre) == true)
+                        {
+                            sql = "update usuarios set clave_web = @clave_web, usrrol = @usrrol where nombre = @nombre";
+                        }
+                        else
+                        {
+                            string sqlId = "select max(id_usuario) as maximo from usuarios";
+                            int nuevoId = 0;
+                            DataTable t = DB.Select(sqlId);
 
-            List<SqlParameter> parametros = new List<SqlParameter>()
+                            if (t.Rows.Count == 1)
+                            {
+                                nuevoId = DB.DInt(t.Rows[0]["maximo"].ToString());
+                                nuevoId++;
+                                Id_usuario = nuevoId;
+                            }
+
+                            sql = "insert into usuarios (id_usuario, nombre, nombrel, tipodoc, nrodoc, f_alta, clave, clave_web, email, adusuario, usrrol)" +
+                                               " values (@id_usuario, @nombre, @nombrel, 0, '', @f_alta, '', @clave_web, '', '', @usrrol)";
+                        }
+                }
+
+                else
+                {
+                    sql = "update usuarios set nombre = @nombre, nombrel = @nombrel, clave_web = @clave_web, usrrol = @usrrol where id_usuario = @id_usuario";
+                }
+
+                List<SqlParameter> parametros = new List<SqlParameter>()
             {
                 new SqlParameter()
                 { ParameterName="@id_usuario", SqlDbType = SqlDbType.Int, Value = Id_usuario },
@@ -167,17 +166,18 @@ namespace WebApi.Entities
                 new SqlParameter()
                 { ParameterName="@usrrol", SqlDbType = SqlDbType.SmallInt, Value = Usrrol }
             };
-            try
-            {
-                DB.Execute(sql, parametros);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                respuesta = 2;
+                try
+                {
+                    DB.Execute(sql, parametros);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    respuesta = 2;
+                    return respuesta;
+                }
                 return respuesta;
-            }
-            return respuesta;
+            }                      
         }
 
         public static List<Usuario> getAllUsers()

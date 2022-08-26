@@ -60,23 +60,30 @@ namespace WebApi.Entities
         public bool save() {
 
             string sql = "";
-            // Si es nuevo va insert, sino update
-            if (Id_tipo_aviso_dg == 0)
+            if (existeTipoAviso(Descripcion) == true)
             {
-                sql = "insert into categorias (id_categoria, desc_categoria, Permite_envio_ads, Es_borrado, tipomedio)" +
-                    " values (@id_categoria, @desc_categoria, @Permite_envio_ads, 0, 2)";
-                DataTable t = DB.Select("select IsNull(max(ID_CATEGORIA),0) as ULTIMO from categorias");
-                if (t.Rows.Count == 1)
-                {
-                    Id_tipo_aviso_dg = int.Parse(t.Rows[0]["ULTIMO"].ToString()) + 1;
-                }
+                return false;
             }
             else
             {
-                sql = "update categorias set desc_categoria = @desc_categoria, Permite_envio_ads = @Permite_envio_ads " +
-                " where id_categoria = @id_categoria";
-            }
-            List<SqlParameter> parametros = new List<SqlParameter>()
+                // Si es nuevo va insert, sino update
+                if (Id_tipo_aviso_dg == 0)
+                {
+                    sql = "insert into categorias (id_categoria, desc_categoria, Permite_envio_ads, Es_borrado, tipomedio)" +
+                        " values (@id_categoria, @desc_categoria, @Permite_envio_ads, 0, 2)";
+                    DataTable t = DB.Select("select IsNull(max(ID_CATEGORIA),0) as ULTIMO from categorias");
+                    if (t.Rows.Count == 1)
+                    {
+                        Id_tipo_aviso_dg = int.Parse(t.Rows[0]["ULTIMO"].ToString()) + 1;
+                    }
+                }
+                else
+                {
+                    sql = "update categorias set desc_categoria = @desc_categoria, Permite_envio_ads = @Permite_envio_ads " +
+                    " where id_categoria = @id_categoria";
+                }
+
+                List<SqlParameter> parametros = new List<SqlParameter>()
                 {
                     new SqlParameter()
                     { ParameterName="@id_categoria",SqlDbType = SqlDbType.Int, Value = Id_tipo_aviso_dg },
@@ -84,17 +91,18 @@ namespace WebApi.Entities
                     { ParameterName="@desc_categoria",SqlDbType = SqlDbType.NVarChar, Value = Descripcion },
                     new SqlParameter()
                     { ParameterName="@Permite_envio_ads", SqlDbType = SqlDbType.SmallInt, Value = Permite_envio_ads }
-              };
-            try
-            {
-                DB.Execute(sql, parametros);
+                };
+                try
+                {
+                    DB.Execute(sql, parametros);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    return false;
+                }
+                return true;
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                return false;
-            }
-            return true;
         }
 
         public bool remove()
@@ -146,6 +154,19 @@ namespace WebApi.Entities
                 col.Add(elem);
             }
             return col;
+        }
+        public static bool existeTipoAviso(string descripcion)
+        {
+            string sqlCommand = "SELECT id_categoria FROM categorias WHERE es_borrado = 0 AND TipoMedio = 2 AND desc_categoria = '" + descripcion + "'";
+            bool resultado = false;
+
+            DataTable t = DB.Select(sqlCommand);
+
+            if (t.Rows.Count == 1)
+            {
+                resultado = true;
+            }
+            return resultado;
         }
 
     }

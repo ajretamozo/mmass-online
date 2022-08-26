@@ -100,6 +100,8 @@
             </div>
         </div>
 
+        <div id="divMessage" class="alert" style="display:none;cursor:pointer;z-index:10000;" title="Click para cerrar" onclick="$('#divMessage').hide('slideDown')"> </div>
+
         <div class="card mb-3 shadow p-3 mb-5 bg-white rounded" style="max-width: 100rem; margin-top: 5rem;">
             <div class="card-header d-flex align-items-center" style="margin-bottom: 1rem;">
                 <span id="headerTitle" class="mr-auto dataTitle">Tipos de Aviso</span>
@@ -287,8 +289,8 @@
                     if (data == true) {
                         location.href = "/tiposavisoslist.html";
                     } else {
-                        console.log(data);
-                        message = "Ocurrió un error al guardar el Tipo de Aviso";
+                        //console.log(data);
+                        message = "El Tipo de Aviso ya existe";
                         showMessage(message, "error");
                     }
                 });
