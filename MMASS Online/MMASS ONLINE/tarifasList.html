@@ -240,7 +240,7 @@
             $.each(listTar, function (it, itar) {
                 rowHTML += "<tr id-tar=\"" + itar.id_tarifa_dg + "\">"
                 //rowHTML += "<tr onclick='openTarifa(this)'>"
-                rowHTML += "<td class='col-xs-1'>" + itar.id_tarifa_dg + "</td>";
+                rowHTML += "<td class='col-xs-1'>" + (it + 1) + "</td>";
                 rowHTML += "<td class='col-xs-1'>" + itar.descripcion + "</td>";
                 rowHTML += "<td class='col-xs-1'>" + dateToFieldFormat(itar.fecha_desde) + ' - ' + dateToFieldFormat(itar.fecha_hasta) + "</td>";
                 rowHTML += "<td class='col-xs-1'>" + itar.forma_uso.descripcion + "</td>";

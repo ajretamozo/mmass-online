@@ -30,7 +30,7 @@ namespace WebApi.Services
         void reporteTest();
         //AGREGUE:
         //IEnumerable<Dg_emplazamientos> GetEmplazamientos(string redGAM);
-        IEnumerable<Dg_emplazamientos> GetEmplazamientos();
+        IEnumerable<Dg_emplazamientos> GetEmplazamientos(string codRed);
         IEnumerable<Dg_medidas> GetMedidas();
         IEnumerable<Dg_medidas> GetMedidasTodasRedes(List<Parametro> parametros);
         IEnumerable<Dg_medidas> GetMedidasVideoTodasRedes(List<Parametro> parametros);
@@ -185,8 +185,9 @@ namespace WebApi.Services
         //    return GoogleAdManager.getEmplazamientos(redGAM);
         //}
 
-        public IEnumerable<Dg_emplazamientos> GetEmplazamientos()
+        public IEnumerable<Dg_emplazamientos> GetEmplazamientos(string codRed)
         {
+            CambiarRed(codRed);
             return GoogleAdManager.getEmplazamientos();
         }
 

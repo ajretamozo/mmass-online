@@ -101,9 +101,9 @@ namespace WebApi.Controllers
         //}
 
         [HttpPost("getEmplazamientos")]
-        public IActionResult GetEmplazamientos()
+        public IActionResult GetEmplazamientos([FromBody] string codRed)
         {
-            var emplazamientos = _GoogleAdManagerService.GetEmplazamientos();
+            var emplazamientos = _GoogleAdManagerService.GetEmplazamientos(codRed);
             return Ok(emplazamientos);
         }
 

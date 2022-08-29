@@ -60,7 +60,7 @@ namespace WebApi.Entities
         public bool save() {
 
             string sql = "";
-            if (existeTipoAviso(Descripcion) == true)
+            if (existeTipoAviso())
             {
                 return false;
             }
@@ -155,9 +155,9 @@ namespace WebApi.Entities
             }
             return col;
         }
-        public static bool existeTipoAviso(string descripcion)
+        public bool existeTipoAviso()
         {
-            string sqlCommand = "SELECT id_categoria FROM categorias WHERE es_borrado = 0 AND TipoMedio = 2 AND desc_categoria = '" + descripcion + "'";
+            string sqlCommand = "SELECT id_categoria FROM categorias WHERE es_borrado = 0 AND TipoMedio = 2 AND desc_categoria = '" + Descripcion + "' AND id_categoria != " + Id_tipo_aviso_dg.ToString();
             bool resultado = false;
 
             DataTable t = DB.Select(sqlCommand);

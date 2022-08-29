@@ -128,10 +128,10 @@
                     <label>Red AdServer</label>
                 </div>
                 <div class="col-lg-3" style="padding-left: 0px;">
-                    <select class="form-control" id="selRedes"></select>
+                    <select class="form-control" id="selRedes" onchange="onRedSelected()"></select>
                 </div>
                 <div class="col-md-4" style="top: 4px;">
-                    <button type="button" class="btn btn-dark btn-sm mx-1" onclick="onRedSelected()">
+                    <button type="button" class="btn btn-dark btn-sm mx-1" onclick="buscar()">
                         <span class="fa fa-search"></span> Buscar
                     </button>
                 </div>
@@ -154,7 +154,7 @@
                 </div>
                 <div class="col-md-2" style="padding-left: 30px;padding-right: 30px;padding-top: 40px;">
                     <!--Botón Sincronizar-->
-                    <button type="button" class="btn btn-dark btn-sm mx-1" onclick="sincronizar()">
+                    <button type="button" id="bSincronizar" class="btn btn-dark btn-sm mx-1" disabled="disabled" onclick="sincronizar()">
                         Sincronizar <span class="fa fa-chevron-right"></span><span class="fa fa-chevron-right"></span>
                     </button>
                 </div>
@@ -183,6 +183,8 @@
     <!--Scripts-->
     <script type="text/javascript">
         $("#divNavBar").load("navBar.html");
+        var EmplazamientoList = {};
+        var idRed;
         //ONLOAD se ejecuta cuando se termina de cargar la pagina
         $(function () {
             $("#divMessage").on("click", function () { $("#divMessage").hide(); });
@@ -204,61 +206,33 @@
             $("#" + idSelect).append(listitems);
         }
 
-        function getEmplazamientosMMASS(idRed) {
+        function buscar() {
+            idRed = $('#selRedes').val();
+            codRed = $('#selRedes>option:selected').attr("codigo_red");
+            callWS("googleAdManager", "getEmplazamientos", JSON.stringify(codRed), function (data) { onCargarTabla('TableGAM', data); });
+            $("#bSincronizar").attr("disabled", false);
+        }
+
+        function getEmplazamientosMMASS() {
             callWS("medios", "getAllE", JSON.stringify(idRed), function (data) { onCargarTabla('TableMMASS', data); });
         }
 
-        function getEmplazamientosGAM(idRed) {
-            $.when(
-                callWS("googleAdManager", "getEmplazamientos", '', function (data) { onCargarTabla('TableGAM', data); })
-            ).then(onGetEmplazaGAM(idRed));
-        }
-
-        function onGetEmplazaGAM(idRed) {
-
-            //Cuando me trae los anunciantes con los codigos de Google Ad Manager cargo los anunciantes de MMASS
-            getEmplazamientosMMASS(idRed);
-
-        }
-
-        function onRedSelected() {
-            idRed = $('#selRedes').val();
-            codRed = $('#selRedes>option:selected').attr("codigo_red");
-
-            $.when(
-                callWS("googleAdManager", "cambiarRed", codRed)
-            ).then(getEmplazamientosGAM(idRed));
-        }
-
         function sincronizar() {
-            callWS("googleAdManager", "getEmplazamientos", '', function (data) { onSincronizar(data); });
-            callWS("googleAdManager", "getEmplazamientos", '', function (data) { onCargarTabla('TableGAM', data); });
-        }
-
-        function onSincronizar(data) {
-            var EmplazamientoList = {};
-
-            data.forEach(emplaza => {
-                emplaza.id_red = idRed;
-            });
-
-            EmplazamientoList.Emplazamientos = data;
-
             callWS("medios", "saveE", JSON.stringify(EmplazamientoList), function (data2) {
                 if (data2 == true) {
-                    RecargarTablas(idRed);
+                    RecargarTablas();
                 }
             });
         }
 
-        function RecargarTablas(idRed) {
-            $("#TableMMASS").empty();
+        function RecargarTablas() {
             callWS("medios", "getAllE", JSON.stringify(idRed), function (data) { onCargarTabla('TableMMASS', data); });
 
             showMessage("Emplazamientos actualizados", "info");
         }
 
         function onCargarTabla(tablaID, data) {
+            $("#" + tablaID).empty();
             rowHTML = ''
             showPleaseWait();
 
@@ -273,12 +247,20 @@
 
             $("#" + tablaID).html(rowHTML);
 
+            if (tablaID == 'TableGAM') {
+                getEmplazamientosMMASS();
+                data.forEach(emplaza => {
+                    emplaza.id_red = idRed;
+                });
+
+                EmplazamientoList.Emplazamientos = data;
+            }
+
             hidePleaseWait();
         }
 
-        function GetData() {
-            idRed = $('#selRedes').val();
-            getEmplazamientosGAM(idRed);
+        function onRedSelected() {
+            $("#bSincronizar").attr("disabled", true);
         }
 
     </script>

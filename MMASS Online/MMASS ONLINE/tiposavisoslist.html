@@ -163,8 +163,7 @@
             rowHTML = ''
             $.each(listTiposAvisos, function (it, itipo) {
                 rowHTML += "<tr id-tar=\"" + itipo.id_tipo_aviso_dg + "\">"
-                //rowHTML += "<tr onclick='openTarifa(this)'>"
-                rowHTML += "<td class='col-xs-1' align='center'>" + itipo.id_tipo_aviso_dg + "</td>";
+                rowHTML += "<td class='col-xs-1' align='center'>" + (it + 1) + "</td>";
                 rowHTML += "<td class='col-xs-1' align='center'>" + itipo.descripcion + "</td>";
                 if (itipo.permite_envio_ads) {
                     rowHTML += "<td class='col-xs-1' align='center'> Si </td>";

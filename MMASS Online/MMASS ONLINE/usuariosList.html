@@ -163,7 +163,7 @@
             rowHTML = ''
             $.each(listUsers, function (it, iuser) {
                 rowHTML += "<tr id-tar=\"" + iuser.id_usuario + "\">"
-                rowHTML += "<td class='col-xs-1' align='center'>" + iuser.id_usuario + "</td>";
+                rowHTML += "<td class='col-xs-1' align='center'>" + (it+1) + "</td>";
                 rowHTML += "<td class='col-xs-1' align='center'>" + iuser.nombrel + "</td>";
                 rowHTML += "<td class='col-xs-1' align='center'>" + iuser.nombre + "</td>";
 

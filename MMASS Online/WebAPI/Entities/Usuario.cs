@@ -115,7 +115,7 @@ namespace WebApi.Entities
             string sql = "";
             F_alta = DateTime.Now;
 
-            if (existeUserOnline(Nombre) == true)
+            if (existeUserOnline())
             {
                 respuesta = 1;
                 return respuesta;
@@ -124,7 +124,7 @@ namespace WebApi.Entities
             {
                 if (Id_usuario == 0)
                 {
-                        if (existeUserTrafico(Nombre) == true)
+                        if (existeUserTrafico())
                         {
                             sql = "update usuarios set clave_web = @clave_web, usrrol = @usrrol where nombre = @nombre";
                         }
@@ -283,9 +283,9 @@ namespace WebApi.Entities
             return resultado;
         }
 
-        public static bool existeUserOnline(string user)
+        public bool existeUserOnline()
         {
-            string sqlCommand = "select id_usuario from usuarios where (f_baja is null or f_baja = '') and (clave_web is not null and clave_web != '') and nombre = '" + user + "'";
+            string sqlCommand = "select id_usuario from usuarios where (f_baja is null or f_baja = '') and (clave_web is not null and clave_web != '') and nombre = '" + Nombre + "' and id_usuario != " + Id_usuario.ToString();
             bool resultado = false;
 
             DataTable t = DB.Select(sqlCommand);
@@ -297,9 +297,9 @@ namespace WebApi.Entities
             return resultado;
         }
 
-        public static bool existeUserTrafico(string user)
+        public bool existeUserTrafico()
         {
-            string sqlCommand = "select id_usuario from usuarios where (f_baja is null or f_baja = '') and (clave is not null and clave != '') and nombre = '" + user + "'";
+            string sqlCommand = "select id_usuario from usuarios where (f_baja is null or f_baja = '') and (clave is not null and clave != '') and nombre = '" + Nombre + "'";
             bool resultado = false;
 
             DataTable t = DB.Select(sqlCommand);
