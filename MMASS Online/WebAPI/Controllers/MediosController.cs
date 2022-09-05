@@ -46,6 +46,13 @@ namespace WebApi.Controllers
             return Ok(medidas);
         }
 
+        [HttpPost("getAllMedidas")]
+        public IActionResult getAllMedidas()
+        {
+            var medidas = _medioService.getAllMedidas();
+            return Ok(medidas);
+        }
+
         [HttpPost("getAllA")]
         public IActionResult getAllA()
         {

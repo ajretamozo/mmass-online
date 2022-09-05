@@ -193,6 +193,9 @@
             } else {
                 $('#checkEnvioAdServer').attr("checked", false);
             }
+            if (data.descripcion == "Banner" || data.descripcion == "Video") {
+                $('.disableOnEdit').attr("disabled", true);
+            }
         }
 
         function setMode(mode) {
@@ -202,7 +205,6 @@
                 $('.disableOnEdit').attr("disabled", false);
                 //#botGuardar, #botCancelar, #checkEnvioAdServer
                 $('.enableOnEdit').attr("disabled", true);
-                //AGREGUE:
                 $('.View').attr("disabled", false);
                 //#descTipoAviso
                 $('.readonlyOnView').attr("readonly", true);

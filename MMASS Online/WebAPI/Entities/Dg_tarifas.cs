@@ -165,23 +165,32 @@ namespace WebApi.Entities
             return resultado;
         }
 
-        public bool save()
+        public int save()
         {
-            string sql = "";
-            // Si es nuevo va insert, sino update
-            if (Id_tarifa_dg == 0)
+            int respuesta = 0;
+
+            if (existeTarifa())
             {
-                sql = "INSERT INTO dg_tarifas (descripcion, fecha_desde, fecha_hasta, forma_uso, precio_unitario, es_borrado, id_red) " +
-                    " values (@descripcion, @fecha_desde, @fecha_hasta, @forma_uso, @precio_unitario, 0, @id_red) " +
-                    " SELECT SCOPE_IDENTITY(); ";
+                respuesta = 1;
+                return respuesta;
             }
             else
             {
-                sql = " update dg_tarifas set descripcion = @descripcion, fecha_desde=@fecha_desde, fecha_hasta=@fecha_hasta, forma_uso=@forma_uso, " +
-                      "precio_unitario=@precio_unitario, id_red=@id_red" +
-                      " where Id_tarifa_dg = @Id_tarifa_dg";
-            }
-            List<SqlParameter> parametros = new List<SqlParameter>()
+                string sql = "";
+                // Si es nuevo va insert, sino update
+                if (Id_tarifa_dg == 0)
+                {
+                    sql = "INSERT INTO dg_tarifas (descripcion, fecha_desde, fecha_hasta, forma_uso, precio_unitario, es_borrado, id_red) " +
+                          " values (@descripcion, @fecha_desde, @fecha_hasta, @forma_uso, @precio_unitario, 0, @id_red) " +
+                          " SELECT SCOPE_IDENTITY(); ";
+                }
+                else
+                {
+                    sql = " update dg_tarifas set descripcion = @descripcion, fecha_desde=@fecha_desde, fecha_hasta=@fecha_hasta, forma_uso=@forma_uso, " +
+                          " precio_unitario=@precio_unitario, id_red=@id_red" +
+                          " where Id_tarifa_dg = @Id_tarifa_dg";
+                }
+                List<SqlParameter> parametros = new List<SqlParameter>()
                 {
                     new SqlParameter()
                     { ParameterName="@Id_tarifa_dg",SqlDbType = SqlDbType.Int, Value = Id_tarifa_dg },
@@ -197,67 +206,70 @@ namespace WebApi.Entities
                     { ParameterName="@precio_unitario", SqlDbType = SqlDbType.Float, Value = Precio_unitario },
                      new SqlParameter()
                     { ParameterName="@id_red",SqlDbType = SqlDbType.Int, Value = Id_red }
-            };
-            try
-            {
-                using (TransactionScope transaccion = new TransactionScope(TransactionScopeOption.RequiresNew, new TimeSpan(0, 2, 0)))
+                };
+                try
                 {
-                    // Grabo la Tarifa (Cabecera)
-                    DB.Execute(sql, parametros);
-                    //Obtengo el ID
-                    if (Id_tarifa_dg == 0)
+                    using (TransactionScope transaccion = new TransactionScope(TransactionScopeOption.RequiresNew, new TimeSpan(0, 2, 0)))
                     {
+                        // Grabo la Tarifa (Cabecera)
+                        DB.Execute(sql, parametros);
+                        //Obtengo el ID
+                        if (Id_tarifa_dg == 0)
+                        {
                             DataTable t = DB.Select("select max(id_tarifa_dg) as ULTIMO from dg_tarifas ");
                             if (t.Rows.Count == 1)
                             {
                                 Id_tarifa_dg = int.Parse(t.Rows[0]["ULTIMO"].ToString());
                             }
-                    }
-                    // Grabo los Medios relacionados...
-                    DB.Execute("delete from dg_tarifas_medios where Id_tarifa_dg = " + Id_tarifa_dg.ToString());
-                    foreach (Medio elem in Medios)
-                    {
-                        sql = "insert into dg_tarifas_medios (Id_tarifa_dg, Id_medio) values  (" + Id_tarifa_dg.ToString() + ", " + elem.Id_medio.ToString() + ")";
+                        }
+                        // Grabo los Medios relacionados...
+                        DB.Execute("delete from dg_tarifas_medios where Id_tarifa_dg = " + Id_tarifa_dg.ToString());
+                        foreach (Medio elem in Medios)
+                        {
+                            sql = "insert into dg_tarifas_medios (Id_tarifa_dg, Id_medio) values  (" + Id_tarifa_dg.ToString() + ", " + elem.Id_medio.ToString() + ")";
+                            DB.Execute(sql);
+                        }
+                        // Grabo los tipos de avisos relacionados...
+                        DB.Execute("delete from dg_tarifas_tipos_avisos_dg where id_tarifa_dg = " + Id_tarifa_dg.ToString());
+                        foreach (Dg_tipos_avisos elem in Tipos_Avisos)
+                        {
+                            sql = "insert into dg_tarifas_tipos_avisos_dg (Id_tarifa_dg,id_tipo_aviso_dg) values (" + Id_tarifa_dg.ToString() + "," + elem.Id_tipo_aviso_dg + ")";
+                            DB.Execute(sql);
+                        }
+                        //AGREGUE:
+                        // Grabo los Emplazamientos relacionados...
+                        DB.Execute("delete from dg_tarifas_emplazamientos where id_tarifa_dg = " + Id_tarifa_dg.ToString());
+                        foreach (Dg_emplazamientos elem in Emplazamientos)
+                        {
+                            sql = "insert into dg_tarifas_emplazamientos (id_tarifa_dg, id_emplazamiento) values  (" + Id_tarifa_dg.ToString() + ", " + elem.Id_emplazamiento.ToString() + ")";
+                            DB.Execute(sql);
+                        }
+                        //AGREGUE:
+                        // Grabo las Medidas relacionadas...
+                        DB.Execute("delete from dg_tarifas_medidas where id_tarifa_dg = " + Id_tarifa_dg.ToString());
+                        foreach (Dg_medidas elem in Medidas)
+                        {
+                            sql = "insert into dg_tarifas_medidas (id_tarifa_dg, id_medidadigital) values  (" + Id_tarifa_dg.ToString() + ", " + elem.Id_medidadigital.ToString() + ")";
+                            DB.Execute(sql);
+                        }
+                        //AGREGUE:
+                        // Grabo el AreaGeo relacionada...
+                        DB.Execute("delete from dg_tarifas_areas where id_tarifa_dg = " + Id_tarifa_dg.ToString());
+                        sql = "insert into dg_tarifas_areas (id_tarifa_dg, id_area) values  (" + Id_tarifa_dg.ToString() + ", " + Area_geo.Id_area.ToString() + ")";
                         DB.Execute(sql);
-                    }
-                    // Grabo los tipos de avisos relacionados...
-                    DB.Execute("delete from dg_tarifas_tipos_avisos_dg where id_tarifa_dg = " + Id_tarifa_dg.ToString());
-                    foreach (Dg_tipos_avisos elem in Tipos_Avisos)
-                    {
-                        sql = "insert into dg_tarifas_tipos_avisos_dg (Id_tarifa_dg,id_tipo_aviso_dg) values (" + Id_tarifa_dg.ToString() + "," + elem.Id_tipo_aviso_dg + ")";
-                        DB.Execute(sql);
-                    }
-                    //AGREGUE:
-                    // Grabo los Emplazamientos relacionados...
-                    DB.Execute("delete from dg_tarifas_emplazamientos where id_tarifa_dg = " + Id_tarifa_dg.ToString());
-                    foreach (Dg_emplazamientos elem in Emplazamientos)
-                    {
-                        sql = "insert into dg_tarifas_emplazamientos (id_tarifa_dg, id_emplazamiento) values  (" + Id_tarifa_dg.ToString() + ", " + elem.Id_emplazamiento.ToString() + ")";
-                        DB.Execute(sql);
-                    }
-                    //AGREGUE:
-                    // Grabo las Medidas relacionadas...
-                    DB.Execute("delete from dg_tarifas_medidas where id_tarifa_dg = " + Id_tarifa_dg.ToString());
-                    foreach (Dg_medidas elem in Medidas)
-                    {
-                        sql = "insert into dg_tarifas_medidas (id_tarifa_dg, id_medidadigital) values  (" + Id_tarifa_dg.ToString() + ", " + elem.Id_medidadigital.ToString() + ")";
-                        DB.Execute(sql);
-                    }
-                    //AGREGUE:
-                    // Grabo el AreaGeo relacionada...
-                    DB.Execute("delete from dg_tarifas_areas where id_tarifa_dg = " + Id_tarifa_dg.ToString());
-                    sql = "insert into dg_tarifas_areas (id_tarifa_dg, id_area) values  (" + Id_tarifa_dg.ToString() + ", " + Area_geo.Id_area.ToString() + ")";
-                    DB.Execute(sql);
 
-                    transaccion.Complete();
-                } 
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                return false;
-            }
-            return true;
+                        transaccion.Complete();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    respuesta = 2;
+                    return respuesta;
+                }
+
+                return respuesta;
+            }         
         }
 
         public static List<Dg_tarifas> getAll()
@@ -397,6 +409,20 @@ namespace WebApi.Entities
             }
             return col;
         }
-    }
 
+        public bool existeTarifa()
+        {
+            string sqlCommand = "select id_tarifa_dg from dg_tarifas where es_borrado = 0 and descripcion = '" + Descripcion + "' and id_tarifa_dg != " + Id_tarifa_dg.ToString();
+            bool resultado = false;
+
+            DataTable t = DB.Select(sqlCommand);
+
+            if (t.Rows.Count > 0)
+            {
+                resultado = true;
+            }
+            return resultado;
+        }
+
+    }
 }

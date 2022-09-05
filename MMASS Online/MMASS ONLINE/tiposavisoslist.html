@@ -173,8 +173,15 @@
                 //Acciones
                 rowHTML += "<td id='colAcciones' class='col-xs-2 d-flex justify-content-center'>"
                 rowHTML += "<button type='button' title='Ver' class='btn btn-outline-dark btn-sm mx-1' onclick=\"openTipoAviso(" + itipo.id_tipo_aviso_dg + ",'view')\"><span class='fa fa-eye'></span> </button>"
-                rowHTML += "<button type='button' title='Editar' class='btn btn-outline-dark btn-sm mx-1' onclick=\"openTipoAviso(" + itipo.id_tipo_aviso_dg + ",'edit')\"><span class='fa fa-edit'></span> </button>"
-                rowHTML += "<button type='button' title='Eliminar' class='btn btn-outline-dark btn-sm mx-1' onclick=\"checkBorrarTipoAviso(" + itipo.id_tipo_aviso_dg + ")\"><span class='fa fa-trash'></span> </button>"
+                //Para Banner y Video, la edición y eliminación están deshabilitadas
+                if (itipo.descripcion == "Banner" || itipo.descripcion == "Video") {
+                    rowHTML += "<button type='button' title='Editar' class='btn btn-outline-dark btn-sm mx-1' disabled='disabled' onclick=\"openTipoAviso(" + itipo.id_tipo_aviso_dg + ",'edit')\"><span class='fa fa-edit'></span> </button>"
+                    rowHTML += "<button type='button' title='Eliminar' class='btn btn-outline-dark btn-sm mx-1' disabled='disabled' onclick=\"checkBorrarTipoAviso(" + itipo.id_tipo_aviso_dg + ")\"><span class='fa fa-trash'></span> </button>"
+                }
+                else {
+                    rowHTML += "<button type='button' title='Editar' class='btn btn-outline-dark btn-sm mx-1' onclick=\"openTipoAviso(" + itipo.id_tipo_aviso_dg + ",'edit')\"><span class='fa fa-edit'></span> </button>"
+                    rowHTML += "<button type='button' title='Eliminar' class='btn btn-outline-dark btn-sm mx-1' onclick=\"checkBorrarTipoAviso(" + itipo.id_tipo_aviso_dg + ")\"><span class='fa fa-trash'></span> </button>"
+                }
                 rowHTML += "</td>"
                 rowHTML += '</tr>'
             })

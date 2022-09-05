@@ -17,7 +17,7 @@ namespace WebApi.Services
         //Contacto GetAgencia(string username, string password);
         Dg_tarifas getById(int Id);
         IEnumerable<Dg_tarifas> getAll();
-        bool saveTarifa(Dg_tarifas miobj);
+        int saveTarifa(Dg_tarifas miobj);
         bool removeTarifa(Dg_tarifas miobj);
         IEnumerable<Dg_tarifa_forma_uso> getFormasUso();
         IEnumerable<Dg_tarifas> filter(List<Parametro> parametros);
@@ -35,7 +35,7 @@ namespace WebApi.Services
         {
             return Dg_tarifas.getAll();
         }
-        public bool saveTarifa(Dg_tarifas miobj)
+        public int saveTarifa(Dg_tarifas miobj)
         {
             return miobj.save();
         }

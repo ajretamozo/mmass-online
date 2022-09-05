@@ -319,30 +319,32 @@
                             showMessage("Se a alcanzado el límite de Usuarios (20)", "error");
                         }
                         else {
-                            callWS("users", "saveUser", JSON.stringify(data), function (data) {
-                                if (data == 0) {
+                            callWS("users", "saveUser", JSON.stringify(data), function (resp) {
+                                if (resp == 0) {
                                     location.href = "/usuariosList.html";
                                 }
-                                else if (data == 1) {
+                                else if (resp == 1) {
                                     showMessage("El nombre de Usuario ya existe", "error");
                                 }
                                 else {
-                                    showMessage("No fue posible crear el Usuario", "error");
+                                    showMessage("Ocurrió un error al intentar guardar el Usuario", "error");
+                                    console.log(resp);
                                 }
                             });
                         }
                     });
                 }
                 else {
-                    callWS("users", "saveUser", JSON.stringify(data), function (data) {
-                        if (data == 0) {
+                    callWS("users", "saveUser", JSON.stringify(data), function (resp) {
+                        if (resp == 0) {
                             location.href = "/usuariosList.html";
                         }
-                        else if (data == 1) {
+                        else if (resp == 1) {
                             showMessage("El nombre de Usuario ya existe", "error");
                         }
                         else {
-                            showMessage("No fue posible crear el Usuario", "error");
+                            showMessage("Ocurrió un error al intentar guardar el Usuario", "error");
+                            console.log(resp);
                         }
                     });
                 }

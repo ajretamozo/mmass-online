@@ -112,8 +112,6 @@ namespace WebApi.Entities
         public int save()
         {
             int respuesta = 0;
-            string sql = "";
-            F_alta = DateTime.Now;
 
             if (existeUserOnline())
             {
@@ -122,6 +120,9 @@ namespace WebApi.Entities
             }
             else
             {
+                string sql = "";
+                F_alta = DateTime.Now;
+
                 if (Id_usuario == 0)
                 {
                         if (existeUserTrafico())
@@ -152,20 +153,20 @@ namespace WebApi.Entities
                 }
 
                 List<SqlParameter> parametros = new List<SqlParameter>()
-            {
-                new SqlParameter()
-                { ParameterName="@id_usuario", SqlDbType = SqlDbType.Int, Value = Id_usuario },
-                new SqlParameter()
-                { ParameterName="@nombre",SqlDbType = SqlDbType.VarChar, Value = Nombre },
-                new SqlParameter()
-                { ParameterName="@nombrel",SqlDbType = SqlDbType.VarChar, Value = Nombrel },
-                new SqlParameter()
-                { ParameterName="@clave_web", SqlDbType = SqlDbType.VarChar, Value = Clave_web },
-                new SqlParameter()
-                { ParameterName="@f_alta", SqlDbType = SqlDbType.DateTime, Value = F_alta },
-                new SqlParameter()
-                { ParameterName="@usrrol", SqlDbType = SqlDbType.SmallInt, Value = Usrrol }
-            };
+                {
+                    new SqlParameter()
+                    { ParameterName="@id_usuario", SqlDbType = SqlDbType.Int, Value = Id_usuario },
+                    new SqlParameter()
+                    { ParameterName="@nombre",SqlDbType = SqlDbType.VarChar, Value = Nombre },
+                    new SqlParameter()
+                    { ParameterName="@nombrel",SqlDbType = SqlDbType.VarChar, Value = Nombrel },
+                    new SqlParameter()
+                    { ParameterName="@clave_web", SqlDbType = SqlDbType.VarChar, Value = Clave_web },
+                    new SqlParameter()
+                    { ParameterName="@f_alta", SqlDbType = SqlDbType.DateTime, Value = F_alta },
+                    new SqlParameter()
+                    { ParameterName="@usrrol", SqlDbType = SqlDbType.SmallInt, Value = Usrrol }
+                };
                 try
                 {
                     DB.Execute(sql, parametros);

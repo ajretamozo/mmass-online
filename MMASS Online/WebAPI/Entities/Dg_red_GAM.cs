@@ -91,16 +91,17 @@ namespace WebApi.Entities
         public int save()
         {
             int respuesta = 0;
-            string sql = "";
 
-            if (Id_red == 0)
+            if (existeRed())
             {
-                if (existeRed(Descripcion) == true)
-                {
-                    respuesta = 1;
-                    return respuesta;
-                }
-                else
+                respuesta = 1;
+                return respuesta;
+            }
+            else
+            {
+                string sql = "";
+
+                if (Id_red == 0)
                 {
                     string sqlId = "select max(id_red) as maximo from dg_red_GAM";
                     int nuevoId = 0;
@@ -114,35 +115,35 @@ namespace WebApi.Entities
                     }
 
                     sql = "insert into dg_red_GAM (id_red, descripcion, codigo_red, es_borrado)" +
-                                         " values (@id_red, @descripcion, @codigo_red, 0)";
-                } 
-            }
+                          " values (@id_red, @descripcion, @codigo_red, 0)";
+                }
 
-            else
-            {
-                sql = "update dg_red_GAM set descripcion = @descripcion, codigo_red = @codigo_red where id_red = @id_red";
-            }
+                else
+                {
+                    sql = "update dg_red_GAM set descripcion = @descripcion, codigo_red = @codigo_red where id_red = @id_red";
+                }
 
-            List<SqlParameter> parametros = new List<SqlParameter>()
-            {
-                new SqlParameter()
-                { ParameterName="@id_red", SqlDbType = SqlDbType.Int, Value = Id_red },
-                new SqlParameter()
-                { ParameterName="@descripcion",SqlDbType = SqlDbType.NVarChar, Value = Descripcion },
-                new SqlParameter()
-                { ParameterName="@codigo_red", SqlDbType = SqlDbType.BigInt, Value = Codigo_red }
-            };
-            try
-            {
-                DB.Execute(sql, parametros);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                respuesta = 2;
+                List<SqlParameter> parametros = new List<SqlParameter>()
+                {
+                    new SqlParameter()
+                    { ParameterName="@id_red", SqlDbType = SqlDbType.Int, Value = Id_red },
+                    new SqlParameter()
+                    { ParameterName="@descripcion",SqlDbType = SqlDbType.NVarChar, Value = Descripcion },
+                    new SqlParameter()
+                    { ParameterName="@codigo_red", SqlDbType = SqlDbType.BigInt, Value = Codigo_red }
+                };
+                try
+                {
+                    DB.Execute(sql, parametros);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    respuesta = 2;
+                    return respuesta;
+                }
                 return respuesta;
-            }
-            return respuesta;
+            }        
         }
 
         public bool deleteRed()
@@ -191,9 +192,9 @@ namespace WebApi.Entities
             return col;
         }
 
-        public static bool existeRed(string red)
+        public bool existeRed()
         {
-            string sqlCommand = "select id_red from dg_red_GAM where es_borrado = 0 and descripcion = '" + red + "'";
+            string sqlCommand = "select id_red from dg_red_GAM where es_borrado = 0 and descripcion = '" + Descripcion + "' and id_red != " + Id_red.ToString();
             bool resultado = false;
 
             DataTable t = DB.Select(sqlCommand);

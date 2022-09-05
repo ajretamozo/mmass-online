@@ -22,6 +22,7 @@ namespace WebApi.Services
         //AGREGUE (getallm, getalla, getalle):
         IEnumerable<Dg_medidas> getAllM();
         IEnumerable<Dg_medidas> getAllMV();
+        IEnumerable<Dg_medidas> getAllMedidas();
         IEnumerable<Dg_areas_geo> getAllA();
         IEnumerable<Dg_emplazamientos> getAllE(int redGAM);
         bool saveE(EmplazamientosList emplazamientos);
@@ -61,12 +62,17 @@ namespace WebApi.Services
 
         public IEnumerable<Dg_medidas> getAllM()
         {
-            return Dg_medidas.getAll();
+            return Dg_medidas.getAllB();
         }
 
         public IEnumerable<Dg_medidas> getAllMV()
         {
             return Dg_medidas.getAllV();
+        }
+
+        public IEnumerable<Dg_medidas> getAllMedidas()
+        {
+            return Dg_medidas.getAll();
         }
 
         public IEnumerable<Dg_areas_geo> getAllA()

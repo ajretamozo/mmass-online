@@ -293,9 +293,10 @@
                         location.href = "/redesGamlist.html";
                     }
                     else if (resp == 1) {
-                        showMessage("El nombre de red ya existe", "error");
+                        showMessage("El nombre de Red ya existe", "error");
                     }
                     else {
+                        showMessage("Ocurrió un error al intentar guardar la Red", "error");
                         console.log(resp);
                     }
                 });

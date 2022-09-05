@@ -2325,7 +2325,6 @@
                     listaParametros.push(objParametro);
                 });
 
-                //AGREGUE:
                 tamaños = $('#selMedidasD').val();
                 tamaños.forEach(function (tamaño) {
                     objParametro = {};
@@ -2334,7 +2333,6 @@
                     listaParametros.push(objParametro);
                 });
 
-                //AGREGUE:
                 emplazas = $('#selEmplazaD').val();
                 emplazas.forEach(function (emplaza) {
                     objParametro = {};
@@ -2343,7 +2341,6 @@
                     listaParametros.push(objParametro);
                 });
 
-                //AGREGUE:
                 if ($('#selAreasGeo').val() != null) {
                     objParametro = {};
                     objParametro.ParameterName = "id_areaGeo";
@@ -2512,20 +2509,14 @@
             rDetalle.tipo_aviso_dg.permite_envio_ads = $('#selTipoAvisoD>option:selected').attr("permite_envio_ads");
             rDetalle.tipo_aviso_dg.id_tipo_aviso_dg = $('#selTipoAvisoD').val();
 
-            //AGREGUE:
             rDetalle.areaGeo = {};
             rDetalle.areaGeo.id_area = $('#selAreasGeo').val();
             rDetalle.areaGeo.codigo_area = $('#selAreasGeo>option:selected').attr("codigo_area");
             rDetalle.areaGeo.tipo = $('#selAreasGeo>option:selected').attr("tipo");
 
-            //nuev
-            //rDetalle.detConv = {};
-            //rDetalle.detConv.id_det_conv = $('#selDetConvenio').val();
-            //rDetalle.detConv.descripcion = $('#selDetConvenio>option:selected').text();
             rDetalle.id_det_conv = $('#selDetConvenio').val();
             idDetConvenio = $('#selDetConvenio').val();
 
-            //AGREGUE:
             rDetalle.medidas = selectToJson('selMedidasD', 'id_medidadigital');
 
             rDetalle.medidas.forEach(medida => {
@@ -2539,7 +2530,6 @@
                 });
             });
 
-            //AGREGUE:
             rDetalle.emplazamientos = selectToJson('selEmplazaD', 'id_emplazamiento');
 
             rDetalle.emplazamientos.forEach(emplaza => {
@@ -2629,7 +2619,6 @@
                     });
                     message = message.slice(0, -3);
                     showMessage(message, "error");
-                    //showMessage("Faltan campos obligatorios", "error");
                 }
             }
         }

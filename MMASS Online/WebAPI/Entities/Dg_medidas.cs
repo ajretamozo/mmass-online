@@ -44,7 +44,22 @@ namespace WebApi.Entities
             }
             return resultado;
         }
+
         public static List<Dg_medidas> getAll()
+        {
+            string sqlCommand = " select id_medidadigital, descripcion, ancho, alto, tipo from dg_medidas where es_borrado = 0 order by ancho, alto";
+            List<Dg_medidas> col = new List<Dg_medidas>();
+            Dg_medidas elem;
+            DataTable t = DB.Select(sqlCommand);
+
+            foreach (DataRow item in t.Rows)
+            {
+                elem = getDg_medidas(item);
+                col.Add(elem);
+            }
+            return col;
+        }
+        public static List<Dg_medidas> getAllB()
         {
             string sqlCommand = " select id_medidadigital, descripcion, ancho, alto, tipo from dg_medidas where tipo = 1 and es_borrado = 0 order by ancho, alto";
             List<Dg_medidas> col = new List<Dg_medidas>();

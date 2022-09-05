@@ -132,9 +132,9 @@
                         </div>
                     </div>
                     <div class="col-lg-3">
-                        <label for="selFormaUso">Forma de Uso</label>
+                        <label for="selAreasGeo">Area Geográfica</label>
                         <div class="input-group">
-                            <select class="form-control enableOnEdit" id="selFormaUso"></select>
+                            <select class="form-control enableOnEdit" id="selAreasGeo"></select>
                         </div>
                     </div>
                     <div class="col-lg-3">
@@ -143,7 +143,7 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-lg-6">
+                    <div class="col-lg-4">
                         <label> Vigencia</label>
                         <div class="input-group input-daterange">
                             <input type="text" class="form-control readonlyOnView" id="fechaDesde" data-toggle="datetimepicker" data-target="#fechaDesde" />
@@ -151,11 +151,15 @@
                             <input type="text" class="form-control readonlyOnView" id="fechaHasta" data-toggle="datetimepicker" data-target="#fechaHasta" />
                         </div>
                     </div>
-                    <div class="col-lg-3">
-                        <label for="selAreasGeo">Area Geográfica</label>
+                    <div class="col-lg-2">
+                        <label for="selFormaUso">Forma de Uso</label>
                         <div class="input-group">
-                            <select class="form-control enableOnEdit" id="selAreasGeo"></select>
+                            <select class="form-control enableOnEdit" id="selFormaUso"></select>
                         </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <label for="selTipoPublicidad"> Tipo de Aviso</label>
+                        <select id="selTipoPublicidad" class="form-control enableOnEdit" onchange="onTipoAvisoSelected()"></select>
                     </div>
                     <div class="col-lg-3">
                         <label for="inpImporte">Importe</label>
@@ -170,22 +174,22 @@
                 <!--MULTI SELECTS-->
                 <div class="row">
                     <div class="col-lg-6">
-                        <label for="selMedios"> Medios</label>
-                        <select id="selMedios" class="custom-select" name="dlcMedios" style="display:none" multiple></select>
-                    </div>
-                    <div class="col-lg-6">
-                        <label for="selTipoPublicidad"> Tipo de Aviso</label>
-                        <select id="selTipoPublicidad" class="custom-select" name="dlcTipos" style="display:none" multiple></select>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-lg-6">
                         <label for="selMedidas"> Tamaños</label>
                         <select id="selMedidas" class="custom-select" name="dlcTamaños" style="display:none" multiple></select>
                     </div>
                     <div class="col-lg-6">
                         <label for="selEmplaza"> Emplazamientos</label>
                         <select id="selEmplaza" class="custom-select" name="dlcEmplaza" style="display:none" multiple></select>
+                        <!--multi-->
+                        <!--<select id="selTipoPublicidad" class="custom-select" name="dlcTipos" style="display:none" multiple></select>-->
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <label for="selMedios"> Medios</label>
+                        <select id="selMedios" class="custom-select" name="dlcMedios" style="display:none" multiple></select>
+                    </div>
+                    <div class="col-lg-6">
                     </div>
                 </div>
             </div>
@@ -349,21 +353,22 @@
             };
             viewListMedios += "</ul>"
             $("#selMedios").after(viewListMedios);
-            var tipos_avisos = {};
-            var viewListTipos = '<ul class=\"list-group\">';
-            tipos_avisos = data.tipos_Avisos;
-            if (tipos_avisos.length > 0) {
-                tipos_avisos.forEach(function (tipo_aviso) {
-                    $("#selTipoPublicidad option[value=" + tipo_aviso.id_tipo_aviso_dg + "]").attr("selected", "selected");
-                    viewListTipos += "<li class=\"list-group-item\" style='display:none'>" + tipo_aviso.descripcion + "</li>";
-                });
-            } else {
-                viewListTipos += "<li class=\"list-group-item\" style='display:none'>(Ninguno)</li>";
-            };
-            viewListTipos += "</ul>"
-            demo1.bootstrapDualListbox('refresh');
-            $("#selTipoPublicidad").after(viewListTipos);
-            //AGREGUE:
+            $("#selTipoPublicidad option[value=" + data.tipos_Avisos[0].id_tipo_aviso_dg + "]").attr("selected", "selected");
+            //multi
+            //var tipos_avisos = {};
+            //var viewListTipos = '<ul class=\"list-group\">';
+            //tipos_avisos = data.tipos_Avisos;
+            //if (tipos_avisos.length > 0) {
+            //    tipos_avisos.forEach(function (tipo_aviso) {
+            //        $("#selTipoPublicidad option[value=" + tipo_aviso.id_tipo_aviso_dg + "]").attr("selected", "selected");
+            //        viewListTipos += "<li class=\"list-group-item\" style='display:none'>" + tipo_aviso.descripcion + "</li>";
+            //    });
+            //} else {
+            //    viewListTipos += "<li class=\"list-group-item\" style='display:none'>(Ninguno)</li>";
+            //};
+            //viewListTipos += "</ul>"
+            //demo1.bootstrapDualListbox('refresh');
+            //$("#selTipoPublicidad").after(viewListTipos);
             var emplazamientos = {};
             emplazamientos = data.emplazamientos;
             var viewListEmplaza = "<ul class=\"list-group\">"
@@ -378,14 +383,14 @@
             viewListEmplaza += "</ul>"
             $("#selEmplaza").after(viewListEmplaza);
             demo1.bootstrapDualListbox('refresh');
-            //AGREGUE:
             var medidas = {};
             medidas = data.medidas;
             var viewListMedidas = "<ul class=\"list-group\">"
             if (medidas.length > 0) {
                 medidas.forEach(function (medida) {
                     $("#selMedidas option[value=" + medida.id_medidadigital + "]").attr("selected", "selected");
-                    viewListMedidas += "<li class=\"list-group-item\" style='display:none'>" + medida.ancho + 'x' + medida.alto + "</li>";
+                    /*viewListMedidas += "<li class=\"list-group-item\" style='display:none'>" + medida.ancho + 'x' + medida.alto + "</li>";*/
+                    viewListMedidas += "<li class=\"list-group-item\" style='display:none'>" + medida.descripcion + "</li>";
                 });
             } else {
                 viewListMedidas += "<li class=\"list-group-item\" style='display:none'>(Ninguna)</li>";
@@ -393,7 +398,6 @@
             viewListMedidas += "</ul>"
             $("#selMedidas").after(viewListMedidas);
             demo1.bootstrapDualListbox('refresh');
-            //AGREGUE:
             $("#selAreasGeo option[value=" + data.area_geo.id_area + "]").attr("selected", "selected");
             $("#selRedes option[value=" + data.id_red + "]").attr("selected", "selected");
         }
@@ -401,21 +405,13 @@
 
 
         function populateFields() {
-
-            //Llenar select Medios
-            //callWS("medios", "getAll", '', function (data) { onPopulateSelectDone(data, 'selMedios', 'id_medio', 'desc_medio'); });
-            //// Llenar select Tipos de Aviso
-            //callWS("tipos_avisos", "getAll", '', function (data) { onPopulateSelectDone(data, 'selTipoPublicidad', 'id_tipo_aviso_dg', 'descripcion'); });
-            //// Llenar select Formas de uso
-            //callWS("tarifas", "getFormasUsoAll", '', function (data) { onPopulateSelectDone(data, 'selFormaUso', 'id', 'descripcion'); });
             idRed = $('#selRedes').val();
 
             $.when(
                 callWS("medios", "getAll", '', function (data) { onPopulateSelectDone(data, 'selMedios', 'id_medio', 'desc_medio'); }),
                 callWS("tipos_avisos", "getAll", '', function (data) { onPopulateSelectDone(data, 'selTipoPublicidad', 'id_tipo_aviso_dg', 'descripcion'); }),
-                //AGREGUE (emplazamientos, medidas y areas):
                 callWS("medios", "getAllE", JSON.stringify(idRed), function (data) { onPopulateSelectEmplaza(data, 'selEmplaza', 'id_emplazamiento', 'descripcion', 'codigo_emplazamiento'); }),
-                callWS("medios", "getAllM", '', function (data) { onPopulateSelectMedidas(data, 'selMedidas', 'id_medidadigital', 'descripcion', 'ancho', 'alto'); }),
+                callWS("medios", "getAllMedidas", '', function (data) { onPopulateSelectMedidas(data, 'selMedidas', 'id_medidadigital', 'descripcion', 'ancho', 'alto'); }),
                 callWS("medios", "getAllA", '', function (data) { onPopulateSelectDone(data, 'selAreasGeo', 'id_area', 'descripcion'); }),
                 callWS("tarifas", "getFormasUsoAll", '', function (data) { onPopulateSelectDone(data, 'selFormaUso', 'id', 'descripcion'); })
             ).then(function () { checkParameters() }, function (data1, data2, data3) {
@@ -490,7 +486,8 @@
             var pObj = data;
             var listitems = '';
             $.each(pObj, function (it, iObj) {
-                listitems += '<option value=' + iObj[colId] + '>' + iObj[colAncho] + 'x' + iObj[colAlto] + '</option>';
+                /*listitems += '<option value=' + iObj[colId] + '>' + iObj[colAncho] + 'x' + iObj[colAlto] + '</option>';*/
+                listitems += '<option value=' + iObj[colId] + '>' + iObj[colDesc] + '</option>';
             });
             $("#" + idSelect).empty();
             $("#" + idSelect).append(listitems);
@@ -563,13 +560,7 @@
             if ($("#selMedios").val() == 0) {
                 error.push("Medios");
             }
-            //AGREGUE (areas, emplaza y medidas):
-            //if ($("#selEmplazamientos").val() == 0) {
-            //    error.push("Emplazamientos");
-            //}
-            //if ($("#selMedidas").val() == 0) {
-            //    error.push("Medidas");
-            //}
+
             if ($("#selAreasGeo").val() == null) {
                 error.push("AreasGeo");
             }
@@ -586,18 +577,28 @@
                 data.Fecha_desde = dateToSqlFormat($("#fechaDesde").val());
                 data.Fecha_hasta = dateToSqlFormat($("#fechaHasta").val());
                 data.Medios = selectToJson('selMedios', 'id_medio');
-                data.Tipos_Avisos = selectToJson('selTipoPublicidad', 'Id_tipo_aviso_dg');
-                //AGREGUE (areas, emplaza y medidas)
+                var TiposAvisos = [];
+                var tipoAviso = {};
+                tipoAviso.Id_tipo_aviso_dg = $('#selTipoPublicidad').val();
+                TiposAvisos.push(tipoAviso);
+                data.Tipos_Avisos = TiposAvisos;
+                //multi
+                //data.Tipos_Avisos = selectToJson('selTipoPublicidad', 'Id_tipo_aviso_dg');
                 data.Emplazamientos = selectToJson('selEmplaza', 'id_emplazamiento');
                 data.Medidas = selectToJson('selMedidas', 'id_medidadigital');
                 data.Area_geo = {};
                 data.Area_geo.Id_area = $('#selAreasGeo').val();
                 data.id_red = $('#selRedes').val();
 
-                callWS("Tarifas", "save", JSON.stringify(data), function (data) {
-                    if (data == true) {
+                callWS("Tarifas", "save", JSON.stringify(data), function (resp) {
+                    if (resp == 0) {
                         location.href = "/tarifaslist.html";
-                    } else {
+                    }
+                    else if (resp == 1) {
+                        showMessage("El nombre de Tarifa ya existe", "error");
+                    }
+                    else {
+                        showMessage("Ocurrió un error al intentar guardar la Tarifa", "error");
                         console.log(data);
                     }
                 });
@@ -650,6 +651,21 @@
 
             //recargar emplazamientos
             callWS("medios", "getAllE", JSON.stringify(idRed), function (data) { onPopulateSelectEmplaza(data, 'selEmplaza', 'id_emplazamiento', 'descripcion', 'codigo_emplazamiento'); });
+        } 
+
+        function onTipoAvisoSelected() {
+/*            var tipoAviso = $('#selTipoPublicidad>option:selected').attr("descripcion");*/
+            var tipoAviso = $("#selTipoPublicidad option:selected").text();
+            //recargar medidas
+            if (tipoAviso == "Banner") {
+                callWS("medios", "getAllM", '', function (data) { onPopulateSelectMedidas(data, 'selMedidas', 'id_medidadigital', 'descripcion', 'ancho', 'alto'); });
+            }
+            else if (tipoAviso == "Video") {
+                callWS("medios", "getAllMV", '', function (data) { onPopulateSelectMedidas(data, 'selMedidas', 'id_medidadigital', 'descripcion', 'ancho', 'alto'); });
+            }
+            else {
+                callWS("medios", "getAllMedidas", '', function (data) { onPopulateSelectMedidas(data, 'selMedidas', 'id_medidadigital', 'descripcion', 'ancho', 'alto'); });
+            }
         }
 
     </script>
