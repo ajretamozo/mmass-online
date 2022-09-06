@@ -937,7 +937,7 @@
                                             </div>
                                             <div class="row">
                                                 <label>Tipo Aviso</label>
-                                                <select class="form-control" id="selTipoAvisoD" onchange="filterTarifas()"></select>
+                                                <select class="form-control" id="selTipoAvisoD" onchange="onTipoAvisoSelected()"></select>
                                             </div>
                                         </div>
                                         <div class="col-lg-2"></div>
@@ -2114,16 +2114,16 @@
             //$("#" + idSelect + "option[value=" + data.id_agencia + "]").attr("selected", "selected");
         }
 
-        //AGREGUE:
-        function onPopulateSelectMedidas(data, idSelect, colId, colAncho, colAlto) {
+        function onPopulateSelectMedidas(data, idSelect, colId, colDesc, colAncho, colAlto) {
 
-            var sel = document.getElementById(idSelect);
-            var selected = sel.options[sel.selectedIndex];
+            //var sel = document.getElementById(idSelect);
+            //var selected = sel.options[sel.selectedIndex];
 
             var pObj = data;
             var listitems = '';
             $.each(pObj, function (it, iObj) {
-                listitems += '<option medida=' + iObj[colAncho] + 'x' + iObj[colAlto] + ' value=' + iObj[colId] + '>' + iObj[colAncho] + 'x' + iObj[colAlto] + '</option>';
+/*                listitems += '<option medida=' + iObj[colAncho] + 'x' + iObj[colAlto] + ' value=' + iObj[colId] + '>' + iObj[colAncho] + 'x' + iObj[colAlto] + '</option>';*/
+                listitems += '<option medida=' + iObj[colAncho] + 'x' + iObj[colAlto] + ' value=' + iObj[colId] + '>' + iObj[colDesc] + '</option>';
             });
             $("#" + idSelect).empty();
             $("#" + idSelect).append(listitems);
@@ -2136,11 +2136,10 @@
             }
         }
 
-        //AGREGUE:
         function onPopulateSelectEmplaza(data, idSelect, colId, colDesc, colCod) {
 
-            var sel = document.getElementById(idSelect);
-            var selected = sel.options[sel.selectedIndex];
+            //var sel = document.getElementById(idSelect);
+            //var selected = sel.options[sel.selectedIndex];
 
             var pObj = data;
             var listitems = '';
@@ -2158,7 +2157,6 @@
             }
         }
 
-        //nuev
         function onPopulateSelectDetConv(data, idSelect, colId, colDesc, colDet) {
 
             var sel = document.getElementById(idSelect);
@@ -2253,10 +2251,9 @@
             $('#totalD').val("");
             //callWS("medios", "getAll", '', function (data) { onPopulateSelectDone(data, 'selMediosD', 'id_medio', 'desc_medio'); });
             callWS("medios", "getPorEmpresa", JSON.stringify(idEmpresa), function (data) { onPopulateSelectDone(data, 'selMediosD', 'id_medio', 'desc_medio'); });
-            callWS("tarifas", "getFormasUsoAll", '', function (data) { onPopulateSelectDone(data, 'selTipoTarifaD', 'id', 'descripcion'); })
-            callWS("Tipos_avisos", "getAll", '', function (data) { onTipoAvisoGetAll(data, 'selTipoAvisoD', 'Id_tipo_aviso_dg', 'descripcion', 'Permite_envio_ads'); })
-            //AGREGUE (callws getall medidas, getall areasgeo, getall emplaza):
-            callWS("medios", "getAllM", '', function (data) { onPopulateSelectMedidas(data, 'selMedidasD', 'id_medidadigital', 'ancho', 'alto'); });
+            callWS("tarifas", "getFormasUsoAll", '', function (data) { onPopulateSelectDone(data, 'selTipoTarifaD', 'id', 'descripcion'); });
+            callWS("Tipos_avisos", "getAll", '', function (data) { onTipoAvisoGetAll(data, 'selTipoAvisoD', 'Id_tipo_aviso_dg', 'descripcion', 'Permite_envio_ads'); });
+            callWS("medios", "getAllMedidas", '', function (data) { onPopulateSelectMedidas(data, 'selMedidasD', 'id_medidadigital', 'descripcion', 'ancho', 'alto'); });
             callWS("medios", "getAllA", '', function (data) { onAreasGeoGetAll(data, 'selAreasGeo', 'Id_area', 'descripcion', 'Codigo_area', 'tipo'); });
             callWS("medios", "getAllE", JSON.stringify(idRed), function (data) { onPopulateSelectEmplaza(data, 'selEmplazaD', 'id_emplazamiento', 'descripcion', 'codigo_emplazamiento'); });
             //callWS("programa", "getAllProgramasMedio", "1", function (data) {onPopulateSelectDone(data,'selPrograma','id_programa','desc_programa')})
@@ -2970,7 +2967,7 @@
                 $.when(
                     callWS("medios", "getPorEmpresa", JSON.stringify(idEmpresa), function (data) { onPopulateSelectDone(data, 'selMediosD', 'id_medio', 'desc_medio'); }),
                     callWS("tarifas", "getFormasUsoAll", '', function (data) { onPopulateSelectDone(data, 'selTipoTarifaD', 'id', 'descripcion'); }),
-                    callWS("medios", "getAllM", '', function (data) { onPopulateSelectMedidas(data, 'selMedidasD', 'id_medidadigital', 'ancho', 'alto'); }),
+                    callWS("medios", "getAllMedidas", '', function (data) { onPopulateSelectMedidas(data, 'selMedidasD', 'id_medidadigital', 'descripcion', 'ancho', 'alto'); }),
                     callWS("medios", "getAllA", '', function (data) { onAreasGeoGetAll(data, 'selAreasGeo', 'Id_area', 'descripcion', 'Codigo_area', 'tipo'); }),
                     callWS("medios", "getAllE", JSON.stringify(idRed), function (data) { onPopulateSelectEmplaza(data, 'selEmplazaD', 'id_emplazamiento', 'descripcion', 'codigo_emplazamiento'); }),
                     //callWS("programa", "getAllProgramasMedio", "1", function (data) {onPopulateSelectDone(data,'selPrograma','id_programa','desc_programa')}),
@@ -3496,7 +3493,7 @@
         function LimpiarSelectMultiples() {
             idRed = $('#selRedes').val();
             idEmpresa = $('#selEmpresa').val();
-            callWS("medios", "getAllM", '', function (data) { onPopulateSelectMedidas(data, 'selMedidasD', 'id_medidadigital', 'ancho', 'alto'); });
+            callWS("medios", "getAllMedidas", '', function (data) { onPopulateSelectMedidas(data, 'selMedidasD', 'id_medidadigital', 'descripcion', 'ancho', 'alto'); });
             callWS("medios", "getAllE", JSON.stringify(idRed), function (data) { onPopulateSelectEmplaza(data, 'selEmplazaD', 'id_emplazamiento', 'descripcion', 'codigo_emplazamiento'); });
             //callWS("medios", "getAll", '', function (data) { onPopulateSelectDone(data, 'selMediosD', 'id_medio', 'desc_medio'); });
             callWS("medios", "getPorEmpresa", JSON.stringify(idEmpresa), function (data) { onPopulateSelectDone(data, 'selMediosD', 'id_medio', 'desc_medio'); });
@@ -4820,6 +4817,22 @@
         $("#inpDescOP").on("change keyup paste", function () {
             $("#bSendOrdenAddServer").attr("disabled", true);
         })
+
+        function onTipoAvisoSelected() {
+            var tipoAviso = $("#selTipoAvisoD option:selected").text();
+            //recargar medidas
+            if (tipoAviso == "Banner") {
+                callWS("medios", "getAllM", '', function (data) { onPopulateSelectMedidas(data, 'selMedidasD', 'id_medidadigital', 'descripcion', 'ancho', 'alto'); });
+            }
+            else if (tipoAviso == "Video") {
+                callWS("medios", "getAllMV", '', function (data) { onPopulateSelectMedidas(data, 'selMedidasD', 'id_medidadigital', 'descripcion', 'ancho', 'alto'); });
+            }
+            else {
+                callWS("medios", "getAllMedidas", '', function (data) { onPopulateSelectMedidas(data, 'selMedidasD', 'id_medidadigital', 'descripcion', 'ancho', 'alto'); });
+            }
+
+            filterTarifas();
+        }
 
     </script>
     <footer>

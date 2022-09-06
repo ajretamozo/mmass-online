@@ -481,7 +481,7 @@
         }
 
         //AGREGUE:
-        function onPopulateSelectMedidas(data, idSelect, colId, colDesc, colAncho, colAlto) {
+        function onPopulateSelectMedidas(data, idSelect, colId, colDesc) {
 
             var pObj = data;
             var listitems = '';
@@ -560,7 +560,9 @@
             if ($("#selMedios").val() == 0) {
                 error.push("Medios");
             }
-
+            if ($("#selTipoPublicidad").val() == null) {
+                error.push("Tipo de Aviso");
+            }
             if ($("#selAreasGeo").val() == null) {
                 error.push("AreasGeo");
             }
@@ -654,17 +656,16 @@
         } 
 
         function onTipoAvisoSelected() {
-/*            var tipoAviso = $('#selTipoPublicidad>option:selected').attr("descripcion");*/
             var tipoAviso = $("#selTipoPublicidad option:selected").text();
             //recargar medidas
             if (tipoAviso == "Banner") {
-                callWS("medios", "getAllM", '', function (data) { onPopulateSelectMedidas(data, 'selMedidas', 'id_medidadigital', 'descripcion', 'ancho', 'alto'); });
+                callWS("medios", "getAllM", '', function (data) { onPopulateSelectMedidas(data, 'selMedidas', 'id_medidadigital', 'descripcion'); });
             }
             else if (tipoAviso == "Video") {
-                callWS("medios", "getAllMV", '', function (data) { onPopulateSelectMedidas(data, 'selMedidas', 'id_medidadigital', 'descripcion', 'ancho', 'alto'); });
+                callWS("medios", "getAllMV", '', function (data) { onPopulateSelectMedidas(data, 'selMedidas', 'id_medidadigital', 'descripcion'); });
             }
             else {
-                callWS("medios", "getAllMedidas", '', function (data) { onPopulateSelectMedidas(data, 'selMedidas', 'id_medidadigital', 'descripcion', 'ancho', 'alto'); });
+                callWS("medios", "getAllMedidas", '', function (data) { onPopulateSelectMedidas(data, 'selMedidas', 'id_medidadigital', 'descripcion'); });
             }
         }
 
