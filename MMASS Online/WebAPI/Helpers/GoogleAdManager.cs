@@ -810,6 +810,315 @@ namespace WebApi.Helpers
             return resultado;
         }
 
+        public static Parametro CreateVideoLineItems(String name, long orderId, float cost, long units, double discount, System.DateTime? fechaDesde, System.DateTime? fechaHasta, List<Dg_orden_pub_medidas> medidas, Dg_areas_geo areaGeo, List<Dg_orden_pub_emplazamientos> emplazamientos, int tipoTarifa)
+        {
+            Parametro resultado = new Parametro();
+            long result = -1;
+            string msj = "";
+            string rootId = "";
+
+            //AdManagerUser user = new AdManagerUser();
+
+            using (NetworkService networkService = user.GetService<NetworkService>())
+            {
+                Network network = networkService.getCurrentNetwork();
+                rootId = network.effectiveRootAdUnitId;
+            }
+
+            using (LineItemService lineItemService = user.GetService<LineItemService>())
+            {
+                // Target only video platforms
+                RequestPlatformTargeting requestPlatformTargeting = new RequestPlatformTargeting()
+                {
+                    targetedRequestPlatforms = new RequestPlatform[] {
+                        RequestPlatform.VIDEO_PLAYER
+                    }
+                };
+
+                // Create inventory targeting.
+                InventoryTargeting inventoryTargeting = new InventoryTargeting();
+
+                if (emplazamientos.Count != 0 && emplazamientos != null)
+                {
+                    //Emplazamientos (Placeholders)
+                    List<long> listEmp = new List<long>();
+
+                    foreach (Dg_orden_pub_emplazamientos elem in emplazamientos)
+                    {
+                        long idEmplaza = elem.Codigo_emplazamiento;
+                        listEmp.Add(idEmplaza);
+                    }
+                    long[] listEmpLong = listEmp.ToArray();
+                    inventoryTargeting.targetedPlacementIds = listEmpLong;
+                }
+
+                else
+                {
+                    //Bloques de anuncio (Ad Units) - En toda la red
+                    AdUnitTargeting adUnitTargeting = new AdUnitTargeting();
+                    adUnitTargeting.adUnitId = rootId;
+                    adUnitTargeting.includeDescendants = true;
+                    AdUnitTargeting[] targetPlacementIds = new AdUnitTargeting[]
+                    {
+                        adUnitTargeting
+                    };
+                    inventoryTargeting.targetedAdUnits = targetPlacementIds;
+                }
+
+                // Create geographical targeting.
+                GeoTargeting geoTargeting = new GeoTargeting();
+
+                if (areaGeo.Tipo > 0)
+                {
+                    Location locacion = new Location();
+                    locacion.id = areaGeo.Codigo_area;
+
+                    geoTargeting.targetedLocations = new Location[]
+                    {
+                        locacion
+                    };
+                }
+
+                // Create targeting.
+                Targeting targeting = new Targeting()
+                {
+                    //contentTargeting = contentTargeting,
+                    inventoryTargeting = inventoryTargeting,
+                    //videoPositionTargeting = videoPositionTargeting,
+                    requestPlatformTargeting = requestPlatformTargeting,
+                    geoTargeting = geoTargeting
+                };
+
+                //// Exclude domains that are not under the network's control.
+                //UserDomainTargeting userDomainTargeting = new UserDomainTargeting();
+                //userDomainTargeting.domains = new String[]
+                //{
+                //    "usa.gov"
+                //};
+                //userDomainTargeting.targeted = false;
+
+                // Create day-part targeting.
+                //DayPartTargeting dayPartTargeting = new DayPartTargeting();
+                //dayPartTargeting.timeZone = DeliveryTimeZone.BROWSER;
+
+                //// Target only the weekend in the browser's timezone.
+                //DayPart saturdayDayPart = new DayPart();
+                //saturdayDayPart.dayOfWeek = Google.Api.Ads.AdManager.v202005.DayOfWeek.SATURDAY;
+
+                //saturdayDayPart.startTime = new TimeOfDay();
+                //saturdayDayPart.startTime.hour = 0;
+                //saturdayDayPart.startTime.minute = MinuteOfHour.ZERO;
+
+                //saturdayDayPart.endTime = new TimeOfDay();
+                //saturdayDayPart.endTime.hour = 24;
+                //saturdayDayPart.endTime.minute = MinuteOfHour.ZERO;
+
+                //DayPart sundayDayPart = new DayPart();
+                //sundayDayPart.dayOfWeek = Google.Api.Ads.AdManager.v202005.DayOfWeek.SUNDAY;
+
+                //sundayDayPart.startTime = new TimeOfDay();
+                //sundayDayPart.startTime.hour = 0;
+                //sundayDayPart.startTime.minute = MinuteOfHour.ZERO;
+
+                //sundayDayPart.endTime = new TimeOfDay();
+                //sundayDayPart.endTime.hour = 24;
+                //sundayDayPart.endTime.minute = MinuteOfHour.ZERO;
+
+                //dayPartTargeting.dayParts = new DayPart[]
+                //{
+                //    saturdayDayPart,
+                //    sundayDayPart
+                //};
+
+
+                // Create technology targeting.
+                //TechnologyTargeting technologyTargeting = new TechnologyTargeting();
+
+                //// Create browser targeting.
+                //BrowserTargeting browserTargeting = new BrowserTargeting();
+                //browserTargeting.isTargeted = true;
+
+                //// Target just the Chrome browser.
+                //Technology browserTechnology = new Technology();
+                //browserTechnology.id = 500072L;
+                //browserTargeting.browsers = new Technology[]
+                //{
+                //    browserTechnology
+                //};
+                //technologyTargeting.browserTargeting = browserTargeting;
+
+                // Create an array to store local line item objects.
+                LineItem[] lineItems = new LineItem[1];
+                LineItem lineItem = new LineItem();
+
+                lineItem.name = name;
+                lineItem.orderId = orderId;
+                //lineItem.targeting = new Targeting();
+
+                //lineItem.targeting.inventoryTargeting = inventoryTargeting;
+                //lineItem.targeting.geoTargeting = geoTargeting;
+                lineItem.targeting = targeting;
+                lineItem.environmentType = EnvironmentType.VIDEO_PLAYER;
+                // Set the maximum video creative length for this line item to 10 min.
+                lineItem.videoMaxDuration = 600000L;
+
+                //lineItem.targeting.userDomainTargeting = userDomainTargeting;
+                //lineItem.targeting.dayPartTargeting = dayPartTargeting;
+                //lineItem.targeting.technologyTargeting = technologyTargeting;
+
+                if (tipoTarifa == 1)
+                {
+                    lineItem.lineItemType = LineItemType.SPONSORSHIP;
+                }
+                else
+                {
+                    lineItem.lineItemType = LineItemType.STANDARD;
+                }
+
+                //lineItem.allowOverbook = true;
+
+                // Set the creative rotation type to even.
+                lineItem.creativeRotationType = CreativeRotationType.EVEN;
+
+                // Tamaños de creatividades
+
+                if (medidas.Count() > 0)
+                {
+                    List<CreativePlaceholder> listCPH = new List<CreativePlaceholder>();
+
+                    foreach (Dg_orden_pub_medidas elem in medidas)
+                    {
+                        Size size = new Size();
+
+                        size.width = elem.Ancho;
+                        size.height = elem.Alto;
+                        size.isAspectRatio = false;
+
+                        CreativePlaceholder creativePlaceholder = new CreativePlaceholder();
+                        creativePlaceholder.size = size;
+
+                        listCPH.Add(creativePlaceholder);
+                    }
+
+                    CreativePlaceholder[] creativePlaces = listCPH.ToArray();
+                    lineItem.creativePlaceholders = creativePlaces;
+                }
+
+                else
+                {
+                    Size size = new Size();
+                    size.width = 300;
+                    size.height = 250;
+                    size.isAspectRatio = false;
+
+                    CreativePlaceholder creativePlaceholder = new CreativePlaceholder();
+                    creativePlaceholder.size = size;
+
+                    lineItem.creativePlaceholders = new CreativePlaceholder[]
+                    {
+                            creativePlaceholder
+                    };
+                }
+
+
+                // Vigencia
+                //si fechadesde es hoy: lineItem.startDateTimeType = StartDateTimeType.IMMEDIATELY;
+                //System.DateTime fecha = System.DateTime.Now.Date;
+                if (fechaDesde == System.DateTime.Now.Date)
+                {
+                    lineItem.startDateTimeType = StartDateTimeType.IMMEDIATELY;
+                }
+                else
+                {
+                    lineItem.startDateTime = DateTimeUtilities.FromDateTime((System.DateTime)fechaDesde, "America/Argentina/Buenos_Aires");
+                }
+                string fechaHStg = fechaHasta.ToString();
+                string[] arrFechaH = fechaHStg.Split(" ");
+                System.DateTime fechaHastaFormat = System.DateTime.Parse(arrFechaH[0] + " 23:59:59");
+                lineItem.endDateTime = DateTimeUtilities.FromDateTime((System.DateTime)fechaHastaFormat, "America/Argentina/Buenos_Aires");
+
+                // Costos
+                if (tipoTarifa == 0)
+                {
+                    lineItem.costType = CostType.CPM;
+                }
+                else if (tipoTarifa == 1)
+                {
+                    lineItem.costType = CostType.CPD;
+                }
+                else if (tipoTarifa == 3)
+                {
+                    lineItem.costType = CostType.CPC;
+                }
+
+                lineItem.costPerUnit = new Money();
+                lineItem.costPerUnit.currencyCode = "ARS";
+                lineItem.costPerUnit.microAmount = (long)(cost * 1000000);
+                lineItem.discountType = LineItemDiscountType.PERCENTAGE;
+                lineItem.discount = discount;
+
+                // Cantidad de impresiones objetivo
+                Goal goal = new Goal();
+
+                if (tipoTarifa == 0)
+                {
+                    goal.goalType = GoalType.LIFETIME;
+                    goal.unitType = UnitType.IMPRESSIONS;
+                    goal.units = units;
+                }
+                if (tipoTarifa == 1)
+                {
+                    goal.goalType = GoalType.DAILY;
+                    goal.unitType = UnitType.IMPRESSIONS;
+                    goal.units = 100;
+                }
+                if (tipoTarifa == 3)
+                {
+                    goal.goalType = GoalType.LIFETIME;
+                    goal.unitType = UnitType.CLICKS;
+                    goal.units = units;
+                }
+
+                lineItem.primaryGoal = goal;
+
+                lineItems[0] = lineItem;
+
+                try
+                {
+                    // Create the line items on the server.
+                    lineItems = lineItemService.createLineItems(lineItems);
+
+                    if (lineItems != null)
+                    {
+                        foreach (LineItem li in lineItems)
+                        {
+                            Console.WriteLine(
+                                "A line item with ID \"{0}\", belonging to order ID \"{1}\", and" +
+                                " named \"{2}\" was created.", li.id, li.orderId,
+                                li.name);
+
+                            result = li.id;
+                            msj = "La Línea de pedido en Google Ad Manager se ha guardado con éxito con el ID: " + li.id;
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("No line items created.");
+                    }
+
+                }
+                catch (AdManagerApiException e)
+                {
+                    ApiException innerException = e.ApiException as ApiException;
+                    msj = "Ocurrio un error al intentar guardar la Línea de pedido en Google Ad Manager: " + innerException.message;
+                }
+            }
+            resultado.ParameterName = msj;
+            resultado.Value = result.ToString();
+
+            return resultado;
+        }
+
         public static List<long> GetLineItemCreatives(long lineItemId)
         {
             List<long> lista = new List<long>();

@@ -102,7 +102,6 @@ namespace WebApi.Services
 
         public Parametro CreateLineItems(Dg_orden_pub_as det)
         {
-            Dg_orden_pub_ap dg = Dg_orden_pub_ap.getById(det.Id_op_dg);
             Parametro resultado = new Parametro();
 
             if(det.Fecha_desde < System.DateTime.Now.Date)
@@ -111,35 +110,54 @@ namespace WebApi.Services
                 resultado.Value = "-2";
                 return resultado;
             }
-            if (det.Tipo_tarifa!=0 && det.Tipo_tarifa != 1&& det.Tipo_tarifa != 3)
+            else if (det.Tipo_tarifa!=0 && det.Tipo_tarifa != 1&& det.Tipo_tarifa != 3)
             {
                 resultado.ParameterName = "La Forma de Uso debe ser CPM, CPD o CPC";
                 resultado.Value = "-3";
                 return resultado;
             }
-            if (det.Id_Google_Ad_Manager > 0)
-            {
-                resultado = GoogleAdManager.UpdateLineItem(det.Descripcion, det.Importe_unitario, det.Cantidad, det.Porc_dto, det.Fecha_desde, det.Fecha_hasta, det.Medidas, det.areaGeo, det.Emplazamientos, det.Tipo_tarifa, det.Id_Google_Ad_Manager);
-            }
             else
             {
-                resultado = GoogleAdManager.CreateLineItems(det.Descripcion, dg.Id_Google_Ad_Manager, det.Importe_unitario, det.Cantidad, det.Porc_dto, det.Fecha_desde, det.Fecha_hasta, det.Medidas, det.areaGeo, det.Emplazamientos, det.Tipo_tarifa);
-            }
-
-            if (long.Parse(resultado.Value) > 0)
-            {
-                foreach (var item in dg.Detalles)
+                Dg_orden_pub_ap dg = Dg_orden_pub_ap.getById(det.Id_op_dg);
+                if (det.tipo_aviso_dg.Descripcion == "Banner")
                 {
-                    if (item.Id_detalle == det.Id_detalle)
+                    if (det.Id_Google_Ad_Manager > 0)
                     {
-                        Dg_orden_pub_as.saveId_Google_Ad_Manager(item.Id_op_dg, item.Id_detalle, long.Parse(resultado.Value));
+                        resultado = GoogleAdManager.UpdateLineItem(det.Descripcion, det.Importe_unitario, det.Cantidad, det.Porc_dto, det.Fecha_desde, det.Fecha_hasta, det.Medidas, det.areaGeo, det.Emplazamientos, det.Tipo_tarifa, det.Id_Google_Ad_Manager);
+                    }
+                    else
+                    {
+                        resultado = GoogleAdManager.CreateLineItems(det.Descripcion, dg.Id_Google_Ad_Manager, det.Importe_unitario, det.Cantidad, det.Porc_dto, det.Fecha_desde, det.Fecha_hasta, det.Medidas, det.areaGeo, det.Emplazamientos, det.Tipo_tarifa);
                     }
                 }
-            }
+                else
+                {
+                    if (det.Id_Google_Ad_Manager > 0)
+                    {
+                        resultado = GoogleAdManager.UpdateLineItem(det.Descripcion, det.Importe_unitario, det.Cantidad, det.Porc_dto, det.Fecha_desde, det.Fecha_hasta, det.Medidas, det.areaGeo, det.Emplazamientos, det.Tipo_tarifa, det.Id_Google_Ad_Manager);
+                    }
+                    else
+                    {
+                        resultado = GoogleAdManager.CreateVideoLineItems(det.Descripcion, dg.Id_Google_Ad_Manager, det.Importe_unitario, det.Cantidad, det.Porc_dto, det.Fecha_desde, det.Fecha_hasta, det.Medidas, det.areaGeo, det.Emplazamientos, det.Tipo_tarifa);
+                    }
+                }
 
-            return resultado;
+                if (long.Parse(resultado.Value) > 0)
+                {
+                    foreach (var item in dg.Detalles)
+                    {
+                        if (item.Id_detalle == det.Id_detalle)
+                        {
+                            Dg_orden_pub_as.saveId_Google_Ad_Manager(item.Id_op_dg, item.Id_detalle, long.Parse(resultado.Value));
+                        }
+                    }
+                }
+
+                return resultado;
+            }
         }
-        //AGREGUE:
+
+        //TEST
         public void RunAdExchangeReport()
         {
             //GoogleAdManager.RunAdExchangeReport();

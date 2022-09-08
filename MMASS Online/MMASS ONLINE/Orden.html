@@ -2123,7 +2123,7 @@
             var listitems = '';
             $.each(pObj, function (it, iObj) {
 /*                listitems += '<option medida=' + iObj[colAncho] + 'x' + iObj[colAlto] + ' value=' + iObj[colId] + '>' + iObj[colAncho] + 'x' + iObj[colAlto] + '</option>';*/
-                listitems += '<option medida=' + iObj[colAncho] + 'x' + iObj[colAlto] + ' value=' + iObj[colId] + '>' + iObj[colDesc] + '</option>';
+                listitems += '<option ancho=' + iObj[colAncho] + ' alto=' + iObj[colAlto] + ' value=' + iObj[colId] + '>' + iObj[colDesc] + '</option>';
             });
             $("#" + idSelect).empty();
             $("#" + idSelect).append(listitems);
@@ -2515,14 +2515,16 @@
             idDetConvenio = $('#selDetConvenio').val();
 
             rDetalle.medidas = selectToJson('selMedidasD', 'id_medidadigital');
-
+            //REVISAR ACA COMO OBTENER EL ALTO EN MEDIDAS DE VIDEO (SACAR LA "V")
             rDetalle.medidas.forEach(medida => {
                 $('#selMedidasD option:selected').each(function () {
                     if ($(this).val() == medida.id_medidadigital) {
-                        var element = $(this).text().split(' ');
-                        var med = element[0].split('x');
-                        medida.ancho = med[0];
-                        medida.alto = med[1];
+                        /*var element = $(this).text().split(' ');*/
+                        //var med = element[0].split('x');
+                        //medida.ancho = med[0];
+                        //medida.alto = med[1];
+                        medida.ancho = $(this).attr("ancho");
+                        medida.alto = $(this).attr("alto");
                     }
                 });
             });
