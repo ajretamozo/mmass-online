@@ -104,13 +104,7 @@ namespace WebApi.Services
         {
             Parametro resultado = new Parametro();
 
-            if(det.Fecha_desde < System.DateTime.Now.Date)
-            {
-                resultado.ParameterName = "La Fecha de Inicio del Detalle no puede estar en el pasado";
-                resultado.Value = "-2";
-                return resultado;
-            }
-            else if (det.Tipo_tarifa!=0 && det.Tipo_tarifa != 1&& det.Tipo_tarifa != 3)
+            if (det.Tipo_tarifa!=0 && det.Tipo_tarifa != 1&& det.Tipo_tarifa != 3)
             {
                 resultado.ParameterName = "La Forma de Uso debe ser CPM, CPD o CPC";
                 resultado.Value = "-3";
@@ -119,26 +113,21 @@ namespace WebApi.Services
             else
             {
                 Dg_orden_pub_ap dg = Dg_orden_pub_ap.getById(det.Id_op_dg);
-                if (det.tipo_aviso_dg.Descripcion == "Banner")
+                if (det.Id_Google_Ad_Manager > 0)
                 {
-                    if (det.Id_Google_Ad_Manager > 0)
-                    {
-                        resultado = GoogleAdManager.UpdateLineItem(det.Descripcion, det.Importe_unitario, det.Cantidad, det.Porc_dto, det.Fecha_desde, det.Fecha_hasta, det.Medidas, det.areaGeo, det.Emplazamientos, det.Tipo_tarifa, det.Id_Google_Ad_Manager);
-                    }
-                    else
-                    {
-                        resultado = GoogleAdManager.CreateLineItems(det.Descripcion, dg.Id_Google_Ad_Manager, det.Importe_unitario, det.Cantidad, det.Porc_dto, det.Fecha_desde, det.Fecha_hasta, det.Medidas, det.areaGeo, det.Emplazamientos, det.Tipo_tarifa);
-                    }
+                    resultado = GoogleAdManager.UpdateLineItem(det.tipo_aviso_dg.Descripcion, det.Descripcion, det.Importe_unitario, det.Cantidad, det.Porc_dto, det.Fecha_desde, det.Fecha_hasta, det.Medidas, det.areaGeo, det.Emplazamientos, det.Tipo_tarifa, det.Id_Google_Ad_Manager);
                 }
                 else
                 {
-                    if (det.Id_Google_Ad_Manager > 0)
+                    if (det.Fecha_desde < System.DateTime.Now.Date)
                     {
-                        resultado = GoogleAdManager.UpdateLineItem(det.Descripcion, det.Importe_unitario, det.Cantidad, det.Porc_dto, det.Fecha_desde, det.Fecha_hasta, det.Medidas, det.areaGeo, det.Emplazamientos, det.Tipo_tarifa, det.Id_Google_Ad_Manager);
+                        resultado.ParameterName = "La Fecha de Inicio del Detalle no puede estar en el pasado";
+                        resultado.Value = "-2";
+                        return resultado;
                     }
                     else
                     {
-                        resultado = GoogleAdManager.CreateVideoLineItems(det.Descripcion, dg.Id_Google_Ad_Manager, det.Importe_unitario, det.Cantidad, det.Porc_dto, det.Fecha_desde, det.Fecha_hasta, det.Medidas, det.areaGeo, det.Emplazamientos, det.Tipo_tarifa);
+                        resultado = GoogleAdManager.CreateLineItems(det.tipo_aviso_dg.Descripcion, det.Descripcion, dg.Id_Google_Ad_Manager, det.Importe_unitario, det.Cantidad, det.Porc_dto, det.Fecha_desde, det.Fecha_hasta, det.Medidas, det.areaGeo, det.Emplazamientos, det.Tipo_tarifa);
                     }
                 }
 

@@ -32,24 +32,10 @@ namespace WebApi.Controllers
             return Ok(medios);
         }
 
-        [HttpPost("getAllM")]
-        public IActionResult getAllM()
+        [HttpPost("getMedidas")]
+        public IActionResult getMedidas([FromBody] string tipo)
         {
-            var medidas = _medioService.getAllM();
-            return Ok(medidas);
-        }
-
-        [HttpPost("getAllMV")]
-        public IActionResult getAllMV()
-        {
-            var medidas = _medioService.getAllMV();
-            return Ok(medidas);
-        }
-
-        [HttpPost("getAllMedidas")]
-        public IActionResult getAllMedidas()
-        {
-            var medidas = _medioService.getAllMedidas();
+            var medidas = _medioService.getMedidas(tipo);
             return Ok(medidas);
         }
 

@@ -45,38 +45,21 @@ namespace WebApi.Entities
             return resultado;
         }
 
-        public static List<Dg_medidas> getAll()
+        public static List<Dg_medidas> getMedidas(string tipo)
         {
-            string sqlCommand = " select id_medidadigital, descripcion, ancho, alto, tipo from dg_medidas where es_borrado = 0 order by ancho, alto";
-            List<Dg_medidas> col = new List<Dg_medidas>();
-            Dg_medidas elem;
-            DataTable t = DB.Select(sqlCommand);
-
-            foreach (DataRow item in t.Rows)
+            string sqlCommand = "";
+            if (tipo == "Banner")
             {
-                elem = getDg_medidas(item);
-                col.Add(elem);
+                sqlCommand = " select id_medidadigital, descripcion, ancho, alto, tipo from dg_medidas where tipo = 1 and es_borrado = 0 order by ancho, alto";
             }
-            return col;
-        }
-        public static List<Dg_medidas> getAllB()
-        {
-            string sqlCommand = " select id_medidadigital, descripcion, ancho, alto, tipo from dg_medidas where tipo = 1 and es_borrado = 0 order by ancho, alto";
-            List<Dg_medidas> col = new List<Dg_medidas>();
-            Dg_medidas elem;
-            DataTable t = DB.Select(sqlCommand);
-
-            foreach (DataRow item in t.Rows)
+            else if (tipo == "Video")
             {
-                elem = getDg_medidas(item);
-                col.Add(elem);
+                sqlCommand = " select id_medidadigital, descripcion, ancho, alto, tipo from dg_medidas where tipo = 2 and es_borrado = 0 order by ancho, alto";
             }
-            return col;
-        }
-
-        public static List<Dg_medidas> getAllV()
-        {
-            string sqlCommand = " select id_medidadigital, descripcion, ancho, alto, tipo from dg_medidas where tipo = 2 and es_borrado = 0 order by ancho, alto";
+            else
+            {
+                sqlCommand = " select id_medidadigital, descripcion, ancho, alto, tipo from dg_medidas where es_borrado = 0 order by ancho, alto";
+            }
             List<Dg_medidas> col = new List<Dg_medidas>();
             Dg_medidas elem;
             DataTable t = DB.Select(sqlCommand);

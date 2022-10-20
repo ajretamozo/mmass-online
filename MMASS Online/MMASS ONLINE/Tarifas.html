@@ -369,8 +369,79 @@
             //viewListTipos += "</ul>"
             //demo1.bootstrapDualListbox('refresh');
             //$("#selTipoPublicidad").after(viewListTipos);
+            if (getUrlParameter("mode") == 'view') {
+                var medidas = {};
+                medidas = data.medidas;
+                var viewListMedidas = "<ul class=\"list-group\">"
+                if (medidas.length > 0) {
+                    medidas.forEach(function (medida) {
+                        $("#selMedidas option[value=" + medida.id_medidadigital + "]").attr("selected", "selected");
+                        viewListMedidas += "<li class=\"list-group-item\" style='display:none'>" + medida.descripcion + "</li>";
+                    });
+                } else {
+                    viewListMedidas += "<li class=\"list-group-item\" style='display:none'>(Ninguna)</li>";
+                };
+                viewListMedidas += "</ul>"
+                $("#selMedidas").after(viewListMedidas);
+                demo1.bootstrapDualListbox('refresh');
+
+                var emplazamientos = {};
+                emplazamientos = data.emplazamientos;
+                var viewListEmplaza = "<ul class=\"list-group\">"
+                if (emplazamientos.length > 0) {
+                    emplazamientos.forEach(function (emplaza) {
+                        $("#selEmplaza option[value=" + emplaza.id_emplazamiento + "]").attr("selected", "selected");
+                        viewListEmplaza += "<li class=\"list-group-item\" style='display:none'>" + emplaza.descripcion + "</li>";
+                    });
+                } else {
+                    viewListEmplaza += "<li class=\"list-group-item\" style='display:none'>(Ninguno)</li>";
+                };
+                viewListEmplaza += "</ul>"
+                $("#selEmplaza").after(viewListEmplaza);
+                demo1.bootstrapDualListbox('refresh');
+            }
+            else {
+                $.when(callWS("medios", "getMedidas", JSON.stringify(data.tipos_Avisos[0].descripcion), function (medidas) { onPopulateSelectMedidas(medidas, 'selMedidas', 'id_medidadigital', 'descripcion', 'ancho', 'alto'); }),
+                  callWS("medios", "getAllE", JSON.stringify(data.id_red), function (data) { onPopulateSelectEmplaza(data, 'selEmplaza', 'id_emplazamiento', 'descripcion', 'codigo_emplazamiento'); }))
+                 .then(function () { selMedidasYEmplaza(data.medidas, data.emplazamientos) });
+            }
+
+            $("#selAreasGeo option[value=" + data.area_geo.id_area + "]").attr("selected", "selected");
+            $("#selRedes option[value=" + data.id_red + "]").attr("selected", "selected");
+        }
+
+        function populateFields() {
+            $.when(
+                callWS("medios", "getAll", '', function (data) { onPopulateSelectDone(data, 'selMedios', 'id_medio', 'desc_medio'); }),
+                callWS("tipos_avisos", "getAll", '', function (data) { onPopulateSelectDone(data, 'selTipoPublicidad', 'id_tipo_aviso_dg', 'descripcion'); }),
+                callWS("medios", "getAllE", JSON.stringify(0), function (data) { onPopulateSelectEmplaza(data, 'selEmplaza', 'id_emplazamiento', 'descripcion', 'codigo_emplazamiento'); }),
+                callWS("medios", "getMedidas", JSON.stringify(""), function (data) { onPopulateSelectMedidas(data, 'selMedidas', 'id_medidadigital', 'descripcion', 'ancho', 'alto'); }),
+                callWS("medios", "getAllA", '', function (data) { onPopulateSelectDone(data, 'selAreasGeo', 'id_area', 'descripcion'); }),
+                callWS("tarifas", "getFormasUsoAll", '', function (data) { onPopulateSelectDone(data, 'selFormaUso', 'id', 'descripcion'); })
+            ).then(function () { checkParameters() }, function (data1, data2, data3) {
+                console.log("Medios: " + data1[2].statusText + "; Tipos de aviso: " + data2[2].statusText + "Formas de uso: " + data3[2].statusText + ";");
+                showMessage("Se produjo un error al cargar los campos, intentelo nuevamente", type = "alert");
+            });
+        }
+
+        function selMedidasYEmplaza(med, emp) {
+            var medidas = {};
+            medidas = med;
+            var viewListMedidas = "<ul class=\"list-group\">"
+            if (medidas.length > 0) {
+                medidas.forEach(function (medida) {
+                    $("#selMedidas option[value=" + medida.id_medidadigital + "]").attr("selected", "selected");
+                    viewListMedidas += "<li class=\"list-group-item\" style='display:none'>" + medida.descripcion + "</li>";
+                });
+            } else {
+                viewListMedidas += "<li class=\"list-group-item\" style='display:none'>(Ninguna)</li>";
+            };
+            viewListMedidas += "</ul>"
+            $("#selMedidas").after(viewListMedidas);
+            demo1.bootstrapDualListbox('refresh');
+
             var emplazamientos = {};
-            emplazamientos = data.emplazamientos;
+            emplazamientos = emp;
             var viewListEmplaza = "<ul class=\"list-group\">"
             if (emplazamientos.length > 0) {
                 emplazamientos.forEach(function (emplaza) {
@@ -383,41 +454,6 @@
             viewListEmplaza += "</ul>"
             $("#selEmplaza").after(viewListEmplaza);
             demo1.bootstrapDualListbox('refresh');
-            var medidas = {};
-            medidas = data.medidas;
-            var viewListMedidas = "<ul class=\"list-group\">"
-            if (medidas.length > 0) {
-                medidas.forEach(function (medida) {
-                    $("#selMedidas option[value=" + medida.id_medidadigital + "]").attr("selected", "selected");
-                    /*viewListMedidas += "<li class=\"list-group-item\" style='display:none'>" + medida.ancho + 'x' + medida.alto + "</li>";*/
-                    viewListMedidas += "<li class=\"list-group-item\" style='display:none'>" + medida.descripcion + "</li>";
-                });
-            } else {
-                viewListMedidas += "<li class=\"list-group-item\" style='display:none'>(Ninguna)</li>";
-            };
-            viewListMedidas += "</ul>"
-            $("#selMedidas").after(viewListMedidas);
-            demo1.bootstrapDualListbox('refresh');
-            $("#selAreasGeo option[value=" + data.area_geo.id_area + "]").attr("selected", "selected");
-            $("#selRedes option[value=" + data.id_red + "]").attr("selected", "selected");
-        }
-
-
-
-        function populateFields() {
-            idRed = $('#selRedes').val();
-
-            $.when(
-                callWS("medios", "getAll", '', function (data) { onPopulateSelectDone(data, 'selMedios', 'id_medio', 'desc_medio'); }),
-                callWS("tipos_avisos", "getAll", '', function (data) { onPopulateSelectDone(data, 'selTipoPublicidad', 'id_tipo_aviso_dg', 'descripcion'); }),
-                callWS("medios", "getAllE", JSON.stringify(idRed), function (data) { onPopulateSelectEmplaza(data, 'selEmplaza', 'id_emplazamiento', 'descripcion', 'codigo_emplazamiento'); }),
-                callWS("medios", "getAllMedidas", '', function (data) { onPopulateSelectMedidas(data, 'selMedidas', 'id_medidadigital', 'descripcion', 'ancho', 'alto'); }),
-                callWS("medios", "getAllA", '', function (data) { onPopulateSelectDone(data, 'selAreasGeo', 'id_area', 'descripcion'); }),
-                callWS("tarifas", "getFormasUsoAll", '', function (data) { onPopulateSelectDone(data, 'selFormaUso', 'id', 'descripcion'); })
-            ).then(function () { checkParameters() }, function (data1, data2, data3) {
-                console.log("Medios: " + data1[2].statusText + "; Tipos de aviso: " + data2[2].statusText + "Formas de uso: " + data3[2].statusText + ";");
-                showMessage("Se produjo un error al cargar los campos, intentelo nuevamente", type = "alert");
-            });
         }
 
         function checkDates(idFechaDesde, idFechaHasta) {
@@ -480,14 +516,12 @@
             }
         }
 
-        //AGREGUE:
-        function onPopulateSelectMedidas(data, idSelect, colId, colDesc) {
+        function onPopulateSelectMedidas(data, idSelect, colId, colDesc, colAncho, colAlto) {
 
             var pObj = data;
             var listitems = '';
             $.each(pObj, function (it, iObj) {
-                /*listitems += '<option value=' + iObj[colId] + '>' + iObj[colAncho] + 'x' + iObj[colAlto] + '</option>';*/
-                listitems += '<option value=' + iObj[colId] + '>' + iObj[colDesc] + '</option>';
+                listitems += '<option ancho=' + iObj[colAncho] + ' alto=' + iObj[colAlto] + ' value=' + iObj[colId] + '>' + iObj[colDesc] + '</option>';
             });
             $("#" + idSelect).empty();
             $("#" + idSelect).append(listitems);
@@ -505,9 +539,9 @@
         }
 
         function editarTarifa() {
-            //var id = getUrlParameter("idTarifa");
-            //location.search = "?idTarifa=" + id + '&mode=edit'
-            setMode('edit');
+            var id = getUrlParameter("idTarifa");
+            location.search = "?idTarifa=" + id + '&mode=edit'
+            /*setMode('edit');*/
         }
 
         function nuevaTarifa() {
@@ -658,15 +692,7 @@
         function onTipoAvisoSelected() {
             var tipoAviso = $("#selTipoPublicidad option:selected").text();
             //recargar medidas
-            if (tipoAviso == "Banner") {
-                callWS("medios", "getAllM", '', function (data) { onPopulateSelectMedidas(data, 'selMedidas', 'id_medidadigital', 'descripcion'); });
-            }
-            else if (tipoAviso == "Video") {
-                callWS("medios", "getAllMV", '', function (data) { onPopulateSelectMedidas(data, 'selMedidas', 'id_medidadigital', 'descripcion'); });
-            }
-            else {
-                callWS("medios", "getAllMedidas", '', function (data) { onPopulateSelectMedidas(data, 'selMedidas', 'id_medidadigital', 'descripcion'); });
-            }
+            callWS("medios", "getMedidas", JSON.stringify(tipoAviso), function (data) { onPopulateSelectMedidas(data, 'selMedidas', 'id_medidadigital', 'descripcion', 'ancho', 'alto'); });     
         }
 
     </script>

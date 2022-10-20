@@ -19,10 +19,7 @@ namespace WebApi.Services
         //Contacto GetAgencia(string username, string password);
         IEnumerable<Medio> getAll();
         IEnumerable<Medio> getPorEmpresa(int idEmp);
-        //AGREGUE (getallm, getalla, getalle):
-        IEnumerable<Dg_medidas> getAllM();
-        IEnumerable<Dg_medidas> getAllMV();
-        IEnumerable<Dg_medidas> getAllMedidas();
+        IEnumerable<Dg_medidas> getMedidas(string tipo);
         IEnumerable<Dg_areas_geo> getAllA();
         IEnumerable<Dg_emplazamientos> getAllE(int redGAM);
         bool saveE(EmplazamientosList emplazamientos);
@@ -60,19 +57,9 @@ namespace WebApi.Services
             return Medio.getPorEmpresa(idEmp);
         }
 
-        public IEnumerable<Dg_medidas> getAllM()
+        public IEnumerable<Dg_medidas> getMedidas(string tipo)
         {
-            return Dg_medidas.getAllB();
-        }
-
-        public IEnumerable<Dg_medidas> getAllMV()
-        {
-            return Dg_medidas.getAllV();
-        }
-
-        public IEnumerable<Dg_medidas> getAllMedidas()
-        {
-            return Dg_medidas.getAll();
+            return Dg_medidas.getMedidas(tipo);
         }
 
         public IEnumerable<Dg_areas_geo> getAllA()

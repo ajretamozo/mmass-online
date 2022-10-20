@@ -17,12 +17,12 @@ namespace WebApi.Controllers
             _dg_MedidasService = Dg_medidasService;
         }
 
-        [HttpPost("getAll")]
-        public IActionResult getAll()
-        {
-            var dg_medidas = _dg_MedidasService.getAll();
-            return Ok(dg_medidas);
-        }
+        //[HttpPost("getAll")]
+        //public IActionResult getAll()
+        //{
+        //    var dg_medidas = _dg_MedidasService.getAll();
+        //    return Ok(dg_medidas);
+        //}
 
         [HttpPost("getById")]
         public IActionResult getById(Dg_medidas miobj)
