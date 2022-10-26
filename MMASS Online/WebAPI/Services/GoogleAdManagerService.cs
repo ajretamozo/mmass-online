@@ -585,13 +585,29 @@ namespace WebApi.Services
                     foreach (CreativePlaceholder cph in linea.creativePlaceholders)
                     {
                         Dg_orden_pub_medidas medida = new Dg_orden_pub_medidas();
-                        string desc = cph.size.width.ToString() + "x" + cph.size.height.ToString();
+                        string desc = "";
+                        if (linea.environmentType.ToString() == "VIDEO_PLAYER")
+                        {
+                            desc = cph.size.width.ToString() + "x" + cph.size.height.ToString() + "v";
+                        }
+                        else
+                        {
+                            desc = cph.size.width.ToString() + "x" + cph.size.height.ToString();
+                        }
                         medida.Id_medidadigital = Dg_medidas.getByDescripcion(desc).Id_medidadigital;
                         medida.Ancho = cph.size.width;
                         medida.Alto = cph.size.height;
                         medidas.Add(medida);
                     }
                     detalle.Medidas = medidas;
+                }
+                if (linea.environmentType.ToString() == "VIDEO_PLAYER")
+                {
+                    detalle.tipo_aviso_dg = Dg_tipos_avisos.getByDesc("Video");
+                }
+                else
+                {
+                    detalle.tipo_aviso_dg = Dg_tipos_avisos.getByDesc("Banner");
                 }
                 detalle.Tarifa_manual = 1;
                 detalle.Importe_unitario = (float)(linea.costPerUnit.microAmount / 1000000.0);
@@ -964,13 +980,29 @@ namespace WebApi.Services
                             foreach (CreativePlaceholder cph in linea.creativePlaceholders)
                             {
                                 Dg_orden_pub_medidas medida = new Dg_orden_pub_medidas();
-                                string desc = cph.size.width.ToString() + "x" + cph.size.height.ToString();
+                                string desc = "";
+                                if (linea.environmentType.ToString() == "VIDEO_PLAYER")
+                                {
+                                    desc = cph.size.width.ToString() + "x" + cph.size.height.ToString() + "v";
+                                }
+                                else
+                                {
+                                    desc = cph.size.width.ToString() + "x" + cph.size.height.ToString();
+                                }
                                 medida.Id_medidadigital = Dg_medidas.getByDescripcion(desc).Id_medidadigital;
                                 medida.Ancho = cph.size.width;
                                 medida.Alto = cph.size.height;
                                 medidas.Add(medida);
                             }
                             detalle.Medidas = medidas;
+                        }
+                        if (linea.environmentType.ToString() == "VIDEO_PLAYER")
+                        {
+                            detalle.tipo_aviso_dg = Dg_tipos_avisos.getByDesc("Video");
+                        }
+                        else
+                        {
+                            detalle.tipo_aviso_dg = Dg_tipos_avisos.getByDesc("Banner");
                         }
                         detalle.Tarifa_manual = 1;
                         detalle.Importe_unitario = (float)(linea.costPerUnit.microAmount / 1000000.0);
@@ -1012,8 +1044,10 @@ namespace WebApi.Services
                 foreach (Parametro p in parametros)
                 {
                     if (p.ParameterName == "red")
+                    {
                         idRed = int.Parse(p.Value);
-                    break;
+                        break;
+                    }
                 }
                 List<Dg_orden_pub_as> detallesExistentes = Dg_orden_pub_as.getAll();
 

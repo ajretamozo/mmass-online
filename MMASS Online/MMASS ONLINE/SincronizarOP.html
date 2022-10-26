@@ -219,6 +219,7 @@
             <nav class="nav nav-tabs mb-3">
                 <a class="nav-link active" id="ordenes-tab" data-toggle="tab" href="#ordenes" role="tab" aria-controls="ordenes" aria-selected="true" onclick="onRedSelected()">OP Nuevas</a>
                 <a class="nav-link" id="detalles-tab" data-toggle="tab" href="#detalles" role="tab" aria-controls="detalles" aria-selected="false" onclick="onRedSelectedD()">Detalles Nuevos</a>
+                <a class="nav-link" id="mods-tab" data-toggle="tab" href="#mods" role="tab" aria-controls="mods" aria-selected="false" onclick="onRedSelectedM()">OP Modificadas</a>
             </nav>
             <div class="tab-content" id="tabsContent">
                 <!-- TAB ORDENES -->
@@ -355,6 +356,71 @@
                         </table>
                     </div>
                 </div>
+                <!-- TAB MODS -->
+                <div class="tab-pane fade" id="mods" role="tabpanel" aria-labelledby="mods-tab">
+
+                    <div class="row py-1">
+                        <div class="col-md-4">
+                            <label for="idFiltroM">ID OP: </label>
+                            <div class="input-group enterSearch"> <input type="number" id="idFiltroM" class="form-control"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="descFiltroM">Nombre OP: </label>
+                            <div class="input-group enterSearch"> <input type="text" id="descFiltroM" class="form-control"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="selRedesM">Red AdServer: </label>
+                            <select class="form-control enterSearch" id="selRedesM" onchange="onRedSelectedM()"></select>
+                        </div>
+                    </div>
+                    <div class="row py-1">
+                        <div class="col-md-4">
+                            <label>Fecha de Creación:</label>
+                            <div id="OrderDateSpamM" class="row">
+                                <div class="col-md-12">
+                                    <div class="input-group input-daterange">
+                                        <input type="text" class="form-control datetimepicker-input enterSearch" id="fechaDesdeM" data-toggle="datetimepicker" data-target="#fechaDesdeM" />
+                                        <span class="input-group-addon">hasta</span>
+                                        <input type="text" class="form-control datetimepicker-input enterSearch" id="fechaHastaM" data-toggle="datetimepicker" data-target="#fechaHastaM" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                        </div>
+                        <div class="col-md-4">
+                        </div>
+                    </div>
+                    <div class="row py-1">
+                        <div class="col-md-4">
+                        </div>
+                        <div class="col-md-4">
+                        </div>
+                        <div class="col-md-4 d-flex justify-content-end align-items-end">
+                            <button type="button" class="btn btn-dark btn-sm mx-1" onclick="filterM()">
+                                <span class="fa fa-search"></span> Buscar
+                            </button>
+                        </div>
+                    </div>
+                    <div class="table-responsive mt-2">
+                        <table class="table table-hover table-sm " id="tablaOPMGAM">
+                            <thead align="center">
+                                <tr id="header">
+                                    <th class="col-xs-3">ID AdServer OP</th>
+                                    <th class="col-xs-9">Nombre OP</th>
+                                    <th class="col-xs-9">Anunciante</th>
+                                    <th class="col-xs-3">Fecha de Creación</th>
+                                    <th class="col-xs-9">Fecha Desde</th>
+                                    <th class="col-xs-9">Fecha Hasta</th>
+                                    <th class="col-xs-9">Neto</th>
+                                    <th width="1px"></th>
+                                    <th width="1px"></th>
+                                </tr>
+                            </thead>
+                            <tbody id="TableOrdenesM" class="small" align="center"></tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </main>
@@ -401,6 +467,14 @@
         function onRedSelectedD() {
             idRed = $('#selRedesD').val();
             codRed = $('#selRedesD>option:selected').attr("codigo_red");
+            if (idRed != null) {
+                callWS("googleAdManager", "cambiarRed", codRed);
+            }
+        }
+
+        function onRedSelectedM() {
+            idRed = $('#selRedesM').val();
+            codRed = $('#selRedesM>option:selected').attr("codigo_red");
             if (idRed != null) {
                 callWS("googleAdManager", "cambiarRed", codRed);
             }
@@ -745,6 +819,55 @@
             return sqlFormatDate;
         }
 
+        function filterM() {
+            rows = $("tr").not("#header");
+            params = {};
+            params.id = $("#idFiltroM").val();
+            params.descripcion = $('#descFiltroM').val();
+            if ($('#fechaDesdeM').val() != "") {
+                fDesde = new Date(moment($("#fechaDesdeM").val(), 'DD/MM/YYYY', true).format());
+                mfDesde = moment(fDesde);
+                if (mfDesde.isValid()) {
+                    params.fecha_desde = dateToSqlFormat($('#fechaDesdeM').val());
+                } else {
+                    error += "Formato 'Fecha Desde' invalido";
+                }
+            }
+            if ($('#fechaHastaM').val() != "") {
+                fHasta = new Date(moment($("#fechaHastaM").val(), 'DD/MM/YYYY', true).format());
+                mfHasta = moment(fHasta);
+                if (mfHasta.isValid()) {
+                    params.fecha_hasta = dateToSqlFormat($('#fechaHastaM').val());
+                } else {
+                    if (error != '') { error += ' / ' }
+                    error += "Formato 'Fecha Hasta' invalido";
+                }
+            }
+            params.red = $('#selRedesM').val();
+
+            if (params.red != 0 && params.red != null) {
+
+                for (param in params) {
+                    if (params[param] == null) {
+                        params[param] = '';
+                    }
+                };
+
+                var parametros = setListaParametros(params);
+
+                callWS("googleAdManager", "getOpNuevas", JSON.stringify(parametros), function (data) { onGetOrdenesMGAM(data); });
+            }
+            else {
+                showMessage("Seleccione una Red AdServer", "alert");
+            }
+        }
+
+        function onGetOrdenesMGAM(data) {
+            onCargarTabla('TableOrdenes', data);
+            if (data.length == 0) {
+                showMessage("No se enontraron Ordenes", "info");
+            }
+        }
 
     </script>
     <footer>

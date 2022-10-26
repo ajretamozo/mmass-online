@@ -333,6 +333,93 @@ namespace WebApi.Entities
             return col;
         }
 
+        //Otro 'filter' para traer menos campos y hacer la consulta más liviana
+        public static List<Dg_orden_pub_ap> filterLite(List<Parametro> parametros)
+        {
+            bool fillDetalles = false;
+            foreach (Parametro p in parametros)
+            {
+                if (p.Value.ToString() != "")
+                {
+                    if ((p.ParameterName == "fillDetalles"))
+                        fillDetalles = (p.Value.ToLower() == "true");
+                }
+            }
+
+            string sqlCommand = " select TOP 500 id_google_ad_manager, id_red from Dg_orden_pub_ap where es_anulada = 0 ";
+            string mifiltro = "";
+
+            foreach (Parametro p in parametros)
+            {
+                if (p.Value.ToString() != "")
+                {
+                    if ((p.ParameterName == "bitacora") && (p.Value.ToString() != ""))
+                        mifiltro = mifiltro + " and dg.bitacora like '%" + p.Value + "%'";
+                    if ((p.ParameterName == "fecha_desde") && (p.Value.ToString() != ""))
+                        mifiltro = mifiltro + " and dg.fecha >= '" + p.Value.ToString() + "'";
+                    if ((p.ParameterName == "fecha_hasta") && (p.Value.ToString() != ""))
+                        mifiltro = mifiltro + " and dg.fecha_expiracion <= '" + p.Value.ToString() + "'";
+                    if ((p.ParameterName == "agencia_nombre") && (p.Value.ToString() != ""))
+                        mifiltro = mifiltro + " and ag.razon_social like '%" + p.Value + "%'";
+                    if ((p.ParameterName == "anunciante_nombre") && (p.Value.ToString() != ""))
+                        mifiltro = mifiltro + " and an.razon_social like '%" + p.Value + "%'";
+                    if ((p.ParameterName == "producto_nombre") && (p.Value.ToString() != ""))
+                        mifiltro = mifiltro + " and p.desc_producto like '%" + p.Value + "%'";
+                    if ((p.ParameterName == "anuladas") && (p.Value.ToString() == "1"))
+                    {
+                        mifiltro = mifiltro + " and dg.es_anulada = 0";
+                    }
+                    if (p.ParameterName == "para_facturar")
+                    {
+                        if (p.Value.ToString() == "1")
+                        {
+                            mifiltro = mifiltro + " and dg.parafacturar = 0";
+                        }
+                        else
+                        {
+                            mifiltro = mifiltro + " and dg.parafacturar = 1";
+                        }
+                    }
+                    if ((p.ParameterName == "anuladas") && (p.Value.ToString() == "1"))
+                    {
+                        mifiltro = mifiltro + " and dg.es_anulada = 0";
+                    }
+                    if ((p.ParameterName == "id_empresa") && (p.Value.ToString() != ""))
+                        mifiltro = mifiltro + " and dg.id_empresa = " + p.Value;
+                    if ((p.ParameterName == "id_red") && (p.Value.ToString() != ""))
+                        mifiltro = mifiltro + " and dg.id_red = " + p.Value;
+                }
+            }
+            List<Dg_orden_pub_ap> col = new List<Dg_orden_pub_ap>();
+            Dg_orden_pub_ap elem;
+            DataTable t = DB.Select(sqlCommand + mifiltro + " order by dg.id_op_dg desc");
+
+            foreach (DataRow item in t.Rows)
+            {
+                elem = getDg_orden_pub_ap(item);
+
+                if (fillDetalles)
+                {
+                    elem.Detalles = new List<Dg_orden_pub_as>();
+                    string strSql = " select id_op_dg, id_detalle, anio, mes, nro_orden, fecha_desde, fecha_hasta, id_producto, descripcion, id_programa, id_tarifa_dg," +
+                                        " tarifa_manual, id_tipo_aviso_dg, tipo_tarifa, imp_tarifa, importe_unitario, cantidad, monto_bruto, porc_dto," +
+                                        " monto_neto, netomanual, porcconfnc, porcconffc, impconfnc, impconffc," +
+                                        " porc_dto1, imp_dto1, id_mtvo_dto1, tipo_dto1, porc_dto2, imp_dto2, id_mtvo_dto2, tipo_dto2," +
+                                        " porc_dto3, imp_dto3, id_mtvo_dto3, tipo_dto3, porc_dto4, imp_dto4, id_mtvo_dto4, tipo_dto4," +
+                                        " porc_dto5, imp_dto5, id_mtvo_dto5, tipo_dto5,id_google_ad_manager, ron, id_area, id_det_conv, id_red from Dg_orden_pub_as where id_op_dg = " + elem.Id_op_dg.ToString();
+                    DataTable td = DB.Select(strSql);
+                    Dg_orden_pub_as det;
+                    foreach (DataRow r in td.Rows)
+                    {
+                        det = Dg_orden_pub_as.getDg_orden_pub_as(r);
+                        elem.Detalles.Add(det);
+                    }
+                }
+                col.Add(elem);
+            }
+            return col;
+        }
+
         public static List<Dg_orden_pub_ap> getAll()
         {
             string sqlCommand = " select top 100 dg.id_op_dg, dg.anio, dg.mes, dg.nro_orden, dg.id_empresa, dg.id_medio, dg.es_varios_medios, dg.fecha, " +

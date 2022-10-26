@@ -1429,7 +1429,7 @@ namespace WebApi.Helpers
                     int i = 0;
                     foreach (AdUnitSize adUnitSize in adUnitSizes)
                     {
-                        //Controla que sea banner
+                        //Controla que sea video
                         if (adUnitSize.environmentType.ToString() == "VIDEO_PLAYER" && adUnitSize.isAudio == false && adUnitSize.size.isAspectRatio == false && adUnitSize.fullDisplayString != null && adUnitSize.size.height != 0)
                         {
                             Tamaño = new Dg_medidas();

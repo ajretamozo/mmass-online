@@ -18,7 +18,7 @@ namespace WebApi.Services
         bool saveTipo_aviso(Dg_tipos_avisos miobj);
         bool removeTipo_aviso(Dg_tipos_avisos miobj);
         Dg_tipos_avisos getById(int Id);
-        IEnumerable<Dg_tipos_avisos> filter(List<Parametro> parametros);
+        IEnumerable<Dg_tipos_avisos> filter(string descripcion);
     }
 
     public class Tipos_avisosService : ITipos_avisosService
@@ -40,9 +40,9 @@ namespace WebApi.Services
         {
             return Dg_tipos_avisos.getById(Id);
         }
-        public IEnumerable<Dg_tipos_avisos> filter(List<Parametro> parametros)
+        public IEnumerable<Dg_tipos_avisos> filter(string descripcion)
         {
-            return Dg_tipos_avisos.filter(parametros);
+            return Dg_tipos_avisos.filter(descripcion);
         }
 
     }

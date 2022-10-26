@@ -32,6 +32,24 @@ namespace WebApi.Entities
             }
             return resultado;
         }
+
+        public static Dg_tipos_avisos getByDesc(string desc)
+        {
+            string sqlCommand = "Select * FROM categorias where (tipomedio = 0 or tipomedio = 2) and desc_categoria = '" + desc.ToString() + "'";
+            Dg_tipos_avisos resultado;
+            resultado = new Dg_tipos_avisos();
+            DataTable t = DB.Select(sqlCommand);
+
+            if (t.Rows.Count == 1)
+            {
+                resultado.Id_tipo_aviso_dg = int.Parse(t.Rows[0]["Id_categoria"].ToString());
+                resultado.Descripcion = t.Rows[0]["desc_categoria"].ToString();
+                resultado.Permite_envio_ads = (t.Rows[0]["Permite_envio_ads"].ToString() == "1");
+                resultado.Es_borrado = (t.Rows[0]["Es_borrado"].ToString() == "1");
+            }
+            return resultado;
+        }
+
         public static Dg_tipos_avisos getDg_tipos_avisos(DataRow item)
         {
             Dg_tipos_avisos mi = new Dg_tipos_avisos
@@ -129,21 +147,17 @@ namespace WebApi.Entities
             return true;
         }
 
-        public static List<Dg_tipos_avisos> filter(List<Parametro> parametros)
+        public static List<Dg_tipos_avisos> filter(string descripcion)
         {
             string sqlCommand = " Select id_categoria, desc_categoria, Permite_envio_ads, Es_borrado FROM categorias where (tipomedio = 0 or tipomedio = 2) and (Es_borrado = 0 or Es_borrado is null)";
 
             string mifiltro = "";
 
-            foreach (Parametro p in parametros)
+            if (descripcion != "")
             {
-                if (p.Value.ToString() != "")
-                {
-                    if ((p.ParameterName == "descripcion") && (p.Value.ToString() != ""))
-                        mifiltro = mifiltro + " and desc_categoria like '%" + p.Value + "%'";
-                }
+                mifiltro = mifiltro + " and desc_categoria like '%" + descripcion + "%'";
             }
-
+         
             List<Dg_tipos_avisos> col = new List<Dg_tipos_avisos>();
             Dg_tipos_avisos elem;
             DataTable t = DB.Select(sqlCommand + mifiltro);
@@ -155,6 +169,7 @@ namespace WebApi.Entities
             }
             return col;
         }
+
         public bool existeTipoAviso()
         {
             string sqlCommand = "SELECT id_categoria FROM categorias WHERE es_borrado = 0 AND TipoMedio = 2 AND desc_categoria = '" + Descripcion + "' AND id_categoria != " + Id_tipo_aviso_dg.ToString();

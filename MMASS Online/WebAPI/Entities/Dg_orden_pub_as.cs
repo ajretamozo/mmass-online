@@ -131,7 +131,7 @@ namespace WebApi.Entities
             mi.Id_Google_Ad_Manager=  DB.DLong(item["id_google_ad_manager"].ToString());
             mi.Ron = (item["ron"].ToString()=="1");
             mi.Id_det_conv = DB.DInt(item["id_det_conv"].ToString());
-            //AGREGUE:
+
             if (item["Id_area"].ToString() != "")
             {
                 mi.areaGeo = Dg_areas_geo.getById(DB.DInt(item["Id_area"].ToString()));
@@ -152,7 +152,6 @@ namespace WebApi.Entities
                 mi.Medios.Add(Dg_orden_pub_medios.getDg_orden_pub_medios(m));
             }
 
-            //AGREGUE:
             // Medidas
             mi.Medidas = new List<Dg_orden_pub_medidas>();
  
@@ -175,7 +174,6 @@ namespace WebApi.Entities
             return mi;           
         }
 
-        //AGREGUE (id_area):
         public bool save()
         {
             bool progisnull = (Id_programa == 0);

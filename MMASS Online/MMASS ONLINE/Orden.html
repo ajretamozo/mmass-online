@@ -2929,7 +2929,10 @@
 
             var rDetalle = Detalles.find(detalle => detalle.id_detalle == rId);
 
-            var tipoAviso = rDetalle.tipo_aviso_dg.descripcion;
+            var tipoAviso = "";
+            if (rDetalle.tipo_aviso_dg != null) {
+                tipoAviso = rDetalle.tipo_aviso_dg.descripcion;
+            }
 
             if (rDetalle.id_det_conv > 0) {
                 cargarSelectMultiConv($(r).attr("data-id"));

@@ -189,18 +189,10 @@
         }
 
         function searchTiposAvisos() {
-            params = {};
-            params.descripcion = $('#descFiltro').val();
 
-            for (param in params) {
-                if (params[param] == null) {
-                    params[param] = '';
-                }
-            };
+            descripcion = $('#descFiltro').val();
 
-            var parametros = setListaParametros(params);
-
-            callWS("tipos_avisos", "filter", JSON.stringify(parametros), function (data) {
+            callWS("tipos_avisos", "filter", JSON.stringify(descripcion), function (data) {
                 if (data.length > 0) {
                     populateTable(data, 'TableTiposAvisos');
                 } else {

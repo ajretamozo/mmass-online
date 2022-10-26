@@ -46,10 +46,9 @@ namespace WebApi.Controllers
         }
 
         [HttpPost("filter")]
-        public IActionResult filter(ListaParametro parametros)
+        public IActionResult filter([FromBody] string descripcion)
         {
-
-            var fu = _tipos_AvisosService.filter(parametros.Parametros);
+            var fu = _tipos_AvisosService.filter(descripcion);
             return Ok(fu);
         }
     }
