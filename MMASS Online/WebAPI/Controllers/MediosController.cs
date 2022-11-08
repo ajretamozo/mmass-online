@@ -194,5 +194,27 @@ namespace WebApi.Controllers
             return Ok(pp);
         }
 
+        [HttpPost("cambiarParamSincGam")]
+        public IActionResult cambiarParamSincGam(Dg_parametro param)
+        {
+            var resp = _medioService.cambiarParamSincGam(param);
+            return Ok(resp);
+        }
+
+        [HttpPost("enviarMail")]
+        public IActionResult enviarMail()
+        {
+            //var pp = _medioService.enviarMail();
+            //return Ok(pp);
+            _medioService.enviarMail();
+            return Ok();
+        }
+
+        [HttpPost("getParamById")]
+        public IActionResult getParamById([FromBody] int id)
+        {
+            var param = _medioService.getParamById(id);
+            return Ok(param);
+        }
     }
 }

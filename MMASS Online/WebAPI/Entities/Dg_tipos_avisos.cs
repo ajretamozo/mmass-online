@@ -35,7 +35,7 @@ namespace WebApi.Entities
 
         public static Dg_tipos_avisos getByDesc(string desc)
         {
-            string sqlCommand = "Select * FROM categorias where (tipomedio = 0 or tipomedio = 2) and desc_categoria = '" + desc.ToString() + "'";
+            string sqlCommand = "Select TOP 1 * FROM categorias where (tipomedio = 0 or tipomedio = 2) and (Es_borrado = 0 or Es_borrado is null) and desc_categoria = '" + desc.ToString() + "'";
             Dg_tipos_avisos resultado;
             resultado = new Dg_tipos_avisos();
             DataTable t = DB.Select(sqlCommand);

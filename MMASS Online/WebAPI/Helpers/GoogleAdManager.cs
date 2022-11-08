@@ -230,7 +230,7 @@ namespace WebApi.Helpers
                 // Create a statement to select placements.
                 int pageSize = StatementBuilder.SUGGESTED_PAGE_LIMIT;
                 StatementBuilder statementBuilder = new StatementBuilder()
-                   .Where("OrderId = :oID and status != 'ARCHIVED'").OrderBy("id ASC")
+                   .Where("OrderId = :oID and isArchived = false").OrderBy("id ASC")
                    .Limit(pageSize)
                    .AddValue("oID", idOrder);
 
@@ -951,7 +951,7 @@ namespace WebApi.Helpers
                     inventoryTargeting.targetedAdUnits = targetPlacementIds;
                 }
 
-                //// Create geographical targeting.
+                // Create geographical targeting.
                 GeoTargeting geoTargeting = new GeoTargeting();
 
                 if (areaGeo.Tipo > 0)
@@ -1106,6 +1106,19 @@ namespace WebApi.Helpers
                     }
 
                     lineItem.primaryGoal = goal;
+
+                    //si el param sinc auto con adserver esta desactivado, se pausa la linea en el caso de estar activa
+                    Dg_parametro param = new Dg_parametro();
+                    param = Dg_parametro.getById(2);
+                    if (int.Parse(param.Valor) == 0 && lineItem.status == ComputedStatus.DELIVERING)
+                    {
+                        //// Create action.
+                        PauseLineItems action = new PauseLineItems();
+
+                        //// Perform action.
+                        UpdateResult uResult =
+                            lineItemService.performLineItemAction(action, statementBuilder.ToStatement());
+                    }
 
                     // Update the line item on the server.
                     LineItem[] lineItems = lineItemService.updateLineItems(new LineItem[]
@@ -1548,13 +1561,33 @@ namespace WebApi.Helpers
 
                 try
                 {
-                    //// Create action.
-                    ArchiveLineItems action = new ArchiveLineItems();
+                    // Get line items by statement.
+                    LineItemPage page =
+                        lineItemService.getLineItemsByStatement(statementBuilder.ToStatement());
 
-                    //// Perform action.
-                    UpdateResult uResult =
-                        lineItemService.performLineItemAction(action,
-                            statementBuilder.ToStatement());
+                    LineItem lineItem = page.results[0];
+
+                    //si el param sinc auto con adserver esta desactivado, se pausa la linea en el caso de estar activa
+                    Dg_parametro param = new Dg_parametro();
+                    param = Dg_parametro.getById(2);
+                    if (int.Parse(param.Valor) == 0 && lineItem.status == ComputedStatus.DELIVERING)
+                    {
+                        //// Create action.
+                        PauseLineItems action = new PauseLineItems();
+
+                        //// Perform action.
+                        UpdateResult uResult =
+                            lineItemService.performLineItemAction(action, statementBuilder.ToStatement());
+                    }
+                    else
+                    {
+                        //// Create action.
+                        ArchiveLineItems action = new ArchiveLineItems();
+
+                        //// Perform action.
+                        UpdateResult uResult =
+                            lineItemService.performLineItemAction(action,statementBuilder.ToStatement());
+                    }
                     result = 1;
                 }
                 catch (Exception e)

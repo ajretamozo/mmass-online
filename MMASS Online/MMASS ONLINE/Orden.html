@@ -1668,7 +1668,12 @@
                     message = "Ya existe una OP con la Descripción ingresada";
                     showMessage(message, "error");;
                 } else {
-                    saveOrder();
+                    if (DetallesASDelete.length > 0) {
+                        advertenciaDeleteDetalle();
+                    }
+                    else {
+                        saveOrder();
+                    }
                 }
             });
             //if ($("#selOrdenRelacionada").val() != "" && $("#selOrdenRelacionada").val() != undefined) {
@@ -1691,6 +1696,29 @@
             //} else {
             //saveOrder();
             //}
+        }
+
+        function advertenciaDeleteDetalle() {
+            callWS("medios", "getParamById", JSON.stringify(2), function (param) {
+                var mensaje = "";
+                if (param.valor == 1) {
+                    mensaje = "<div class='d-flex justify-content-center' style='text-align: center;'>Los Detalles eliminados serán archivados en el AdServer</div>";
+                }
+                else {
+                    mensaje = "<div class='d-flex justify-content-center' style='text-align: center;'>Los Detalles eliminados serán archivados en el AdServer. En el caso de estar publicándose, serán pausados</div>";
+                }
+                options = [
+                    {
+                        optionDesc: "Aceptar",
+                        optionFunc: "saveOrder()"
+                    },
+                    {
+                        optionDesc: "Cancelar",
+                        optionFunc: ""
+                    }
+                ];
+                showModal(mensaje, options);
+            });
         }
 
         function saveOrder() {

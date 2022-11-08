@@ -1,15 +1,13 @@
 using System;
 using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Security.Claims;
 using System.Text;
-//using Google.Api.Ads.AdManager.v202208;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
 using WebApi.Entities;
 using WebApi.Helpers;
 using System.Configuration;
+using System.Net.Mail;
+using System.Net;
+using System.Security.Cryptography.X509Certificates;
+using System.Net.Security;
 
 
 namespace WebApi.Services
@@ -42,6 +40,9 @@ namespace WebApi.Services
         int getBD();
         String getConString();
         IEnumerable<Plazos_Pagos> GetAllPlazos();
+        bool cambiarParamSincGam(Dg_parametro param);
+        Dg_parametro getParamById(int id);
+        void enviarMail();
     }
 
     public class MedioService : IMedioService
@@ -185,5 +186,33 @@ namespace WebApi.Services
             return Plazos_Pagos.getAll();
         }
 
+        public bool cambiarParamSincGam(Dg_parametro param)
+        {
+            return param.updateParam();
+        }
+
+        public Dg_parametro getParamById(int id)
+        {
+            return Dg_parametro.getById(id);
+        }
+
+        public void enviarMail()
+        {
+            MailMessage correo = new MailMessage();
+            correo.From = new MailAddress("agustinjretamozo@gmail.com", "AJRgmail", Encoding.UTF8);//Correo de salida
+            correo.To.Add("agustinjretamozo@gmail.com"); //Correo destino
+            correo.Subject = "Correo de prueba"; //Asunto
+            correo.Body = "Este es un correo de prueba desde c#"; //Mensaje del correo
+            correo.IsBodyHtml = true;
+            correo.Priority = MailPriority.Normal;
+            SmtpClient smtp = new SmtpClient();
+            smtp.UseDefaultCredentials = false;
+            smtp.Host = "smtp.gmail.com"; //Host del servidor de correo
+            smtp.Port = 25; //Puerto de salida
+            smtp.Credentials = new NetworkCredential("agustinjretamozo@gmail.com", "wflrkfavbdlretrk");//Cuenta de correo
+            ServicePointManager.ServerCertificateValidationCallback = delegate (object s, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors) { return true; };
+            smtp.EnableSsl = true;//True si el servidor de correo permite ssl
+            smtp.Send(correo);
+        }
     }
 }
