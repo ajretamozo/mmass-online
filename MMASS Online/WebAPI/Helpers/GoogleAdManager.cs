@@ -1542,9 +1542,9 @@ namespace WebApi.Helpers
                 }
         }
 
-        public static long ArchivarLineItem(long Id)
+        public static int ArchivarPausarLineItem(long Id)
         {
-            long result = -1;
+            int result = -1;
             //AdManagerUser user = new AdManagerUser();
 
             using (LineItemService lineItemService = user.GetService<LineItemService>())

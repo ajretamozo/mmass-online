@@ -128,10 +128,10 @@ namespace WebApi.Controllers
             return Ok(res);
         }
 
-        [HttpPost("archivarLineItems")]
-        public IActionResult ArchivarLineItems(Dg_orden_pub_ap op)
+        [HttpPost("archivarPausarLineItems")]
+        public IActionResult ArchivarPausarLineItems(Dg_orden_pub_ap op)
         {
-            var res = _GoogleAdManagerService.ArchivarLineItems(op);
+            var res = _GoogleAdManagerService.ArchivarPausarLineItems(op);
             return Ok(res);
         }
 

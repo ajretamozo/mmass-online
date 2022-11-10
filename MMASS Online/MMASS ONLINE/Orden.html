@@ -1795,9 +1795,11 @@
             })
 
             if (DetallesASDelete.length > 0) {
-                var Orden = {};
-                Orden.Detalles = DetallesASDelete;
-                callWS("googleAdManager", "archivarLineItems", JSON.stringify(Orden));
+                var orden = {};
+                orden.id_Google_Ad_Manager = $('#inpIdOrdenAdServer').val();
+                orden.Bitacora = $("#inpDescOP").val();
+                orden.Detalles = DetallesASDelete;
+                callWS("googleAdManager", "archivarPausarLineItems", JSON.stringify(orden));
             }
 
             //if ($("#selOrdenRelacionada").val() == "" || $("#selOrdenRelacionada").val() == undefined) {
@@ -3193,16 +3195,18 @@
         }
 
         function deleteRenglon(r, id_Google_Ad_Manager) {
+            var idr = $(r).attr("data-id");
             //sumo el detalle a la lista para archivar las lineas de pedidos en GAM
             if (id_Google_Ad_Manager > 0) {
                 var Det = {}
+                Det.Descripcion = $("#row" + idr ).attr("descripcion");
                 Det.id_Google_Ad_Manager = id_Google_Ad_Manager;
                 DetallesASDelete.push(Det);
             }
 
             r.parentElement.parentElement.remove();
            
-            var idr = $(r).attr("data-id");
+            /*var idr = $(r).attr("data-id");*/
             var indexOfObject;
        
                 for (let index = 0; index < Detalles.length; index++) {
@@ -4724,7 +4728,8 @@
         function comprobarNuevosDetalles() {
             var data = {};
             data.id_op_dg = $("#inpOrderNumber").attr("id_op_dg");
-            data.id_Google_Ad_Manager = $('#inpIdOrdenAdServer').val();;
+            data.id_Google_Ad_Manager = $('#inpIdOrdenAdServer').val();
+            data.id_red = $('#selRedes').val();
 
             callWS("googleAdManager", "comprobarNuevosDetalles", JSON.stringify(data), function (data) { onComprobarNuevosDetalles(data); });
         }

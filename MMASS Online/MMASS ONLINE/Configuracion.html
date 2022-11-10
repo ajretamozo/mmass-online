@@ -171,30 +171,38 @@
             <!--Configuracion DATA-->
             <p class="dataTitle">CONFIGURACION</p>
             <div id="divRedesData d-flex align-items-around align-items-end">
-                <div class="row py-1">
+                <div class="row py-1" style="height: 50px;">
                     <div class="col-md-6">
-                        <label>Desbloquear Ordenes</label>
+                        <label>Desbloqueo de Ordenes</label>
                     </div>
                     <div class="col-md-6">
-                        <button type="button" class="btn btn-dark btn-sm mx-1" onclick="desbloquearOP()">
-                            <span class="fa fa-check"></span> Desbloquear
+                        <button type="button" class="btn btn-dark btn-sm mx-1" onclick="desbloquearOP()" style="height: 34px;">
+                            <span class="fa fa-unlock"></span> Desbloquear
                         </button>
                     </div>
                 </div>
                 <div class="row py-1">
                     <div class="col-md-6">
-                        <label>Sincronizar automáticamente con AdServer</label>
+                        <label>Sincronización automática con AdServer</label>
                     </div>
                     <div class="col-md-6">
                         <label class="switch">
                             <input type="checkbox" id="checkPermitirSinc" onclick="permitirSinc()">
                             <span class="slider round"></span>
                         </label>
-                        <!--<button type="button" class="btn btn-dark btn-sm mx-1" onclick="permitirSinc()">
-                            <span class="fa fa-search"></span> enviar mail
-                        </button>-->
                     </div>
                 </div>
+                <div class="row py-1">
+                    <div class="col-md-6">
+                        <label>Notificaciones por Mail</label>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="switch">
+                            <input type="checkbox" id="checkActivarMail" onclick="activarMail()">
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                </div>              
             </div>
         </div>
     </main>
@@ -207,17 +215,19 @@
             $('input[type=text]').attr('autocomplete', 'off');
             $("#divNavBar").load("navBar.html");
             document.body.style.backgroundImage = "url(./fondoM3.png)";
-            callWS("medios", "getParamById", JSON.stringify(2), function (data) { iniPermitirSinc(data); });
+            //Se buscan los valores para inicializar los parámetros en BD
+            callWS("medios", "getParamById", JSON.stringify(2), function (parSinc) { iniPermitirSinc(parSinc, "checkPermitirSinc"); });
+            callWS("medios", "getParamById", JSON.stringify(3), function (parMail) { iniPermitirSinc(parMail, "checkActivarMail"); });
         });
 
-        function iniPermitirSinc(param) {
+        function iniPermitirSinc(param, check) {
             if (param.valor == 1) {
-                $("#checkPermitirSinc")[0].checked = true;
-                $("#checkPermitirSinc").change();
+                $("#" + check)[0].checked = true;
+                $("#" + check).change();
             }
             else {
-                $("#checkPermitirSinc")[0].checked = false;
-                $("#checkPermitirSinc").change();
+                $("#" + check)[0].checked = false;
+                $("#" + check).change();
             }
         }
 
@@ -242,8 +252,7 @@
             if (document.getElementById("checkPermitirSinc").checked == true) {
                 param.valor = 1;
             }
-            callWS("medios", "cambiarParamSincGam", JSON.stringify(param), function (data) { onPermitirSinc(data, param); });
-           /* callWS("medios", "enviarMail", "");*/
+            callWS("medios", "cambiarParam", JSON.stringify(param), function (data) { onPermitirSinc(data, param); });
         }
 
         function onPermitirSinc(resultado, param) {
@@ -261,6 +270,35 @@
                 }
                 else {
                     showMessage("Ocurrió un error al intentar activar la sincronización", "error");
+                }
+            }
+        }
+
+        function activarMail() {
+            param = {};
+            param.id_parametro = 3;
+            param.valor = 0;
+            if (document.getElementById("checkActivarMail").checked == true) {
+                param.valor = 1;
+            }
+            callWS("medios", "cambiarParam", JSON.stringify(param), function (data) { onActivarMail(data, param); });
+        }
+
+        function onActivarMail(resultado, param) {
+            if (resultado == true) {
+                if (param.valor == 0) {
+                    showMessage("Notificaciones por mail Desactivadas", "info");
+                }
+                else {
+                    showMessage("Notificaciones por mail Activadas", "info");
+                }
+            }
+            else {
+                if (param.valor == 0) {
+                    showMessage("Ocurrió un error al intentar desactivar las notificaciones", "error");
+                }
+                else {
+                    showMessage("Ocurrió un error al intentar activar las notificaciones", "error");
                 }
             }
         }

@@ -10,6 +10,10 @@ using WebApi.Entities;
 using WebApi.Helpers;
 using Google.Api.Ads.AdManager.Util.v202208;
 using Google.Api.Ads.AdManager.v202208;
+using System.Net.Mail;
+using System.Net.Security;
+using System.Net;
+using System.Security.Cryptography.X509Certificates;
 
 namespace WebApi.Services
 {
@@ -34,7 +38,7 @@ namespace WebApi.Services
         IEnumerable<Dg_medidas> GetMedidas();
         IEnumerable<Dg_medidas> GetMedidasTodasRedes(List<Parametro> parametros);
         IEnumerable<Dg_medidas> GetMedidasVideoTodasRedes(List<Parametro> parametros);
-        long ArchivarLineItems(Dg_orden_pub_ap op);
+        long ArchivarPausarLineItems(Dg_orden_pub_ap op);
         void CambiarRed(string netCode);
         long GetRedActual();
         IEnumerable<Dg_orden_pub_ap> GetOpNuevas(List<Parametro> parametros);
@@ -76,11 +80,6 @@ namespace WebApi.Services
                 resultado.ParameterName = "El Contacto no está sincronizado con Google Ad Manager. ¿Desea sincronizarlo?";
                 resultado.Value = "-2";
             }
-            //else if (DB.DLong(op.anunciante.IdContactoDigital) < 1)
-            //{
-            //    return -2; //El contacto no esta sincronizado
-            //}
-
             else
             {
                 if (op.Id_Google_Ad_Manager > 0)
@@ -116,6 +115,20 @@ namespace WebApi.Services
                 if (det.Id_Google_Ad_Manager > 0)
                 {
                     resultado = GoogleAdManager.UpdateLineItem(det.tipo_aviso_dg.Descripcion, det.Descripcion, det.Importe_unitario, det.Cantidad, det.Porc_dto, det.Fecha_desde, det.Fecha_hasta, det.Medidas, det.areaGeo, det.Emplazamientos, det.Tipo_tarifa, det.Id_Google_Ad_Manager);
+                    
+                    //enviar notificación por mail
+                    if (long.Parse(resultado.Value) > 0 && int.Parse(Dg_parametro.getById(3).Valor) == 1)
+                    {
+                        string asunto = "MMASS Online - Modificación de Línea de Pedido";
+                        string msj =  "Se ha modificado la Línea de Pedido <b>" + det.Descripcion + "</b>, " +
+                                      "ID: <b>" + det.Id_Google_Ad_Manager + "</b> perteneciente al Pedido <b>" +
+                                      dg.Bitacora + "</b>, ID: <b>" + dg.Id_Google_Ad_Manager + "</b><br>" +
+                                      "--------------------------------------------------------------------" +
+                                      "---------------------------------------------------------------<br>" +
+                                      "<font size=1>No responder este mensaje</font><br>" +
+                                      "<H5>Sistema de Notificaciones MMASS Online</H5>";
+                        enviarMail(asunto, msj);    
+                    }
                 }
                 else
                 {
@@ -129,16 +142,30 @@ namespace WebApi.Services
                     {
                         resultado = GoogleAdManager.CreateLineItems(det.tipo_aviso_dg.Descripcion, det.Descripcion, dg.Id_Google_Ad_Manager, det.Importe_unitario, det.Cantidad, det.Porc_dto, det.Fecha_desde, det.Fecha_hasta, det.Medidas, det.areaGeo, det.Emplazamientos, det.Tipo_tarifa);
                     }
-                }
 
-                if (long.Parse(resultado.Value) > 0)
-                {
-                    foreach (var item in dg.Detalles)
+                    if (long.Parse(resultado.Value) > 0)
                     {
-                        if (item.Id_detalle == det.Id_detalle)
+                        foreach (var item in dg.Detalles)
                         {
-                            Dg_orden_pub_as.saveId_Google_Ad_Manager(item.Id_op_dg, item.Id_detalle, long.Parse(resultado.Value));
+                            if (item.Id_detalle == det.Id_detalle)
+                            {
+                                Dg_orden_pub_as.saveId_Google_Ad_Manager(item.Id_op_dg, item.Id_detalle, long.Parse(resultado.Value));
+                            }
                         }
+
+                        //enviar notificación por mail (descomentar cuando haga activar/desactivar por parámetro)
+                        //if (int.Parse(Dg_parametro.getById(3).Valor) == 1)
+                        //{
+                        //    string asunto = "MMASS Online - Creación de Línea de Pedido";
+                        //    string msj = @"Se ha creado la Línea de Pedido <b>" + det.Descripcion + "</b>, " +
+                        //                  "ID: <b>" + resultado.Value + "</b> perteneciente al Pedido <b>" +
+                        //                  dg.Bitacora + "</b>, ID: <b>" + dg.Id_Google_Ad_Manager + "</b><br>" +
+                        //              "--------------------------------------------------------------------" +
+                        //              "---------------------------------------------------------------<br>" +
+                        //              "<font size=1>No responder este mensaje</font><br>" +
+                        //              "<H5>Sistema de Notificaciones MMASS Online</H5>";
+                        //    enviarMail(asunto, msj);
+                        //}
                     }
                 }
 
@@ -213,12 +240,28 @@ namespace WebApi.Services
             return GoogleAdManager.GetMedidasVideoTodasRedes(parametros);
         }
 
-        public long ArchivarLineItems(Dg_orden_pub_ap op)
+        public long ArchivarPausarLineItems(Dg_orden_pub_ap op)
         {
-            long result = 0;
+            int result = 0;
             foreach(Dg_orden_pub_as det in op.Detalles)
             {
-                result = GoogleAdManager.ArchivarLineItem(det.Id_Google_Ad_Manager);
+                result = GoogleAdManager.ArchivarPausarLineItem(det.Id_Google_Ad_Manager);
+                if (result > 0)
+                {
+                    //enviar notificación por mail
+                    if (int.Parse(Dg_parametro.getById(3).Valor) == 1)
+                    {
+                        string asunto = "MMASS Online - Archivado de Línea de Pedido";
+                        string msj = @"Se ha archivado/pausado la Línea de Pedido <b>" + det.Descripcion + "</b>, " +
+                                      "ID: <b>" + det.Id_Google_Ad_Manager + "</b> perteneciente al Pedido <b>" +
+                                      op.Bitacora + "</b>, ID: <b>" + op.Id_Google_Ad_Manager + "</b><br>" +
+                                      "--------------------------------------------------------------------" +
+                                      "---------------------------------------------------------------<br>" +
+                                      "<font size=1>No responder este mensaje</font><br>" +
+                                      "<H5>Sistema de Notificaciones MMASS Online</H5>";
+                        enviarMail(asunto, msj);
+                    }
+                }
             }
             return result;
         }
@@ -1107,6 +1150,25 @@ namespace WebApi.Services
                 }
                 return detallesNuevos;
             }
+        }
+
+        public void enviarMail(string asunto, string mensaje)
+        {
+            MailMessage correo = new MailMessage();
+            correo.From = new MailAddress("agustinjretamozo@gmail.com", "MMASS Online", Encoding.UTF8);//Correo de salida
+            correo.To.Add("agustinjretamozo@gmail.com"); //Correo destino (,linovalencia7@gmail.com,linovalencia@hotmail.com)
+            correo.Subject = asunto; //Asunto
+            correo.Body = mensaje; //Mensaje del correo
+            correo.IsBodyHtml = true;
+            correo.Priority = MailPriority.Normal;
+            SmtpClient smtp = new SmtpClient();
+            smtp.UseDefaultCredentials = false;
+            smtp.Host = "smtp.gmail.com"; //Host del servidor de correo
+            smtp.Port = 25; //Puerto de salida
+            smtp.Credentials = new NetworkCredential("agustinjretamozo@gmail.com", "wflrkfavbdlretrk");//Cuenta de correo
+            ServicePointManager.ServerCertificateValidationCallback = delegate (object s, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors) { return true; };
+            smtp.EnableSsl = true;//True si el servidor de correo permite ssl
+            smtp.Send(correo);
         }
 
     }
