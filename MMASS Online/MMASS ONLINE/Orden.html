@@ -1796,6 +1796,9 @@
 
             if (DetallesASDelete.length > 0) {
                 var orden = {};
+                orden.nro_orden = $("#inpOrderNumber").val();
+                orden.anio = $("#inpOrderYear").val();
+                orden.mes = $("#inpOrderMonth").val();
                 orden.id_Google_Ad_Manager = $('#inpIdOrdenAdServer').val();
                 orden.Bitacora = $("#inpDescOP").val();
                 orden.Detalles = DetallesASDelete;

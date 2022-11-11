@@ -202,7 +202,33 @@
                             <span class="slider round"></span>
                         </label>
                     </div>
-                </div>              
+                </div>
+                <div id="rowNotDet">
+                    <div class="row py-1">
+                        <div class="col-md-6">
+                        </div>
+                        <div class="col-md-6">
+                            <input type="checkbox" id="checkCre" style="margin-bottom: .8rem; margin-right: .2rem" onclick="activarMailD()">
+                            <label for="checkCre">Creación de Línea de Pedido</label>
+                        </div>
+                    </div>
+                    <div class="row py-1">
+                        <div class="col-md-6">
+                        </div>
+                        <div class="col-md-6">
+                            <input type="checkbox" id="checkMod" style="margin-bottom: .8rem; margin-right: .2rem" onclick="activarMailD()">
+                            <label for="checkMod">Modificación de Línea de Pedido</label>
+                        </div>
+                    </div>
+                    <div class="row py-1">
+                        <div class="col-md-6">
+                        </div>
+                        <div class="col-md-6">
+                            <input type="checkbox" id="checkArc" style="margin-bottom: .8rem; margin-right: .2rem" onclick="activarMailD()">
+                            <label for="checkArc">Archivado de Línea de Pedido</label>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </main>
@@ -217,7 +243,7 @@
             document.body.style.backgroundImage = "url(./fondoM3.png)";
             //Se buscan los valores para inicializar los parámetros en BD
             callWS("medios", "getParamById", JSON.stringify(2), function (parSinc) { iniPermitirSinc(parSinc, "checkPermitirSinc"); });
-            callWS("medios", "getParamById", JSON.stringify(3), function (parMail) { iniPermitirSinc(parMail, "checkActivarMail"); });
+            callWS("medios", "getParamById", JSON.stringify(3), function (parMail) { iniActMail(parMail, "checkActivarMail"); });
         });
 
         function iniPermitirSinc(param, check) {
@@ -229,6 +255,101 @@
                 $("#" + check)[0].checked = false;
                 $("#" + check).change();
             }
+        }
+
+        function iniActMail(param, check) {
+            var valor = param.valor;
+            switch (valor) {
+                case '0':
+                    $("#" + check)[0].checked = false;
+                    $("#" + check).change();
+                    $("#rowNotDet").hide();
+
+                    $("#checkCre")[0].checked = false;
+                    $("#checkCre").change();
+                    $("#checkMod")[0].checked = false;
+                    $("#checkMod").change();
+                    $("#checkArc")[0].checked = false;
+                    $("#checkArc").change();                   
+                break;
+                case '1':
+                    $("#" + check)[0].checked = true;
+                    $("#" + check).change();
+
+                    $("#checkCre")[0].checked = true;
+                    $("#checkCre").change();
+                    $("#checkMod")[0].checked = true;
+                    $("#checkMod").change();
+                    $("#checkArc")[0].checked = true;
+                    $("#checkArc").change();
+                break;
+                case '2':
+                    $("#" + check)[0].checked = true;
+                    $("#" + check).change();
+
+                    $("#checkCre")[0].checked = true;
+                    $("#checkCre").change();
+                    $("#checkMod")[0].checked = false;
+                    $("#checkMod").change();
+                    $("#checkArc")[0].checked = false;
+                    $("#checkArc").change();
+                break;
+                case '3':
+                    $("#" + check)[0].checked = true;
+                    $("#" + check).change();
+
+                    $("#checkCre")[0].checked = false;
+                    $("#checkCre").change();
+                    $("#checkMod")[0].checked = true;
+                    $("#checkMod").change();
+                    $("#checkArc")[0].checked = false;
+                    $("#checkArc").change();
+                break;
+                case '4':
+                    $("#" + check)[0].checked = true;
+                    $("#" + check).change();
+
+                    $("#checkCre")[0].checked = false;
+                    $("#checkCre").change();
+                    $("#checkMod")[0].checked = false;
+                    $("#checkMod").change();
+                    $("#checkArc")[0].checked = true;
+                    $("#checkArc").change();
+                break;
+                case '5':
+                    $("#" + check)[0].checked = true;
+                    $("#" + check).change();
+
+                    $("#checkCre")[0].checked = true;
+                    $("#checkCre").change();
+                    $("#checkMod")[0].checked = true;
+                    $("#checkMod").change();
+                    $("#checkArc")[0].checked = false;
+                    $("#checkArc").change();
+                break;
+                case '6':
+                    $("#" + check)[0].checked = true;
+                    $("#" + check).change();
+
+                    $("#checkCre")[0].checked = true;
+                    $("#checkCre").change();
+                    $("#checkMod")[0].checked = false;
+                    $("#checkMod").change();
+                    $("#checkArc")[0].checked = true;
+                    $("#checkArc").change();
+                break;
+                case '7':
+                    $("#" + check)[0].checked = true;
+                    $("#" + check).change();
+
+                    $("#checkCre")[0].checked = false;
+                    $("#checkCre").change();
+                    $("#checkMod")[0].checked = true;
+                    $("#checkMod").change();
+                    $("#checkArc")[0].checked = true;
+                    $("#checkArc").change();
+                break;
+            }         
         }
 
         function desbloquearOP() {
@@ -280,6 +401,26 @@
             param.valor = 0;
             if (document.getElementById("checkActivarMail").checked == true) {
                 param.valor = 1;
+                //se muestra el detalle de notificaciones
+                $("#checkCre")[0].checked = true;
+                $("#checkCre").change();
+                $("#checkMod")[0].checked = true;
+                $("#checkMod").change();
+                $("#checkArc")[0].checked = true;
+                $("#checkArc").change();
+
+                $("#rowNotDet").show();
+            }
+            else {
+                //se oculta el detalle de notificaciones
+                $("#rowNotDet").hide();
+
+                $("#checkCre")[0].checked = false;
+                $("#checkCre").change();
+                $("#checkMod")[0].checked = false;
+                $("#checkMod").change();
+                $("#checkArc")[0].checked = false;
+                $("#checkArc").change();
             }
             callWS("medios", "cambiarParam", JSON.stringify(param), function (data) { onActivarMail(data, param); });
         }
@@ -301,6 +442,48 @@
                     showMessage("Ocurrió un error al intentar activar las notificaciones", "error");
                 }
             }
+        }
+
+        function activarMailD() {
+            param = {};
+            param.id_parametro = 3;
+            param.valor;
+            //envía todas
+            if (document.getElementById("checkCre").checked == true && document.getElementById("checkMod").checked == true && document.getElementById("checkArc").checked == true) {
+                param.valor = 1;
+            }
+            //envía creacion
+            else if (document.getElementById("checkCre").checked == true && document.getElementById("checkMod").checked == false && document.getElementById("checkArc").checked == false) {
+                param.valor = 2;
+            }
+            //envía modificacion
+            else if (document.getElementById("checkCre").checked == false && document.getElementById("checkMod").checked == true && document.getElementById("checkArc").checked == false) {
+                param.valor = 3;
+            }
+            //envía archivado
+            else if (document.getElementById("checkCre").checked == false && document.getElementById("checkMod").checked == false && document.getElementById("checkArc").checked == true) {
+                param.valor = 4;
+            }
+            //envía creacion y modificacion
+            else if (document.getElementById("checkCre").checked == true && document.getElementById("checkMod").checked == true && document.getElementById("checkArc").checked == false) {
+                param.valor = 5;
+            }
+            //envía creacion y archivado
+            else if (document.getElementById("checkCre").checked == true && document.getElementById("checkMod").checked == false && document.getElementById("checkArc").checked == true) {
+                param.valor = 6;
+            }
+            //envía modificacion y archivado
+            else if (document.getElementById("checkCre").checked == false && document.getElementById("checkMod").checked == true && document.getElementById("checkArc").checked == true) {
+                param.valor = 7;
+            }
+            //no envía
+            else {
+                param.valor = 0;
+                $("#checkActivarMail")[0].checked = false;
+                $("#checkActivarMail").change();
+                $("#rowNotDet").hide();
+            }
+            callWS("medios", "cambiarParam", JSON.stringify(param));
         }
 
     </script>

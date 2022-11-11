@@ -117,12 +117,13 @@ namespace WebApi.Services
                     resultado = GoogleAdManager.UpdateLineItem(det.tipo_aviso_dg.Descripcion, det.Descripcion, det.Importe_unitario, det.Cantidad, det.Porc_dto, det.Fecha_desde, det.Fecha_hasta, det.Medidas, det.areaGeo, det.Emplazamientos, det.Tipo_tarifa, det.Id_Google_Ad_Manager);
                     
                     //enviar notificación por mail
-                    if (long.Parse(resultado.Value) > 0 && int.Parse(Dg_parametro.getById(3).Valor) == 1)
+                    if (long.Parse(resultado.Value) > 0 && (int.Parse(Dg_parametro.getById(3).Valor) == 1 || int.Parse(Dg_parametro.getById(3).Valor) == 3 || int.Parse(Dg_parametro.getById(3).Valor) == 5 || int.Parse(Dg_parametro.getById(3).Valor) == 7))
                     {
                         string asunto = "MMASS Online - Modificación de Línea de Pedido";
                         string msj =  "Se ha modificado la Línea de Pedido <b>" + det.Descripcion + "</b>, " +
                                       "ID: <b>" + det.Id_Google_Ad_Manager + "</b> perteneciente al Pedido <b>" +
                                       dg.Bitacora + "</b>, ID: <b>" + dg.Id_Google_Ad_Manager + "</b><br>" +
+                                      "Número de Orden MMASS: <b>" + dg.Anio + "-" + dg.Mes + "-" + dg.Nro_orden + "</b><br>" +
                                       "--------------------------------------------------------------------" +
                                       "---------------------------------------------------------------<br>" +
                                       "<font size=1>No responder este mensaje</font><br>" +
@@ -153,19 +154,20 @@ namespace WebApi.Services
                             }
                         }
 
-                        //enviar notificación por mail (descomentar cuando haga activar/desactivar por parámetro)
-                        //if (int.Parse(Dg_parametro.getById(3).Valor) == 1)
-                        //{
-                        //    string asunto = "MMASS Online - Creación de Línea de Pedido";
-                        //    string msj = @"Se ha creado la Línea de Pedido <b>" + det.Descripcion + "</b>, " +
-                        //                  "ID: <b>" + resultado.Value + "</b> perteneciente al Pedido <b>" +
-                        //                  dg.Bitacora + "</b>, ID: <b>" + dg.Id_Google_Ad_Manager + "</b><br>" +
-                        //              "--------------------------------------------------------------------" +
-                        //              "---------------------------------------------------------------<br>" +
-                        //              "<font size=1>No responder este mensaje</font><br>" +
-                        //              "<H5>Sistema de Notificaciones MMASS Online</H5>";
-                        //    enviarMail(asunto, msj);
-                        //}
+                        //enviar notificación por mail
+                        if (int.Parse(Dg_parametro.getById(3).Valor) == 1 || int.Parse(Dg_parametro.getById(3).Valor) == 2 || int.Parse(Dg_parametro.getById(3).Valor) == 5 || int.Parse(Dg_parametro.getById(3).Valor) == 6)
+                        {
+                            string asunto = "MMASS Online - Creación de Línea de Pedido";
+                            string msj = @"Se ha creado la Línea de Pedido <b>" + det.Descripcion + "</b>, " +
+                                          "ID: <b>" + resultado.Value + "</b> perteneciente al Pedido <b>" +
+                                          dg.Bitacora + "</b>, ID: <b>" + dg.Id_Google_Ad_Manager + "</b><br>" +
+                                          "Número de Orden MMASS: <b>" + dg.Anio + "-" + dg.Mes + "-" + dg.Nro_orden + "</b><br>" +
+                                          "--------------------------------------------------------------------" +
+                                          "---------------------------------------------------------------<br>" +
+                                          "<font size=1>No responder este mensaje</font><br>" +
+                                          "<H5>Sistema de Notificaciones MMASS Online</H5>";
+                            enviarMail(asunto, msj);
+                        }
                     }
                 }
 
@@ -249,12 +251,13 @@ namespace WebApi.Services
                 if (result > 0)
                 {
                     //enviar notificación por mail
-                    if (int.Parse(Dg_parametro.getById(3).Valor) == 1)
+                    if (int.Parse(Dg_parametro.getById(3).Valor) == 1 || int.Parse(Dg_parametro.getById(3).Valor) == 4 || int.Parse(Dg_parametro.getById(3).Valor) == 6 || int.Parse(Dg_parametro.getById(3).Valor) == 7)
                     {
                         string asunto = "MMASS Online - Archivado de Línea de Pedido";
                         string msj = @"Se ha archivado/pausado la Línea de Pedido <b>" + det.Descripcion + "</b>, " +
                                       "ID: <b>" + det.Id_Google_Ad_Manager + "</b> perteneciente al Pedido <b>" +
                                       op.Bitacora + "</b>, ID: <b>" + op.Id_Google_Ad_Manager + "</b><br>" +
+                                      "Número de Orden MMASS: <b>" + op.Anio + "-" + op.Mes + "-" + op.Nro_orden + "</b><br>" +
                                       "--------------------------------------------------------------------" +
                                       "---------------------------------------------------------------<br>" +
                                       "<font size=1>No responder este mensaje</font><br>" +
