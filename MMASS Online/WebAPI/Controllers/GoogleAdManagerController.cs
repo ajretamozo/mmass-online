@@ -92,13 +92,6 @@ namespace WebApi.Controllers
             return Ok(res);
 
         }
-        //AGREGUE:
-        //[HttpPost("getEmplazamientos")]
-        //public IActionResult GetEmplazamientos([FromBody] string redGAM)
-        //{
-        //    var emplazamientos = _GoogleAdManagerService.GetEmplazamientos(redGAM);
-        //    return Ok(emplazamientos);
-        //}
 
         [HttpPost("getEmplazamientos")]
         public IActionResult GetEmplazamientos([FromBody] string codRed)

@@ -1347,7 +1347,7 @@
             $('#fechaHasta').datetimepicker('date', moment(dateToFieldFormat(data.fecha_expiracion), 'DD/MM/YYYY'));
             $("#bAnular").attr("disabled", false);
             $("#bClonar").attr("disabled", false);
-            if (data.es_facturada) {
+            if (data.es_facturada && OpClon == false) {
                 $("#inpEsFacturada").val("SI");
                 $("#bGuardarOrden").attr("disabled", true);
                 $("#bGuardarOrden").attr("title", "No se pueden guardar ordenes que estén facturadas");
@@ -1357,10 +1357,12 @@
                 $("#inpEsFacturada").val("NO");
             }
 
-            $("#inpOrderMonth").val(data.mes);
-            $("#inpOrderYear").val(data.anio);
+            if (OpClon == false) {
+                $("#inpOrderMonth").val(data.mes);
+                $("#inpOrderYear").val(data.anio);
+            }
 
-            if (data.fecha_alta != null) {
+            if (data.fecha_alta != null && OpClon == false) {
                 $("#inpFechaAlta").val(dateToFieldFormat(data.fecha_alta));
             }
 
@@ -1383,8 +1385,10 @@
 
             $("#inpOrderNumberClient").val(data.nro_orden_ag);
             $("#inpDescOP").val(data.bitacora);
-            $("#inpOrderNumber").val(data.nro_orden);
-            $("#inpOrderNumber").attr("id_op_dg", data.id_op_dg);
+            if (OpClon == false) {
+                $("#inpOrderNumber").val(data.nro_orden);
+                $("#inpOrderNumber").attr("id_op_dg", data.id_op_dg);
+            }
             if (data.formasPago.length > 0) {
                 $("#selFPago option[value=" + data.formasPago[0].forma_pago.id_formapago + "]").attr("selected", "selected");
             }
@@ -1402,7 +1406,6 @@
                 $("#selRedes").attr("disabled", true);
             }
 
-            //AGREGUE:
             if ((data.id_op_dg != undefined && data.id_op_dg != 0) && (data.id_Google_Ad_Manager == undefined || data.id_Google_Ad_Manager == 0) && data.es_facturada == false && data.es_anulada == 0) {
                 $("#bSendOrdenAddServer").attr("disabled", false);
                 $('#inpIdOrdenAdServer').val("");
@@ -1467,20 +1470,20 @@
                 bloquearCamposCabecera();
             }
 
-            if (OpClon == true) {
-                $("#inpOrderMonth").val("");
-                $("#inpOrderYear").val("");
-                $("#inpOrderNumber").val("");
-                $("#inpFechaAlta").val("");
-                $("#inpEsFacturada").val("NO");
+            if (OpClon) {
+                //$("#inpOrderMonth").val("");
+                //$("#inpOrderYear").val("");
+                //$("#inpOrderNumber").val("");
+                //$("#inpFechaAlta").val("");
+                //$("#inpEsFacturada").val("NO");
                 $("#bSendOrdenAddServer").attr("disabled", true);
                 $("#bAnular").attr("disabled", true);
                 $("#bClonar").attr("disabled", true);
-                $('#pTitulo').append('<span id="sTituloDinamico"> - </span>');
-                $('#pTitulo').append('<span id="sTituloDinamico" style="color: #007bff;">CLONACION</span>');
+                $('#pTitulo').append('<span id="sTituloDinamico1"> - </span>');
+                $('#pTitulo').append('<span id="sTituloDinamico2" style="color: #007bff;">CLONACION</span>');
             }
 
-            if (OpSinc == true) {
+            if (OpSinc) {
                 $("#bAnular").attr("disabled", true);
                 $("#bClonar").attr("disabled", true);
             }
@@ -1776,6 +1779,7 @@
 
             data.usuario = {};
             data.usuario.Id_usuario = $("#NombreUsuario").attr("data-id");
+
             data.Total_Avisos = 0;
             data.Total_Impresiones = 0;
             Detalles.forEach(function (item, index) {
@@ -1792,6 +1796,10 @@
                     item.impconfnc = 0;
                     item.impconffc = 0;
                 }
+                //si es clon, seteo el id_google_ad_manager = 0
+                if(OpClon){
+                    item.id_Google_Ad_Manager = 0;
+                }
             })
 
             if (DetallesASDelete.length > 0) {
@@ -1802,6 +1810,7 @@
                 orden.id_Google_Ad_Manager = $('#inpIdOrdenAdServer').val();
                 orden.Bitacora = $("#inpDescOP").val();
                 orden.Detalles = DetallesASDelete;
+                orden.UsuarioSesion = $("#NombreUsuario").text();
                 callWS("googleAdManager", "archivarPausarLineItems", JSON.stringify(orden));
             }
 
@@ -1910,7 +1919,9 @@
 
                 OpClon = false;
                 OpSinc = false;
-
+                
+                $('#sTituloDinamico1').remove();
+                $('#sTituloDinamico2').remove();
                 $("#bAnular").attr("disabled", false);
                 $("#bClonar").attr("disabled", false);
                 $('#inpOrderNumber').val(data.op.nro_orden);
@@ -3109,7 +3120,7 @@
                 $("#selTipoAvisoD").attr("disabled", true);
                 $("#selProductoD").attr("disabled", true);
             }
-            if (OpClon == false) {
+            if (OpClon) {
                 $("#selDetConvenio").attr("disabled", true);
             }
         }
@@ -3141,8 +3152,13 @@
                 if (Detalles[index].id_detalle == $(r).attr("data-id")) {
                     indexOfObject = index;
                 }
-            } 
-            callWS("googleAdManager", "createLineItems", JSON.stringify(Detalles[indexOfObject]), function (data) { onSendLinea(data, indexOfObject);});
+            }
+
+            var detalle = Detalles[indexOfObject];
+            detalle.UsuarioSesion = $("#NombreUsuario").text();
+
+            //callWS("googleAdManager", "createLineItems", JSON.stringify(Detalles[indexOfObject]), function (data) { onSendLinea(data, indexOfObject);});
+            callWS("googleAdManager", "createLineItems", JSON.stringify(detalle), function (data) { onSendLinea(data, indexOfObject); });
         }
 
         function onSendLinea(data, rId) {

@@ -85,6 +85,7 @@ namespace WebApi.Entities
         public List<Dg_orden_pub_as> Detalles;
         public List<Dg_orden_pub_ejecutivos> Ejecutivos;
         public List<Dg_orden_pub_pagos> FormasPago;
+        public string UsuarioSesion { get; set; } // Variable usada para enviar el usuario en los mails de alerta
 
         public static Dg_orden_pub_ap getDg_orden_pub_ap(DataRow item)
         {

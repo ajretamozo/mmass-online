@@ -888,9 +888,9 @@ namespace WebApi.Helpers
             return resultado;
         }
 
-        public static Parametro UpdateLineItem(string tipoAviso, String name, float cost, long units, double discount, System.DateTime? fechaDesde, System.DateTime? fechaHasta, List<Dg_orden_pub_medidas> medidas, Dg_areas_geo areaGeo, List<Dg_orden_pub_emplazamientos> emplazamientos, int tipoTarifa, long Id)
+        public static Dg_orden_pub_as UpdateLineItem(string tipoAviso, String name, float cost, long units, double discount, System.DateTime? fechaDesde, System.DateTime? fechaHasta, List<Dg_orden_pub_medidas> medidas, Dg_areas_geo areaGeo, List<Dg_orden_pub_emplazamientos> emplazamientos, int tipoTarifa, long Id, int paramSinc)
         {
-            Parametro resultado = new Parametro();
+            Dg_orden_pub_as resultado = new Dg_orden_pub_as();
             long result = -1;
             string msj = "";
             string rootId = "";
@@ -1108,9 +1108,7 @@ namespace WebApi.Helpers
                     lineItem.primaryGoal = goal;
 
                     //si el param sinc auto con adserver esta desactivado, se pausa la linea en el caso de estar activa
-                    Dg_parametro param = new Dg_parametro();
-                    param = Dg_parametro.getById(2);
-                    if (int.Parse(param.Valor) == 0 && lineItem.status == ComputedStatus.DELIVERING)
+                    if (paramSinc == 0 && lineItem.status == ComputedStatus.DELIVERING)
                     {
                         //// Create action.
                         PauseLineItems action = new PauseLineItems();
@@ -1136,8 +1134,9 @@ namespace WebApi.Helpers
                                 updatedLineItem.id, updatedLineItem.orderId, updatedLineItem.name,
                                 updatedLineItem.deliveryRateType);
 
-                            result = updatedLineItem.id;
-                            msj = "La Línea de pedido en Google Ad Manager se ha guardado con éxito con el ID: " + updatedLineItem.id;
+                            resultado.Id_Google_Ad_Manager = updatedLineItem.id ;
+                            resultado.UsuarioSesion = updatedLineItem.status.ToString(); //se guarda el estado
+                            //resultado.UsuarioSesion = "La Línea de pedido en Google Ad Manager se ha actualizado con éxito con el ID: " + updatedLineItem.id;
                         }
                     }
                     else
@@ -1149,11 +1148,10 @@ namespace WebApi.Helpers
                 catch (AdManagerApiException e)
                 {
                     ApiException innerException = e.ApiException as ApiException;
-                    msj = "Ocurrio un error al intentar guardar la Línea de pedido en Google Ad Manager: " + innerException.message;
+                    resultado.Id_Google_Ad_Manager = -1;
+                    resultado.UsuarioSesion = "Ocurrio un error al intentar actualizar la Línea de pedido en Google Ad Manager: " + innerException.message; //se guarda el error
                 }
             }
-            resultado.ParameterName = msj;
-            resultado.Value = result.ToString();
 
             return resultado;
         }
@@ -1542,7 +1540,7 @@ namespace WebApi.Helpers
                 }
         }
 
-        public static int ArchivarPausarLineItem(long Id)
+        public static int ArchivarPausarLineItem(long Id, int paramSinc)
         {
             int result = -1;
             //AdManagerUser user = new AdManagerUser();
@@ -1568,9 +1566,7 @@ namespace WebApi.Helpers
                     LineItem lineItem = page.results[0];
 
                     //si el param sinc auto con adserver esta desactivado, se pausa la linea en el caso de estar activa
-                    Dg_parametro param = new Dg_parametro();
-                    param = Dg_parametro.getById(2);
-                    if (int.Parse(param.Valor) == 0 && lineItem.status == ComputedStatus.DELIVERING)
+                    if (paramSinc == 0 && lineItem.status == ComputedStatus.DELIVERING)
                     {
                         //// Create action.
                         PauseLineItems action = new PauseLineItems();
@@ -1578,6 +1574,8 @@ namespace WebApi.Helpers
                         //// Perform action.
                         UpdateResult uResult =
                             lineItemService.performLineItemAction(action, statementBuilder.ToStatement());
+                        
+                        result = 1;
                     }
                     else
                     {
@@ -1587,8 +1585,9 @@ namespace WebApi.Helpers
                         //// Perform action.
                         UpdateResult uResult =
                             lineItemService.performLineItemAction(action,statementBuilder.ToStatement());
+
+                        result = 2;
                     }
-                    result = 1;
                 }
                 catch (Exception e)
                 {

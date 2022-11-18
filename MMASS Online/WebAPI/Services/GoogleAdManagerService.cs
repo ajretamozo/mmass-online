@@ -14,6 +14,7 @@ using System.Net.Mail;
 using System.Net.Security;
 using System.Net;
 using System.Security.Cryptography.X509Certificates;
+using System.Configuration;
 
 namespace WebApi.Services
 {
@@ -111,24 +112,39 @@ namespace WebApi.Services
             }
             else
             {
+                int paramEnviarMail = int.Parse(Dg_parametro.getById(3).Valor);
                 Dg_orden_pub_ap dg = Dg_orden_pub_ap.getById(det.Id_op_dg);
                 if (det.Id_Google_Ad_Manager > 0)
                 {
-                    resultado = GoogleAdManager.UpdateLineItem(det.tipo_aviso_dg.Descripcion, det.Descripcion, det.Importe_unitario, det.Cantidad, det.Porc_dto, det.Fecha_desde, det.Fecha_hasta, det.Medidas, det.areaGeo, det.Emplazamientos, det.Tipo_tarifa, det.Id_Google_Ad_Manager);
-                    
-                    //enviar notificación por mail
-                    if (long.Parse(resultado.Value) > 0 && (int.Parse(Dg_parametro.getById(3).Valor) == 1 || int.Parse(Dg_parametro.getById(3).Valor) == 3 || int.Parse(Dg_parametro.getById(3).Valor) == 5 || int.Parse(Dg_parametro.getById(3).Valor) == 7))
+                    //si obtiene el param sinc auto para ver si se archivan o pausan las lineas
+                    int paramSinc = int.Parse(Dg_parametro.getById(2).Valor);
+
+                    Dg_orden_pub_as res = GoogleAdManager.UpdateLineItem(det.tipo_aviso_dg.Descripcion, det.Descripcion, det.Importe_unitario, det.Cantidad, det.Porc_dto, det.Fecha_desde, det.Fecha_hasta, det.Medidas, det.areaGeo, det.Emplazamientos, det.Tipo_tarifa, det.Id_Google_Ad_Manager, paramSinc);
+                    resultado.Value = res.Id_Google_Ad_Manager.ToString(); //se devuelve el idGam
+                    if (res.Id_Google_Ad_Manager > 0)
                     {
-                        string asunto = "MMASS Online - Modificación de Línea de Pedido";
-                        string msj =  "Se ha modificado la Línea de Pedido <b>" + det.Descripcion + "</b>, " +
-                                      "ID: <b>" + det.Id_Google_Ad_Manager + "</b> perteneciente al Pedido <b>" +
-                                      dg.Bitacora + "</b>, ID: <b>" + dg.Id_Google_Ad_Manager + "</b><br>" +
-                                      "Número de Orden MMASS: <b>" + dg.Anio + "-" + dg.Mes + "-" + dg.Nro_orden + "</b><br>" +
-                                      "--------------------------------------------------------------------" +
-                                      "---------------------------------------------------------------<br>" +
-                                      "<font size=1>No responder este mensaje</font><br>" +
-                                      "<H5>Sistema de Notificaciones MMASS Online</H5>";
-                        enviarMail(asunto, msj);    
+                        resultado.ParameterName = "La Línea de pedido en Google Ad Manager se ha actualizado con éxito con el ID: " + res.Id_Google_Ad_Manager;
+                        
+                        //enviar notificación por mail
+                        if (paramEnviarMail == 1 || paramEnviarMail == 3 || paramEnviarMail == 5 || paramEnviarMail == 7)
+                        {
+                            string asunto = "MMASS Online - Modificación de Línea de Pedido";
+                            string msj = "Se ha modificado la Línea de Pedido <b>" + det.Descripcion + "</b>, " +
+                                          "ID: <b>" + det.Id_Google_Ad_Manager + "</b> perteneciente al Pedido <b>" +
+                                          dg.Bitacora + "</b>, ID: <b>" + dg.Id_Google_Ad_Manager + "</b><br>" +
+                                          "Número de Orden MMASS: <b>" + dg.Anio + "-" + dg.Mes + "-" + dg.Nro_orden + "</b><br>" +
+                                          "La Línea de Pedido ha quedado en el estado: <b>" + res.UsuarioSesion + "</b><br>" +
+                                          "Usuario MMASS Online: <b>" + det.UsuarioSesion + "</b><br>" +
+                                          "--------------------------------------------------------------------" +
+                                          "---------------------------------------------------------------<br>" +
+                                          "<font size=1>No responder este mensaje</font><br>" +
+                                          "<H5>Sistema de Notificaciones MMASS Online</H5>";
+                            enviarMail(asunto, msj);
+                        }
+                    }
+                    else
+                    {
+                        resultado.ParameterName = res.UsuarioSesion; //se devuelve el mensaje de error
                     }
                 }
                 else
@@ -155,13 +171,15 @@ namespace WebApi.Services
                         }
 
                         //enviar notificación por mail
-                        if (int.Parse(Dg_parametro.getById(3).Valor) == 1 || int.Parse(Dg_parametro.getById(3).Valor) == 2 || int.Parse(Dg_parametro.getById(3).Valor) == 5 || int.Parse(Dg_parametro.getById(3).Valor) == 6)
+                        if (paramEnviarMail == 1 || paramEnviarMail == 2 || paramEnviarMail == 5 || paramEnviarMail == 6)
                         {
                             string asunto = "MMASS Online - Creación de Línea de Pedido";
                             string msj = @"Se ha creado la Línea de Pedido <b>" + det.Descripcion + "</b>, " +
                                           "ID: <b>" + resultado.Value + "</b> perteneciente al Pedido <b>" +
                                           dg.Bitacora + "</b>, ID: <b>" + dg.Id_Google_Ad_Manager + "</b><br>" +
                                           "Número de Orden MMASS: <b>" + dg.Anio + "-" + dg.Mes + "-" + dg.Nro_orden + "</b><br>" +
+                                          "La Línea de Pedido ha quedado en el estado: <b>DRAFT</b><br>" +
+                                          "Usuario MMASS Online: <b>" + det.UsuarioSesion + "</b><br>" +
                                           "--------------------------------------------------------------------" +
                                           "---------------------------------------------------------------<br>" +
                                           "<font size=1>No responder este mensaje</font><br>" +
@@ -245,19 +263,33 @@ namespace WebApi.Services
         public long ArchivarPausarLineItems(Dg_orden_pub_ap op)
         {
             int result = 0;
-            foreach(Dg_orden_pub_as det in op.Detalles)
+            //si obtiene el param sinc auto para ver si se archivan o pausan las lineas
+            int paramSinc = int.Parse(Dg_parametro.getById(2).Valor);
+            foreach (Dg_orden_pub_as det in op.Detalles)
             {
-                result = GoogleAdManager.ArchivarPausarLineItem(det.Id_Google_Ad_Manager);
+                result = GoogleAdManager.ArchivarPausarLineItem(det.Id_Google_Ad_Manager, paramSinc);
                 if (result > 0)
                 {
                     //enviar notificación por mail
-                    if (int.Parse(Dg_parametro.getById(3).Valor) == 1 || int.Parse(Dg_parametro.getById(3).Valor) == 4 || int.Parse(Dg_parametro.getById(3).Valor) == 6 || int.Parse(Dg_parametro.getById(3).Valor) == 7)
+                    string estadoLinea = "";
+                    if (result == 1)
                     {
-                        string asunto = "MMASS Online - Archivado de Línea de Pedido";
-                        string msj = @"Se ha archivado/pausado la Línea de Pedido <b>" + det.Descripcion + "</b>, " +
+                        estadoLinea = "PAUSED";
+                    }
+                    else
+                    {
+                        estadoLinea = "ARCHIVED";
+                    }
+                    int paramEnviarMail = int.Parse(Dg_parametro.getById(3).Valor);
+                    if (paramEnviarMail == 1 || paramEnviarMail == 4 || paramEnviarMail == 6 || paramEnviarMail == 7)
+                    {
+                        string asunto = "MMASS Online - Eliminación de Línea de Pedido";
+                        string msj = @"Se ha eliminado la Línea de Pedido <b>" + det.Descripcion + "</b>, " +
                                       "ID: <b>" + det.Id_Google_Ad_Manager + "</b> perteneciente al Pedido <b>" +
                                       op.Bitacora + "</b>, ID: <b>" + op.Id_Google_Ad_Manager + "</b><br>" +
                                       "Número de Orden MMASS: <b>" + op.Anio + "-" + op.Mes + "-" + op.Nro_orden + "</b><br>" +
+                                      "La Línea de Pedido ha quedado en el estado: <b>" + estadoLinea + "</b><br>" +
+                                      "Usuario MMASS Online: <b>" + op.UsuarioSesion + "</b><br>" +
                                       "--------------------------------------------------------------------" +
                                       "---------------------------------------------------------------<br>" +
                                       "<font size=1>No responder este mensaje</font><br>" +
@@ -1157,9 +1189,11 @@ namespace WebApi.Services
 
         public void enviarMail(string asunto, string mensaje)
         {
+            //string to = ConfigurationManager.AppSettings["Mail"];
             MailMessage correo = new MailMessage();
             correo.From = new MailAddress("agustinjretamozo@gmail.com", "MMASS Online", Encoding.UTF8);//Correo de salida
-            correo.To.Add("agustinjretamozo@gmail.com"); //Correo destino (,linovalencia7@gmail.com,linovalencia@hotmail.com)
+            //correo.To.Add(to); //Correo destino (linovalencia7@gmail.com,linovalencia@hotmail.com)
+            correo.To.Add("agustinjretamozo@gmail.com"); //Correo destino
             correo.Subject = asunto; //Asunto
             correo.Body = mensaje; //Mensaje del correo
             correo.IsBodyHtml = true;
