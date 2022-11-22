@@ -132,7 +132,7 @@ namespace WebApi.Entities
                 det = DB.Select(@"select te.id_tarifa_dg, e.* 
                                   from dg_tarifas_emplazamientos te 
                                   inner join dg_emplazamientos e on e.id_emplazamiento = te.id_emplazamiento
-                                  where te.id_tarifa_dg = " + t.Rows[0]["id_tarifa_dg"].ToString());
+                                  where te.id_tarifa_dg = " + t.Rows[0]["id_tarifa_dg"].ToString() + " and e.es_borrado = 0");
                 foreach (DataRow item in det.Rows)
                 {
                     Dg_emplazamientos elem = Dg_emplazamientos.getDg_emplazamientos(item);

@@ -735,7 +735,7 @@
                                         </div>
                                         <div class="col-lg-1" style="padding-right: 20px;padding-left: 20px;padding-top: 4px;">
                                             <label for="bConvenios" class="invisible">Convenios</label>
-                                            <button type="button" data-id="convenios" id="bConvenios" class="btn actions btn-outline-dark btn-sm mr-1" onclick="getConvenios()" style="width: 33px;" title="Buscar Convenios">
+                                            <button type="button" data-id="convenios" id="bConvenios" class="btn actions btn-outline-dark btn-sm mr-1" onclick="getConvenios()" style="width: 33px;" title="Buscar Convenios" disabled="disabled">
                                                 <span class="fa fa-handshake-o" id="brow"></span>
                                             </button>
                                         </div>
@@ -1854,7 +1854,7 @@
                 data.id_Google_Ad_Manager = $('#inpIdOrdenAdServer').val();
             }
             data.id_red = $('#selRedes').val();
-            callWS("dg_orden_pub_aps", "save", JSON.stringify(data), onSaveOrder);
+            callWS("dg_orden_pub_aps", "save", JSON.stringify(data), function (resultado) { onSaveOrder(resultado, data); }); 
             $("#bSendOrdenAddServer").attr("disabled", false);
             $("#bConvenios").attr("disabled", true);
             $("#bBorrConvenios").attr("disabled", true);
@@ -1913,9 +1913,31 @@
 
         }
 
-        function onSaveOrder(data) {
+        function onSaveOrder(data, opAntes) {
 
             if (data.result > 0) {
+
+                //Parametros para el Log
+                var parametros = {};
+                parametros.objeto = 'ORDEN PUBLICITARIA';
+                parametros.clave = data.op.id_op_dg;
+                parametros.idusuario = $("#NombreUsuario").attr("data-id");
+                if (opAntes.id_op_dg == undefined) {
+                    parametros.accion = 'NUEVO';
+                    if (OpClon) {
+                        var opOriginal = getUrlParameter("orderClon");
+                        parametros.descripcion = 'Clonación de OP Digital desde: ' + opOriginal;
+                    }
+                    else {
+                        parametros.descripcion = 'Se creó la OP Digital: ' + data.op.anio + '-' + data.op.mes + '-' + data.op.nro_orden;
+                    }
+                }
+                else {
+                    parametros.accion = 'MODIFICACION';
+                    parametros.descripcion = 'Se modificó la OP Digital: ' + data.op.anio + '-' + data.op.mes + '-' + data.op.nro_orden;
+                }
+                var params = setListaParametros(parametros);
+                callWS("dg_orden_pub_aps", "grabarLog", JSON.stringify(params));
 
                 OpClon = false;
                 OpSinc = false;
@@ -1976,11 +1998,6 @@
 
         function GetData() {
             callWS("contactos", "getAgencias", '', function (data) { onPopulateSelectDone(data, "selAgencia"); });
-        }
-
-        function populateSelects(idSelect, tableName, idName, name, filters) {
-
-
         }
 
         function onAnuncianteSelected() {
@@ -3174,6 +3191,21 @@
                     Detalles[rId].id_Google_Ad_Manager = idGAM
                 }
                 recargarRenglones();
+
+                //Parametros para el Log
+                var parametros = {};
+                parametros.objeto = 'ORDEN PUBLICITARIA';
+                parametros.clave = $("#inpOrderNumber").attr("id_op_dg");
+                parametros.idusuario = $("#NombreUsuario").attr("data-id");
+                parametros.accion = 'EXPORTACION';
+                nDet = rId + 1;
+                anio = $("#inpOrderYear").val();
+                mes = $("#inpOrderMonth").val();
+                nroOp = $("#inpOrderNumber").val();
+                adserver = $("#selRedes option:selected").text();
+                parametros.descripcion = 'Se exportó el Detalle: ' + nDet + ' de la OP Digital: ' + anio + '-' + mes + '-' + nroOp + ' al AdServer: ' + adserver;
+                var params = setListaParametros(parametros);
+                callWS("dg_orden_pub_aps", "grabarLog", JSON.stringify(params));
             }
             else {
                 showMessage(msj,'error');
@@ -3192,6 +3224,20 @@
                 $('#inpIdOrdenAdServer').css("background-color", "#c3e6cb");
                 $("#bgetOrderASDetais").attr("disabled", false);
                 recargarRenglones();
+
+                //Parametros para el Log
+                var parametros = {};
+                parametros.objeto = 'ORDEN PUBLICITARIA';
+                parametros.clave = $("#inpOrderNumber").attr("id_op_dg");
+                parametros.idusuario = $("#NombreUsuario").attr("data-id");
+                parametros.accion = 'EXPORTACION';
+                anio = $("#inpOrderYear").val();
+                mes = $("#inpOrderMonth").val();
+                nroOp = $("#inpOrderNumber").val();
+                adserver = $("#selRedes option:selected").text();
+                parametros.descripcion = 'Se exportó la OP Digital: ' + anio + '-' + mes + '-' + nroOp + ' al AdServer: ' + adserver;
+                var params = setListaParametros(parametros);
+                callWS("dg_orden_pub_aps", "grabarLog", JSON.stringify(params));
             }
             else {
                 if (r == -2) {
@@ -4444,6 +4490,19 @@
                 $("#bGuardarOrden").attr("title", "No se pueden guardar ordenes que estén anuladas");
                 recargarRenglones();
                 showMessage("Orden anulada con éxito", "info");
+
+                //Parametros para el Log
+                var parametros = {};
+                parametros.objeto = 'ORDEN PUBLICITARIA';
+                parametros.clave = $("#inpOrderNumber").attr("id_op_dg");
+                parametros.idusuario = $("#NombreUsuario").attr("data-id");
+                parametros.accion = 'ANULACION';
+                anio = $("#inpOrderYear").val();
+                mes = $("#inpOrderMonth").val();
+                nroOp = $("#inpOrderNumber").val();
+                parametros.descripcion = 'Se anuló la OP Digital: ' + anio + '-' + mes + '-' + nroOp;
+                var params = setListaParametros(parametros);
+                callWS("dg_orden_pub_aps", "grabarLog", JSON.stringify(params));
             }
             else {
                 showMessage("Ocurrió un error al intentar anular la órden", "error");

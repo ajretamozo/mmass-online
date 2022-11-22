@@ -61,7 +61,6 @@ namespace WebApi.Controllers
             return Ok(fu);
         }
 
-        //AGREGUE:
         [HttpPost("getSponsorsPorFecha")]
         public IActionResult getSponsorsPorFecha(Dg_orden_pub_as det)
         {
@@ -104,5 +103,10 @@ namespace WebApi.Controllers
             return Ok(result);
         }
 
+        [HttpPost("grabarLog")]
+        public void grabarLog(ListaParametro parametros)
+        {
+            _Dg_orden_pub_apService.grabarLog(parametros.Parametros);
+        }
     }
 }

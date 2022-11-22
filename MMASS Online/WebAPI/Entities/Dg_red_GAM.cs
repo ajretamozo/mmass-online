@@ -6,6 +6,8 @@ using System.Data;
 using WebApi.Helpers;
 using System.Data.SqlClient;
 using Microsoft.IdentityModel.Protocols;
+using System.Security.Cryptography;
+using System.Transactions;
 
 namespace WebApi.Entities
 {
@@ -153,8 +155,14 @@ namespace WebApi.Entities
             if (Id_red != 0)
             {
                 try
-                {
-                    DB.Execute(sql);
+                {                   
+                    using (TransactionScope transaccion = new TransactionScope(TransactionScopeOption.RequiresNew, new TimeSpan(0, 2, 0)))
+                    {
+                        DB.Execute(sql);
+                        DB.Execute("update dg_emplazamientos set es_borrado = 1 where id_red = " + Id_red.ToString());
+
+                        transaccion.Complete();
+                    }
                 }
                 catch (Exception ex)
                 {

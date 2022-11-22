@@ -1126,5 +1126,99 @@ namespace WebApi.Entities
             return ordenes;
         }
 
+        public static void grabarLog(List<Parametro> datosLog)
+        {
+            string objeto = "";
+            string clave = "";
+            string accion = "";
+            string descripcion = "";
+            int idusuario = 0;
+
+            string sql = @"insert into auditoria (fechahora, objeto, clave, accion, descripcion, idusuario, borrado) 
+                           values(@fechahora, @objeto, @clave, @accion, @descripcion, @idusuario, 0)";
+
+            foreach (Parametro p in datosLog)
+            {
+                if (p.Value.ToString() != "")
+                {
+                    if (p.ParameterName == "objeto")
+                    {
+                        objeto = p.Value;
+                    }
+                    if (p.ParameterName == "clave")
+                    {
+                        clave = p.Value;
+                    }
+                    if (p.ParameterName == "accion")
+                    {
+                        accion = p.Value;
+                    }
+                    if (p.ParameterName == "descripcion")
+                    {
+                        descripcion = p.Value;
+                    }
+                    if (p.ParameterName == "idusuario")
+                    {
+                        idusuario = int.Parse(p.Value);
+                    }
+                }
+            }
+
+            List<SqlParameter> parametros = new List<SqlParameter>()
+            {
+                new SqlParameter()
+                { ParameterName="@fechahora",SqlDbType = SqlDbType.DateTime, Value = DateTime.Now }
+            };
+            if (objeto != "")
+            {
+                parametros.Add(new SqlParameter() { ParameterName = "@objeto", SqlDbType = SqlDbType.NVarChar, Value = objeto });
+            }
+            else
+            {
+                parametros.Add(new SqlParameter() { ParameterName = "@objeto", SqlDbType = SqlDbType.NVarChar, Value = DBNull.Value });
+            }
+            if (clave != "")
+            {
+                parametros.Add(new SqlParameter() { ParameterName = "@clave", SqlDbType = SqlDbType.NVarChar, Value = clave });
+            }
+            else
+            {
+                parametros.Add(new SqlParameter() { ParameterName = "@clave", SqlDbType = SqlDbType.NVarChar, Value = DBNull.Value });
+            }
+            if (accion != "")
+            {
+                parametros.Add(new SqlParameter() { ParameterName = "@accion", SqlDbType = SqlDbType.NVarChar, Value = accion });
+            }
+            else
+            {
+                parametros.Add(new SqlParameter() { ParameterName = "@accion", SqlDbType = SqlDbType.NVarChar, Value = DBNull.Value });
+            }
+            if (descripcion != "")
+            {
+                parametros.Add(new SqlParameter() { ParameterName = "@descripcion", SqlDbType = SqlDbType.Text, Value = descripcion });
+            }
+            else
+            {
+                parametros.Add(new SqlParameter() { ParameterName = "@descripcion", SqlDbType = SqlDbType.Text, Value = DBNull.Value });
+            }
+            if (idusuario != 0)
+            {
+                parametros.Add(new SqlParameter() { ParameterName = "@idusuario", SqlDbType = SqlDbType.Int, Value = idusuario });
+            }
+            else
+            {
+                parametros.Add(new SqlParameter() { ParameterName = "@idusuario", SqlDbType = SqlDbType.Int, Value = DBNull.Value });
+            }
+
+            try
+            {
+                DB.Execute(sql, parametros);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
+
     }
 }

@@ -32,15 +32,10 @@ namespace WebApi.Services
         bool bloquearOP(Dg_orden_pub_bloqueo opb);
         bool desbloquearOP(Dg_orden_pub_bloqueo opb);
         bool desbloquearTodas(int id);
-        //bool removeTarifa(Dg_tarifas miobj);
-        //IEnumerable<Dg_tarifa_forma_uso> getFormasUso();
-        //IEnumerable<Dg_tarifas> filter(List<Parametro> parametros);
-
-        //AGREGUE:
-        //IEnumerable<Dg_orden_pub_as> getSponsorsPorFecha(DateTime fechaDesde, DateTime fechaHasta);
         IEnumerable<Dg_orden_pub_as> getSponsorsPorFecha(Dg_orden_pub_as det);
         bool anularOrden(int id);
         bool existeOpNombre(int id, string nom);
+        void grabarLog(List<Parametro> datosLog);
     }
     public class Dg_orden_pub_apM : Dg_orden_pub_ap {
         public int result { get; set; }
@@ -156,6 +151,11 @@ namespace WebApi.Services
         public bool existeOpNombre(int id, string nom)
         {
             return Dg_orden_pub_ap.existeOpNombre(id, nom);
+        }
+
+        public void grabarLog(List<Parametro> datosLog)
+        {
+            Dg_orden_pub_ap.grabarLog(datosLog);
         }
 
     }
