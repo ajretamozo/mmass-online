@@ -165,6 +165,71 @@
             </div>
         </div>
 
+        <!--Modal Configuracion Mail-->
+        <div class="modal fade" id="configMailModal" style="overflow-y: auto">
+            <div class="modal-dialog modal-xl modalConv">
+                <div class="modal-content shadow p-3 mb-5 bg-white rounded">
+
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="configMailTitle">CONFIGURAR CUENTA DE MAIL</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+
+                    <!-- Modal body -->
+                    <div class="modal-body" id="configMailBody">
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <label for="mail">Mail Remitente</label>
+                                <div class="input-group">
+                                    <input type="email" id="mail" class="form-control readonlyOnView" placeholder="Mail">
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <label for="pass">Password</label>
+                                <div class="input-group">
+                                    <input type="password" id="pass" class="form-control readonlyOnView" placeholder="Password">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <label for="servidor">Servidor SMTP</label>
+                                <div class="input-group">
+                                    <input type="text" id="servidor" class="form-control readonlyOnView" placeholder="Servidor">
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <label for="puerto">Puerto SMTP</label>
+                                <div class="input-group">
+                                    <input type="number" id="puerto" class="form-control readonlyOnView" placeholder="Puerto">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" style="margin-top: 7px;">
+                            <div class="col-lg-4">
+                                <button type="button" class="btn btn-dark btn-sm mx-1" onclick="probarMail()" style="height: 34px;" disabled="disabled">
+                                    <span class="fa fa-unlock"></span> Probar
+                                </button>
+                            </div>          
+                            <div class="col-lg-4">
+                                <div class="input-group">
+                                    <input type="hidden" id="idMail" class="form-control readonlyOnView" disabled="disabled" >
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-dark" onclick="guardarMail()">Guardar</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
 
         <div id="divMessage" class="alert" style="display:none;cursor:pointer;z-index:10000;" title="Click para cerrar" onclick="$('#divMessage').hide('slideDown')"> </div>
         <div class="jumbotron mt-4 py-4 col-lg-9 shadow p-3 mb-5 bg-white rounded" id="divTiposAvisosMain">
@@ -228,6 +293,15 @@
                             <label for="checkArc">Archivado de Línea de Pedido</label>
                         </div>
                     </div>
+                    <div class="row py-1">
+                        <div class="col-md-6">
+                        </div>
+                        <div class="col-md-6">
+                            <button type="button" class="btn btn-dark btn-sm mx-1" onclick="configCuentaMail()" style="height: 34px;">
+                                <span class="fa fa-unlock"></span> Configurar cuenta email
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -244,6 +318,7 @@
             //Se buscan los valores para inicializar los parámetros en BD
             callWS("medios", "getParamById", JSON.stringify(2), function (parSinc) { iniPermitirSinc(parSinc, "checkPermitirSinc"); });
             callWS("medios", "getParamById", JSON.stringify(3), function (parMail) { iniActMail(parMail, "checkActivarMail"); });
+            callWS("googleAdManager", "getMailCta", "", function (mailCta) { onGetMailCta(mailCta); });
         });
 
         function iniPermitirSinc(param, check) {
@@ -484,6 +559,66 @@
                 $("#rowNotDet").hide();
             }
             callWS("medios", "cambiarParam", JSON.stringify(param));
+        }
+
+        function onGetMailCta(mailCta) {
+            if (mailCta.idMail == null) {
+                $('#idMail').attr("value", 0);
+            }
+            else {
+                $('#idMail').attr("value", mailCta.idMail);
+            }
+            $('#mail').attr("value", mailCta.dirMail);
+            $('#pass').attr("value", mailCta.pass);
+            $('#servidor').attr("value", mailCta.servidor);
+            $('#puerto').attr("value", mailCta.puerto);
+        }
+
+        function configCuentaMail() {
+            $("#configMailModal").modal('show');
+        }
+
+        function guardarMail() {
+            var data = {};
+            var error = [];
+            if ($("#mail").val() == "") {
+                error.push("Mail");
+            }
+            if ($("#pass").val() == "") {
+                error.push("Password");
+            }
+            if ($("#servidor").val() == "") {
+                error.push("Servidor");
+            }
+            if ($("#puerto").val() == "") {
+                error.push("Puerto");
+            }
+
+            if (error.length == 0) {
+                data.idMail = $('#idMail').attr("value");
+                data.dirMail = $('#mail').val();
+                data.pass = $("#pass").val();
+                data.servidor = $('#servidor').val();
+                data.puerto = $('#puerto').val();
+
+                callWS("googleAdManager", "saveMail", JSON.stringify(data), function (resp) {
+                    if (resp == true) {
+                        showMessage("Datos guardados con éxito");
+                    }
+                    else {
+                        showMessage("Ocurrió un error al intentar guardar los datos", "error");
+                        console.log(resp);
+                    }
+                });
+
+            } else {
+                message = "Falta completar/indicar los siguientes datos: "
+                error.forEach(function (err) {
+                    message += err + " - ";
+                });
+                message = message.slice(0, -3);
+                showMessage(message, "error");
+            }
         }
 
     </script>

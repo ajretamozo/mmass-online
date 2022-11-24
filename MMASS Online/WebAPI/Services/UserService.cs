@@ -62,7 +62,7 @@ namespace WebApi.Services
             return Convert.ToBase64String(cipherTextBytes);
         }
 
-        private static string Decencriptar(string cipherText, string passPhrase)
+        public static string Desencriptar(string cipherText, string passPhrase)
         {
             string initVector = "mnopqrstuggabcde";
             const int keysize = 256;
@@ -97,7 +97,7 @@ namespace WebApi.Services
             Usuario uMMASS = Usuario.getByNombre(username);
             if (uMMASS != null)
             {
-                if (Decencriptar(uMMASS.Clave_web, "silverblue") == password) //Heredado MMASS GRAPH
+                if (Desencriptar(uMMASS.Clave_web, "silverblue") == password) //Heredado MMASS GRAPH
                 {
                     user = new User();
                     user.Id = uMMASS.Id_usuario;
@@ -164,7 +164,7 @@ namespace WebApi.Services
         public Usuario getById(int id)
         {
             Usuario user = Usuario.getById(id);
-            user.Clave_web = Decencriptar(user.Clave_web, "silverblue");
+            user.Clave_web = Desencriptar(user.Clave_web, "silverblue");
 
             return user;
         }

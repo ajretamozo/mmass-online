@@ -48,6 +48,8 @@ namespace WebApi.Services
         List<Parametro> obtenerProgresoLineasGam(Dg_orden_pub_ap order);
         IEnumerable<Dg_orden_pub_as> comprobarNuevosDetalles(Dg_orden_pub_ap order);
         IEnumerable<Dg_orden_pub_as> GetDetNuevos(List<Parametro> parametros);
+        bool saveMail(Mail mail);
+        Mail getMailCta();
     }
 
     public class GoogleAdManagerService : IGoogleAdManagerService
@@ -1187,12 +1189,51 @@ namespace WebApi.Services
             }
         }
 
+        public bool saveMail(Mail mail)
+        {
+            mail.Pass = UserService.Encriptar(mail.Pass, "silverblue");
+            return mail.saveMailCta();
+        }
+
+        public Mail getMailCta()
+        {
+            Mail mail = Mail.getMailCta();
+            if (mail.Pass == null)
+            {
+                mail.Pass = "4toQaorWHkvy2xqYBmLyBA==";
+            }
+            mail.Pass = UserService.Desencriptar(mail.Pass, "silverblue");
+
+            return mail;
+        }
+
         public void enviarMail(string asunto, string mensaje)
         {
-            //string to = ConfigurationManager.AppSettings["Mail"];
+            Mail mail = getMailCta();
+            ////string to = ConfigurationManager.AppSettings["Mail"];
+            //MailMessage correo = new MailMessage();
+            ////correo.From = new MailAddress("agustinjretamozo@gmail.com", "MMASS Online", Encoding.UTF8);//Correo de salida
+            //correo.From = new MailAddress("aretamozo@stratzone.com", "MMASS Online", Encoding.UTF8);//Correo de salida
+            ////correo.To.Add(to); //Correo destino (linovalencia7@gmail.com,linovalencia@hotmail.com)
+            //correo.To.Add("agustinjretamozo@gmail.com"); //Correo destino
+            //correo.Subject = asunto; //Asunto
+            //correo.Body = mensaje; //Mensaje del correo
+            //correo.IsBodyHtml = true;
+            //correo.Priority = MailPriority.Normal;
+            //SmtpClient smtp = new SmtpClient();
+            //smtp.UseDefaultCredentials = false;
+            ////smtp.Host = "smtp.gmail.com"; //Host del servidor de correo
+            ////smtp.Host = "mail.stratzone.com"; //Host del servidor de correo 
+            //smtp.Host = "dtcwin113.ferozo.com"; //Host del servidor de correo
+            //smtp.Port = 25; //Puerto de salida
+            ///*smtp.Credentials = new NetworkCredential("agustinjretamozo@gmail.com", "wflrkfavbdlretrk");*///Cuenta de correo
+            //smtp.Credentials = new NetworkCredential("aretamozo@stratzone.com", "Angela370"); //Cuenta de correo
+            //ServicePointManager.ServerCertificateValidationCallback = delegate (object s, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors) { return true; };
+            ////smtp.EnableSsl = true;//True si el servidor de correo permite ssl
+            //smtp.EnableSsl = false;//False si el servidor de correo no permite ssl
+
             MailMessage correo = new MailMessage();
-            correo.From = new MailAddress("agustinjretamozo@gmail.com", "MMASS Online", Encoding.UTF8);//Correo de salida
-            //correo.To.Add(to); //Correo destino (linovalencia7@gmail.com,linovalencia@hotmail.com)
+            correo.From = new MailAddress(mail.DirMail, mail.Nombre, Encoding.UTF8);//Correo de salida
             correo.To.Add("agustinjretamozo@gmail.com"); //Correo destino
             correo.Subject = asunto; //Asunto
             correo.Body = mensaje; //Mensaje del correo
@@ -1200,11 +1241,12 @@ namespace WebApi.Services
             correo.Priority = MailPriority.Normal;
             SmtpClient smtp = new SmtpClient();
             smtp.UseDefaultCredentials = false;
-            smtp.Host = "smtp.gmail.com"; //Host del servidor de correo
-            smtp.Port = 25; //Puerto de salida
-            smtp.Credentials = new NetworkCredential("agustinjretamozo@gmail.com", "wflrkfavbdlretrk");//Cuenta de correo
+            smtp.Host = mail.Servidor; //Host del servidor de correo 
+            smtp.Port = int.Parse(mail.Puerto); //Puerto de salida
+            smtp.Credentials = new NetworkCredential(mail.DirMail, mail.Pass); //Cuenta de correo
             ServicePointManager.ServerCertificateValidationCallback = delegate (object s, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors) { return true; };
-            smtp.EnableSsl = true;//True si el servidor de correo permite ssl
+            smtp.EnableSsl = false;//True si el servidor de correo permite ssl
+
             smtp.Send(correo);
         }
 

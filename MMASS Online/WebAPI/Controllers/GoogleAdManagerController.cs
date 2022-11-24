@@ -182,5 +182,19 @@ namespace WebApi.Controllers
             var detalles = _GoogleAdManagerService.GetDetNuevos(parametros.Parametros);
             return Ok(detalles);
         }
+
+        [HttpPost("getMailCta")]
+        public IActionResult getMailCta()
+        {
+            var mail = _GoogleAdManagerService.getMailCta();
+            return Ok(mail);
+        }
+
+        [HttpPost("saveMail")]
+        public IActionResult saveMail(Mail mail)
+        {
+            var res = _GoogleAdManagerService.saveMail(mail);
+            return Ok(res);
+        }
     }
 }
