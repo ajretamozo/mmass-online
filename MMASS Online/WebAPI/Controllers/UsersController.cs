@@ -78,5 +78,11 @@ namespace WebApi.Controllers
             return Ok(res);
         }
 
+        [HttpPost("updateAlerta")]
+        public IActionResult updateAlerta(Usuario miobj)
+        {
+            var user = _userService.updateAlerta(miobj);
+            return Ok(user);
+        }
     }
 }

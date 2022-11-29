@@ -378,7 +378,7 @@ namespace WebApi.Helpers
                 StatementBuilder statementBuilder2 =
                     new StatementBuilder().OrderBy("id ASC").Limit(pageSize);
                 StatementBuilder statementBuilder = new StatementBuilder()
-                  .Where("OrderId = :oID").OrderBy("id ASC")
+                  .Where("OrderId = :oID and isArchived = false and LineItemType != 'SPONSORSHIP'").OrderBy("id ASC")
                   .Limit(pageSize)
                   .AddValue("oID", orderId);
                 // Retrieve a small amount of line items at a time, paging through until all

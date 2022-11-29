@@ -23,6 +23,7 @@ namespace WebApi.Services
         bool deleteUser(Usuario miobj);
         Usuario getById(int id);
         bool cantMaxUsers();
+        int updateAlerta(Usuario miobj);
     }
 
     public class UserService : IUserService
@@ -172,6 +173,11 @@ namespace WebApi.Services
         public bool cantMaxUsers()
         {
             return Usuario.cantMaxUsers();
+        }
+
+        public int updateAlerta(Usuario miobj)
+        {
+            return miobj.updateAlerta();
         }
 
     }

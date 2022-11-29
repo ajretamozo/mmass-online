@@ -211,10 +211,10 @@
                                 <button type="button" class="btn btn-dark btn-sm mx-1" onclick="probarMail()" style="height: 34px;" disabled="disabled">
                                     <span class="fa fa-unlock"></span> Probar
                                 </button>
-                            </div>          
+                            </div>
                             <div class="col-lg-4">
                                 <div class="input-group">
-                                    <input type="hidden" id="idMail" class="form-control readonlyOnView" disabled="disabled" >
+                                    <input type="hidden" id="idMail" class="form-control readonlyOnView" disabled="disabled">
                                 </div>
                             </div>
                         </div>
@@ -223,6 +223,45 @@
                     <!-- Modal footer -->
                     <div class="modal-footer">
                         <button type="button" class="btn btn-dark" onclick="guardarMail()">Guardar</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!--Modal Destinatarios-->
+        <div class="modal fade" id="destinatariosModal">
+            <div class="modal-dialog modal-xl modalConv">
+                <div class="modal-content shadow p-3 mb-5 bg-white rounded">
+
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="destinatariosModalTitle">DESTINATARIOS</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+
+                    <!-- Modal body -->
+                    <div class="modal-body" id="destinatariosModalBody">                      
+                        <!--Tabla-->
+                        <div class="table-responsive mt-2 tableFixHead">
+                            <table class="table table-fixed table-striped" id="tDestinatarios">
+                                <thead class="thead-dark">
+                                    <tr>
+                                        <th class="col-xs-3" style="text-align: center;">#</th>
+                                        <th class="col-xs-2" style="text-align: center;">Nombre</th>
+                                        <th class="col-xs-2" style="text-align: center;">Usuario</th>
+                                        <th class="col-xs-1" style="text-align: center;">Mail</th>
+                                        <th class="col-xs-1" style="text-align: center;">Enviar</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="TableDestinatarios"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
                         <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
                     </div>
 
@@ -296,9 +335,14 @@
                     <div class="row py-1">
                         <div class="col-md-6">
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-3">
                             <button type="button" class="btn btn-dark btn-sm mx-1" onclick="configCuentaMail()" style="height: 34px;">
-                                <span class="fa fa-unlock"></span> Configurar cuenta email
+                                <span class="fa fa-envelope"></span> Configurar cuenta
+                            </button>
+                        </div>
+                        <div class="col-md-3" style="padding-left: 0px;">
+                            <button type="button" class="btn btn-dark btn-sm mx-1" onclick="destMail()" style="height: 34px;">
+                                <span class="fa fa-envelope-open"></span> Destinatarios
                             </button>
                         </div>
                     </div>
@@ -318,7 +362,6 @@
             //Se buscan los valores para inicializar los parámetros en BD
             callWS("medios", "getParamById", JSON.stringify(2), function (parSinc) { iniPermitirSinc(parSinc, "checkPermitirSinc"); });
             callWS("medios", "getParamById", JSON.stringify(3), function (parMail) { iniActMail(parMail, "checkActivarMail"); });
-            callWS("googleAdManager", "getMailCta", "", function (mailCta) { onGetMailCta(mailCta); });
         });
 
         function iniPermitirSinc(param, check) {
@@ -561,6 +604,10 @@
             callWS("medios", "cambiarParam", JSON.stringify(param));
         }
 
+        function configCuentaMail() {
+            callWS("googleAdManager", "getMailCta", "", function (mailCta) { onGetMailCta(mailCta); });
+        }
+
         function onGetMailCta(mailCta) {
             if (mailCta.idMail == null) {
                 $('#idMail').attr("value", 0);
@@ -569,12 +616,14 @@
                 $('#idMail').attr("value", mailCta.idMail);
             }
             $('#mail').attr("value", mailCta.dirMail);
+/*            $('#mail').attr('placeholder', mailCta.dirMail)*/
             $('#pass').attr("value", mailCta.pass);
+/*            $('#pass').attr("placeholder", mailCta.pass);*/
             $('#servidor').attr("value", mailCta.servidor);
+/*            $('#servidor').attr("placeholder", mailCta.servidor);*/
             $('#puerto').attr("value", mailCta.puerto);
-        }
+/*           $('#puerto').attr("placeholder", mailCta.puerto);*/
 
-        function configCuentaMail() {
             $("#configMailModal").modal('show');
         }
 
@@ -619,6 +668,60 @@
                 message = message.slice(0, -3);
                 showMessage(message, "error");
             }
+        }
+
+        function destMail() {
+            callWS("users", "getAllUsers", '', function (data) { onPopulateTableDestinatarios(data); });
+        }
+
+        function onPopulateTableDestinatarios(data) {
+            rowHTML = ''
+
+            $.each(data, function (it, usuario) {
+
+                rowHTML += "<tr>";
+                rowHTML += "<td class='col-xs-1' align='center'>" + (it + 1) + "</td>";
+                rowHTML += "<td class='col-xs-1' style='text-align: center;'> " + usuario.nombrel + "</td >";
+                rowHTML += "<td class='col-xs-1' style='text-align: center;'> " + usuario.nombre + "</td >";
+                rowHTML += "<td class='col-xs-1' style='text-align: center;'> " + usuario.email + "</td >";
+                if (usuario.ambito == 0) {
+                    if (usuario.email == '') {
+                        rowHTML += "<td class='col-xs-1' style='text-align: center;'><input type='checkbox' style='margin - top: .4rem; margin - right: .2rem' class='form - check - input float - sm - left' id='check" + usuario.id_usuario + "' onclick='seleccionarUsuario(" + usuario.id_usuario + ")' disabled='disabled'></td >";
+                    }
+                    else {
+                        rowHTML += "<td class='col-xs-1' style='text-align: center;'><input type='checkbox' style='margin - top: .4rem; margin - right: .2rem' class='form - check - input float - sm - left' id='check" + usuario.id_usuario + "' onclick='seleccionarUsuario(" + usuario.id_usuario + ")'></td >";
+                    }
+                }
+                else {
+                    rowHTML += "<td class='col-xs-1' style='text-align: center;'><input type='checkbox' style='margin - top: .4rem; margin - right: .2rem' class='form - check - input float - sm - left' id='check" + usuario.id_usuario + "' onclick='seleccionarUsuario(" + usuario.id_usuario + ")' checked></td >";
+                }
+                rowHTML += "</tr>";
+            });
+
+            $("#TableDestinatarios").html(rowHTML);
+
+            $("#destinatariosModal").modal('show');
+
+        }
+
+        function seleccionarUsuario(id) {
+            var data = {};
+            data.id_usuario = id;
+            if (document.getElementById("check" + id).checked == true) {
+                data.Ambito = 1;
+            }
+            else {
+                data.Ambito = 0;
+            }
+
+            callWS("users", "updateAlerta", JSON.stringify(data), function (resp) {
+                if (resp == 0) {
+                    showMessage("Usuario actualizado", "info");
+                }
+                else {
+                    showMessage("Ocurrió un error al intentar actualizar el Usuario", "error");
+                }
+            });
         }
 
     </script>

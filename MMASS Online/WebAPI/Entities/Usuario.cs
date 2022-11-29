@@ -127,7 +127,7 @@ namespace WebApi.Entities
                 {
                         if (existeUserTrafico())
                         {
-                            sql = "update usuarios set clave_web = @clave_web, usrrol = @usrrol where nombre = @nombre";
+                            sql = "update usuarios set clave_web = @clave_web, usrrol = @usrrol, email=@email where nombre = @nombre";
                         }
                         else
                         {
@@ -143,13 +143,13 @@ namespace WebApi.Entities
                             }
 
                             sql = "insert into usuarios (id_usuario, nombre, nombrel, tipodoc, nrodoc, f_alta, clave, clave_web, email, adusuario, usrrol)" +
-                                               " values (@id_usuario, @nombre, @nombrel, 0, '', @f_alta, '', @clave_web, '', '', @usrrol)";
+                                               " values (@id_usuario, @nombre, @nombrel, 0, '', @f_alta, '', @clave_web, @email, '', @usrrol)";
                         }
                 }
 
                 else
                 {
-                    sql = "update usuarios set nombre = @nombre, nombrel = @nombrel, clave_web = @clave_web, usrrol = @usrrol where id_usuario = @id_usuario";
+                    sql = "update usuarios set nombre = @nombre, nombrel = @nombrel, clave_web = @clave_web, usrrol = @usrrol, email = @email where id_usuario = @id_usuario";
                 }
 
                 List<SqlParameter> parametros = new List<SqlParameter>()
@@ -165,7 +165,9 @@ namespace WebApi.Entities
                     new SqlParameter()
                     { ParameterName="@f_alta", SqlDbType = SqlDbType.DateTime, Value = F_alta },
                     new SqlParameter()
-                    { ParameterName="@usrrol", SqlDbType = SqlDbType.SmallInt, Value = Usrrol }
+                    { ParameterName="@usrrol", SqlDbType = SqlDbType.SmallInt, Value = Usrrol },
+                    new SqlParameter()
+                    { ParameterName="@email", SqlDbType = SqlDbType.VarChar, Value = Email }
                 };
                 try
                 {
@@ -179,6 +181,31 @@ namespace WebApi.Entities
                 }
                 return respuesta;
             }                      
+        }
+
+        public int updateAlerta()
+        {
+            int respuesta = 0;
+            //Se utiliza el campo Ambito por conveniencia
+                string sql = "update usuarios set Ambito = @Ambito where id_usuario = @id_usuario";
+
+                List<SqlParameter> parametros = new List<SqlParameter>()
+                {
+                    new SqlParameter()
+                    { ParameterName="@id_usuario", SqlDbType = SqlDbType.Int, Value = Id_usuario },
+                    new SqlParameter()
+                    { ParameterName="@Ambito", SqlDbType = SqlDbType.SmallInt, Value = Ambito }
+                };
+                try
+                {
+                    DB.Execute(sql, parametros);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    respuesta = 1;
+                }
+                return respuesta;
         }
 
         public static List<Usuario> getAllUsers()
@@ -310,6 +337,24 @@ namespace WebApi.Entities
                 resultado = true;
             }
             return resultado;
+        }
+
+        public static List<Usuario> getListaAlertas()
+        {
+            string sqlCommand = @"select email from usuarios where (clave_web is not null and clave_web != '') 
+                                  and (f_baja is null or f_baja = '') and Ambito = 1";
+            List<Usuario> col = new List<Usuario>();
+            DataTable t = DB.Select(sqlCommand);
+
+            foreach (DataRow item in t.Rows)
+            {
+                Usuario user = new Usuario
+                {
+                    Email = item["email"].ToString()
+                };
+                col.Add(user);
+            }
+            return col;
         }
 
     }

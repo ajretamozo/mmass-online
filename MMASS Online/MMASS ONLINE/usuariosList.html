@@ -153,8 +153,6 @@
 
 
         function populateFields() {
-
-            // Llenar tabla con redes existentes
             callWS("users", "getAllUsers", '', function (data) { populateTable(data, 'TableUsers'); });
         }
 

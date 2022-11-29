@@ -1210,31 +1210,14 @@ namespace WebApi.Services
         public void enviarMail(string asunto, string mensaje)
         {
             Mail mail = getMailCta();
-            ////string to = ConfigurationManager.AppSettings["Mail"];
-            //MailMessage correo = new MailMessage();
-            ////correo.From = new MailAddress("agustinjretamozo@gmail.com", "MMASS Online", Encoding.UTF8);//Correo de salida
-            //correo.From = new MailAddress("aretamozo@stratzone.com", "MMASS Online", Encoding.UTF8);//Correo de salida
-            ////correo.To.Add(to); //Correo destino (linovalencia7@gmail.com,linovalencia@hotmail.com)
-            //correo.To.Add("agustinjretamozo@gmail.com"); //Correo destino
-            //correo.Subject = asunto; //Asunto
-            //correo.Body = mensaje; //Mensaje del correo
-            //correo.IsBodyHtml = true;
-            //correo.Priority = MailPriority.Normal;
-            //SmtpClient smtp = new SmtpClient();
-            //smtp.UseDefaultCredentials = false;
-            ////smtp.Host = "smtp.gmail.com"; //Host del servidor de correo
-            ////smtp.Host = "mail.stratzone.com"; //Host del servidor de correo 
-            //smtp.Host = "dtcwin113.ferozo.com"; //Host del servidor de correo
-            //smtp.Port = 25; //Puerto de salida
-            ///*smtp.Credentials = new NetworkCredential("agustinjretamozo@gmail.com", "wflrkfavbdlretrk");*///Cuenta de correo
-            //smtp.Credentials = new NetworkCredential("aretamozo@stratzone.com", "Angela370"); //Cuenta de correo
-            //ServicePointManager.ServerCertificateValidationCallback = delegate (object s, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors) { return true; };
-            ////smtp.EnableSsl = true;//True si el servidor de correo permite ssl
-            //smtp.EnableSsl = false;//False si el servidor de correo no permite ssl
-
+            List <Usuario> listaMails = Usuario.getListaAlertas();
             MailMessage correo = new MailMessage();
+
             correo.From = new MailAddress(mail.DirMail, mail.Nombre, Encoding.UTF8);//Correo de salida
-            correo.To.Add("agustinjretamozo@gmail.com"); //Correo destino
+            foreach(Usuario u in listaMails)
+            {
+                correo.To.Add(u.Email); //Correo destino
+            }
             correo.Subject = asunto; //Asunto
             correo.Body = mensaje; //Mensaje del correo
             correo.IsBodyHtml = true;
