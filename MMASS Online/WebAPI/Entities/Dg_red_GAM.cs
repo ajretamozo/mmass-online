@@ -160,6 +160,7 @@ namespace WebApi.Entities
                     {
                         DB.Execute(sql);
                         DB.Execute("update dg_emplazamientos set es_borrado = 1 where id_red = " + Id_red.ToString());
+                        DB.Execute("delete from dg_contacto_red_GAM where id_red = " + Id_red.ToString());
 
                         transaccion.Complete();
                     }

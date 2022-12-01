@@ -188,7 +188,7 @@
                             <div class="col-lg-4">
                                 <label for="pass">Password</label>
                                 <div class="input-group">
-                                    <input type="password" id="pass" class="form-control readonlyOnView" placeholder="Password">
+                                    <input type="password" id="pass" class="form-control readonlyOnView" autocomplete="new-password" placeholder="Password">
                                 </div>
                             </div>
                         </div>
@@ -208,8 +208,8 @@
                         </div>
                         <div class="row" style="margin-top: 7px;">
                             <div class="col-lg-4">
-                                <button type="button" class="btn btn-dark btn-sm mx-1" onclick="probarMail()" style="height: 34px;" disabled="disabled">
-                                    <span class="fa fa-unlock"></span> Probar
+                                <button type="button" class="btn btn-dark btn-sm mx-1" onclick="probarMail()" style="height: 34px;" title='Enviar mail de prueba'>
+                                    <span class="fa fa-plug"></span> Probar
                                 </button>
                             </div>
                             <div class="col-lg-4">
@@ -357,6 +357,8 @@
         //DatePickers Initialization
         $(function () {
             $('input[type=text]').attr('autocomplete', 'off');
+            //$('input[type=email]').attr('autocomplete', 'off');
+            //$('input[type=password]').attr('autocomplete', 'off');
             $("#divNavBar").load("navBar.html");
             document.body.style.backgroundImage = "url(./fondoM3.png)";
             //Se buscan los valores para inicializar los parámetros en BD
@@ -720,6 +722,17 @@
                 }
                 else {
                     showMessage("Ocurrió un error al intentar actualizar el Usuario", "error");
+                }
+            });
+        }
+
+        function probarMail() {
+            callWS("googleAdManager", "pruebaMail", "", function (resp) {
+                if (resp == "") {
+                    showMessage("Mail de prueba enviado", "success");
+                }
+                else {
+                    showMessage("Ocurrió un error al intentar enviar el mail de prueba (" + resp + "), verifique los datos ingresados", "error");
                 }
             });
         }

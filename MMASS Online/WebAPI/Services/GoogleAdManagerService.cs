@@ -50,6 +50,7 @@ namespace WebApi.Services
         IEnumerable<Dg_orden_pub_as> GetDetNuevos(List<Parametro> parametros);
         bool saveMail(Mail mail);
         Mail getMailCta();
+        String pruebaMail();
     }
 
     public class GoogleAdManagerService : IGoogleAdManagerService
@@ -1231,6 +1232,27 @@ namespace WebApi.Services
             smtp.EnableSsl = false;//True si el servidor de correo permite ssl
 
             smtp.Send(correo);
+        }
+
+        public String pruebaMail()
+        {
+            string resp = "";
+            string asunto = "MMASS Online - Mail de Prueba";
+            string msj = @"Este es un Mail de Prueba <br>" +
+                          "--------------------------------------------------------------------" +
+                          "---------------------------------------------------------------<br>" +
+                          "<font size=1>No responder este mensaje</font><br>" +
+                          "<H5>Sistema de Notificaciones MMASS Online</H5>";
+            try
+            {
+                enviarMail(asunto, msj);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                resp = ex.Message;
+            }
+            return resp;
         }
 
     }

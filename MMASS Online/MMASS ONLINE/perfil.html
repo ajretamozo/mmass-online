@@ -1,7 +1,7 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-    <title>MMASS Online - Redes AdServer</title>
+    <title>MMASS Online - Mi Perfil</title>
 
     <link rel="shortcut icon" href="favicon.png">
 
@@ -20,6 +20,9 @@
 
 
     <style type="text/css">
+        .jumbotron {
+            padding: 20px;
+        }
 
         #title {
             padding: 0 15px;
@@ -67,7 +70,6 @@
         }
 
         .jumbotron {
-            padding: 20px;
             background-color: #f5f5f5 !important;
         }
 
@@ -104,11 +106,9 @@
 
         <div class="card mb-3 shadow p-3 mb-5 bg-white rounded" style="max-width: 100rem; margin-top: 5rem;">
             <div class="card-header d-flex align-items-center" style="margin-bottom: 1rem;">
-                <span id="headerTitle" class="mr-auto dataTitle">Redes AdServer</span>
+                <span id="headerTitle" class="mr-auto dataTitle">MI PERFIL</span>
                 <div>
-                    <button id="botNuevo" type="button" class="btn btn-light disableOnEdit" onclick="nuevaRed()">Nuevo</button>
-                    <button id="botEditar" type="button" class="btn btn-light disableOnEdit" onclick="editarRed()">Editar</button>
-                    <button id="botBorrar" type="button" class="btn btn-light disableOnEdit" onclick="checkBorrarRed()">Borrar</button>
+                    <button id="botEditar" type="button" class="btn btn-light disableOnEdit" onclick="editarUser()">Editar</button>
                 </div>
             </div>
             <div class="card-body">
@@ -118,40 +118,50 @@
                             <div class="input-group-prepend">
                                 <span class="input-group-text" id="inputGroup-sizing-sm">#</span>
                             </div>
-                            <input id="idRed" value="0" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" readonly>
+                            <input id="idUser" value="0" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" readonly>
                         </div>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-lg-6">
-                        <label for="descTipoAviso"> Descripción Red</label>
+                    <div class="col-lg-4">
+                        <label for="descUser"> Nombre y Apellido</label>
                         <div class="input-group">
-                            <input type="text" id="descRed" class="form-control readonlyOnView" placeholder="Descripcion">
+                            <input type="text" id="descUser" class="form-control readonlyOnView" placeholder="Nombre">
                         </div>
                     </div>
-                    <div class="col-lg-6">
-                        <label for="codRed"> Código Red</label>
+                    <div class="col-lg-4">
+                        <label for="usuario"> Usuario</label>
                         <div class="input-group">
-                            <input type="text" id="codRed" class="form-control readonlyOnView" placeholder="Codigo">
+                            <input type="text" id="usuario" class="form-control readonlyOnView" placeholder="Usuario">
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <label for="contra"> Contraseña</label>
+                        <div class="input-group">
+                            <input type="text" id="contra" class="form-control readonlyOnView" placeholder="Contraseña">
                         </div>
                     </div>
                 </div>
-                <!--<div class="row">
-                    <div class="col-lg-6">
-                        <input class="enableOnEdit" type="checkbox" id="checkEnvioAdServer">
-                        <label for="checkEnvioAdServer"> Envia al adServer</label>
+                <div class="row">
+                    <div class="col-lg-4">
+                        <label for="mail"> Mail</label>
+                        <div class="input-group">
+                            <input type="email" id="mail" class="form-control readonlyOnView" placeholder="Mail">
+                        </div>
+                        <div class="input-group">
+                            <input type="hidden" id="usrrol" class="form-control readonlyOnView" disabled="disabled">
+                        </div>
                     </div>
-                </div>-->
+                </div>
             </div>
             <div class="card-footer bg-transparent mb-3" style="text-align: right; vertical-align: middle; padding-bottom: 0;">
-                <button id="botGuardar" type="button" class="btn btn-light enableOnEdit" onclick="guardarRed()">Guardar</button>
-                <button id="botCancelar" type="button" class="btn btn-light enableOnEdit View" onclick="cancelarEdicion()">Cancelar</button>
+                <button id="botGuardar" type="button" class="btn btn-light enableOnEdit" onclick="guardarUser()">Guardar</button>
+                <button id="botCancelar" type="button" class="btn btn-light enableOnEdit" onclick="cancelarEdicion()">Cancelar</button>
             </div>
         </div>
     </main>
 
     <script type="text/javascript">
-
 
         $(function () {
             $('input[type=text]').attr('autocomplete', 'off');
@@ -161,142 +171,92 @@
             document.body.style.backgroundImage = "url(./fondoM3.png)";
         });
 
-        var getUrlParameter = function getUrlParameter(sParam) {
-            var sPageURL = window.location.search.substring(1),
-                sURLVariables = sPageURL.split('&'),
-                sParameterName,
-                i;
-
-            for (i = 0; i < sURLVariables.length; i++) {
-                sParameterName = sURLVariables[i].split('=');
-
-                if (sParameterName[0] === sParam) {
-                    return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
-                }
-            }
-        };
-
-
         function checkParameters() {
-            var id = getUrlParameter("idRed");
-            var mode = getUrlParameter("mode");
-            setMode(mode);
+            var id = getUserId();
+            setMode('view');
 
             if (id != undefined) {
-                var data = id;
-                callWS("medios", "getRedById", JSON.stringify(data), function (data) { onGetRed(data); });
+                callWS("users", "getById", JSON.stringify(id), function (data) { onGetUser(data); });
             }
         }
 
-        function onGetRed(data) {
-            $('#botBorrar').attr("onclick", "checkBorrarRed(" + data.id_red + ")");
-            $('#idRed').attr("value", data.id_red);
-            $('#descRed').attr("value", data.descripcion);
-            $('#codRed').attr("value", data.codigo_red);
+        function onGetUser(data) {
+            $('#botBorrar').attr("onclick", "checkBorrarUser(" + data.id_usuario + ")");
+            $('#idUser').attr("value", data.id_usuario);
+            $('#descUser').attr("value", data.nombrel);
+            $('#usuario').attr("value", data.nombre);
+            $('#contra').attr("value", data.clave_web);
+            $('#mail').attr("value", data.email);
+            $('#usrrol').attr("value", data.usrrol);
+            if (data.usrrol == 1) {
+                $('#headerTitle').append('<span id="sTituloDinamico1"> - </span>');
+                $('#headerTitle').append('<span id="sTituloDinamico2" style="color: #007bff;">ADMIN</span>');
+            }
         }
 
         function setMode(mode) {
             if (mode == 'view') {
-                $('#headerTitle').html("Red AdServer");
                 //#botNuevo, #botEditar, #botBorrar
                 $('.disableOnEdit').attr("disabled", false);
-                //#botGuardar, #botCancelar
+                //#botGuardar, #botCancelar, #checkAdmin
                 $('.enableOnEdit').attr("disabled", true);
                 //AGREGUE:
                 $('.View').attr("disabled", false);
                 //#descRed
                 $('.readonlyOnView').attr("readonly", true);
             } else if (mode == 'edit') {
-                $('#headerTitle').html("Editar Red AdServer");
                 //#botNuevo, #botEditar, #botBorrar
                 $('.disableOnEdit').attr("disabled", true);
-                //#botGuardar, #botCancelar
-                $('.enableOnEdit').attr("disabled", false);
-                //#descRed
-                $('.readonlyOnView').attr("readonly", false);
-            } else if (mode == 'new') {
-                $('#headerTitle').html("Editar Red AdServer");
-                //#botNuevo, #botEditar, #botBorrar
-                $('.disableOnEdit').attr("disabled", true);
-                //#botGuardar, #botCancelar
+                //#botGuardar, #botCancelar, #checkAdmin
                 $('.enableOnEdit').attr("disabled", false);
                 //#descRed
                 $('.readonlyOnView').attr("readonly", false);
             } else {
                 console.log("invalid mode:" + mode);
-                location.href = "/redesGamlist.html"
+                location.href = "/ordenList.html"
             }
         }
 
-
-
         function cancelarEdicion() {
-            location.href = "/redesGamlist.html"
+            location.href = "/perfil.html"
         }
 
-        function editarRed() {
+        function editarUser() {
             setMode('edit');
         }
 
-        function nuevaRed() {
-            location.href = "/redesGam.html?mode=new"
-        }
-
-        function checkBorrarRed(id) {
-
-            options = [
-                {
-                    optionDesc: "Aceptar",
-                    optionFunc: "borrarRed('" + id + "')"
-                },
-                {
-                    optionDesc: "Cancelar",
-                    optionFunc: ""
-                }
-            ];
-
-            var mensaje = "<div class='d-flex justify-content-center' style='text-align: center;'>¿Esta seguro de borrar la Red AdServer? <br> Se eliminarán los Emplazamientos sincronizados</div>";
-
-            showModal(mensaje, options);
-        }
-
-        function borrarRed(id) {
-            var data = {};
-            data.id_red = id;
-            callWS("medios", "removeRed", JSON.stringify(data), function (data) {
-                if (data == true) {
-                    location.href = "/redesGamlist.html";
-                } else {
-                    console.log(data);
-                }
-            });
-        }
-
-        function guardarRed() {
+        function guardarUser() {
 
             var data = {};
             var error = [];
-            if ($("#descRed").val() == "") {
-                error.push("Descripcion");
+            if ($("#descUser").val() == "") {
+                error.push("Nombre");
             }
-            if ($("#codRed").val() == "") {
-                error.push("Código");
+            if ($("#usuario").val() == "") {
+                error.push("Usuario");
+            }
+            if ($("#contra").val() == "") {
+                error.push("Contraseña");
             }
 
             if (error.length == 0) {
-                data.id_red = $('#idRed').attr("value");
-                data.descripcion = $("#descRed").val();
-                data.codigo_red = $('#codRed').val();
+                data.id_usuario = $('#idUser').attr("value");
+                data.nombre = $("#usuario").val();
+                data.nombrel = $('#descUser').val();
+                data.clave_web = $('#contra').val();
+                data.email = $('#mail').val();
+                data.usrrol = $('#usrrol').val();
 
-                callWS("medios", "saveRed", JSON.stringify(data), function (resp) {
+                callWS("users", "saveUser", JSON.stringify(data), function (resp) {
                     if (resp == 0) {
-                        location.href = "/redesGamlist.html";
+                        setMode('view');
+                        showMessage("Perfil actualizado", "success");
                     }
                     else if (resp == 1) {
-                        showMessage("El nombre de Red ya existe", "error");
+                        showMessage("El nombre de Usuario ya existe", "error");
                     }
                     else {
-                        showMessage("Ocurrió un error al intentar guardar la Red", "error");
+                        showMessage("Ocurrió un error al intentar actualizar el perfil", "error");
                         console.log(resp);
                     }
                 });

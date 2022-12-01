@@ -4,6 +4,7 @@ using WebApi.Services;
 using WebApi.Entities;
 using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 
 
 namespace WebApi.Controllers
@@ -195,6 +196,13 @@ namespace WebApi.Controllers
         {
             var res = _GoogleAdManagerService.saveMail(mail);
             return Ok(res);
+        }
+
+        [HttpPost("pruebaMail")]
+        public IActionResult pruebaMail()
+        {
+            var resp = _GoogleAdManagerService.pruebaMail();
+            return Ok(JsonConvert.SerializeObject(resp));
         }
     }
 }
