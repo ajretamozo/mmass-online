@@ -260,6 +260,14 @@
                             </div>
                         </div>
                     </div>
+                    <div class="row py-1 noPrint">
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label>Ejecutivos:</label>
+                                <select id="selEjecutivos" class="selectpicker form-control" data-deselect-all-text="Ninguno" data-select-all-text="Todos" data-none-selected-text="Seleccionar" data-actions-box="true" data-size="10" data-live-search="true" multiple></select>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -362,6 +370,13 @@
             });
             listaProductos = listaProductos.slice(0, -1);
             params.ListaProductos = listaProductos;
+
+            listaEjecutivos = "";
+            $.each($("#selEjecutivos").val(), function (it, ejecutivo) {
+                listaEjecutivos += ejecutivo + ",";
+            });
+            listaEjecutivos = listaEjecutivos.slice(0, -1);
+            params.ListaEjecutivos = listaEjecutivos;
 
             for (param in params) {
                 if (params[param] == null) {
@@ -629,6 +644,7 @@
                 callWS("contactos", "getAgencias", '', function (data) { onPopulateSelectDone(data, 'selAgencias', 'id_contacto', 'razonSocial'); }),
                 callWS("contactos", "getAnunciantes", '', function (data) { onPopulateSelectDone(data, 'selAnunciantes', 'id_contacto', 'razonSocial'); }),
                 callWS("productos", "getAll", '', function (data) { onPopulateSelectDone(data, 'selProductos', 'id_producto', 'desc_producto'); }),
+                callWS("contactos", "getEjecutivos", '', function (data) { onPopulateSelectDone(data, 'selEjecutivos', 'id', 'razonSocial'); }),
                 $('#fechaDesde').val(moment().startOf('month').format('DD/MM/YYYY')),
                 $('#fechaHasta').val(moment().endOf('month').format('DD/MM/YYYY'))
             ).then(function () { }, function (data1, data2) {

@@ -62,7 +62,7 @@ namespace WebApi.Entities
             {
                 sqlCommand += ",apm.id_medio, m.desc_medio as medio, apm.porcentaje";
             }
-            sqlCommand += " from dg_orden_pub_ap ap inner join dg_orden_pub_as det on det.id_op_dg = ap.id_op_dg inner join contactos ag on ag.id_contacto = ap.id_agencia inner join contactos an on an.id_contacto = ap.id_anunciante inner join productos p on p.id_producto = ap.id_producto left outer join orden_pub_ap op on ap.id_op_relacionada = op.id_op ";
+            sqlCommand += " from dg_orden_pub_ap ap inner join dg_orden_pub_as det on det.id_op_dg = ap.id_op_dg inner join contactos ag on ag.id_contacto = ap.id_agencia inner join contactos an on an.id_contacto = ap.id_anunciante inner join productos p on p.id_producto = ap.id_producto left outer join orden_pub_ap op on ap.id_op_relacionada = op.id_op inner join dg_orden_pub_ejecutivos ej on ej.id_op_dg=ap.id_op_dg";
             
             if (tipo == "2")
             {
@@ -114,6 +114,8 @@ namespace WebApi.Entities
                         }
                         
                     }
+                    if ((p.ParameterName == "ListaEjecutivos") && (p.Value.ToString() != ""))
+                        mifiltro = mifiltro + " and ej.id_ejecutivo in (" + p.Value + ")";
                 }
             }   
 

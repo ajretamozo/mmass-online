@@ -735,7 +735,7 @@
                                         </div>
                                         <div class="col-lg-1" style="padding-right: 20px;padding-left: 20px;padding-top: 4px;">
                                             <label for="bConvenios" class="invisible">Convenios</label>
-                                            <button type="button" data-id="convenios" id="bConvenios" class="btn actions btn-outline-dark btn-sm mr-1" onclick="getConvenios()" style="width: 33px;" title="Buscar Convenios" disabled="disabled">
+                                            <button type="button" data-id="convenios" id="bConvenios" class="btn actions btn-outline-dark btn-sm mr-1" onclick="getConvenios()" style="width: 33px;" title="Buscar Convenios">
                                                 <span class="fa fa-handshake-o" id="brow"></span>
                                             </button>
                                         </div>
@@ -1481,13 +1481,15 @@
                 $("#bClonar").attr("disabled", true);
                 $('#pTitulo').append('<span id="sTituloDinamico1"> - </span>');
                 $('#pTitulo').append('<span id="sTituloDinamico2" style="color: #007bff;">CLONACION</span>');
+                $("#selRedes").attr("disabled", false);
             }
 
             if (OpSinc) {
                 $("#bAnular").attr("disabled", true);
                 $("#bClonar").attr("disabled", true);
             }
-            else {
+
+            if (OpClon == false && OpSinc == false) {
                 $("#selEmpresa").attr("disabled", true);
             }
 
@@ -3519,7 +3521,7 @@
         }
 
         function cargarSelectMultiples(data) {
-            onPopulateSelectMedidas(data.medidas, 'selMedidasD', 'id_medidadigital', 'ancho', 'alto');
+            onPopulateSelectMedidas(data.medidas, 'selMedidasD', 'id_medidadigital', 'descripcion', 'ancho', 'alto');
             onPopulateSelectEmplaza(data.emplazamientos, 'selEmplazaD', 'id_emplazamiento', 'descripcion', 'codigo_emplazamiento');
             onPopulateSelectDone(data.medios, 'selMediosD', 'id_medio', 'desc_medio');
             onTipoAvisoGetAll(data.tipos_aviso, 'selTipoAvisoD', 'Id_tipo_aviso_dg', 'descripcion', 'Permite_envio_ads');

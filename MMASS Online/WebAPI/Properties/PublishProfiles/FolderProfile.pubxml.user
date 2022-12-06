@@ -7,7 +7,7 @@ edite el archivo MSBuild. Visite https://go.microsoft.com/fwlink/?LinkID=208121 
   <PropertyGroup>
     <TimeStampOfAssociatedLegacyPublishXmlFile />
     <_PublishTargetUrl>C:\Users\Terminal\Desktop\MOBackend</_PublishTargetUrl>
-    <History>True|2022-11-24T18:07:04.7821428Z;True|2022-11-24T13:23:43.2794642-03:00;True|2022-11-14T14:15:18.6696323-03:00;True|2022-11-14T11:46:33.1428995-03:00;True|2022-11-14T11:44:02.8158704-03:00;</History>
+    <History>True|2022-12-02T21:13:25.0808775Z;True|2022-12-01T16:29:13.1694246-03:00;True|2022-11-24T15:07:04.7821428-03:00;True|2022-11-24T13:23:43.2794642-03:00;True|2022-11-14T14:15:18.6696323-03:00;True|2022-11-14T11:46:33.1428995-03:00;True|2022-11-14T11:44:02.8158704-03:00;</History>
     <LastFailureDetails />
   </PropertyGroup>
   <ItemGroup>
