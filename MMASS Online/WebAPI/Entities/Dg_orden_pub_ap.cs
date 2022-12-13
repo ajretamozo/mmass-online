@@ -316,7 +316,7 @@ namespace WebApi.Entities
                 {
                     elem.Detalles = new List<Dg_orden_pub_as>();
                     string strSql = " select id_op_dg, id_detalle, anio, mes, nro_orden, fecha_desde, fecha_hasta, id_producto, descripcion, id_programa, id_tarifa_dg," +
-                                        " tarifa_manual, id_tipo_aviso_dg, tipo_tarifa, imp_tarifa, importe_unitario, cantidad, monto_bruto, porc_dto," +
+                                        " tarifa_manual, id_categoria, tipo_tarifa, imp_tarifa, importe_unitario, cantidad, monto_bruto, porc_dto," +
                                         " monto_neto, netomanual, porcconfnc, porcconffc, impconfnc, impconffc," +
                                         " porc_dto1, imp_dto1, id_mtvo_dto1, tipo_dto1, porc_dto2, imp_dto2, id_mtvo_dto2, tipo_dto2," +
                                         " porc_dto3, imp_dto3, id_mtvo_dto3, tipo_dto3, porc_dto4, imp_dto4, id_mtvo_dto4, tipo_dto4," +
@@ -403,7 +403,7 @@ namespace WebApi.Entities
                 {
                     elem.Detalles = new List<Dg_orden_pub_as>();
                     string strSql = " select id_op_dg, id_detalle, anio, mes, nro_orden, fecha_desde, fecha_hasta, id_producto, descripcion, id_programa, id_tarifa_dg," +
-                                        " tarifa_manual, id_tipo_aviso_dg, tipo_tarifa, imp_tarifa, importe_unitario, cantidad, monto_bruto, porc_dto," +
+                                        " tarifa_manual, id_categoria, tipo_tarifa, imp_tarifa, importe_unitario, cantidad, monto_bruto, porc_dto," +
                                         " monto_neto, netomanual, porcconfnc, porcconffc, impconfnc, impconffc," +
                                         " porc_dto1, imp_dto1, id_mtvo_dto1, tipo_dto1, porc_dto2, imp_dto2, id_mtvo_dto2, tipo_dto2," +
                                         " porc_dto3, imp_dto3, id_mtvo_dto3, tipo_dto3, porc_dto4, imp_dto4, id_mtvo_dto4, tipo_dto4," +
@@ -519,7 +519,7 @@ namespace WebApi.Entities
                 // Detalles ...
                 resultado.Detalles = new List<Dg_orden_pub_as>();
                 string strSql = " select id_op_dg, id_detalle, anio, mes, nro_orden, fecha_desde, fecha_hasta, id_producto, descripcion, id_programa, id_tarifa_dg," +
-                                    " tarifa_manual, id_tipo_aviso_dg, tipo_tarifa, imp_tarifa, importe_unitario, cantidad, monto_bruto, porc_dto," +
+                                    " tarifa_manual, id_categoria, tipo_tarifa, imp_tarifa, importe_unitario, cantidad, monto_bruto, porc_dto," +
                                     " monto_neto, netomanual, porcconfnc, porcconffc, impconfnc, impconffc," +
                                     " porc_dto1, imp_dto1, id_mtvo_dto1, tipo_dto1, porc_dto2, imp_dto2, id_mtvo_dto2, tipo_dto2," +
                                     " porc_dto3, imp_dto3, id_mtvo_dto3, tipo_dto3, porc_dto4, imp_dto4, id_mtvo_dto4, tipo_dto4," +

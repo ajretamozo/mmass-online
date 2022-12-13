@@ -587,7 +587,7 @@ namespace WebApi.Helpers
             return resultado;
         }
 
-        public static Parametro CreateLineItems(string tipoAviso, String name, long orderId, float cost, long units, double discount, System.DateTime? fechaDesde, System.DateTime? fechaHasta, List<Dg_orden_pub_medidas> medidas, Dg_areas_geo areaGeo, List<Dg_orden_pub_emplazamientos> emplazamientos, int tipoTarifa)
+        public static Parametro CreateLineItems(int tipoAviso, String name, long orderId, float cost, long units, double discount, System.DateTime? fechaDesde, System.DateTime? fechaHasta, List<Dg_orden_pub_medidas> medidas, Dg_areas_geo areaGeo, List<Dg_orden_pub_emplazamientos> emplazamientos, int tipoTarifa)
         {
             Parametro resultado = new Parametro();
             long result = -1;
@@ -724,7 +724,7 @@ namespace WebApi.Helpers
 
                 lineItem.targeting.inventoryTargeting = inventoryTargeting;
                 lineItem.targeting.geoTargeting = geoTargeting;
-                if (tipoAviso == "Video")
+                if (tipoAviso == 2)
                 {
                     lineItem.targeting.requestPlatformTargeting = requestPlatformTargeting;
                     lineItem.environmentType = EnvironmentType.VIDEO_PLAYER;

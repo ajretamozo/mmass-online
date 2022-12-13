@@ -2063,10 +2063,9 @@
             var pObj = data;
             var listitems = '';
             $.each(pObj, function (it, iObj) {
-                listitems += '<option  permite_envio_ads= ' + iObj['permite_envio_ads'] + ' value=' + iObj['id_tipo_aviso_dg'] + '>' + iObj["descripcion"] + '</option>';
+                listitems += '<option  permite_envio_ads= ' + iObj['permite_envio_ads'] + ' tipo_aviso_ads= ' + iObj['tipo_aviso_ads'] + ' value=' + iObj['id_categoria'] + '>' + iObj["descripcion"] + '</option>';
             });
             $("#" + idSelect).empty();
-            //$("#" + idSelect).append("<option value=''>(Todos) </option>");
             $("#" + idSelect).append(listitems);
             if (pObj.length > 1) {
                 $("#" + idSelect).val([]);
@@ -2311,8 +2310,8 @@
             //callWS("medios", "getAll", '', function (data) { onPopulateSelectDone(data, 'selMediosD', 'id_medio', 'desc_medio'); });
             callWS("medios", "getPorEmpresa", JSON.stringify(idEmpresa), function (data) { onPopulateSelectDone(data, 'selMediosD', 'id_medio', 'desc_medio'); });
             callWS("tarifas", "getFormasUsoAll", '', function (data) { onPopulateSelectDone(data, 'selTipoTarifaD', 'id', 'descripcion'); });
-            callWS("Tipos_avisos", "getAll", '', function (data) { onTipoAvisoGetAll(data, 'selTipoAvisoD', 'Id_tipo_aviso_dg', 'descripcion', 'Permite_envio_ads'); });
-            callWS("medios", "getMedidas", JSON.stringify(""), function (data) { onPopulateSelectMedidas(data, 'selMedidasD', 'id_medidadigital', 'descripcion', 'ancho', 'alto'); });
+            callWS("Tipos_avisos", "getAll", '', function (data) { onTipoAvisoGetAll(data, 'selTipoAvisoD', 'id_categoria', 'descripcion', 'Permite_envio_ads', 'tipo_aviso_ads'); });
+            callWS("medios", "getMedidas", JSON.stringify("0"), function (data) { onPopulateSelectMedidas(data, 'selMedidasD', 'id_medidadigital', 'descripcion', 'ancho', 'alto'); });
             callWS("medios", "getAllA", '', function (data) { onAreasGeoGetAll(data, 'selAreasGeo', 'Id_area', 'descripcion', 'Codigo_area', 'tipo'); });
             callWS("medios", "getAllE", JSON.stringify(idRed), function (data) { onPopulateSelectEmplaza(data, 'selEmplazaD', 'id_emplazamiento', 'descripcion', 'codigo_emplazamiento'); });
             //callWS("programa", "getAllProgramasMedio", "1", function (data) {onPopulateSelectDone(data,'selPrograma','id_programa','desc_programa')})
@@ -2368,7 +2367,7 @@
                 }
                 if ($('#selTipoAvisoD').val() != null) {
                     objParametro = {};
-                    objParametro.ParameterName = "id_tipo_aviso_dg";
+                    objParametro.ParameterName = "id_categoria";
                     objParametro.Value = $('#selTipoAvisoD').val();
                     listaParametros.push(objParametro);
                 }
@@ -2471,7 +2470,7 @@
                 });
             });
 
-            if ($('#selTipoAvisoD>option:selected').text() == 'Banner') {
+            if ($('#selTipoAvisoD>option:selected').attr("permite_envio_ads") == true) {
                 callWS("dg_orden_pub_aps", "getSponsorsPorFecha", JSON.stringify(detalle), function (data) { onGetSponsor(data, id); });
             }
             else {
@@ -2563,7 +2562,8 @@
             rDetalle.tipo_aviso_dg = {};
             rDetalle.tipo_aviso_dg.descripcion = $('#selTipoAvisoD>option:selected').text();
             rDetalle.tipo_aviso_dg.permite_envio_ads = $('#selTipoAvisoD>option:selected').attr("permite_envio_ads");
-            rDetalle.tipo_aviso_dg.id_tipo_aviso_dg = $('#selTipoAvisoD').val();
+            rDetalle.tipo_aviso_dg.tipo_aviso_ads = $('#selTipoAvisoD>option:selected').attr("tipo_aviso_ads");
+            rDetalle.tipo_aviso_dg.id_categoria = $('#selTipoAvisoD').val();
 
             rDetalle.areaGeo = {};
             rDetalle.areaGeo.id_area = $('#selAreasGeo').val();
@@ -2697,7 +2697,7 @@
                 }
             }
 
-            if (rDetalle.tipo_aviso_dg.id_tipo_aviso_dg == null) {
+            if (rDetalle.tipo_aviso_dg.id_categoria == null) {
                 error.push("Tipo de Aviso");
             }
 
@@ -2809,7 +2809,7 @@
                 str = str + "<td class='col-xs-1'> Por definir </td>";
             }
             else {
-                str = str + " <td class='col-xs-2' dataid = '" + det.tipo_aviso_dg.id_tipo_aviso_dg + "' > " + det.tipo_aviso_dg.descripcion + "</td > ";
+                str = str + " <td class='col-xs-2' dataid = '" + det.tipo_aviso_dg.id_categoria + "' > " + det.tipo_aviso_dg.descripcion + "</td > ";
             }
             //str = str + " <td class='col-xs-2' dataid = '" + det.tipo_aviso_dg.id_tipo_aviso_dg + "' > " + det.tipo_aviso_dg.descripcion + "</td > ";
             //nuev
@@ -2992,9 +2992,9 @@
 
             var rDetalle = Detalles.find(detalle => detalle.id_detalle == rId);
 
-            var tipoAviso = "";
+            var tipoAviso = 0;
             if (rDetalle.tipo_aviso_dg != null) {
-                tipoAviso = rDetalle.tipo_aviso_dg.descripcion;
+                tipoAviso = rDetalle.tipo_aviso_dg.tipo_aviso_ads;
             }
 
             if (rDetalle.id_det_conv > 0) {
@@ -3007,7 +3007,7 @@
                     callWS("medios", "getMedidas", JSON.stringify(tipoAviso), function (data) { onPopulateSelectMedidas(data, 'selMedidasD', 'id_medidadigital', 'descripcion', 'ancho', 'alto'); }),
                     callWS("medios", "getAllA", '', function (data) { onAreasGeoGetAll(data, 'selAreasGeo', 'Id_area', 'descripcion', 'Codigo_area', 'tipo'); }),
                     callWS("medios", "getAllE", JSON.stringify(idRed), function (data) { onPopulateSelectEmplaza(data, 'selEmplazaD', 'id_emplazamiento', 'descripcion', 'codigo_emplazamiento'); }),
-                    callWS("Tipos_avisos", "getAll", '', function (data) { onTipoAvisoGetAll(data, 'selTipoAvisoD', 'Id_tipo_aviso_dg', 'descripcion', 'Permite_envio_ads'); })
+                    callWS("Tipos_avisos", "getAll", '', function (data) { onTipoAvisoGetAll(data, 'selTipoAvisoD', 'id_categoria', 'descripcion', 'Permite_envio_ads', 'tipo_aviso_ads'); })
                 ).then(function () { onCargarModificarRenglon(rDetalle) }, function (data1, data2, data3) {
                     console.log("Medios: " + data1[2].statusText + "; Formas de uso: " + data2[2].statusText + "Tipo Aviso: " + data3[2].statusText + ";");
                     showMessage("Se produjo un error al cargar los campos, intentelo nuevamente", type = "alert");
@@ -3060,7 +3060,7 @@
             //Carga Tipo Aviso
             tipo_aviso = rDetalle.tipo_aviso_dg;
             if (tipo_aviso != undefined) {
-                $("#selTipoAvisoD option[value=" + tipo_aviso.id_tipo_aviso_dg + "]").attr("selected", "selected");
+                $("#selTipoAvisoD option[value=" + tipo_aviso.id_categoria + "]").attr("selected", "selected");
             }
 
             //Carga areasGeo
@@ -3495,7 +3495,7 @@
         function LimpiarSelectMultiples() {
             idRed = $('#selRedes').val();
             idEmpresa = $('#selEmpresa').val();
-            callWS("medios", "getMedidas", JSON.stringify(""), function (data) { onPopulateSelectMedidas(data, 'selMedidasD', 'id_medidadigital', 'descripcion', 'ancho', 'alto'); });
+            callWS("medios", "getMedidas", JSON.stringify("0"), function (data) { onPopulateSelectMedidas(data, 'selMedidasD', 'id_medidadigital', 'descripcion', 'ancho', 'alto'); });
             callWS("medios", "getAllE", JSON.stringify(idRed), function (data) { onPopulateSelectEmplaza(data, 'selEmplazaD', 'id_emplazamiento', 'descripcion', 'codigo_emplazamiento'); });
             //callWS("medios", "getAll", '', function (data) { onPopulateSelectDone(data, 'selMediosD', 'id_medio', 'desc_medio'); });
             callWS("medios", "getPorEmpresa", JSON.stringify(idEmpresa), function (data) { onPopulateSelectDone(data, 'selMediosD', 'id_medio', 'desc_medio'); });
@@ -3524,7 +3524,7 @@
             onPopulateSelectMedidas(data.medidas, 'selMedidasD', 'id_medidadigital', 'descripcion', 'ancho', 'alto');
             onPopulateSelectEmplaza(data.emplazamientos, 'selEmplazaD', 'id_emplazamiento', 'descripcion', 'codigo_emplazamiento');
             onPopulateSelectDone(data.medios, 'selMediosD', 'id_medio', 'desc_medio');
-            onTipoAvisoGetAll(data.tipos_aviso, 'selTipoAvisoD', 'Id_tipo_aviso_dg', 'descripcion', 'Permite_envio_ads');
+            onTipoAvisoGetAll(data.tipos_aviso, 'selTipoAvisoD', 'id_categoria', 'descripcion', 'Permite_envio_ads', 'tipo_aviso_ads');
         }
 
         function onSeleccionarDetConvenio(data) {
@@ -3539,7 +3539,7 @@
             //Carga Tipos de Aviso
             tiposAviso = data.tipos_aviso;
             if (tiposAviso.length == 1) {
-                $("#selTipoAvisoD option[value=" + tiposAviso[0].id_tipo_aviso_dg + "]").attr("selected", "selected");
+                $("#selTipoAvisoD option[value=" + tiposAviso[0].id_categoria + "]").attr("selected", "selected");
                 $("#selTipoAvisoD").attr("disabled", true);
             }
             else {
@@ -4835,7 +4835,7 @@
         })
 
         function onTipoAvisoSelected() {
-            var tipoAviso = $("#selTipoAvisoD option:selected").text();
+            var tipoAviso = $('#selTipoAvisoD option:selected').attr("tipo_aviso_ads");
             //recargar medidas
             callWS("medios", "getMedidas", JSON.stringify(tipoAviso), function (data) { onPopulateSelectMedidas(data, 'selMedidasD', 'id_medidadigital', 'descripcion', 'ancho', 'alto'); });      
 

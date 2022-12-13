@@ -17,7 +17,7 @@ namespace WebApi.Services
         //Contacto GetAgencia(string username, string password);
         IEnumerable<Medio> getAll();
         IEnumerable<Medio> getPorEmpresa(int idEmp);
-        IEnumerable<Dg_medidas> getMedidas(string tipo);
+        IEnumerable<Dg_medidas> getMedidas(int tipo);
         IEnumerable<Dg_areas_geo> getAllA();
         IEnumerable<Dg_emplazamientos> getAllE(int redGAM);
         bool saveE(EmplazamientosList emplazamientos);
@@ -57,7 +57,7 @@ namespace WebApi.Services
             return Medio.getPorEmpresa(idEmp);
         }
 
-        public IEnumerable<Dg_medidas> getMedidas(string tipo)
+        public IEnumerable<Dg_medidas> getMedidas(int tipo)
         {
             return Dg_medidas.getMedidas(tipo);
         }

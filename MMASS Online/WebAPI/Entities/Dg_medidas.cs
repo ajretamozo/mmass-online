@@ -45,14 +45,14 @@ namespace WebApi.Entities
             return resultado;
         }
 
-        public static List<Dg_medidas> getMedidas(string tipo)
+        public static List<Dg_medidas> getMedidas(int tipo)
         {
             string sqlCommand = "";
-            if (tipo == "Banner")
+            if (tipo == 1)
             {
                 sqlCommand = " select id_medidadigital, descripcion, ancho, alto, tipo from dg_medidas where tipo = 1 and es_borrado = 0 order by ancho, alto";
             }
-            else if (tipo == "Video")
+            else if (tipo == 2)
             {
                 sqlCommand = " select id_medidadigital, descripcion, ancho, alto, tipo from dg_medidas where tipo = 2 and es_borrado = 0 order by ancho, alto";
             }

@@ -88,7 +88,7 @@ namespace WebApi.Entities
                 mi.tarifa_dg = Dg_tarifas.getById(DB.DInt(item["Id_tarifa_dg"].ToString()));
             }
             mi.Tarifa_manual = DB.DFloat(item["Tarifa_manual"].ToString());
-            mi.tipo_aviso_dg = Dg_tipos_avisos.getById(DB.DInt(item["Id_tipo_aviso_dg"].ToString()));
+            mi.tipo_aviso_dg = Dg_tipos_avisos.getById(DB.DInt(item["id_categoria"].ToString()));
             mi.Tipo_tarifa = DB.DInt(item["tipo_tarifa"].ToString());
             mi.Imp_tarifa = DB.DFloat(item["Imp_tarifa"].ToString());
             mi.Importe_unitario = DB.DFloat(item["Importe_unitario"].ToString());
@@ -185,7 +185,7 @@ namespace WebApi.Entities
             {
                 sql += " id_programa,";
             }
-            sql += " id_tarifa_dg, tarifa_manual, id_tipo_aviso_dg," +
+            sql += " id_tarifa_dg, tarifa_manual, id_categoria," +
             "tipo_tarifa, imp_tarifa, importe_unitario, cantidad, monto_bruto, porc_dto,monto_neto, netomanual," +
             "porcconfnc, porcconffc, impconffc, impconfnc, porc_dto1, imp_dto1, id_mtvo_dto1, tipo_dto1, porc_dto2, imp_dto2, id_mtvo_dto2, tipo_dto2," +
             "porc_dto3, imp_dto3, id_mtvo_dto3, tipo_dto3, porc_dto4, imp_dto4, id_mtvo_dto4, tipo_dto4, porc_dto5, imp_dto5, id_mtvo_dto5, tipo_dto5,id_google_ad_manager, ron, id_area, id_det_conv, id_red) " +
@@ -195,7 +195,7 @@ namespace WebApi.Entities
             {
                 sql += " @id_programa,";
             }
-            sql += " @id_tarifa_dg, @tarifa_manual, @id_tipo_aviso_dg," +
+            sql += " @id_tarifa_dg, @tarifa_manual, @id_categoria," +
             "@tipo_tarifa, @imp_tarifa, @importe_unitario, @cantidad, @monto_bruto, @porc_dto,@monto_neto, @netomanual," +
             "@porcconfnc, @porcconffc, @impconffc, @impconfnc, @porc_dto1, @imp_dto1, @id_mtvo_dto1, @tipo_dto1, @porc_dto2, @imp_dto2, @id_mtvo_dto2, @tipo_dto2," +
             "@porc_dto3, @imp_dto3, @id_mtvo_dto3, @tipo_dto3, @porc_dto4, @imp_dto4, @id_mtvo_dto4, @tipo_dto4, @porc_dto5, @imp_dto5, @id_mtvo_dto5, @tipo_dto5,@id_google_ad_manager, @ron, @id_area, @id_det_conv, @id_red)";
@@ -227,7 +227,7 @@ namespace WebApi.Entities
                     new SqlParameter()
                     { ParameterName="@tarifa_manual",SqlDbType = SqlDbType.Float, Value = Tarifa_manual },
                     new SqlParameter()
-                    { ParameterName="@id_tipo_aviso_dg",SqlDbType = SqlDbType.Int, Value = tipo_aviso_dg.Id_tipo_aviso_dg },
+                    { ParameterName="@id_categoria",SqlDbType = SqlDbType.Int, Value = tipo_aviso_dg.Id_categoria },
                     new SqlParameter()
                     { ParameterName="@tipo_tarifa",SqlDbType = SqlDbType.Int, Value = Tipo_tarifa },
                     new SqlParameter()
@@ -590,7 +590,7 @@ namespace WebApi.Entities
         public static Dg_orden_pub_as getByIdGam(long idGam, int idRed)
         {
             string strSql = " select id_op_dg, id_detalle, anio, mes, nro_orden, fecha_desde, fecha_hasta, id_producto, descripcion, id_programa, id_tarifa_dg," +
-                                   " tarifa_manual, id_tipo_aviso_dg, tipo_tarifa, imp_tarifa, importe_unitario, cantidad, monto_bruto, porc_dto," +
+                                   " tarifa_manual, id_categoria, tipo_tarifa, imp_tarifa, importe_unitario, cantidad, monto_bruto, porc_dto," +
                                    " monto_neto, netomanual, porcconfnc, porcconffc, impconfnc, impconffc," +
                                    " porc_dto1, imp_dto1, id_mtvo_dto1, tipo_dto1, porc_dto2, imp_dto2, id_mtvo_dto2, tipo_dto2," +
                                    " porc_dto3, imp_dto3, id_mtvo_dto3, tipo_dto3, porc_dto4, imp_dto4, id_mtvo_dto4, tipo_dto4," +
@@ -609,7 +609,7 @@ namespace WebApi.Entities
             List<Dg_orden_pub_as> detalles = new List<Dg_orden_pub_as>();
             
             string strSql = " select id_op_dg, id_detalle, anio, mes, nro_orden, fecha_desde, fecha_hasta, id_producto, descripcion, id_programa, id_tarifa_dg," +
-                                " tarifa_manual, id_tipo_aviso_dg, tipo_tarifa, imp_tarifa, importe_unitario, cantidad, monto_bruto, porc_dto," +
+                                " tarifa_manual, id_categoria, tipo_tarifa, imp_tarifa, importe_unitario, cantidad, monto_bruto, porc_dto," +
                                 " monto_neto, netomanual, porcconfnc, porcconffc, impconfnc, impconffc," +
                                 " porc_dto1, imp_dto1, id_mtvo_dto1, tipo_dto1, porc_dto2, imp_dto2, id_mtvo_dto2, tipo_dto2," +
                                 " porc_dto3, imp_dto3, id_mtvo_dto3, tipo_dto3, porc_dto4, imp_dto4, id_mtvo_dto4, tipo_dto4," +

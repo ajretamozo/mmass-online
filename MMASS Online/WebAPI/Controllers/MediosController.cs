@@ -33,7 +33,7 @@ namespace WebApi.Controllers
         }
 
         [HttpPost("getMedidas")]
-        public IActionResult getMedidas([FromBody] string tipo)
+        public IActionResult getMedidas([FromBody] int tipo)
         {
             var medidas = _medioService.getMedidas(tipo);
             return Ok(medidas);

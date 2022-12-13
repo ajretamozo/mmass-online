@@ -145,7 +145,7 @@ namespace WebApi.Entities
                 resultado.Tipos_aviso = new List<Dg_tipos_avisos>();
                 det = DB.Select(@"select ta.* 
                                   from dg_conv_dg_detalle_tipo_Avisos cta 
-                                  inner join categorias ta on ta.id_categoria = cta.id_tipo_aviso_dg
+                                  inner join categorias ta on ta.id_categoria = cta.id_categoria
                                   where cta.id_convenio = " + resultado.Id_convenio.ToString() + " and cta.id_detalle = " + resultado.Id_detalle.ToString());
                 foreach (DataRow item2 in det.Rows)
                 {
@@ -203,7 +203,7 @@ namespace WebApi.Entities
             //                    " porc_desc, porc_conf_nc, porc_conf_fc, id_area" +
             //                    " from conv_dg_detalle where id_convenio = " + id_convenio.ToString();
 
-            string sqlCommand = @"select distinct id_det_conv, cd.id_convenio, cd.id_detalle, descripcion, fecha_desde, fecha_hasta, id_tipo_aviso_dg,
+            string sqlCommand = @"select distinct id_det_conv, cd.id_convenio, cd.id_detalle, descripcion, fecha_desde, fecha_hasta, id_categoria,
                                   forma_uso, precio_unitario, porc_desc, porc_conf_nc, porc_conf_fc, id_area 
                                   from conv_dg_detalle cd 
                                   inner join dg_conv_dg_detalle_medios cdm on cdm.id_convenio=cd.id_convenio 
@@ -267,7 +267,7 @@ namespace WebApi.Entities
                 elem.Tipos_aviso = new List<Dg_tipos_avisos>();
                 det = DB.Select(@"select ta.* 
                                   from dg_conv_dg_detalle_tipo_Avisos cta 
-                                  inner join categorias ta on ta.id_categoria = cta.id_tipo_aviso_dg
+                                  inner join categorias ta on ta.id_categoria = cta.id_categoria
                                   where cta.id_convenio = " + item["id_convenio"].ToString() + " and cta.id_detalle = " + item["id_detalle"].ToString());
                 foreach (DataRow item2 in det.Rows)
                 {
@@ -381,8 +381,8 @@ namespace WebApi.Entities
                         mifiltro = mifiltro + " and forma_uso = " + p.Value.ToString();
                     if ((p.ParameterName == "id_medio") && (p.Value.ToString() != ""))
                         mifiltro = mifiltro + " and exists (select * from dg_conv_dg_detalle_medios where dg_conv_dg_detalle_medios.id_convenio = conv_dg_detalle.id_convenio and dg_conv_dg_detalle_medios.id_detalle = conv_dg_detalle.id_detalle and id_medio = " + p.Value.ToString() + ")";
-                    if ((p.ParameterName == "id_tipo_aviso_dg") && (p.Value.ToString() != ""))
-                        mifiltro = mifiltro + " and exists (select * from dg_conv_dg_detalle_tipos_avisos_dg where dg_conv_dg_detalle_tipos_avisos_dg.id_convenio = conv_dg_detalle.id_convenio and dg_conv_dg_detalle_tipos_avisos_dg.id_detalle = conv_dg_detalle.id_detalle and id_tipo_aviso_dg = " + p.Value.ToString() + ")";
+                    if ((p.ParameterName == "id_categoria") && (p.Value.ToString() != ""))
+                        mifiltro = mifiltro + " and exists (select * from dg_conv_dg_detalle_tipos_avisos_dg where dg_conv_dg_detalle_tipos_avisos_dg.id_convenio = conv_dg_detalle.id_convenio and dg_conv_dg_detalle_tipos_avisos_dg.id_detalle = conv_dg_detalle.id_detalle and id_categoria = " + p.Value.ToString() + ")";
                     if ((p.ParameterName == "id_emplazamiento") && (p.Value.ToString() != ""))
                         mifiltro = mifiltro + " and exists (select * from dg_conv_dg_detalle_emplazamientos where dg_conv_dg_detalle_emplazamientos.id_convenio = conv_dg_detalle.id_convenio and dg_conv_dg_detalle_emplazamientos.id_detalle = conv_dg_detalle.id_detalle and id_emplazamiento = " + p.Value.ToString() + ")";
                     if ((p.ParameterName == "id_medidadigital") && (p.Value.ToString() != ""))

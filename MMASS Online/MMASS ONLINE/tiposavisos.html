@@ -131,9 +131,23 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-lg-6">
-                        <input type="checkbox" id="checkEnvioAdServer" disabled="disabled">
+                    <div class="col-lg-4">
+                        <input type="checkbox" id="checkEnvioAdServer" class="enableOnEdit" onclick="activarEnvioAds()">
                         <label for="checkEnvioAdServer"> Envia al adServer</label>
+                    </div>
+                    <div class="col-lg-6" id="colTipoAds">
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input enableOnEdit" type="radio" name="flexRadioTipoAds" id="flexRadioDisplay" checked>
+                            <label class="form-check-label" for="flexRadioDisplay">
+                                Display
+                            </label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input enableOnEdit" type="radio" name="flexRadioTipoAds" id="flexRadioVideo">
+                            <label class="form-check-label" for="flexRadioVideo">
+                                Video
+                            </label>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -150,6 +164,7 @@
             $('input[type=text]').attr('autocomplete', 'off');
             $("#divNavBar").load("navBar.html");
             //autentificar();
+            $("#colTipoAds").hide();
             checkParameters();
             document.body.style.backgroundImage = "url(./fondoM3.png)";
         });
@@ -177,7 +192,7 @@
 
             if (id != undefined) {
                 var data = {};
-                data.id_tipo_aviso_dg = id;
+                data.id_categoria = id;
                 callWS("tipos_avisos", "getById", JSON.stringify(data), function (data) { onGetTipoAviso(data); });
             }
 
@@ -185,13 +200,22 @@
         }
 
         function onGetTipoAviso(data) {
-            $('#botBorrar').attr("onclick", "checkBorrarTipoAviso(" + data.id_tipo_aviso_dg + ")");
-            $('#idTipoAviso').attr("value", data.id_tipo_aviso_dg);
+            $('#botBorrar').attr("onclick", "checkBorrarTipoAviso(" + data.id_categoria + ")");
+            $('#idTipoAviso').attr("value", data.id_categoria);
             $('#descTipoAviso').attr("value", data.descripcion);
             if (data.permite_envio_ads) {
                 $('#checkEnvioAdServer').attr("checked", true);
+                if (data.tipo_aviso_ads == 1) {
+                    $('#flexRadioDisplay').attr("checked", true);
+                }
+                else {
+                    $('#flexRadioVideo').attr("checked", true);
+                }
+                $('#checkEnvioAdServer').attr("checked", true);
+                $("#colTipoAds").show();
             } else {
                 $('#checkEnvioAdServer').attr("checked", false);
+                $("#colTipoAds").hide();
             }
             if (data.descripcion == "Banner" || data.descripcion == "Video") {
                 $('.disableOnEdit').attr("disabled", true);
@@ -264,7 +288,7 @@
 
         function borrarTipoAviso(id) {
             var data = {};
-            data.id_tipo_aviso_dg = id;
+            data.id_categoria = id;
             callWS("tipos_avisos", "remove", JSON.stringify(data), function (data) {
                 if (data == true) {
                     location.href = "/tiposavisoslist.html";
@@ -283,9 +307,20 @@
             }
 
             if (error.length == 0) {
-                data.Id_tipo_aviso_dg = $('#idTipoAviso').attr("value");
+                data.id_categoria = $('#idTipoAviso').attr("value");
                 data.Descripcion = $("#descTipoAviso").val();
                 data.Permite_envio_ads = document.getElementById("checkEnvioAdServer").checked;
+                if (document.getElementById("checkEnvioAdServer").checked) {
+                    if (document.getElementById("flexRadioDisplay").checked == true) {
+                        data.Tipo_aviso_ads = "1";
+                    };
+                    if (document.getElementById("flexRadioVideo").checked == true) {
+                        data.Tipo_aviso_ads = "2";
+                    };                  
+                }
+                else {
+                    data.Tipo_aviso_ads = "0";
+                }
 
                 callWS("tipos_avisos", "save", JSON.stringify(data), function (data) {
                     if (data == true) {
@@ -305,6 +340,15 @@
                 showMessage(message, "error");
             }
 
+        }
+
+        function activarEnvioAds() {
+            if (document.getElementById("checkEnvioAdServer").checked == true) {
+                $("#colTipoAds").show();
+            }
+            else {
+                $("#colTipoAds").hide();
+            }
         }
 
     </script>

@@ -41,7 +41,7 @@ namespace WebApi.Controllers
         [HttpPost("getById")]
         public IActionResult getById(Dg_tipos_avisos miobj)
         {
-            var tipos_avisos = _tipos_AvisosService.getById(miobj.Id_tipo_aviso_dg);
+            var tipos_avisos = _tipos_AvisosService.getById(miobj.Id_categoria);
             return Ok(tipos_avisos);
         }
 

@@ -353,7 +353,7 @@
             };
             viewListMedios += "</ul>"
             $("#selMedios").after(viewListMedios);
-            $("#selTipoPublicidad option[value=" + data.tipos_Avisos[0].id_tipo_aviso_dg + "]").attr("selected", "selected");
+            $("#selTipoPublicidad option[value=" + data.tipos_Avisos[0].id_categoria + "]").attr("selected", "selected");
             //multi
             //var tipos_avisos = {};
             //var viewListTipos = '<ul class=\"list-group\">';
@@ -401,7 +401,7 @@
                 demo1.bootstrapDualListbox('refresh');
             }
             else {
-                $.when(callWS("medios", "getMedidas", JSON.stringify(data.tipos_Avisos[0].descripcion), function (medidas) { onPopulateSelectMedidas(medidas, 'selMedidas', 'id_medidadigital', 'descripcion', 'ancho', 'alto'); }),
+                $.when(callWS("medios", "getMedidas", JSON.stringify(data.tipos_Avisos[0].tipo_aviso_ads), function (medidas) { onPopulateSelectMedidas(medidas, 'selMedidas', 'id_medidadigital', 'descripcion', 'ancho', 'alto'); }),
                   callWS("medios", "getAllE", JSON.stringify(data.id_red), function (data) { onPopulateSelectEmplaza(data, 'selEmplaza', 'id_emplazamiento', 'descripcion', 'codigo_emplazamiento'); }))
                  .then(function () { selMedidasYEmplaza(data.medidas, data.emplazamientos) });
             }
@@ -413,9 +413,9 @@
         function populateFields() {
             $.when(
                 callWS("medios", "getAll", '', function (data) { onPopulateSelectDone(data, 'selMedios', 'id_medio', 'desc_medio'); }),
-                callWS("tipos_avisos", "getAll", '', function (data) { onPopulateSelectDone(data, 'selTipoPublicidad', 'id_tipo_aviso_dg', 'descripcion'); }),
+                callWS("tipos_avisos", "getAll", '', function (data) { onTipoAvisoGetAll(data, 'selTipoPublicidad', 'id_categoria', 'descripcion', 'Permite_envio_ads', 'tipo_aviso_ads'); }),
                 callWS("medios", "getAllE", JSON.stringify(0), function (data) { onPopulateSelectEmplaza(data, 'selEmplaza', 'id_emplazamiento', 'descripcion', 'codigo_emplazamiento'); }),
-                callWS("medios", "getMedidas", JSON.stringify(""), function (data) { onPopulateSelectMedidas(data, 'selMedidas', 'id_medidadigital', 'descripcion', 'ancho', 'alto'); }),
+                callWS("medios", "getMedidas", JSON.stringify("0"), function (data) { onPopulateSelectMedidas(data, 'selMedidas', 'id_medidadigital', 'descripcion', 'ancho', 'alto'); }),
                 callWS("medios", "getAllA", '', function (data) { onPopulateSelectDone(data, 'selAreasGeo', 'id_area', 'descripcion'); }),
                 callWS("tarifas", "getFormasUsoAll", '', function (data) { onPopulateSelectDone(data, 'selFormaUso', 'id', 'descripcion'); })
             ).then(function () { checkParameters() }, function (data1, data2, data3) {
@@ -494,6 +494,19 @@
             }
             if ($("#" + idSelect).attr('multiple') == 'multiple') {
                 demo1.bootstrapDualListbox('refresh');
+            }
+        }
+
+        function onTipoAvisoGetAll(data, idSelect, colId, colDesc) {
+            var pObj = data;
+            var listitems = '';
+            $.each(pObj, function (it, iObj) {
+                listitems += '<option  permite_envio_ads= ' + iObj['permite_envio_ads'] + ' tipo_aviso_ads= ' + iObj['tipo_aviso_ads'] + ' value=' + iObj['id_categoria'] + '>' + iObj["descripcion"] + '</option>';
+            });
+            $("#" + idSelect).empty();
+            $("#" + idSelect).append(listitems);
+            if (pObj.length > 1) {
+                $("#" + idSelect).val([]);
             }
         }
 
@@ -615,7 +628,7 @@
                 data.Medios = selectToJson('selMedios', 'id_medio');
                 var TiposAvisos = [];
                 var tipoAviso = {};
-                tipoAviso.Id_tipo_aviso_dg = $('#selTipoPublicidad').val();
+                tipoAviso.Id_categoria = $('#selTipoPublicidad').val();
                 TiposAvisos.push(tipoAviso);
                 data.Tipos_Avisos = TiposAvisos;
                 //multi
@@ -690,7 +703,7 @@
         } 
 
         function onTipoAvisoSelected() {
-            var tipoAviso = $("#selTipoPublicidad option:selected").text();
+            var tipoAviso = $('#selTipoPublicidad option:selected').attr("tipo_aviso_ads");
             //recargar medidas
             callWS("medios", "getMedidas", JSON.stringify(tipoAviso), function (data) { onPopulateSelectMedidas(data, 'selMedidas', 'id_medidadigital', 'descripcion', 'ancho', 'alto'); });     
         }

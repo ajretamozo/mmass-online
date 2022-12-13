@@ -120,7 +120,7 @@ namespace WebApi.Entities
                 }
                 // Tipos de Aviso
                 resultado.Tipos_Avisos = new List<Dg_tipos_avisos>();
-                det = DB.Select("select dta.id_tarifa_dg, dta.id_tipo_aviso_dg, ta.* from dg_tarifas_tipos_avisos_dg dta inner join categorias ta on dta.id_tipo_aviso_dg = ta.id_categoria where dta.id_tarifa_dg =" + t.Rows[0]["id_tarifa_dg"].ToString());
+                det = DB.Select("select dta.id_tarifa_dg, dta.id_categoria, ta.* from dg_tarifas_tipos_avisos_dg dta inner join categorias ta on dta.id_categoria = ta.id_categoria where dta.id_tarifa_dg =" + t.Rows[0]["id_tarifa_dg"].ToString());
                 foreach (DataRow item in det.Rows)
                 {
                     Dg_tipos_avisos elem = Dg_tipos_avisos.getDg_tipos_avisos(item);
@@ -233,7 +233,7 @@ namespace WebApi.Entities
                         DB.Execute("delete from dg_tarifas_tipos_avisos_dg where id_tarifa_dg = " + Id_tarifa_dg.ToString());
                         foreach (Dg_tipos_avisos elem in Tipos_Avisos)
                         {
-                            sql = "insert into dg_tarifas_tipos_avisos_dg (Id_tarifa_dg,id_tipo_aviso_dg) values (" + Id_tarifa_dg.ToString() + "," + elem.Id_tipo_aviso_dg + ")";
+                            sql = "insert into dg_tarifas_tipos_avisos_dg (Id_tarifa_dg,id_categoria) values (" + Id_tarifa_dg.ToString() + "," + elem.Id_categoria + ")";
                             DB.Execute(sql);
                         }
                         //AGREGUE:
@@ -359,8 +359,8 @@ namespace WebApi.Entities
                         mifiltro = mifiltro + " and forma_uso = " + p.Value.ToString();
                     if ((p.ParameterName == "id_medio") && (p.Value.ToString() != ""))
                         mifiltro = mifiltro + " and exists (select * from dg_tarifas_medios where dg_tarifas_medios.id_tarifa_dg = dg_tarifas.id_tarifa_dg and id_medio = " + p.Value.ToString() + ")";
-                    if ((p.ParameterName == "id_tipo_aviso_dg") && (p.Value.ToString() != ""))
-                        mifiltro = mifiltro + " and exists (select * from dg_tarifas_tipos_avisos_dg where dg_tarifas_tipos_avisos_dg.id_tarifa_dg = dg_tarifas.id_tarifa_dg and id_tipo_aviso_dg = " + p.Value.ToString() + ")";
+                    if ((p.ParameterName == "id_categoria") && (p.Value.ToString() != ""))
+                        mifiltro = mifiltro + " and exists (select * from dg_tarifas_tipos_avisos_dg where dg_tarifas_tipos_avisos_dg.id_tarifa_dg = dg_tarifas.id_tarifa_dg and id_categoria = " + p.Value.ToString() + ")";
                     if ((p.ParameterName == "id_emplazamiento") && (p.Value.ToString() != ""))
                         mifiltro = mifiltro + " and exists (select * from dg_tarifas_emplazamientos where dg_tarifas_emplazamientos.id_tarifa_dg = dg_tarifas.id_tarifa_dg and id_emplazamiento = " + p.Value.ToString() + ")";
                     if ((p.ParameterName == "id_medidadigital") && (p.Value.ToString() != ""))

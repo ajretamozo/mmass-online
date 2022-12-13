@@ -222,7 +222,7 @@
                 // Llenar select Medios
                 callWS("medios", "getAll", '', function (data) { onPopulateSelectDone(data, 'selMedios', 'id_medio', 'desc_medio'); }),
                 // Llenar select Tipos de Aviso
-                callWS("tipos_avisos", "getAll", '', function (data) { onPopulateSelectDone(data, 'selTipoPublicidad', 'id_tipo_aviso_dg', 'descripcion'); }),
+                callWS("tipos_avisos", "getAll", '', function (data) { onPopulateSelectDone(data, 'selTipoPublicidad', 'id_categoria', 'descripcion'); }),
                 // Llenar select Formas de uso
                 callWS("tarifas", "getFormasUsoAll", '', function (data) { onPopulateSelectDone(data, 'selFormaUso', 'id', 'descripcion'); }),
             ).then(function () { searchTarifas() }, function (data1, data2, data3) {
@@ -297,7 +297,7 @@
                 }
             }
             params.forma_uso = $('#selFormaUso').val();
-            params.id_tipo_aviso_dg = $('#selTipoPublicidad').val();
+            params.id_categoria = $('#selTipoPublicidad').val();
             params.id_medio = $('#selMedios').val();
             if (document.getElementById("checkEsVigente").checked) {
                 params.vigente = "1";

@@ -160,7 +160,7 @@ namespace WebApi.Services
                     }
                     else
                     {
-                        resultado = GoogleAdManager.CreateLineItems(det.tipo_aviso_dg.Descripcion, det.Descripcion, dg.Id_Google_Ad_Manager, det.Importe_unitario, det.Cantidad, det.Porc_dto, det.Fecha_desde, det.Fecha_hasta, det.Medidas, det.areaGeo, det.Emplazamientos, det.Tipo_tarifa);
+                        resultado = GoogleAdManager.CreateLineItems(det.tipo_aviso_dg.Tipo_aviso_ads, det.Descripcion, dg.Id_Google_Ad_Manager, det.Importe_unitario, det.Cantidad, det.Porc_dto, det.Fecha_desde, det.Fecha_hasta, det.Medidas, det.areaGeo, det.Emplazamientos, det.Tipo_tarifa);
                     }
 
                     if (long.Parse(resultado.Value) > 0)
