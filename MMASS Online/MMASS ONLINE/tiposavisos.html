@@ -291,7 +291,7 @@
             data.id_categoria = id;
             callWS("tipos_avisos", "remove", JSON.stringify(data), function (data) {
                 if (data == true) {
-                    location.href = "/tiposavisoslist.html";
+                    location.href = "/tiposavisoslist.html?borrado=si";
                 } else {
                     console.log(data);
                 }
@@ -324,7 +324,7 @@
 
                 callWS("tipos_avisos", "save", JSON.stringify(data), function (data) {
                     if (data == true) {
-                        location.href = "/tiposavisoslist.html";
+                        location.href = "/tiposavisoslist.html?guardado=si";
                     } else {
                         message = "El Tipo de Aviso ya existe";
                         showMessage(message, "error");

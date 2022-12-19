@@ -289,7 +289,7 @@
 
         function getMedidasMMASS() {
 
-            callWS("medios", "getMedidas", JSON.stringify("Banner"), function (data) { onCargarTabla('TableMMASS', data); });
+            callWS("medios", "getMedidas", JSON.stringify(1), function (data) { onCargarTabla('TableMMASS', data); });
         }
 
         function sincronizar() {
@@ -329,7 +329,7 @@
         function RecargarTablas() {
 
             $("#TableMMASS").empty();
-            callWS("medios", "getMedidas", JSON.stringify("Banner"), function (data) { onCargarTabla('TableMMASS', data); });
+            callWS("medios", "getMedidas", JSON.stringify(1), function (data) { onCargarTabla('TableMMASS', data); });
 
             showMessage("Medidas actualizadas", "info");
         }
@@ -372,7 +372,7 @@
             parametros.Parametros = listaParametros;
 
             callWS("googleAdManager", "getMedidasVideoTodasRedes", JSON.stringify(parametros), function (data1) { onCargarTabla('TableGAMV', data1); });
-            callWS("medios", "getMedidas", JSON.stringify("Video"), function (data2) { onCargarTabla('TableMMASSV', data2); });
+            callWS("medios", "getMedidas", JSON.stringify(2), function (data2) { onCargarTabla('TableMMASSV', data2); });
         }
 
         function sincronizarV() {
@@ -412,7 +412,7 @@
         function RecargarTablasV() {
 
             $("#TableMMASSV").empty();
-            callWS("medios", "getMedidas", JSON.stringify("Video"), function (data2) { onCargarTabla('TableMMASSV', data2); });
+            callWS("medios", "getMedidas", JSON.stringify(2), function (data2) { onCargarTabla('TableMMASSV', data2); });
 
             showMessage("Medidas actualizadas", "info");
         }

@@ -148,6 +148,7 @@
             $("#divNavBar").load("navBar.html");
             populateFields();
             document.body.style.backgroundImage = "url(./fondoM3.png)";
+            mensaje();
         });
 
 
@@ -249,9 +250,8 @@
             data.id_usuario = id;
             callWS("users", "removeUser", JSON.stringify(data), function (data) {
                 if (data == true) {
-                    //callWS("users", "getAllUsers", '', function (data2) { populateTable(data2, 'TableRedes'); });
-                    //$( "#TableRedes" ).load( "/usuariosList.html #TableRedes" );
                     populateFields();
+                    showMessage("Usuario eliminado", "success");
                 } else {
                     message = 'Ocurrió un problema al borrar el Usuario';
                     showMessage(message, "alert");
@@ -287,6 +287,33 @@
             return fieldFormatDate;
         }
 
+        function mensaje() {
+            //si viene de guardar
+            var guardado = getUrlParameter("guardado")
+            if (guardado != undefined) {
+                showMessage("Usuario guardado", "success");
+            }
+            //si viene de borrar
+            var borrado = getUrlParameter("borrado")
+            if (borrado != undefined) {
+                showMessage("Usuario eliminado", "success");
+            }
+        }
+
+        var getUrlParameter = function getUrlParameter(sParam) {
+            var sPageURL = window.location.search.substring(1),
+                sURLVariables = sPageURL.split('&'),
+                sParameterName,
+                i;
+
+            for (i = 0; i < sURLVariables.length; i++) {
+                sParameterName = sURLVariables[i].split('=');
+
+                if (sParameterName[0] === sParam) {
+                    return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+                }
+            }
+        };
 
     </script>
     <footer>

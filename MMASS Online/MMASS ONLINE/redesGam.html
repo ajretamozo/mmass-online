@@ -265,7 +265,7 @@
             data.id_red = id;
             callWS("medios", "removeRed", JSON.stringify(data), function (data) {
                 if (data == true) {
-                    location.href = "/redesGamlist.html";
+                    location.href = "/redesGamlist.html?borrado=si";
                 } else {
                     console.log(data);
                 }
@@ -290,7 +290,7 @@
 
                 callWS("medios", "saveRed", JSON.stringify(data), function (resp) {
                     if (resp == 0) {
-                        location.href = "/redesGamlist.html";
+                        location.href = "/redesGamlist.html?guardado=si";
                     }
                     else if (resp == 1) {
                         showMessage("El nombre de Red ya existe", "error");
@@ -309,8 +309,8 @@
                 message = message.slice(0, -3);
                 showMessage(message, "error");
             }
-
         }
+
 
     </script>
     <footer>

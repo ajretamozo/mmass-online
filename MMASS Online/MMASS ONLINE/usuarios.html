@@ -288,8 +288,7 @@
             data.id_usuario = id;
             callWS("users", "removeUser", JSON.stringify(data), function (data) {
                 if (data == true) {
-                    location.href = "/usuariosList.html";
-                    showMessage("Usuario eliminado", "info");
+                    location.href = "/usuariosList.html?borrado=si";
                 } else {
                     console.log(data);
                 }
@@ -331,7 +330,7 @@
                         else {
                             callWS("users", "saveUser", JSON.stringify(data), function (resp) {
                                 if (resp == 0) {
-                                    location.href = "/usuariosList.html";
+                                    location.href = "/usuariosList.html?guardado=si";
                                 }
                                 else if (resp == 1) {
                                     showMessage("El nombre de Usuario ya existe", "error");
@@ -347,7 +346,7 @@
                 else {
                     callWS("users", "saveUser", JSON.stringify(data), function (resp) {
                         if (resp == 0) {
-                            location.href = "/usuariosList.html";
+                            location.href = "/usuariosList.html?guardado=si";
                         }
                         else if (resp == 1) {
                             showMessage("El nombre de Usuario ya existe", "error");

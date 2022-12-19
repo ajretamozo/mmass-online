@@ -199,11 +199,7 @@ namespace WebApi.Entities
 
         public List<Conv_dg_detalle> getByIdConv()
         {
-            //string sqlCommand = " select id_det_conv, id_convenio, id_detalle, descripcion, fecha_desde, fecha_hasta, id_tipo_aviso_dg, forma_uso, precio_unitario," +
-            //                    " porc_desc, porc_conf_nc, porc_conf_fc, id_area" +
-            //                    " from conv_dg_detalle where id_convenio = " + id_convenio.ToString();
-
-            string sqlCommand = @"select distinct id_det_conv, cd.id_convenio, cd.id_detalle, descripcion, fecha_desde, fecha_hasta, id_categoria,
+            string sqlCommand = @"select distinct id_det_conv, cd.id_convenio, cd.id_detalle, descripcion, fecha_desde, fecha_hasta,
                                   forma_uso, precio_unitario, porc_desc, porc_conf_nc, porc_conf_fc, id_area 
                                   from conv_dg_detalle cd 
                                   inner join dg_conv_dg_detalle_medios cdm on cdm.id_convenio=cd.id_convenio 

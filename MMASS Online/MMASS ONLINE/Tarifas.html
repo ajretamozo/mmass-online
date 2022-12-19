@@ -584,7 +584,7 @@
             data.id_tarifa_dg = id;
             callWS("tarifas", "remove", JSON.stringify(data), function (data) {
                 if (data == true) {
-                    location.href = "/tarifaslist.html";
+                    location.href = "/tarifaslist.html?borrado=si";
                 } else {
                     console.log(data);
                 }
@@ -641,7 +641,7 @@
 
                 callWS("Tarifas", "save", JSON.stringify(data), function (resp) {
                     if (resp == 0) {
-                        location.href = "/tarifaslist.html";
+                        location.href = "/tarifaslist.html?guardado=si";
                     }
                     else if (resp == 1) {
                         showMessage("El nombre de Tarifa ya existe", "error");

@@ -482,7 +482,7 @@
                                         <th class="col-xs-1" style="text-align: center;">Vigencia</th>
                                         <th class="col-xs-1" style="text-align: center;">Observaciones</th>
                                         <th class="col-xs-1" style="text-align: center;">Facturar a</th>
-                                        <th class="col-xs-1" style="text-align: center;">Forma de Pago</th>
+                                        <th class="col-xs-1" style="text-align: center;">Tipo de Venta</th>
                                         <th class="col-xs-1" style="text-align: center;">Importe</th>
                                         <th class="col-xs-1 actions" style="text-align: center;">Seleccionar</th>
                                     </tr>
@@ -807,7 +807,7 @@
                                 </select>
                             </div>
                             <div class="col-lg-4">
-                                <label>Forma de Pago</label>
+                                <label>Tipo de Venta</label>
                                 <select class="form-control" id="selFPago"></select>
                             </div>
                             <div class="col-lg-4">
@@ -1595,7 +1595,7 @@
             }
 
             if ($("#selFPago").val() == null) {
-                showMessage("Seleccione una Forma de Pago", "error");
+                showMessage("Seleccione un Tipo de Venta", "error");
                 return false;
             }
 
@@ -1910,8 +1910,6 @@
             cTotal = neto2;
 
             $("#total").val(cTotal.toFixed(2));
-
-
 
         }
 
@@ -2271,7 +2269,7 @@
                 return 0;
             }
             if ($("#selFPago").val() == null) {
-                showMessage("Seleccione una Forma de Pago", "info");
+                showMessage("Seleccione un Tipo de Venta", "info");
                 return 0;
             }
             if ($("#selPlazoP").val() == null) {
@@ -2963,7 +2961,7 @@
                 return 0;
             }
             if ($("#selFPago").val() == null) {
-                showMessage("Seleccione una Forma de Pago", "info");
+                showMessage("Seleccione un Tipo de Venta", "info");
                 return 0;
             }
             if ($("#selPlazoP").val() == null) {
@@ -3420,7 +3418,6 @@
             fechaHConv = data.fecha_hasta;
             $("#selFacturar option[value=" + data.facturar_a + "]").attr("selected", "selected");
             $("#selFPago option[value=" + data.id_formapago + "]").attr("selected", "selected");
-            $("#selPlazoP option[value=" + data.id_condpago_facturar + "]").attr("selected", "selected");
             $('#inpDescConvenio').val(data.desc_convenio);
             if (data.porc_conf_nc != null && data.porc_conf_nc != 0) {
                 $('#conf_nc').val(data.porc_conf_nc);
@@ -3430,13 +3427,16 @@
                 $('#conf_fc').val(data.porc_conf_fc);
                 $("#conf_fc").attr("disabled", true);
             }
+            if (data.id_condpago_facturar != null && data.id_condpago_facturar != 0) {
+                $("#selPlazoP option[value=" + data.id_condpago_facturar + "]").attr("selected", "selected");
+                $("#selPlazoP").attr("disabled", true);
+            }
             $("#selAgencia").attr("disabled", true);
             $("#selAnunciante").attr("disabled", true);
             $("#botLimpiar").attr("disabled", true);
             $("#bBorrConvenios").attr("disabled", false);
             $("#selFacturar").attr("disabled", true);
             $("#selFPago").attr("disabled", true);
-            $("#selPlazoP").attr("disabled", true);
 
             idConvenio = data.id_convenio;
 
@@ -4667,7 +4667,7 @@
                 callWS("medios", "GetDetConveniosByIdConv", JSON.stringify(detConv), function (data) { onPopulateSelectDetConv(data, 'selDetConvenio', 'id_det_conv', 'descripcion', 'id_detalle'); }),
                 callWS("medios", "GetDetConvenioById", JSON.stringify(detConv), function (data) { cargarSelectMultiples(data); }),
                 callWS("tarifas", "getFormasUsoAll", '', function (data) { onPopulateSelectDone(data, 'selTipoTarifaD', 'id', 'descripcion'); })
-            ).then(function () { onCargarModificarRenglon(rId) }, function (data1, data2, data3) {
+            ).then(function () { onCargarModificarRenglon(rDetalle) }, function (data1, data2, data3) {
                 console.log("Medios: " + data1[2].statusText + "; Formas de uso: " + data2[2].statusText + "Tipo Aviso: " + data3[2].statusText + ";");
                 showMessage("Se produjo un error al cargar los campos, intentelo nuevamente", type = "alert");
             });

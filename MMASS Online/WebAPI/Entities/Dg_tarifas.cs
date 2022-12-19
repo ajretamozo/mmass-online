@@ -144,7 +144,7 @@ namespace WebApi.Entities
                 det = DB.Select(@"select tme.id_tarifa_dg, m.* 
                                   from dg_tarifas_medidas tme 
                                   inner join dg_medidas m on m.id_medidadigital = tme.id_medidadigital 
-                                  where tme.id_tarifa_dg = " + t.Rows[0]["id_tarifa_dg"].ToString());
+                                  where tme.id_tarifa_dg = " + t.Rows[0]["id_tarifa_dg"].ToString() + " and m.es_borrado = 0");
                 foreach (DataRow item in det.Rows)
                 {
                     Dg_medidas elem = Dg_medidas.getDg_medidas(item);
@@ -311,6 +311,18 @@ namespace WebApi.Entities
                     using (TransactionScope transaccion = new TransactionScope(TransactionScopeOption.RequiresNew, new TimeSpan(0, 2, 0)))
                     {
                         DB.Execute(sql);
+
+                        // Borro los Medios relacionados...
+                        DB.Execute("delete from dg_tarifas_medios where Id_tarifa_dg = " + Id_tarifa_dg.ToString());
+                        // Borro los tipos de avisos relacionados...
+                        DB.Execute("delete from dg_tarifas_tipos_avisos_dg where id_tarifa_dg = " + Id_tarifa_dg.ToString());
+                        // Borro los Emplazamientos relacionados...
+                        DB.Execute("delete from dg_tarifas_emplazamientos where id_tarifa_dg = " + Id_tarifa_dg.ToString());
+                        // Borro las Medidas relacionadas...
+                        DB.Execute("delete from dg_tarifas_medidas where id_tarifa_dg = " + Id_tarifa_dg.ToString());
+                        // Grabo el AreaGeo relacionada...
+                        DB.Execute("delete from dg_tarifas_areas where id_tarifa_dg = " + Id_tarifa_dg.ToString());
+
                         transaccion.Complete();
                     }
                 }

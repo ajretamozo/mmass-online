@@ -148,6 +148,7 @@
             $("#divNavBar").load("navBar.html");
             populateFields();
             document.body.style.backgroundImage = "url(./fondoM3.png)";
+            mensaje();
         });
 
 
@@ -249,6 +250,7 @@
             callWS("tipos_avisos", "remove", JSON.stringify(data), function (data) {
                 if (data == true) {
                     callWS("tipos_avisos", "getAll", '', function (data) { populateTable(data, 'TableTiposAvisos'); });
+                    showMessage("Tipo de Aviso eliminado", "success");
                 } else {
                     message = 'Ocurrió un problema al borrar el Tipo de Aviso';
                     showMessage(message, "alert");
@@ -285,6 +287,33 @@
             return fieldFormatDate;
         }
 
+        function mensaje() {
+            //si viene de guardar
+            var guardado = getUrlParameter("guardado")
+            if (guardado != undefined) {
+                showMessage("Tipo de Aviso guardado", "success");
+            }
+            //si viene de borrar
+            var borrado = getUrlParameter("borrado")
+            if (borrado != undefined) {
+                showMessage("Tipo de Aviso eliminado", "success");
+            }
+        }
+
+        var getUrlParameter = function getUrlParameter(sParam) {
+            var sPageURL = window.location.search.substring(1),
+                sURLVariables = sPageURL.split('&'),
+                sParameterName,
+                i;
+
+            for (i = 0; i < sURLVariables.length; i++) {
+                sParameterName = sURLVariables[i].split('=');
+
+                if (sParameterName[0] === sParam) {
+                    return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+                }
+            }
+        };
 
     </script>
     <footer>
