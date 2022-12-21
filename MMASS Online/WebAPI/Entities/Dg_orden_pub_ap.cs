@@ -632,7 +632,7 @@ namespace WebApi.Entities
                 }
                 else
                 {
-                    sql = "update dg_orden_pub_ap set  nro_orden = @nro_orden, id_empresa = @id_empresa, id_medio = @id_medio, es_varios_medios = @es_varios_medios," +
+                    sql = "update dg_orden_pub_ap set id_empresa = @id_empresa, id_medio = @id_medio, es_varios_medios = @es_varios_medios," +
                         "fecha = @fecha, fecha_expiracion = @fecha_expiracion, id_agencia = @id_agencia, id_anunciante = @id_anunciante, " +
                         "id_producto = @id_producto, id_google_ad_manager = @id_google_ad_manager, id_red = @id_red, parafacturar = @parafacturar, " +
                         "id_condpagoap = @id_condpagoap, nro_orden_ag = @nro_orden_ag, facturar_a = @facturar_a, tipo_orden = @tipo_orden, observ = @observ," +
@@ -766,10 +766,21 @@ namespace WebApi.Entities
                 {                    
                     // Grabo Cabecera...
                     DB.Execute(sql, parametros);
-                    // Grabo los Detalles...
 
-                    //AGREGUE (delete medidas, emplazamientos):
-                    DB.Execute("delete from dg_orden_pub_medidas where id_op_dg = " + Id_op_dg.ToString());
+                    //Recupero datos para el mensaje de guardado con éxito
+                    DataTable t = DB.Select("SELECT anio, mes, nro_orden FROM dg_orden_pub_ap WHERE id_op_dg = " + Id_op_dg.ToString());
+                    if (t.Rows.Count == 1)
+                    {
+                        DataRow item = t.Rows[0];
+                        Anio = DB.DInt(item["anio"].ToString());
+                        Mes = DB.DInt(item["mes"].ToString());
+                        Nro_orden = DB.DInt(item["nro_orden"].ToString());
+                    }
+
+                        // Grabo los Detalles...
+
+                        //AGREGUE (delete medidas, emplazamientos):
+                        DB.Execute("delete from dg_orden_pub_medidas where id_op_dg = " + Id_op_dg.ToString());
                     DB.Execute("delete from dg_orden_pub_emplazamientos where id_op_dg = " + Id_op_dg.ToString());
 
                     DB.Execute("delete from dg_orden_pub_as where id_op_dg = " + Id_op_dg.ToString());

@@ -1441,6 +1441,7 @@
                 bloquearCamposCabecera()
                 $('#pTitulo').append('<span id="sTituloDinamico"> - </span>');
                 $('#pTitulo').append('<span id="sTituloDinamico" style="color: red;">ANULADA</span>');
+                $("#bClonar").attr("disabled", true);
             }
 
             if (data.parafacturar == 0 && data.nro_orden > 0) {
@@ -1587,10 +1588,15 @@
                 return false;
             }
 
-            var o1 = new Date(dateToSqlFormat($('#fechaDesde').val()));
-            var o2 = new Date(dateToSqlFormat($('#fechaHasta').val()));
+            var o1 = new Date(dateToSqlFormat($('#fechaDesde').val()) + 'T00:00:00');
+            var o2 = new Date(dateToSqlFormat($('#fechaHasta').val()) + 'T00:00:00');
             if (o2 < o1) {
                 showMessage("La Fecha Hasta es menor que la Fecha Desde en la Vigencia de la Orden", "error");
+                return false;
+            }
+
+            if (validarFechasCabecYDet(o1, o2)) {
+                showMessage("La Orden contiene Detalles fuera de las Fechas de Vigencia", "error");
                 return false;
             }
 
@@ -4840,6 +4846,21 @@
             callWS("medios", "getMedidas", JSON.stringify(tipoAviso), function (data) { onPopulateSelectMedidas(data, 'selMedidasD', 'id_medidadigital', 'descripcion', 'ancho', 'alto'); });      
 
             filterTarifas();
+        }
+
+        function validarFechasCabecYDet(fechaDesdeCab, fechaHastaCab) {
+            error = false;
+
+            Detalles.forEach(function (detalle, index) {
+                var fechasDesdeDet = new Date(detalle.fecha_desde);
+                var fechaHastaDet = new Date(detalle.fecha_hasta);
+
+                if (fechaDesdeCab > fechasDesdeDet || fechaHastaCab < fechaHastaDet) {
+                    error = true;
+                }
+            });
+
+            return error;
         }
 
     </script>

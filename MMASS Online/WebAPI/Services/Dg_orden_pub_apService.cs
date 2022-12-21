@@ -78,7 +78,7 @@ namespace WebApi.Services
                 if (ret.op != null)
                 {
                     ret.result = 1;
-                    ret.message = "La Orden Nro: " + miobj.Anio + "-" + miobj.Mes + "-" + miobj.Nro_orden + " se generó con éxito";
+                    ret.message = "La Orden Nro: " + ret.op.Anio + "-" + ret.op.Mes + "-" + ret.op.Nro_orden + " se generó con éxito";
                 }
                 else {
                     ret.result = -1;
