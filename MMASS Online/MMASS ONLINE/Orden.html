@@ -898,9 +898,9 @@
                                         <div class="col-lg-6">
                                             <label>Vigencia</label>
                                             <div class="input-group input-daterange">
-                                                <input type="text" class="form-control" id="fechaDesdeD" data-toggle="datetimepicker" data-target="#fechaDesdeD" value="01/08/2019" onchange="calcularNetoD();  validarFechasConvenioD('fechaDD');" />
+                                                <input type="text" class="form-control" id="fechaDesdeD" data-toggle="datetimepicker" data-target="#fechaDesdeD" value="01/08/2019" onchange="calcularNetoD();  validarFechasConvenioD('fechaDD'); filterTarifas()" />
                                                 <span class="input-group-addon">hasta</span>
-                                                <input type="text" class="form-control" id="fechaHastaD" data-toggle="datetimepicker" data-target="#fechaHastaD" value="02/09/2019" onchange="calcularNetoD(); validarFechasConvenioD('fechaHD');" />
+                                                <input type="text" class="form-control" id="fechaHastaD" data-toggle="datetimepicker" data-target="#fechaHastaD" value="02/09/2019" onchange="calcularNetoD(); validarFechasConvenioD('fechaHD'); filterTarifas()" />
                                             </div>
                                         </div>
                                         <div class="col-lg-2"></div>
@@ -1346,7 +1346,9 @@
             $('#fechaDesde').datetimepicker('date', moment(dateToFieldFormat(data.fecha), 'DD/MM/YYYY'));
             $('#fechaHasta').datetimepicker('date', moment(dateToFieldFormat(data.fecha_expiracion), 'DD/MM/YYYY'));
             $("#bAnular").attr("disabled", false);
-            $("#bClonar").attr("disabled", false);
+            $("#conf_nc").attr("disabled", true);
+            $("#conf_fc").attr("disabled", true);
+
             if (data.es_facturada && OpClon == false) {
                 $("#inpEsFacturada").val("SI");
                 $("#bGuardarOrden").attr("disabled", true);
@@ -1442,6 +1444,9 @@
                 $('#pTitulo').append('<span id="sTituloDinamico"> - </span>');
                 $('#pTitulo').append('<span id="sTituloDinamico" style="color: red;">ANULADA</span>');
                 $("#bClonar").attr("disabled", true);
+            }
+            else {
+                $("#bClonar").attr("disabled", false);
             }
 
             if (data.parafacturar == 0 && data.nro_orden > 0) {
@@ -1952,6 +1957,8 @@
                 $('#sTituloDinamico2').remove();
                 $("#bAnular").attr("disabled", false);
                 $("#bClonar").attr("disabled", false);
+                $("#conf_nc").attr("disabled", true);
+                $("#conf_fc").attr("disabled", true);
                 $('#inpOrderNumber').val(data.op.nro_orden);
                 $("#inpOrderNumber").attr("id_op_dg", data.op.id_op_dg);
                 $("#inpOrderMonth").val(data.op.mes);
@@ -2342,9 +2349,9 @@
         //AGREGUE (cantidad = días al seleccionar CPD Sponsor):
         function filterTarifas() {
             if (tieneTarifa == false) {
+                var day1 = new Date(dateToSqlFormat($('#fechaDesdeD').val()));
+                var day2 = new Date(dateToSqlFormat($('#fechaHastaD').val()));
                 if ($('#selTipoTarifaD').val() == 1) {
-                    var day1 = new Date(dateToSqlFormat($('#fechaDesdeD').val()));
-                    var day2 = new Date(dateToSqlFormat($('#fechaHastaD').val()));
                     //var difference = Math.abs(day2 - day1);
                     var cantD = (Math.abs(day2 - day1) / (1000 * 3600 * 24)) + 1;
                     $("#cantidadL").text("Cantidad (días)");
@@ -2361,10 +2368,19 @@
 
                 var parametros = {};
                 var listaParametros = [];
-                var objParametro = {};
 
-                params = {}
+                var objParametro = {};
+                objParametro.ParameterName = "fecha_desde_det";
+                objParametro.Value = day1;
+                listaParametros.push(objParametro);
+
+                var objParametro = {};
+                objParametro.ParameterName = "fecha_hasta_det";
+                objParametro.Value = day2;
+                listaParametros.push(objParametro);
+
                 if ($('#selTipoTarifaD').val() != null) {
+                    var objParametro = {};
                     objParametro.ParameterName = "forma_uso";
                     objParametro.Value = $('#selTipoTarifaD').val();
                     listaParametros.push(objParametro);
@@ -4496,6 +4512,7 @@
                 bloquearCamposCabecera();
                 $("#bGuardarOrden").attr("disabled", true);
                 $("#bGuardarOrden").attr("title", "No se pueden guardar ordenes que estén anuladas");
+                $("#bClonar").attr("disabled", true);
                 recargarRenglones();
                 showMessage("Orden anulada con éxito", "info");
 
@@ -4852,10 +4869,22 @@
             error = false;
 
             Detalles.forEach(function (detalle, index) {
-                var fechasDesdeDet = new Date(detalle.fecha_desde);
-                var fechaHastaDet = new Date(detalle.fecha_hasta);
+                var fechaDesdeDet;
+                var fechaHastaDet;
+                if (detalle.fecha_desde.includes("T")) {
+                    fechaDesdeDet = new Date(detalle.fecha_desde);
+                }
+                else {
+                    fechaDesdeDet = new Date(detalle.fecha_desde + 'T00:00:00');
+                }
+                if (detalle.fecha_hasta.includes("T")) {
+                    fechaHastaDet = new Date(detalle.fecha_hasta);
+                }
+                else {
+                    fechaHastaDet = new Date(detalle.fecha_hasta + 'T00:00:00');
+                }
 
-                if (fechaDesdeCab > fechasDesdeDet || fechaHastaCab < fechaHastaDet) {
+                if (fechaDesdeCab > fechaDesdeDet || fechaHastaCab < fechaHastaDet) {
                     error = true;
                 }
             });

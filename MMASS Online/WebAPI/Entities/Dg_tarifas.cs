@@ -335,7 +335,7 @@ namespace WebApi.Entities
             return true;
         }
 
-        //AGREGUE (modifique las fechas por config sql y agregué emplazamientos, medidas y areasgeo):
+        //AGREGUE (modifique las fechas por config sql):
         public static List<Dg_tarifas> filter(List<Parametro> parametros)
         {
             string sqlCommand = " select id_tarifa_dg, descripcion, fecha_desde, fecha_hasta, forma_uso, precio_unitario, es_borrado, id_red " +
@@ -393,6 +393,10 @@ namespace WebApi.Entities
                         mifiltro = mifiltro + " and (getdate() between fecha_desde and fecha_hasta) ";
                     if ((p.ParameterName == "id_red") && (p.Value.ToString() != ""))
                         mifiltro = mifiltro + " and id_red = " + p.Value.ToString() + ")";
+                    if ((p.ParameterName == "fecha_desde_det") && (p.Value.ToString() != ""))
+                        mifiltro = mifiltro + " and fecha_desde <= '" + p.Value.ToString() + "'";
+                    if ((p.ParameterName == "fecha_hasta_det") && (p.Value.ToString() != ""))
+                        mifiltro = mifiltro + " and fecha_hasta >= '" + p.Value.ToString() + "'";
                 }
             }
             if (idMedidas != "")

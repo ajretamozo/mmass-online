@@ -777,10 +777,8 @@ namespace WebApi.Entities
                         Nro_orden = DB.DInt(item["nro_orden"].ToString());
                     }
 
-                        // Grabo los Detalles...
-
-                        //AGREGUE (delete medidas, emplazamientos):
-                        DB.Execute("delete from dg_orden_pub_medidas where id_op_dg = " + Id_op_dg.ToString());
+                    // Grabo los Detalles...
+                    DB.Execute("delete from dg_orden_pub_medidas where id_op_dg = " + Id_op_dg.ToString());
                     DB.Execute("delete from dg_orden_pub_emplazamientos where id_op_dg = " + Id_op_dg.ToString());
 
                     DB.Execute("delete from dg_orden_pub_as where id_op_dg = " + Id_op_dg.ToString());
