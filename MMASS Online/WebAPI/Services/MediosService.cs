@@ -36,6 +36,7 @@ namespace WebApi.Services
         int saveRed(Dg_red_GAM miobj);
         IEnumerable<Dg_red_GAM> filterRedes(List<Parametro> parametros);
         IEnumerable<Concepto_Negocio> getAllConceptos();
+        IEnumerable<Clasificacion_op> getAllClasificacion();
         Dg_emplazamientos getEmplazaByCodigo(long cod, int idRed);
         int getBD();
         String getConString();
@@ -157,6 +158,11 @@ namespace WebApi.Services
         public IEnumerable<Concepto_Negocio> getAllConceptos()
         {
             return Concepto_Negocio.getAll();
+        }
+
+        public IEnumerable<Clasificacion_op> getAllClasificacion()
+        {
+            return Clasificacion_op.getAll();
         }
 
         public Dg_emplazamientos getEmplazaByCodigo(long cod, int idRed)

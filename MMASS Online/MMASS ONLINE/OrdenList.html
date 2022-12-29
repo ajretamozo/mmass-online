@@ -126,7 +126,7 @@
         <div id="divBlock" style="left:0; right:0;top:0; bottom:0;overflow-x: hidden; overflow-y: auto;position:fixed;z-index:1051;outline:0;display:none"></div>
         <div class="modal " id="pleaseWaitDialog" data-backdrop="static" data-keyboard="false" style="display:none">
             <div class="modal-dialog" role="document">
-                <div class="modal-content">
+                <div class="modal-content shadow p-3 mb-5 bg-white rounded">
                     <div class="modal-header">
                         <!--<img class="app-icon" alt="Brand" src="images/waiting2.png" style="float:left;margin-right:15px;">-->
                         <h4 class="modal-title" onclick='hidePleaseWait();'>Procesando...</h4>
@@ -514,7 +514,7 @@
 
         //TEST
         function reporteTest() {
-            //callWS("googleAdManager", "reporteTest");
+            callWS("googleAdManager", "reporteTest");
         }
 
         function formatearMonto(x) {

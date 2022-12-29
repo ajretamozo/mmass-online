@@ -205,6 +205,31 @@ namespace WebApi.Services
         public void reporteTest()
         {
             //GoogleAdManager.GetTamaños();
+            GoogleAdManager.RunOpReport();
+            //procesarReporte();
+        }
+
+        //Puede ser util para llevar el csv al pdf de certif
+        public void procesarReporte()
+        {
+            string ubicacionArchivo = "C:\\Users\\Terminal\\Desktop\\reporte.csv";
+            System.IO.StreamReader archivo = new System.IO.StreamReader(ubicacionArchivo);
+            string separador = ",";
+            string linea;
+            // Si el archivo no tiene encabezado, elimina la siguiente línea
+            archivo.ReadLine(); // Leer la primera línea pero descartarla porque es el encabezado
+            while ((linea = archivo.ReadLine()) != null)
+            {
+                string[] fila = linea.Split(separador);
+                fila[0] = "ID Orden";
+                fila[1] = "Orden";
+                fila[2] = "ID Línea de pedido";
+                fila[3] = "Línea de pedido";
+                fila[4] = "Fecha";
+                fila[5] = "Impresiones del servidor de anuncios";
+                fila[6] = "Clics del servidor de anuncios";
+                fila[7] = "CTR del servidor de anuncios";
+            }
         }
 
         public String GetOrderDetails2(Dg_orden_pub_ap orden)

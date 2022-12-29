@@ -81,6 +81,7 @@ namespace WebApi.Entities
         public int Id_red { get; set; }
         public long Codigo_red { get; set; }
         public int Parafacturar { get; set; }
+        public int Id_clasificacion_op { get; set; }
         public int bloqueado { get; set; }
         public List<Dg_orden_pub_as> Detalles;
         public List<Dg_orden_pub_ejecutivos> Ejecutivos;
@@ -146,6 +147,7 @@ namespace WebApi.Entities
             mi.Seg_neto = DB.DFloat(item["Seg_neto"].ToString());
             mi.Fecha_alta = DB.DFecha(item["Fecha_alta"].ToString());
             mi.Id_concepto_negocio = DB.DInt(item["Id_concepto_negocio"].ToString());
+            mi.Id_clasificacion_op = DB.DInt(item["Id_clasificacion_op"].ToString());
             if (item["id_usuario"].ToString() != "")
             {
                 mi.usuario = Usuario.getById(DB.DInt(item["id_usuario"].ToString()));
@@ -224,7 +226,7 @@ namespace WebApi.Entities
                                 " dg.transferido, dg.bitacora, dg.Id_facturar, dg.Total_Avisos, dg.Total_Impresiones, " +
                                 " dg.Es_facturada, dg.Id_factura_ap, opb.bloqueado, " +
                                 " ag.razon_social as agencia_nombre, an.razon_social as anunciante_nombre, p.desc_producto as producto_nombre, dg.id_google_ad_manager, dg.id_red, dg.parafacturar, " +
-                                " cast(op.anio as varchar(4)) + '-' + cast(op.mes as varchar(2)) + '-' + cast(op.nro_orden as varchar(5)) as nro_orden_rel " +
+                                " dg.id_clasificacion_op, cast(op.anio as varchar(4)) + '-' + cast(op.mes as varchar(2)) + '-' + cast(op.nro_orden as varchar(5)) as nro_orden_rel " +
                                 " from Dg_orden_pub_ap dg " +
                                 " left outer join contactos ag on ag.id_contacto = dg.id_agencia " +
                                 " left outer join contactos an on an.id_contacto = dg.id_anunciante " +
@@ -433,7 +435,7 @@ namespace WebApi.Entities
                                 " dg.transferido, dg.bitacora, dg.Id_facturar, dg.Total_Avisos, dg.Total_Impresiones, " +
                                 " dg.Es_facturada, dg.Id_factura_ap, opb.bloqueado, " +
                                 " ag.razon_social as agencia_nombre, an.razon_social as anunciante_nombre, p.desc_producto as producto_nombre, dg.id_google_ad_manager, dg.id_red, dg.parafacturar, " +
-                                " cast(op.anio as varchar(4)) + '-' + cast(op.mes as varchar(2)) + '-' + cast(op.nro_orden as varchar(5)) as nro_orden_rel " +
+                                " dg.id_clasificacion_op, cast(op.anio as varchar(4)) + '-' + cast(op.mes as varchar(2)) + '-' + cast(op.nro_orden as varchar(5)) as nro_orden_rel " +
                                 " from Dg_orden_pub_ap dg " +
                                 " left outer join contactos ag on ag.id_contacto = dg.id_agencia " +
                                 " left outer join contactos an on an.id_contacto = dg.id_anunciante " +
@@ -501,7 +503,7 @@ namespace WebApi.Entities
                                 " dg.transferido, dg.bitacora, dg.Id_facturar, dg.Total_Avisos, dg.Total_Impresiones, " +
                                 " dg.Es_facturada, dg.Id_factura_ap, opb.bloqueado, " +
                                 " ag.razon_social as agencia_nombre, an.razon_social as anunciante_nombre, p.desc_producto as producto_nombre, dg.id_google_ad_manager, dg.id_red, dg.parafacturar, " +
-                                " cast(op.anio as varchar(4)) + '-' + cast(op.mes as varchar(2)) + '-' + cast(op.nro_orden as varchar(5)) as nro_orden_rel " +
+                                " dg.id_clasificacion_op, cast(op.anio as varchar(4)) + '-' + cast(op.mes as varchar(2)) + '-' + cast(op.nro_orden as varchar(5)) as nro_orden_rel " +
                                 " from Dg_orden_pub_ap dg " +
                                 " left outer join contactos ag on ag.id_contacto = dg.id_agencia " +
                                 " left outer join contactos an on an.id_contacto = dg.id_anunciante " +
@@ -603,25 +605,22 @@ namespace WebApi.Entities
                 if (Id_op_dg == 0)
                 {
                     sql = "insert into dg_orden_pub_ap (id_op_dg,anio, mes, nro_orden, id_empresa, id_medio, es_varios_medios, fecha, fecha_expiracion, id_agencia," +
-                            " id_anunciante, id_producto, id_google_ad_manager, id_red, id_condpagoap, parafacturar,  " +
+                            " id_anunciante, id_producto, id_google_ad_manager, id_red, id_condpagoap, parafacturar, dg.id_clasificacion_op, " +
                             " nro_orden_ag, facturar_a, tipo_orden, observ, monto_bruto, monto_bonif, monto_dto, primer_neto, es_anulada, fecha_anulada, monto_desc_ag," +
                             " monto_desc_an, monto_desc_agan, monto_desc_fact, monto_desc_difag, monto_desc_restfa, nro_orden_imp, porc_dto, porc_conf, seg_neto, fecha_alta," +
                             " id_concepto_negocio, id_usuario, porcvol_ag, tercer_neto, localnacional, imp_conf_nc, imp_conf_fc, porcvol_an, Desc2, Desc3, Desc4, Desc5," +
                             " id_cond_iva, id_moneda, cambio, bonificado, id_convenio, transferido, bitacora, Id_facturar, id_op_relacionada, Total_Avisos, Total_Impresiones)" +
                             " values (@id_op_dg, @anio, @mes, @nro_orden, @id_empresa, @id_medio, @es_varios_medios, @fecha, @fecha_expiracion, " +
-                            " @id_agencia, @id_anunciante, @id_producto, @id_google_ad_manager, @id_red, @id_condpagoap, @parafacturar, " +
+                            " @id_agencia, @id_anunciante, @id_producto, @id_google_ad_manager, @id_red, @id_condpagoap, @parafacturar, @dg.id_clasificacion_op, " +
                             " @nro_orden_ag, @facturar_a, @tipo_orden, @observ, @monto_bruto, @monto_bonif, @monto_dto, @primer_neto, 0, @fecha_anulada, @monto_desc_ag, " +
                             " @monto_desc_an, @monto_desc_agan, @monto_desc_fact, @monto_desc_difag, @monto_desc_restfa, @nro_orden_imp, @porc_dto, @porc_conf, @seg_neto, @fecha_alta," +
                             " @id_concepto_negocio, @id_usuario, @porcvol_ag, @tercer_neto, @localnacional, @imp_conf_nc, @imp_conf_fc, @porcvol_an, @Desc2, @Desc3, @Desc4, @Desc5," +
                             " @id_cond_iva, @id_moneda, @cambio, @bonificado, @id_convenio, @transferido, @bitacora, @Id_facturar, @id_op_relacionada, @Total_Avisos, @Total_Impresiones)";
                     
-                    //Las ordenes nuevas tienen el mes y año en curso, verificar si esto es correcto
-                    
                     Fecha_alta = DateTime.Now;
                     
                     Nro_orden = proximoNumeroOrden(Anio, Mes);
 
-                    //DataTable t = DB.Select("SELECT IDENT_CURRENT('dg_orden_pub_ap') AS ULTIMO ");
                     DataTable t = DB.Select("select IsNull(max(Id_op_dg),0) as ultimo from dg_orden_pub_ap");
                     if (t.Rows.Count == 1)
                     {
@@ -634,7 +633,7 @@ namespace WebApi.Entities
                 {
                     sql = "update dg_orden_pub_ap set id_empresa = @id_empresa, id_medio = @id_medio, es_varios_medios = @es_varios_medios," +
                         "fecha = @fecha, fecha_expiracion = @fecha_expiracion, id_agencia = @id_agencia, id_anunciante = @id_anunciante, " +
-                        "id_producto = @id_producto, id_google_ad_manager = @id_google_ad_manager, id_red = @id_red, parafacturar = @parafacturar, " +
+                        "id_producto = @id_producto, id_google_ad_manager = @id_google_ad_manager, id_red = @id_red, parafacturar = @parafacturar, id_clasificacion_op = @id_clasificacion_op, " +
                         "id_condpagoap = @id_condpagoap, nro_orden_ag = @nro_orden_ag, facturar_a = @facturar_a, tipo_orden = @tipo_orden, observ = @observ," +
                         "monto_bruto = @monto_bruto, monto_bonif = @monto_bonif, monto_dto = @monto_dto, primer_neto = @primer_neto, " +
                         "fecha_anulada = @fecha_anulada, monto_desc_ag = @monto_desc_ag, monto_desc_an = @monto_desc_an, monto_desc_agan = @monto_desc_agan," +
@@ -712,6 +711,7 @@ namespace WebApi.Entities
                     parametros.Add(new SqlParameter() { ParameterName = "@fecha_alta", SqlDbType = SqlDbType.DateTime, Value = Fecha_alta });
                 }
                 parametros.Add(new SqlParameter() { ParameterName = "@id_concepto_negocio", SqlDbType = SqlDbType.Int, Value =DB.DInt( Id_concepto_negocio )});
+                parametros.Add(new SqlParameter() { ParameterName = "@id_clasificacion_op", SqlDbType = SqlDbType.Int, Value = DB.DInt(Id_clasificacion_op) });
                 parametros.Add(new SqlParameter() { ParameterName = "@id_usuario", SqlDbType = SqlDbType.Int, Value = usuario.Id_usuario });
                 parametros.Add(new SqlParameter() { ParameterName = "@porcvol_ag", SqlDbType = SqlDbType.Float, Value = DB.DFloat( Porcvol_ag )});
                 parametros.Add(new SqlParameter() { ParameterName = "@tercer_neto", SqlDbType = SqlDbType.Float, Value = Tercer_neto });
@@ -904,7 +904,7 @@ namespace WebApi.Entities
                                 " dg.monto_desc_restfa, dg.nro_orden_imp, dg.porc_dto, dg.porc_conf, dg.seg_neto, dg.fecha_alta, dg.id_concepto_negocio, " +
                                 " dg.id_usuario, dg.porcvol_ag, dg.tercer_neto, dg.localnacional, dg.imp_conf_nc, dg.imp_conf_fc, dg.porcvol_an, " +
                                 " dg.Desc2, dg.Desc3, dg.Desc4, dg.desc5, dg.id_cond_iva, dg.id_moneda, dg.cambio, dg.bonificado, dg.id_convenio, dg.transferido, dg.bitacora, dg.Id_facturar, " +
-                                " dg.Es_facturada, " +
+                                " dg.Es_facturada, dg.id_clasificacion_op, " +
                                 " ag.razon_social as agencia_nombre, an.razon_social as anunciante_nombre, p.desc_producto as producto_nombre " +
                                 " from orden_pub_ap dg " +
                                 " left outer join contactos ag on ag.id_contacto = dg.id_agencia " +
@@ -958,8 +958,9 @@ namespace WebApi.Entities
                 mi.Porc_dto = DB.DFloat(item["Porc_dto"].ToString());
                 mi.Porc_conf = DB.DFloat(item["Porc_conf"].ToString());
                 mi.Seg_neto = DB.DFloat(item["Seg_neto"].ToString());
-                mi.Fecha_alta = DB.DFecha(item["Fecha_alta"].ToString());
+                mi.Fecha_alta = DB.DFecha(item["Fecha_alta"].ToString()); 
                 mi.Id_concepto_negocio = DB.DInt(item["Id_concepto_negocio"].ToString());
+                mi.Id_clasificacion_op = DB.DInt(item["Id_clasificacion_op"].ToString());
                 if (item["id_usuario"].ToString() != "")
                 {
                     mi.usuario = Usuario.getById(DB.DInt(item["id_usuario"].ToString()));

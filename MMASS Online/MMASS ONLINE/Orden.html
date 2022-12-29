@@ -819,12 +819,16 @@
                         <!-- GRUPO 4 -->
                         <div class="row">
                             <div class="col-lg-4">
+                                <label>Orden de Compra Cliente</label>
+                                <div class="input-group"> <input type="text" id="OrdenCompraCliente" class="form-control"> </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <label>Clasificación Orden</label>
+                                <select class="form-control" id="selClasificacion"></select>
+                            </div>
+                            <div class="col-lg-4">
                                 <label>Ejecutivo</label>
                                 <select class="form-control" id="selEjecutivo"></select>
-                            </div>
-                            <div class="col-lg-4">
-                            </div>
-                            <div class="col-lg-4">
                             </div>
                         </div>
 
@@ -979,7 +983,6 @@
                                         </div>
                                     </div>
 
-                                    <!--AGREGUE:-->
                                     <div class="row">
                                         <div class="col-lg-3">
                                             <label>Precio Unitario</label>
@@ -1038,6 +1041,7 @@
                                 <div class="col-sm">
                                     <label>% Desc</label>
                                     <input type="number" class="form-control" value="0" readonly="readonly" id="porc_desc">
+                                    <!--<input type="number" class="form-control" value="0" id="porc_desc" onchange="distribuirDesc()">-->
                                 </div>
                                 <div class="col-sm">
                                     <label>Primer Neto</label>
@@ -1117,8 +1121,11 @@
                             </div>
                         </div>
                         <div class="col-lg-7 d-flex align-items-end justify-content-end">
-                            <button type="button" class="btn actions btn-dark btn-sm mx-1" style="float:right" onclick="loadCert()">
-                                Descargar Certificacion
+                            <button type="button" class="btn actions btn-dark btn-sm mx-1" style="float:right" onclick="loadCert(1)" title="Descargar PDF">
+                                Generar <span class="fa fa-file-pdf-o"></span>
+                            </button>
+                            <button type="button" class="btn actions btn-dark btn-sm mx-1" style="float:right" onclick="loadCert(2)" title="Descargar Word">
+                                Generar <span class="fa fa-file-word-o"></span>
                             </button>
                         </div>
                     </div>
@@ -1385,7 +1392,8 @@
             $("#selAnunciante option[value=" + data.anunciante.id_contacto + "]").attr("selected", "selected");
             $("#selAnunciante").change(); //para que cargue los productos
 
-            $("#inpOrderNumberClient").val(data.nro_orden_ag);
+            $("#inpOrderNumberClient").val(data.nro_orden_ag); 
+            $("#OrdenCompraCliente").val(data.nro_orden_imp);
             $("#inpDescOP").val(data.bitacora);
             if (OpClon == false) {
                 $("#inpOrderNumber").val(data.nro_orden);
@@ -1435,6 +1443,7 @@
             }
 
             $("#selConceptoN option[value=" + data.id_concepto_negocio + "]").attr("selected", "selected");
+            $("#selClasificacion option[value=" + data.id_clasificacion_op + "]").attr("selected", "selected");
 
             if (data.es_anulada == 1) {
                 OpAnulada = true;
@@ -1574,54 +1583,59 @@
         function validarOrden() {
 
             if ($("#selAnunciante").val() == null) {
-                showMessage("Seleccione un Anunciante", "error");
+                showMessage("Seleccione un Anunciante", "info");
                 return false;
             }
 
             if ($("#selProducto").val() == null) {
-                showMessage("Seleccione un Producto", "error");
+                showMessage("Seleccione un Producto", "info");
                 return false;
             }
 
             if ($("#selAgencia").val() == null) {
-                showMessage("Seleccione una Agencia", "error");
+                showMessage("Seleccione una Agencia", "info");
                 return false;
             }
 
             if ($("#fechaDesde").val() == "" || $("#fechaHasta").val() == "") {
-                showMessage("Seleccione las Fechas de Vigencia de la Orden", "error");
+                showMessage("Seleccione las Fechas de Vigencia de la Orden", "info");
                 return false;
             }
 
             var o1 = new Date(dateToSqlFormat($('#fechaDesde').val()) + 'T00:00:00');
             var o2 = new Date(dateToSqlFormat($('#fechaHasta').val()) + 'T00:00:00');
             if (o2 < o1) {
-                showMessage("La Fecha Hasta es menor que la Fecha Desde en la Vigencia de la Orden", "error");
+                showMessage("La Fecha Hasta es menor que la Fecha Desde en la Vigencia de la Orden", "info");
                 return false;
             }
 
             if (validarFechasCabecYDet(o1, o2)) {
-                showMessage("La Orden contiene Detalles fuera de las Fechas de Vigencia", "error");
+                showMessage("La Orden contiene Detalles fuera de las Fechas de Vigencia", "info");
                 return false;
             }
 
             if ($("#selFPago").val() == null) {
-                showMessage("Seleccione un Tipo de Venta", "error");
+                showMessage("Seleccione un Tipo de Venta", "info");
                 return false;
             }
 
             if ($("#selPlazoP").val() == null) {
-                showMessage("Seleccione un Plazo de Pago", "error");
+                showMessage("Seleccione un Plazo de Pago", "info");
                 return false;
             }
 
             if ($("#selConceptoN").val() == null) {
-                showMessage("Seleccione un Concepto de Negocio", "error");
+                showMessage("Seleccione un Concepto de Negocio", "info");
+                return false;
+            }
+
+            if ($("#selClasificacion").val() == null) {
+                showMessage("Seleccione una Clasificación Orden", "info");
                 return false;
             }
 
             if ($("#selEmpresa").val() == null) {
-                showMessage("Seleccione una Empresa", "error");
+                showMessage("Seleccione una Empresa", "info");
                 return false;
             }
 
@@ -1630,24 +1644,19 @@
             }
 
             if (Detalles.length < 1) {
-                showMessage("La Orden tiene que tener al menos un Detalle", "error");
+                showMessage("La Orden tiene que tener al menos un Detalle", "info");
                 return false;
             }
 
             if (parseFloat($("#total").val()) < 0) {
-                showMessage("El Total de la Orden debe ser igual o mayor a cero", "error");
+                showMessage("El Total de la Orden debe ser igual o mayor a cero", "info");
                 return false;
             }
 
             if ($("#selFacturar").val() != "2" && parseFloat($("#total").val()) <= 0) {
-                showMessage("El total de la Orden debe ser mayor a cero", "error");
+                showMessage("El total de la Orden debe ser mayor a cero", "info");
                 return false;
             }
-
-            //if (window.find("Por definir") != "") {
-            //    showMessage("Complete los campos sin definir en los Detalles", "error");
-            //    return false;
-            //}
 
             var sinDefinir = false;
             Detalles.forEach(function (detalle, index) {
@@ -1656,7 +1665,7 @@
                 }
             });
             if (sinDefinir == true) {
-                showMessage("Complete los campos sin definir en los Detalles", "error");
+                showMessage("Complete los campos sin definir en los Detalles", "info");
                 return false;
             }
 
@@ -1665,7 +1674,7 @@
 
         function validarEjecutivo(bd) {
             if (bd == 1) {
-                showMessage("Seleccione un Ejecutivo", "error");
+                showMessage("Seleccione un Ejecutivo", "info");
                 return false;
             }
         }
@@ -1747,10 +1756,12 @@
                 data.id_op_dg = $("#inpOrderNumber").attr("id_op_dg")
             }
             data.Nro_orden_ag = $("#inpOrderNumberClient").val();
+            data.Nro_orden_imp = $("#OrdenCompraCliente").val();
             data.Bitacora = $("#inpDescOP").val();
             data.empresa = {};
             data.empresa.Id_empresa = $("#selEmpresa").val();
             data.id_concepto_negocio = $("#selConceptoN").val();
+            data.id_clasificacion_op = $("#selClasificacion").val();
             data.Fecha = dateToSqlFormat($("#fechaDesde").val());
             data.Fecha_expiracion = dateToSqlFormat($("#fechaHasta").val());
             data.agencia = {};
@@ -2280,6 +2291,10 @@
             if ($("#selConceptoN").val() == null) {
                 showMessage("Seleccione un Concepto de Negocio", "info");
                 return 0;
+            }
+            if ($("#selClasificacion").val() == null) {
+                showMessage("Seleccione una Clasificación Orden", "info");
+                return false;
             }
             if ($("#selFPago").val() == null) {
                 showMessage("Seleccione un Tipo de Venta", "info");
@@ -2980,6 +2995,10 @@
             }
             if ($("#selConceptoN").val() == null) {
                 showMessage("Seleccione un Concepto de Negocio", "info");
+                return 0;
+            }
+            if ($("#selClasificacion").val() == null) {
+                showMessage("Seleccione una Clasificación Orden", "info");
                 return 0;
             }
             if ($("#selFPago").val() == null) {
@@ -3695,7 +3714,7 @@
             $('.certTableHeader').attr('style', 'font-weight: bold;background-color:#f7f7f7;');
             $('.totales').attr('style', 'font-weight: bold;background-color:#f7f7f7;')
             $('.sitio').hide();
-            $('.colspan2').attr('colspan', '1');
+            $('.colspan2').attr('colspan', '2');
             $('.ctr.pautado').hide();
             $('#txtAnunciante').text(anunciante);
         }
@@ -3741,16 +3760,15 @@
                 callWS("productos", "getAll", '', function (data) { onPopulateSelectDone(data, 'selProducto', 'id_producto', 'desc_producto'); }),
                 callWS("empresas", "getall", '', function (data) { onPopulateSelectDone(data, 'selEmpresa', 'id_empresa', 'razon_social'); }),
                 callWS("contactos", "getEjecutivos", '', function (data) { onPopulateSelectDone(data, 'selEjecutivo', 'id', 'razonSocial'); }),
-                //callWS("archivos", "getArchivosPorOP", id_op , function (data) { populateFilesTable(data); }),
                 callWS("forma_pagos", "getAll", '', function (data) { onPopulateSelectDone(data, 'selFPago', 'id_formapago', 'desc_formapago'); }),
                 callWS("medios", "getAllPlazos", '', function (data) { onPopulateSelectDone(data, 'selPlazoP', 'id_condpagoap', 'desc_condpagoap'); }),
                 callWS("medios", "getAllRedes", '', function (data) { onCargarSelect(data, 'selRedes', 'id_red', 'descripcion', 'codigo_red'); }),
-                callWS("medios", "getAllConceptos", '', function (data) { onPopulateSelectDone(data, 'selConceptoN', 'id_concepto_negocio', 'desc_concepto_negocio'); })
+                callWS("medios", "getAllConceptos", '', function (data) { onPopulateSelectDone(data, 'selConceptoN', 'id_concepto_negocio', 'desc_concepto_negocio'); }),
+                callWS("medios", "getAllClasificacion", '', function (data) { onPopulateSelectDone(data, 'selClasificacion', 'id_clasificacion_op', 'desc_clasificacion_op'); })
             ).then(function () { checkParameters(); }, function (data1, data2, data3, data4, data5, data6) {
                 console.log("Agencias: " + data1[2].statusText + "; Anunciantes " + data2[2].statusText + "empresas: " + data3[2].statusText + ";" + "ejecutivos: " + data4[2].statusText + ";" + "ejecutivos: " + data5[2].statusText + ";" + "ejecutivos: " + data6[2].statusText + ";");
                 showMessage("Se produjo un error al cargar los campos, intentelo nuevamente", type = "alert");
             });
-            //populateSelects();
         }
 
         function descargar(path) {
@@ -3764,9 +3782,6 @@
         }
 
         function populateFilesTable(files) {
-            //if (files.length == 0) {
-            //    showMessage("La orden no tiene archivos adjuntos","info")
-            //}
             rowHTML = '';
             $.each(files, function (it, file) {
                 rowHTML += "<tr class='d-flex'>";
@@ -3829,7 +3844,7 @@
             //    op = op.split(' ')[0];
             //} else {
             op = $('#inpOrderYear').val() + '-' + $('#inpOrderMonth').val() + '-' + $('#inpOrderNumber').val();
-            //}
+            /*}*/
             $("#divCert").show();
             var el = document.getElementById(id_div);
             var element = el.cloneNode();
@@ -3845,9 +3860,60 @@
                 pagebreak: { before: '.breakBefore' },
                 jsPDF: { orientation: 'portrait', unit: 'in', format: 'a3', compressPDF: false }
             }).save();
+
+            document.body.removeChild(downloadLink);
         }
+
+        function certificarWord(id_div) {
+            var op = "";
+            //if ($('#selOrdenRelacionada').val() != '') {
+            //    op = $('#selOrdenRelacionada option:selected')[0].innerText;
+            //    op = op.split(' ')[0];
+            //} else {
+            op = $('#inpOrderYear').val() + '-' + $('#inpOrderMonth').val() + '-' + $('#inpOrderNumber').val();
+            /*}*/
+
+            // Generate Word
+            var preHtml = "<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><title>Export HTML To Doc</title></head><body>";
+            var postHtml = "</body></html>";
+
+            $("#divCert").show();
+            var html = preHtml + document.getElementById(id_div).innerHTML + postHtml;
+            $("#divCert").hide();
+
+            var blob = new Blob(['ufeff', html], {
+                type: 'application/msword'
+            });
+
+            // Specify link url
+            var url = 'data:application/vnd.ms-word;charset=utf-8,' + encodeURIComponent(html);
+
+            // Specify file name
+            var filename = filename ? 'Cert ' + op + '_' + moment().hour() + "" + moment().minute() + "" + moment().second() + '.doc' : 'document.doc';
+
+            // Create download link element
+            var downloadLink = document.createElement("a");
+
+            document.body.appendChild(downloadLink);
+
+            if (navigator.msSaveOrOpenBlob) {
+                navigator.msSaveOrOpenBlob(blob, filename);
+            } else {
+                // Create a link to the file
+                downloadLink.href = url;
+
+                // Setting the file name
+                downloadLink.download = filename;
+
+                //triggering the function
+                downloadLink.click();
+            }
+
+            document.body.removeChild(downloadLink);
+        }
+
         //AGREGUE (cambios) :
-        function loadCert() {
+        function loadCert(formato) {
             var tipo = $('input[type=radio]:checked').val();
             op = $('#inpOrderNumber').attr('id_op_dg');
             var op_obj = {};
@@ -3862,8 +3928,13 @@
                             //if (data != "") {
                             $("#divCert").html(data);
                             $('.add-mb-6').addClass('mb-6');
-                            $("#divCert").attr('style', 'font-size:1rem;display:none;')
-                            $(".divImgCert").html("<div class='d-flex justify-content-center'> <img src='./BannerCertif.png' height='200' alt='Campaña'> </div>");
+                            $("#divCert").attr('style', 'font-size:1rem;display:none;');
+                            if (formato == 1) {
+                                $(".divImgCert").html("<div class='d-flex justify-content-center'> <img src='./BannerCertif.png' height='200' alt='Campaña'> </div>");
+                            }
+                            else {
+                                $(".divImgCert").html("<p style='font-weight: bold;font-family: Roboto'>Reporte de campaña</p>");
+                            }
                             $('.certTableHeader').attr('style', 'font-weight: bold;background-color:#f7f7f7;');
                             $('.totales').attr('style', 'font-weight: bold;background-color:#f7f7f7;');
                             a = document.querySelector(".breakBefore");
@@ -3881,9 +3952,15 @@
                                 $('.headerObjetivo').text('Objetivo');
                                 $('.ctr.pautado').hide();
                             }
-                            divImgs = includeImgs();
-                            $('#divAdjuntos').html(divImgs);
-                            certificar('divCert');
+
+                            if (formato == 1) {
+                                divImgs = includeImgs();
+                                $('#divAdjuntos').html(divImgs);
+                                certificar('divCert');
+                            }
+                            else {
+                                certificarWord('divCert');
+                            }
                             //}
                         });
                     }
@@ -4453,12 +4530,14 @@
 
         function bloquearCamposCabecera() {
             $("#inpOrderNumberClient").attr("disabled", true);
-            $("#inpDescOP").attr("disabled", true);
+            $("#OrdenCompraCliente").attr("disabled", true);
+            $("#inpDescOP").attr("disabled", true); 
             $("#selRedes").attr("disabled", true);
             $("#fechaDesde").attr("disabled", true);
             $("#fechaHasta").attr("disabled", true);
             $("#selEmpresa").attr("disabled", true);
             $("#selConceptoN").attr("disabled", true);
+            $("#selClasificacion").attr("disabled", true);
             $("#selAgencia").attr("disabled", true);
             $("#selProducto").attr("disabled", true);
             $("#selFacturar").attr("disabled", true);
@@ -4891,6 +4970,25 @@
 
             return error;
         }
+
+        //function distribuirDesc() {
+        //    var desc = parseFloat($('#porc_desc').val());
+        //    if (desc < -100 || desc > 100) {
+        //        showMessage("El descuento no puede ser superior a 100");
+        //        $("#porc_desc").val(0);
+        //        desc = 0;
+        //    }
+        //    if (Detalles.length > 0) {
+        //        Detalles.forEach(function (detalle, index) {
+        //            detalle.porc_dto = desc;
+        //            detalle.monto_neto = detalle.monto_neto - (detalle.monto_neto * (detalle.porc_dto / 100));
+        //            detalle.monto_bruto = detalle.monto_neto * 100 / (100 - detalle.porc_dto)
+        //        });
+        //        recargarRenglones()
+        //    }
+        //    calculateTotals()
+        //}
+
 
     </script>
     <footer>

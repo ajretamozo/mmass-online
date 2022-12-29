@@ -166,6 +166,13 @@ namespace WebApi.Controllers
             return Ok(conceptos);
         }
 
+        [HttpPost("getAllClasificacion")]
+        public IActionResult getAllClasificacion()
+        {
+            var clasificacion = _medioService.getAllClasificacion();
+            return Ok(clasificacion);
+        }
+
         [HttpPost("getEmplazaByCodigo")]
         public IActionResult getEmplazaByCodigo(Dg_emplazamientos emplaza)
         {
