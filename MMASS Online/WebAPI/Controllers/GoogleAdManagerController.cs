@@ -57,7 +57,12 @@ namespace WebApi.Controllers
             return Ok(JsonConvert.SerializeObject(res));
         }
 
-        //AGREGUE:
+        [HttpPost("printCertExcel")]
+        public void printCertExcel([FromBody] Dg_orden_pub_ap order)
+        {
+            _GoogleAdManagerService.printCertExcel(order);
+        }
+
         [HttpPost("createOrder")]
         public IActionResult CreateOrder([FromBody] long idOrden)
         {
@@ -65,7 +70,7 @@ namespace WebApi.Controllers
             return Ok(res);
 
         }
-        //AGREGUE:
+
         [HttpPost("createLineItems")]
         public IActionResult CreateLineItems(Dg_orden_pub_as det)
         {
@@ -73,7 +78,7 @@ namespace WebApi.Controllers
             return Ok(res);
 
         }
-        //AGREGUE:
+
         [HttpPost("runAdExchangeReport")]
         public void RunAdExchangeReport()
         {

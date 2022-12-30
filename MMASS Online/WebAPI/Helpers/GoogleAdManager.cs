@@ -1387,18 +1387,19 @@ namespace WebApi.Helpers
         //    }
         //}
 
-        public static void RunOpReport()
+        public static void printCertExcel(long orderId, System.DateTime? fechaDesde, System.DateTime? fechaHasta, string anunciante)
         {
             
-            CambiarRed("5491998");
+            //CambiarRed("5491998");
 
             using (ReportService reportService = user.GetService<ReportService>())
                 {
+                string fecha = formatFecha(System.DateTime.Today.ToString());
                 // Set the file path where the report will be saved.
-                String filePath = (@"C:\Users\Terminal\Desktop\reporte.xlsx");
+                String filePath = (@"C:\Users\Terminal\Desktop\" + anunciante + "_" + fecha + ".xlsx");
                 //String filePath = (@"C:\Users\Terminal\Desktop\reporte.csv");
 
-                long orderId = long.Parse("2258726601");
+                //long orderId = long.Parse("2258726601");
 
                 // Create report job.
                 ReportJob reportJob = new ReportJob();
@@ -1426,21 +1427,14 @@ namespace WebApi.Helpers
                     //Column.AD_SERVER_WITHOUT_CPD_AVERAGE_ECPM
                 };
 
-                // Set a custom date range for the last 8 days
-                //reportJob.reportQuery.dateRangeType = DateRangeType.CUSTOM_DATE;
-                //System.DateTime endDateTime = System.DateTime.Now;
-                //reportJob.reportQuery.startDate = DateTimeUtilities
-                //    .FromDateTime(endDateTime.AddDays(-30), "America/Argentina/Buenos_Aires").date;
-                //reportJob.reportQuery.endDate = DateTimeUtilities
-                //    .FromDateTime(endDateTime, "America/Argentina/Buenos_Aires").date;
-
+                // Set a custom date range
                 reportJob.reportQuery.dateRangeType = DateRangeType.CUSTOM_DATE;
-                System.DateTime startDateTime = System.DateTime.Parse("01/03/2020");
-                System.DateTime endDateTime = System.DateTime.Parse("30/03/2020");
+                //System.DateTime startDateTime = System.DateTime.Parse("01/03/2020");
+                //System.DateTime endDateTime = System.DateTime.Parse("30/03/2020");
                 reportJob.reportQuery.startDate = DateTimeUtilities
-                    .FromDateTime(startDateTime, "America/Argentina/Buenos_Aires").date;
+                    .FromDateTime((System.DateTime)fechaDesde, "America/Argentina/Buenos_Aires").date;
                 reportJob.reportQuery.endDate = DateTimeUtilities
-                    .FromDateTime(endDateTime, "America/Argentina/Buenos_Aires").date;
+                    .FromDateTime((System.DateTime)fechaHasta, "America/Argentina/Buenos_Aires").date;
 
                 // Create statement object to filter for an order.
                 StatementBuilder statementBuilder = new StatementBuilder().Where("ORDER_ID = :id")
@@ -2010,6 +2004,16 @@ namespace WebApi.Helpers
                 statementBuilder.IncreaseOffsetBy(pageSize);
             }
             return result;
+        }
+        public static string formatFecha(string fecha)
+        {
+            string fechaFormat = "";
+            string[] arrFecha = fecha.Split(" ");
+
+            string[] arr = arrFecha[0].Split("/");
+            string formatDate = "";
+            formatDate = arr[0] + "-" + arr[1] + "-" + arr[2];
+            return formatDate;
         }
 
     }

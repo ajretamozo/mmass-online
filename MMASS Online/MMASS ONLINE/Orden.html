@@ -719,7 +719,7 @@
                             <div class="row justify-content-around">
                                 <div class="col-lg-4">
                                     <label>Número de Orden Cliente</label>
-                                    <div class="input-group"> <input type="text" id="inpOrderNumberClient" class="form-control"> </div>
+                                    <div class="input-group"> <input type="text" id="inpOrderNumberClient" class="form-control" maxlength="50"> </div>
                                 </div>
                                 <div class="col-lg-4">
                                     <!--<label>Orden Relacionada</label>
@@ -820,7 +820,7 @@
                         <div class="row">
                             <div class="col-lg-4">
                                 <label>Orden de Compra Cliente</label>
-                                <div class="input-group"> <input type="text" id="OrdenCompraCliente" class="form-control"> </div>
+                                <div class="input-group"> <input type="text" id="OrdenCompraCliente" class="form-control" maxlength="50"> </div>
                             </div>
                             <div class="col-lg-4">
                                 <label>Clasificación Orden</label>
@@ -922,7 +922,7 @@
                                         <div class="col-lg-4">
                                             <div class="form-group">
                                                 <label for="descripcionD">Descripción</label>
-                                                <textarea class="form-control" placeholder="Descripción..." rows="4" id="descripcionD"></textarea>
+                                                <textarea class="form-control" placeholder="Descripción..." rows="4" id="descripcionD" maxlength="120"></textarea>
                                             </div>
                                         </div>
 
@@ -1122,10 +1122,13 @@
                         </div>
                         <div class="col-lg-7 d-flex align-items-end justify-content-end">
                             <button type="button" class="btn actions btn-dark btn-sm mx-1" style="float:right" onclick="loadCert(1)" title="Descargar PDF">
-                                Generar <span class="fa fa-file-pdf-o"></span>
+                                <span class="fa fa-file-pdf-o"></span>
                             </button>
                             <button type="button" class="btn actions btn-dark btn-sm mx-1" style="float:right" onclick="loadCert(2)" title="Descargar Word">
-                                Generar <span class="fa fa-file-word-o"></span>
+                                <span class="fa fa-file-word-o"></span>
+                            </button>
+                            <button type="button" class="btn actions btn-dark btn-sm mx-1" style="float:right" onclick="loadCert(3)" title="Descargar Word">
+                                <span class="fa fa-file-excel-o"></span>
                             </button>
                         </div>
                     </div>
@@ -3924,51 +3927,57 @@
                     var opRes = {};
                     opRes = data;
                     if (opRes.id_Google_Ad_Manager > 0) {
-                        callWS("googleAdManager", "GetOrderListDetails2", JSON.stringify(opRes), function (data) {
-                            //if (data != "") {
-                            $("#divCert").html(data);
-                            $('.add-mb-6').addClass('mb-6');
-                            $("#divCert").attr('style', 'font-size:1rem;display:none;');
-                            if (formato == 1) {
-                                $(".divImgCert").html("<div class='d-flex justify-content-center'> <img src='./BannerCertif.png' height='200' alt='Campaña'> </div>");
-                            }
-                            else {
-                                $(".divImgCert").html("<p style='font-weight: bold;font-family: Roboto'>Reporte de campaña</p>");
-                            }
-                            $('.certTableHeader').attr('style', 'font-weight: bold;background-color:#f7f7f7;');
-                            $('.totales').attr('style', 'font-weight: bold;background-color:#f7f7f7;');
-                            a = document.querySelector(".breakBefore");
-                            a.classList.remove("breakBefore");
+                        if (formato == 3) {
+                            callWS("googleAdManager", "printCertExcel", JSON.stringify(opRes));
+                        }
+                        else {
+                            callWS("googleAdManager", "GetOrderListDetails2", JSON.stringify(opRes), function (data) {
+                                //if (data != "") {
+                                $("#divCert").html(data);
+                                $('.add-mb-6').addClass('mb-6');
+                                $("#divCert").attr('style', 'font-size:1rem;display:none;');
+                                if (formato == 1) {
+                                    $(".divImgCert").html("<div class='d-flex justify-content-center'> <img src='./BannerCertif.png' height='200' alt='Campaña'> </div>");
+                                }
+                                else {
+                                    $(".divImgCert").html("<p style='font-weight: bold;font-family: Roboto'>Reporte de campaña</p>");
+                                }
+                                $('.certTableHeader').attr('style', 'font-weight: bold;background-color:#f7f7f7;');
+                                $('.totales').attr('style', 'font-weight: bold;background-color:#f7f7f7;');
+                                a = document.querySelector(".breakBefore");
+                                a.classList.remove("breakBefore");
 
-                            if (tipo == 0) {
-                                $('.pautado').show();
-                                $('.impreso').hide();
-                            } else if (tipo == 1) {
-                                $('.pautado').hide();
-                                $('.impreso').show();
-                            } else if (tipo == 2) {
-                                $('.pautado').show();
-                                $('.impreso').show();
-                                $('.headerObjetivo').text('Objetivo');
-                                $('.ctr.pautado').hide();
-                            }
+                                if (tipo == 0) {
+                                    $('.pautado').show();
+                                    $('.impreso').hide();
+                                } else if (tipo == 1) {
+                                    $('.pautado').hide();
+                                    $('.impreso').show();
+                                } else if (tipo == 2) {
+                                    $('.pautado').show();
+                                    $('.impreso').show();
+                                    $('.headerObjetivo').text('Objetivo');
+                                    $('.ctr.pautado').hide();
+                                }
 
-                            if (formato == 1) {
-                                divImgs = includeImgs();
-                                $('#divAdjuntos').html(divImgs);
-                                certificar('divCert');
-                            }
-                            else {
-                                certificarWord('divCert');
-                            }
-                            //}
-                        });
+                                if (formato == 1) {
+                                    divImgs = includeImgs();
+                                    $('#divAdjuntos').html(divImgs);
+                                    certificar('divCert');
+                                }
+                                else {
+                                    certificarWord('divCert');
+                                }
+                                //}
+                            });
+                        }                       
                     }
                     else {
                         showMessage('No hay Detalles enviados para certificar', 'info');
                     }
                 });
-            } else {
+            }
+            else {
                 showMessage('No hay Detalles enviados para certificar', 'info')
             }
         }

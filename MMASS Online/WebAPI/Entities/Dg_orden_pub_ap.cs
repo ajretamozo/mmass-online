@@ -605,13 +605,13 @@ namespace WebApi.Entities
                 if (Id_op_dg == 0)
                 {
                     sql = "insert into dg_orden_pub_ap (id_op_dg,anio, mes, nro_orden, id_empresa, id_medio, es_varios_medios, fecha, fecha_expiracion, id_agencia," +
-                            " id_anunciante, id_producto, id_google_ad_manager, id_red, id_condpagoap, parafacturar, dg.id_clasificacion_op, " +
+                            " id_anunciante, id_producto, id_google_ad_manager, id_red, id_condpagoap, parafacturar, id_clasificacion_op, " +
                             " nro_orden_ag, facturar_a, tipo_orden, observ, monto_bruto, monto_bonif, monto_dto, primer_neto, es_anulada, fecha_anulada, monto_desc_ag," +
                             " monto_desc_an, monto_desc_agan, monto_desc_fact, monto_desc_difag, monto_desc_restfa, nro_orden_imp, porc_dto, porc_conf, seg_neto, fecha_alta," +
                             " id_concepto_negocio, id_usuario, porcvol_ag, tercer_neto, localnacional, imp_conf_nc, imp_conf_fc, porcvol_an, Desc2, Desc3, Desc4, Desc5," +
                             " id_cond_iva, id_moneda, cambio, bonificado, id_convenio, transferido, bitacora, Id_facturar, id_op_relacionada, Total_Avisos, Total_Impresiones)" +
                             " values (@id_op_dg, @anio, @mes, @nro_orden, @id_empresa, @id_medio, @es_varios_medios, @fecha, @fecha_expiracion, " +
-                            " @id_agencia, @id_anunciante, @id_producto, @id_google_ad_manager, @id_red, @id_condpagoap, @parafacturar, @dg.id_clasificacion_op, " +
+                            " @id_agencia, @id_anunciante, @id_producto, @id_google_ad_manager, @id_red, @id_condpagoap, @parafacturar, @id_clasificacion_op, " +
                             " @nro_orden_ag, @facturar_a, @tipo_orden, @observ, @monto_bruto, @monto_bonif, @monto_dto, @primer_neto, 0, @fecha_anulada, @monto_desc_ag, " +
                             " @monto_desc_an, @monto_desc_agan, @monto_desc_fact, @monto_desc_difag, @monto_desc_restfa, @nro_orden_imp, @porc_dto, @porc_conf, @seg_neto, @fecha_alta," +
                             " @id_concepto_negocio, @id_usuario, @porcvol_ag, @tercer_neto, @localnacional, @imp_conf_nc, @imp_conf_fc, @porcvol_an, @Desc2, @Desc3, @Desc4, @Desc5," +

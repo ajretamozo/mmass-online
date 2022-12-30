@@ -23,7 +23,8 @@ namespace WebApi.Services
         //Contacto GetAgencia(string username, string password);
         IEnumerable<Contacto> GetAnunciantes(Parametro nombre);
         String GetOrderDetails(long idGAM);
-        String GetOrderDetails2(Dg_orden_pub_ap orden);
+        String GetOrderDetails2(Dg_orden_pub_ap orden); 
+        void printCertExcel(Dg_orden_pub_ap orden);
         Dg_orden_pub_ap GetOrderById(long idGAM);
         Parametro CreateOrder(long idOrden);
         //AGREGUE:
@@ -205,7 +206,7 @@ namespace WebApi.Services
         public void reporteTest()
         {
             //GoogleAdManager.GetTamaños();
-            GoogleAdManager.RunOpReport();
+            //GoogleAdManager.RunOpReport();
             //procesarReporte();
         }
 
@@ -235,7 +236,7 @@ namespace WebApi.Services
         public String GetOrderDetails2(Dg_orden_pub_ap orden)
         {
             string res = "";
-            //var sitios2 = new List<string>();
+
             List<string> sitios = new List<string>();
 
             foreach (var detalle in orden.Detalles)
@@ -254,6 +255,11 @@ namespace WebApi.Services
             res += GoogleAdManager.GetOrderDetails(orden.Id_Google_Ad_Manager, orden.Anunciante_nombre, sitios);
             res += "<div id='divAdjuntos'></div>";
             return res;
+        }
+
+        public void printCertExcel(Dg_orden_pub_ap orden)
+        {
+            GoogleAdManager.printCertExcel(orden.Id_Google_Ad_Manager, orden.Fecha, orden.Fecha_expiracion, orden.Anunciante_nombre);
         }
 
         public List<long> GetLineItemCreatives(long lineItemId)
