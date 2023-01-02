@@ -1387,16 +1387,16 @@ namespace WebApi.Helpers
         //    }
         //}
 
-        public static void printCertExcel(long orderId, System.DateTime? fechaDesde, System.DateTime? fechaHasta, string anunciante)
+        public static string printCertExcel(long orderId, System.DateTime? fechaDesde, System.DateTime? fechaHasta)
         {
             
             //CambiarRed("5491998");
 
             using (ReportService reportService = user.GetService<ReportService>())
                 {
-                string fecha = formatFecha(System.DateTime.Today.ToString());
+                //string fecha = formatFecha(System.DateTime.Today.ToString());
                 // Set the file path where the report will be saved.
-                String filePath = (@"C:\Users\Terminal\Desktop\" + anunciante + "_" + fecha + ".xlsx");
+                //String filePath = (@"C:\Users\Terminal\Desktop\" + anunciante + "_" + fecha + ".xlsx");
                 //String filePath = (@"C:\Users\Terminal\Desktop\reporte.csv");
 
                 //long orderId = long.Parse("2258726601");
@@ -1457,17 +1457,29 @@ namespace WebApi.Helpers
                     reportUtilities.reportDownloadOptions = options;
 
                     // Download the report.
-                    using (ReportResponse reportResponse = reportUtilities.GetResponse())
+                    //using (ReportResponse reportResponse = reportUtilities.GetResponse())
+                    //{
+                    //    reportResponse.Save(filePath);
+                    //}
+
+                    //Esperamos a que el reporte esté listo
+                    ReportJobStatus estadoRep = ReportJobStatus.FAILED;
+                    while(estadoRep != ReportJobStatus.COMPLETED)
                     {
-                        reportResponse.Save(filePath);
+                        estadoRep = reportService.getReportJobStatus(reportJob.id);
                     }
 
-                    Console.WriteLine("Report saved to \"{0}\".", filePath);
+                    //Obtenemos la URL del archivo
+                    string linkReporte = reportService.getReportDownloadUrlWithOptions(reportJob.id, reportUtilities.reportDownloadOptions);
+
+                    //Console.WriteLine("Report saved to \"{0}\".", filePath);
+                    return linkReporte;
                 }
                 catch (Exception e)
                 {
                     Console.WriteLine("Failed to run delivery report. Exception says \"{0}\"",
                         e.Message);
+                    return "";
                 }
             }
         }

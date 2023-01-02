@@ -23,8 +23,8 @@ namespace WebApi.Services
         //Contacto GetAgencia(string username, string password);
         IEnumerable<Contacto> GetAnunciantes(Parametro nombre);
         String GetOrderDetails(long idGAM);
-        String GetOrderDetails2(Dg_orden_pub_ap orden); 
-        void printCertExcel(Dg_orden_pub_ap orden);
+        String GetOrderDetails2(Dg_orden_pub_ap orden);
+        String printCertExcel(Dg_orden_pub_ap orden);
         Dg_orden_pub_ap GetOrderById(long idGAM);
         Parametro CreateOrder(long idOrden);
         //AGREGUE:
@@ -257,9 +257,9 @@ namespace WebApi.Services
             return res;
         }
 
-        public void printCertExcel(Dg_orden_pub_ap orden)
+        public String printCertExcel(Dg_orden_pub_ap orden)
         {
-            GoogleAdManager.printCertExcel(orden.Id_Google_Ad_Manager, orden.Fecha, orden.Fecha_expiracion, orden.Anunciante_nombre);
+            return GoogleAdManager.printCertExcel(orden.Id_Google_Ad_Manager, orden.Fecha, orden.Fecha_expiracion);
         }
 
         public List<long> GetLineItemCreatives(long lineItemId)

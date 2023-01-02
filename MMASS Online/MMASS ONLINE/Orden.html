@@ -330,11 +330,61 @@
             var el = document.getElementById("t");
             el.addEventListener("click", function () { modifyText("four") }, false);
         }
+
+        function wait(ms) {
+            var start = new Date().getTime();
+            var end = start;
+            while (end < start + ms) {
+                end = new Date().getTime();
+            }
+        }
+
+        //function msjSalida() {
+        //    var mensaje = "<div class='d-flex justify-content-center' style='text-align: center;'>Está por salir de la Edición de la OP, los cambios no guardados se perderán</div>";
+
+        //    options = [
+        //        {
+        //            optionDesc: "Aceptar",
+        //            optionFunc: "desbloquearOp(); wait(200)"
+        //        },
+        //        {
+        //            optionDesc: "Cancelar",
+        //            optionFunc: ""
+        //        }
+        //    ];
+        //    showModal(mensaje, options);
+        //}
+
+        let formChanged = false;
+        document.addEventListener('change', () => formChanged = true);
+        window.addEventListener('beforeunload', (event) => {
+            desbloquearOp();
+            if (formChanged) {
+                event.returnValue = '';
+            }
+            else {
+                wait(200);
+            }
+        });
+
+        //window.addEventListener("beforeunload", function (event) {
+        //    //desbloquearOp();
+        //    event.returnValue = null;
+        //    ///*wait(5000);*/
+        //    //setTimeout(bloquearOp($("#inpOrderNumber").attr("id_op_dg")), 10000);
+        //    window.addEventListener("beforeunload", function (event) {
+        //        desbloquearOp();
+        //        //event.returnValue = null;
+        //        ///*wait(5000);*/
+        //        //setTimeout(bloquearOp($("#inpOrderNumber").attr("id_op_dg")), 10000);
+        //    });
+        //});
+
     </script>
 
 </head>
 
-<body style="padding-top: 80px; font-family: 'Roboto';" onbeforeunload="desbloquearOp()">
+<body style="padding-top: 80px; font-family: 'Roboto';" >
     <!--MENU-->
     <div id="divNavBar"></div>
 
@@ -1105,7 +1155,7 @@
                     <div class="row">
                         <div class="col-lg-4">
                             <label>Mostrar: </label>
-                            <div class="mt-1">
+                            <div class="mt-1" onclick="actDesactExcel()">
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio" name="tipo" id="0" value="0" checked>
                                     <label class="form-check-label" for="0">Objetivo</label>
@@ -1127,7 +1177,7 @@
                             <button type="button" class="btn actions btn-dark btn-sm mx-1" style="float:right" onclick="loadCert(2)" title="Descargar Word">
                                 <span class="fa fa-file-word-o"></span>
                             </button>
-                            <button type="button" class="btn actions btn-dark btn-sm mx-1" style="float:right" onclick="loadCert(3)" title="Descargar Word">
+                            <button type="button" class="btn actions btn-dark btn-sm mx-1" style="float:right" onclick="loadCert(3)" title="Descargar Excel" id="btnExcel" disabled="disabled">
                                 <span class="fa fa-file-excel-o"></span>
                             </button>
                         </div>
@@ -1164,6 +1214,13 @@
     <script type="text/javascript">
         //import { backendDir } from '/js/params.js';
         $("#divNavBar").load("navBar.html");
+
+        //window.addEventListener("beforeunload", function (event) {
+        //    console.log("UNLOAD:1");
+        //    //event.preventDefault();
+        //    event.returnValue = null; //"Any text"; //true; //false;
+        //    //return null; //"Any text"; //true; //false;
+        //});
 
         var cMultiSelect = $('.custom-select').bootstrapDualListbox({
             filterPlaceHolder: 'Filtrar',
@@ -1996,7 +2053,6 @@
                     $("#inpFechaAlta").val(today);
                 }
 
-                /*$("#selRedes").attr("disabled", true);*/
                 //AGREGUE:
                 //if (data.es_facturada) {
                 //    $("#inpEsFacturada").val("SI");
@@ -2006,19 +2062,15 @@
                 //    $("#inpEsFacturada").val("NO");
                 //}
 
-                //AGREGUE:
-                //if ($('#inpIdOrdenAdServer').val() !== 0 && $('#inpIdOrdenAdServer').val() !== "") {
-                //    $("#bSendOrdenAddServer").attr("disabled", true);
-                //}
+                bloquearOp(data.op.id_op_dg);
+
                 DetallesASDelete.length = 0;
                 Detalles = data.op.detalles;
                 recargarRenglones();
 
-                //showMessage("La orden se guardo con exito: " + data.nro_orden);
                 showMessage(data.message);
             }
             else {
-                //showMessage("Ocurrio un error al intentar guardar la orden: ","error");
                 showMessage(data.message, "error");
             }
         }
@@ -3928,7 +3980,10 @@
                     opRes = data;
                     if (opRes.id_Google_Ad_Manager > 0) {
                         if (formato == 3) {
-                            callWS("googleAdManager", "printCertExcel", JSON.stringify(opRes));
+                            callWS("googleAdManager", "printCertExcel", JSON.stringify(opRes), function (link) {
+                                linkDesc = link;
+                                location.href = linkDesc;
+                            });
                         }
                         else {
                             callWS("googleAdManager", "GetOrderListDetails2", JSON.stringify(opRes), function (data) {
@@ -4998,6 +5053,15 @@
         //    calculateTotals()
         //}
 
+        function actDesactExcel() {
+            var tipo = $('input[type=radio]:checked').val();
+
+            if (tipo == 1) {
+                $("#btnExcel").attr("disabled", false);
+            } else {
+                $("#btnExcel").attr("disabled", true);
+            }            
+        }
 
     </script>
     <footer>

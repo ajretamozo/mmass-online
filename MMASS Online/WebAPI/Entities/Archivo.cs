@@ -21,8 +21,6 @@ namespace WebApi.Entities
 
         public static List<Archivo> getArchivosPorOP(int id_op)
         {
-            //estas dos lineas estan para que devuelva algo, hacer select que traiga los archivos relacionados a la op del parametro
-            var filepath = "./files/" + "Prima_2019-10-01-002.txt";
             string sqlCommand = "select id_adjunto_dg, nombre_archivo, path, id_op_dg, es_borrado from dg_adjuntos where es_borrado != 1 and id_op_dg = " + id_op.ToString();
 
             List<Archivo> col = new List<Archivo>();
