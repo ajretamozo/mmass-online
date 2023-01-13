@@ -1413,8 +1413,8 @@
             $('#fechaDesde').datetimepicker('date', moment(dateToFieldFormat(data.fecha), 'DD/MM/YYYY'));
             $('#fechaHasta').datetimepicker('date', moment(dateToFieldFormat(data.fecha_expiracion), 'DD/MM/YYYY'));
             $("#bAnular").attr("disabled", false);
-            $("#conf_nc").attr("disabled", true);
-            $("#conf_fc").attr("disabled", true);
+            //$("#conf_nc").attr("disabled", true);
+            //$("#conf_fc").attr("disabled", true);
 
             if (data.es_facturada && OpClon == false) {
                 $("#inpEsFacturada").val("SI");
@@ -1868,7 +1868,9 @@
             data.Total_Impresiones = 0;
             Detalles.forEach(function (item, index) {
                 data.Total_Avisos += 1;
-                data.Total_Impresiones += parseFloat(item.cantidad);
+                if (item.tipo_tarifa == 0) {
+                    data.Total_Impresiones += parseFloat(item.cantidad);
+                }
                 if (parseInt($("#neto1").val()) != 0) {
                     item.porcconfnc = parseFloat(parseInt($("#conf_nc").val()) / parseInt($("#neto1").val()) * 100);
                     item.porcconffc = parseFloat(parseInt($("#conf_fc").val()) / parseInt($("#neto1").val()) * 100);
@@ -1975,10 +1977,10 @@
                 sumNetoRenglones += parseFloat(item.monto_neto);
                 sumBrutoRenglones += parseFloat(item.monto_bruto);
             })
-            $("#montoBruto").val(sumBrutoRenglones);
+            $("#montoBruto").val(sumBrutoRenglones.toFixed(2));//le agregue tofixed
 
             if (sumBrutoRenglones != 0) {
-                $("#porc_desc").val(100 - 100 * (sumNetoRenglones / sumBrutoRenglones));
+                $("#porc_desc").val((100 - 100 * (sumNetoRenglones / sumBrutoRenglones)).toFixed(2));
             } else {
                 $("#porc_desc").val(0);
             }
@@ -3750,16 +3752,14 @@
 
         //AGREGUE:
         function getOrderDetails() {
-            //data.id_Google_Ad_Manager = $('#inpIdOrdenAdServer').val();
             var idOrden = $('#inpIdOrdenAdServer').val();
-            //callWS("googleAdManager", "createOrder", JSON.stringify(idOrden), function (data) { onSendOrder(data); });
             callWS("googleAdManager", "GetOrderDetails", JSON.stringify(idOrden), function (data) { onGetOrderDetails(data); });
         }
 
         function onGetOrderDetails(data) {
             var anunciante = $('#selAnunciante option:selected')[0].innerText;
             var strTitle = "Datos Orden Google Ad Manager";
-            var strBody = "<div class='d-flex justify-content-center'> <img src='./BannerCertif.png' height='200' alt='Orden'> </div>";
+            var strBody = "<div class='d-flex justify-content-center'> <img src='./BannerCertif.png' height='150' alt='Orden'> </div>";
             var str = data;
             //alert(data.d + "·" +rId+"- :"+str);
             //str = str.slice(1, -1);
@@ -3772,6 +3772,7 @@
             $('.colspan2').attr('colspan', '2');
             $('.ctr.pautado').hide();
             $('#txtAnunciante').text(anunciante);
+/*            $('.detalledias').hide();*/
         }
 
 
@@ -3908,7 +3909,7 @@
             // Generate the PDF.
             html2pdf().from(element).set({
                 margin: 1,
-                filename: 'Cert ' + op + '_' + moment().hour() + "" + moment().minute() + "" + moment().second(),
+                filename: 'Cert ' + op + '_' + moment().hour() + moment().minute() + moment().second(),
                 image: { type: 'jpeg', quality: 1 },
                 html2canvas: { scale: 4 },
                 //pagebreak: { mode: ['avoid-all', 'css', 'legacy'] },
@@ -3944,7 +3945,8 @@
             var url = 'data:application/vnd.ms-word;charset=utf-8,' + encodeURIComponent(html);
 
             // Specify file name
-            var filename = filename ? 'Cert ' + op + '_' + moment().hour() + "" + moment().minute() + "" + moment().second() + '.doc' : 'document.doc';
+            //var filename = filename ? 'Cert ' + op + '_' + moment().hour() + "" + moment().minute() + "" + moment().second() + '.doc' : 'document.doc';
+            var filename = 'Cert ' + op + '_' + moment().hour() + moment().minute() + moment().second() + '.doc';
 
             // Create download link element
             var downloadLink = document.createElement("a");
@@ -3967,7 +3969,7 @@
             document.body.removeChild(downloadLink);
         }
 
-        //AGREGUE (cambios) :
+
         function loadCert(formato) {
             var tipo = $('input[type=radio]:checked').val();
             op = $('#inpOrderNumber').attr('id_op_dg');
@@ -3978,11 +3980,12 @@
                 callWS("dg_orden_pub_aps", "getById", JSON.stringify(op_obj), function (data) {
                     var opRes = {};
                     opRes = data;
-                    if (opRes.id_Google_Ad_Manager > 0) {
+                    /*if (opRes.id_Google_Ad_Manager > 0) {*/
                         if (formato == 3) {
                             callWS("googleAdManager", "printCertExcel", JSON.stringify(opRes), function (link) {
                                 linkDesc = link;
-                                location.href = linkDesc;
+                               /* location.href = linkDesc;*/
+                                window.open(linkDesc, '_blank');
                             });
                         }
                         else {
@@ -3992,7 +3995,7 @@
                                 $('.add-mb-6').addClass('mb-6');
                                 $("#divCert").attr('style', 'font-size:1rem;display:none;');
                                 if (formato == 1) {
-                                    $(".divImgCert").html("<div class='d-flex justify-content-center'> <img src='./BannerCertif.png' height='200' alt='Campaña'> </div>");
+                                    $(".divImgCert").html("<div class='d-flex justify-content-center'> <img src='./BannerCertif.png' height='150' alt='Campaña'> </div>");
                                 }
                                 else {
                                     $(".divImgCert").html("<p style='font-weight: bold;font-family: Roboto'>Reporte de campaña</p>");
@@ -4005,6 +4008,10 @@
                                 if (tipo == 0) {
                                     $('.pautado').show();
                                     $('.impreso').hide();
+                                    $('.ctr.pautado').hide();
+                                    $('.ctr.impreso').hide();
+                                    $('.clicks').hide(); 
+                                    $('.detalledias').hide();
                                 } else if (tipo == 1) {
                                     $('.pautado').hide();
                                     $('.impreso').show();
@@ -4026,10 +4033,10 @@
                                 //}
                             });
                         }                       
-                    }
-                    else {
-                        showMessage('No hay Detalles enviados para certificar', 'info');
-                    }
+                    //}
+                    //else {
+                    //    showMessage('No hay Detalles enviados para certificar', 'info');
+                    //}
                 });
             }
             else {

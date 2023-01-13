@@ -15,6 +15,9 @@ using System.Net.Security;
 using System.Net;
 using System.Security.Cryptography.X509Certificates;
 using System.Configuration;
+using System.IO;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Services
 {
@@ -210,56 +213,180 @@ namespace WebApi.Services
             //procesarReporte();
         }
 
-        //Puede ser util para llevar el csv al pdf de certif
-        public void procesarReporte()
+        public String printCertExcel(Dg_orden_pub_ap orden)
         {
-            string ubicacionArchivo = "C:\\Users\\Terminal\\Desktop\\reporte.csv";
-            System.IO.StreamReader archivo = new System.IO.StreamReader(ubicacionArchivo);
-            string separador = ",";
-            string linea;
-            // Si el archivo no tiene encabezado, elimina la siguiente línea
-            archivo.ReadLine(); // Leer la primera línea pero descartarla porque es el encabezado
-            while ((linea = archivo.ReadLine()) != null)
-            {
-                string[] fila = linea.Split(separador);
-                fila[0] = "ID Orden";
-                fila[1] = "Orden";
-                fila[2] = "ID Línea de pedido";
-                fila[3] = "Línea de pedido";
-                fila[4] = "Fecha";
-                fila[5] = "Impresiones del servidor de anuncios";
-                fila[6] = "Clics del servidor de anuncios";
-                fila[7] = "CTR del servidor de anuncios";
-            }
+            return GoogleAdManager.printCertExcel(orden.Id_Google_Ad_Manager, orden.Fecha, orden.Fecha_expiracion);
         }
 
         public String GetOrderDetails2(Dg_orden_pub_ap orden)
         {
-            string res = "";
+            //Datos generales de la Cabecera
+            string result = @"<div class='breakBefore'><div class='divImgCert add-mb-6'></div>
+                              <p style='font-family: Roboto'><span style='font-weight: bold;'>Orden Publicitaria: </span>" + orden.Bitacora + "</p>" +
+                            @"<p style='font-family: Roboto'><span style='font-weight: bold;'>Anunciante: </span ><span id='txtAnunciante'>" + orden.Anunciante_nombre + "</span></p>" +
+                            @"<p class='add-mb-6' style='font-family: Roboto'><span style='font-weight: bold;'>Fecha: </span ><span id='txtFecha'>" + FormatFecha(orden.Fecha.ToString()) + " - " + FormatFecha(orden.Fecha_expiracion.ToString()) + "</span></p>";
+            
+            //Tabla de Detalles
+            result = result + "<table id='detailsTable' class='table add-mb-6' style='font-family: Roboto; text-align: center;'>";
+            result = result + "<tbody>";
 
-            List<string> sitios = new List<string>();
+            float totalImpresionesEmitidas = 0;
+            float totalClicks = 0;
+            float totalCTRImpreso = 0;
 
-            foreach (var detalle in orden.Detalles)
+            foreach (Dg_orden_pub_as det in orden.Detalles)
             {
-                if (detalle.Medios.Count() > 1)
+                //Cabecera para cada detalle
+                result = result + " <thead><tr><th class='certTableHeader'> Detalle </th> <th class='sitio certTableHeader'> Sitio </th> <th class='fecha certTableHeader'> Fecha </th> <th class='pautado certTableHeader headerObjetivo'> Objetivo </th><th class='impreso certTableHeader'> Impresiones </th><th class='clicks certTableHeader'> Clicks </th><th class='ctr impreso certTableHeader'> CTR </th><th class='certTableHeader' width='1px'></th>";
+                result = result + "</tr></thead>";
+
+                float totalImpresionesEmitidasD = 0;
+                float totalClicksD = 0;
+                float totalCTRImpresoD = 0;
+
+                if (det.Id_Google_Ad_Manager > 0)
                 {
-                    sitios.Add("RON");
+                    //se genera el reporte csv por día para este Detalle
+                    string ruta = GoogleAdManager.printLineItemCSV(det.Id_Google_Ad_Manager, det.Fecha_desde, det.Fecha_hasta);
+                    if ( ruta != "")
+                    {
+                        //Datos generales del Detalle
+                        result += "<tr style='border: solid thin; border-color: #e7e9eb;'>";
+                        result += "<td style='font-weight: bold;'>" + det.Descripcion + "</td>";
+                        if (det.Medios.Count() > 1)
+                        {
+                            result += "<td class='sitio' id='txtSitio' style='font-weight: bold;'>RON</td>";
+                        }
+                        else
+                        {
+                            string med = Medio.getById(det.Medios[0].Id_medio).Desc_medio;
+                            result += "<td class='sitio' id='txtSitio' style='font-weight: bold;'>" + med + "</td>";
+                        }
+
+                        result += "<td class='fecha' style='font-weight: bold;'>" + FormatFecha(det.Fecha_desde.ToString()) + " - " + FormatFecha(det.Fecha_hasta.ToString()) + "</td>";
+                        result += "</tr> ";
+
+                        //extraemos y procesamos los datos del csv
+                        string ubicacionArchivo = ruta;
+                        System.IO.StreamReader archivo = new System.IO.StreamReader(ubicacionArchivo);
+                        string separador = ",";
+                        string linea;
+                        List<string[]> tabla = new List<string[]>();
+
+                        //pasamos el cvs a una tabla
+                        archivo.ReadLine(); // Leer la primera línea pero descartarla porque es el encabezado
+                        while ((linea = archivo.ReadLine()) != null)
+                        {
+                            string[] fila = linea.Split(separador);
+                            tabla.Add(fila);
+                        }
+                        archivo.Close();
+
+                        //eliminamos el archivo csv
+                        File.Delete(ruta);
+
+                        string cantPorDia = "";
+                        if (det.Tipo_tarifa == 0)
+                        {
+                            TimeSpan difFechas = (TimeSpan)(det.Fecha_hasta - det.Fecha_desde);
+                            int dias = difFechas.Days;
+                            cantPorDia = (det.Cantidad / dias).ToString();
+                        }
+                        else
+                        {
+                            cantPorDia = " - ";                        
+                        }
+
+                        //Datos del Detalle por día
+                        for (int i = 0; i < (tabla.Count); i++)
+                        {
+                            totalImpresionesEmitidasD += float.Parse(tabla[i][1]);
+                            totalClicksD += float.Parse(tabla[i][2]);
+                            float ctr = (float.Parse(tabla[i][3])) / 100;
+
+                            result += "<tr style='border-left: solid thin; border-right: solid thin; border-color: #e7e9eb;' class='detalledias'>";
+                            result += "<td></td>";
+                            result += "<td></td>";
+                            result += "<td class='fecha'>" + FormatFecha2(tabla[i][0]) + "</td>";
+                            //result += "<td class='pautado'>" + cantPorDia + "</td>";
+                            result += "<td class='pautado'></td>";
+                            result += "<td class='impreso'>" + tabla[i][1] + "</td>";
+                            result += "<td>" + tabla[i][2] + "</td>";
+                            result += "<td class='ctr impreso'>" + ctr + "%</td>";
+                            result += "<td></td></tr>";
+                        }
+
+                        //result += "<tr style='border-left: solid thin; border-right: solid thin; border-color: #e7e9eb; border-bottom-left-radius: .5rem; border-bottom-right-radius: .5rem;'>";
+                        //result += "<td style='font-weight: bold;background-color:#f7f7f7;' colspan='3' class='totales colspan2'> Totales Detalle </td>";
+                        //if (det.Tipo_tarifa == 0)
+                        //{
+                        //    result += "<td style='font-weight: bold;background-color:#f7f7f7;' class='totales pautado'>" + det.Cantidad + "</td>";
+
+                        //}
+                        //else
+                        //{
+                        //    result += "<td style='font-weight: bold;background-color:#f7f7f7;' class='totales pautado'> - </td>";
+                        //}
+
+                        totalCTRImpresoD = (totalClicksD / totalImpresionesEmitidasD) * 100;
+
+                        if (tabla.Count == 0)
+                        {
+                            totalImpresionesEmitidasD = 0;
+                            totalClicksD = 0;
+                            totalCTRImpresoD = 0;
+                        }
+                        //result += "<td style='font-weight: bold;background-color:#f7f7f7;' class='totales impreso'>" + totalImpresionesEmitidasD.ToString() + "</td>";
+                        //result += "<td style='font-weight: bold;background-color:#f7f7f7;' class='totales clicks' >" + totalClicksD.ToString() + "</td>";
+                        //result += "<td style='font-weight: bold;background-color:#f7f7f7;' class='ctr impreso totales'>" + Math.Round(totalCTRImpresoD, 2).ToString() + "%</td>";
+                        //result += "<td class='totales'></td></tr>";
+                        //result += "<tr><td></td><td></td><td></td><td></td><td></td></tr>"; //separador de Detalles
+
+                        //totalImpresionesEmitidas += totalImpresionesEmitidasD;
+                        //totalClicks += totalClicksD;
+                    }
+                }
+                result += "<tr style='border-left: solid thin; border-right: solid thin; border-color: #e7e9eb; border-bottom-left-radius: .5rem; border-bottom-right-radius: .5rem;'>";
+                result += "<td style='font-weight: bold;background-color:#f7f7f7;' colspan='3' class='totales colspan2'> Totales Detalle </td>";
+                if (det.Tipo_tarifa == 0)
+                {
+                    result += "<td style='font-weight: bold;background-color:#f7f7f7;' class='totales pautado'>" + det.Cantidad + "</td>";
+
                 }
                 else
                 {
-                    Medio med = Medio.getById(detalle.Medios[0].Id_medio);
-                    sitios.Add(med.Desc_medio);
+                    result += "<td style='font-weight: bold;background-color:#f7f7f7;' class='totales pautado'> - </td>";
                 }
+                result += "<td style='font-weight: bold;background-color:#f7f7f7;' class='totales impreso'>" + totalImpresionesEmitidasD.ToString() + "</td>";
+                result += "<td style='font-weight: bold;background-color:#f7f7f7;' class='totales clicks' >" + totalClicksD.ToString() + "</td>";
+                result += "<td style='font-weight: bold;background-color:#f7f7f7;' class='ctr impreso totales'>" + Math.Round(totalCTRImpresoD, 2).ToString() + "%</td>";
+                result += "<td class='totales'></td></tr>";
+                result += "<tr><td></td><td></td><td></td><td></td><td></td></tr>"; //separador de Detalles
+
+                totalImpresionesEmitidas += totalImpresionesEmitidasD;
+                totalClicks += totalClicksD;
             }
 
-            res += GoogleAdManager.GetOrderDetails(orden.Id_Google_Ad_Manager, orden.Anunciante_nombre, sitios);
-            res += "<div id='divAdjuntos'></div>";
-            return res;
-        }
+            if (totalImpresionesEmitidas != 0)
+            {
+                totalCTRImpreso = (totalClicks / totalImpresionesEmitidas) * 100;
+            }
 
-        public String printCertExcel(Dg_orden_pub_ap orden)
-        {
-            return GoogleAdManager.printCertExcel(orden.Id_Google_Ad_Manager, orden.Fecha, orden.Fecha_expiracion);
+            //Totales OP
+            result += "<tr>";
+            result += "<td style='font-weight: bold;background-color:#f79191a6;' colspan='3'> Totales OP </td>";
+            result += "<td style='font-weight: bold;background-color:#f79191a6;' class='pautado'>" + orden.Total_Impresiones.ToString() + "</td>";
+            result += "<td style='font-weight: bold;background-color:#f79191a6;' class='impreso'>" + totalImpresionesEmitidas.ToString() + "</td>";
+            result += "<td style='font-weight: bold;background-color:#f79191a6;' class='clicks'>" + totalClicks.ToString() + "</td>";
+            result += "<td style='font-weight: bold;background-color:#f79191a6;' class='ctr impreso'>" + Math.Round(totalCTRImpreso, 2).ToString() + "%</td>";
+            result += "<td style='background-color:#f79191a6;></td>";
+            result += "<td style='background-color:#f79191a6;></td></tr>";
+            result = result + "</tbody></table></div>";
+
+            result.Replace("\r", string.Empty).Replace("\n", string.Empty);
+            result += "<div id='divAdjuntos'></div>";
+
+            return result;
         }
 
         public List<long> GetLineItemCreatives(long lineItemId)
@@ -816,12 +943,20 @@ namespace WebApi.Services
             return cambioLMed;
         }
 
-        public string formatFecha(string fecha)
+        public string FormatFecha(string fecha)
         {
             string fechaFormat = "";
             string[] arrFecha = fecha.Split(" ");
             fechaFormat = arrFecha[0];
             return fechaFormat;
+        }
+
+        public static string FormatFecha2(string fecha)
+        {
+            string[] arr = fecha.Split("-");
+            string formatDate = "";
+            formatDate = arr[2] + "-" + arr[1] + "-" + arr[0];
+            return formatDate;
         }
 
         public ListaParametro ComprobarModificacionesD(Dg_orden_pub_as det)

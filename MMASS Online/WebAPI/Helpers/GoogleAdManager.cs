@@ -11,6 +11,7 @@ using System.Diagnostics;
 using System.Configuration;
 using User = Google.Api.Ads.AdManager.v202208.User;
 using Google.Api.Ads.Common.Util;
+using System.IO;
 
 namespace WebApi.Helpers
 {
@@ -366,7 +367,10 @@ namespace WebApi.Helpers
 
         public static string GetOrderDetails(long orderId, string anunciante = null, List<string> sitios = null)
         {
-   
+            //test
+            //CambiarRed("22474715684");
+            //orderId = 2934737245;
+
             //AdManagerUser user = new AdManagerUser();
             Order camp = GetOrder(orderId);
             string result = @"<div class='breakBefore'><div class='divImgCert add-mb-6'></div><p style='font-family: Roboto'><span style='font-weight: bold;'>Orden Publicitaria: </span>" + camp.name + "</p><p class='add-mb-6' style='font-family: Roboto'><span style='font-weight: bold;'>Anunciante: </span ><span id='txtAnunciante'>" + anunciante + "</span></p>";
@@ -380,7 +384,7 @@ namespace WebApi.Helpers
                 StatementBuilder statementBuilder2 =
                     new StatementBuilder().OrderBy("id ASC").Limit(pageSize);
                 StatementBuilder statementBuilder = new StatementBuilder()
-                  .Where("OrderId = :oID and isArchived = false and LineItemType != 'SPONSORSHIP'").OrderBy("id ASC")
+                  .Where("OrderId = :oID and isArchived = false").OrderBy("id ASC")
                   .Limit(pageSize)
                   .AddValue("oID", orderId);
                 // Retrieve a small amount of line items at a time, paging through until all
@@ -405,7 +409,7 @@ namespace WebApi.Helpers
                         foreach (LineItem lineItem in page.results)
                         {
                             Debug.WriteLine("{0}) Line item with ID {1} and name \"{2}\" was found.", i++, lineItem.id, lineItem.name);
-                            totalImpresionesPautadas += lineItem.primaryGoal.units;
+   
                             result += "<tr>";
                             result += "<td>" + lineItem.name + "</td>";
                             if (sitios != null)
@@ -414,7 +418,17 @@ namespace WebApi.Helpers
                             }
                             
                             result += "<td class='fecha'>" + DateTimeUtilities.ToString(lineItem.startDateTime, "dd/MM/yyyy") + " - " + DateTimeUtilities.ToString(lineItem.endDateTime, "dd/MM/yyyy") + "</td>";
-                            result += "<td class='pautado'>" + lineItem.primaryGoal.units.ToString() + "</td>";
+                            
+                            if (lineItem.lineItemType != LineItemType.SPONSORSHIP)
+                            {
+                                totalImpresionesPautadas += lineItem.primaryGoal.units;
+                                result += "<td class='pautado'>" + lineItem.primaryGoal.units.ToString() + "</td>";
+                            }
+                            else
+                            {
+                                result += "<td class='pautado'> </td>";
+                            }
+
                             if (lineItem.stats != null)
                             {
                                 totalImpresionesEmitidas += lineItem.stats.impressionsDelivered;
@@ -470,114 +484,8 @@ namespace WebApi.Helpers
                 result = result + "</tbody></table></div>";
                 Debug.WriteLine("Number of results found: {0}", totalResultSetSize);
 
-                //return result.Replace("\r", string.Empty).Replace("\n", string.Empty);
-
+                return result.Replace("\r", string.Empty).Replace("\n", string.Empty);
             }
-
-            //Lineas de SPONSOR
-            using (LineItemService lineItemService = user.GetService<LineItemService>())
-            {
-                // Create a statement to select line items.
-                int pageSize = StatementBuilder.SUGGESTED_PAGE_LIMIT;
-                StatementBuilder statementBuilder2 =
-                    new StatementBuilder().OrderBy("id ASC").Limit(pageSize);
-                StatementBuilder statementBuilder = new StatementBuilder()
-                  .Where("OrderId = :oID and isArchived = false and LineItemType = 'SPONSORSHIP'").OrderBy("id ASC")
-                  .Limit(pageSize)
-                  .AddValue("oID", orderId);
-                // Retrieve a small amount of line items at a time, paging through until all
-                // line items have been retrieved.
-                int totalResultSetSize = 0;
-                do
-                {
-                    LineItemPage page =
-                        lineItemService.getLineItemsByStatement(statementBuilder.ToStatement());
-
-                    // Print out some information for each line item.
-                    if (page.results != null)
-                    {
-                        result = result + "<table id='detailsTableS' class='table add-mb-6' style='font-family: Roboto'>";
-                        result = result + " <thead><tr><th class='certTableHeader'> Detalle Sponsor </th> <th class='sitio certTableHeader'> Sitio </th> <th class='fecha certTableHeader'> Fecha </th> <th class='pautado certTableHeader headerObjetivo'> Objetivo </th><th class='impreso certTableHeader'> Impresiones </th><th class='certTableHeader'> Clicks </th><th class='ctr pautado certTableHeader'> CTR </th> <th class='ctr impreso certTableHeader'> CTR </th><th class='certTableHeader' width='1px'></th>";
-                        result = result + "</tr></thead><tbody>";
-
-                        totalResultSetSize = page.totalResultSetSize;
-                        int i = page.startIndex;
-                        //long totalImpresionesPautadas = 0;
-                        long totalImpresionesEmitidas = 0;
-                        long totalClicks = 0;
-                        //long totalCTRPautado = 0;
-                        long totalCTRImpreso = 0;
-                        int cont = 0;
-                        foreach (LineItem lineItem in page.results)
-                        {
-                            Debug.WriteLine("{0}) Line item with ID {1} and name \"{2}\" was found.", i++, lineItem.id, lineItem.name);
-                            //totalImpresionesPautadas += lineItem.primaryGoal.units;
-                            result += "<tr>";
-                            result += "<td>" + lineItem.name + "</td>";
-                            if (sitios != null)
-                            {
-                                result += "<td class='sitio' id='txtSitio'>" + sitios[cont] + "</td>";
-                            }
-                            result += "<td class='fecha'>" + DateTimeUtilities.ToString(lineItem.startDateTime, "dd/MM/yyyy") + " - " + DateTimeUtilities.ToString(lineItem.endDateTime, "dd/MM/yyyy") + "</td>";
-                            result += "<td class='pautado'> - </td>";
-                            if (lineItem.stats != null)
-                            {
-                                totalImpresionesEmitidas += lineItem.stats.impressionsDelivered;
-                                totalClicks += lineItem.stats.clicksDelivered;
-                                result += "<td class='impreso'>" + lineItem.stats.impressionsDelivered.ToString() + "</td>";
-                                result += "<td>" + lineItem.stats.clicksDelivered.ToString() + "</td>";
-                                if (lineItem.primaryGoal.units != 0)
-                                {
-                                    result += "<td class='ctr pautado'>" + lineItem.stats.clicksDelivered / lineItem.primaryGoal.units + "%</td>";
-                                }
-                                else
-                                {
-                                    result += "<td class='ctr pautado'>" + "0" + "%</td>";
-                                }
-                                if (lineItem.stats.impressionsDelivered != 0)
-                                {
-                                    result += "<td class='ctr impreso'>" + lineItem.stats.clicksDelivered / lineItem.stats.impressionsDelivered + "%</td>";
-                                }
-                                else
-                                {
-                                    result += "<td class='ctr impreso'>" + "0" + "%</td>";
-                                }
-                            }
-                            else
-                            {
-                                result += "<td class='impreso'>" + "0" + "</td>";
-                                result += "<td>" + "0" + "</td>";
-                                result += "<td class='ctr pautado'>" + "0" + "%</td>";
-                                result += "<td class='ctr impreso'>" + "0" + "%</td>";
-                            }
-                            result += "<td></td></tr>";
-                            cont++;
-                        }
-                        //if (totalImpresionesPautadas != 0)
-                        //{
-                        //    totalCTRPautado = totalClicks / totalImpresionesPautadas;
-                        //}
-                        if (totalImpresionesEmitidas != 0)
-                        {
-                            totalCTRImpreso = totalClicks / totalImpresionesEmitidas;
-                        }
-                        result += "<tr>";
-                        result += "<td style='font-weight: bold;background-color:#f7f7f7;' colspan='3' class='totales colspan2'> Totales </td>";
-                        result += "<td style='font-weight: bold;background-color:#f7f7f7;' class='totales pautado'> - </td>";
-                        result += "<td style='font-weight: bold;background-color:#f7f7f7;' class='totales impreso'>" + totalImpresionesEmitidas.ToString() + "</td>";
-                        result += "<td style='font-weight: bold;background-color:#f7f7f7;' class='totales' >" + totalClicks.ToString() + "</td>";
-                        result += "<td style='font-weight: bold;background-color:#f7f7f7;' class='ctr pautado totales'> - </td>";
-                        result += "<td style='font-weight: bold;background-color:#f7f7f7;' class='ctr impreso totales'>" + totalCTRImpreso + "%</td>";
-                        result += "<td class='totales'></td></tr>";
-                    }
-
-
-                    statementBuilder.IncreaseOffsetBy(pageSize);
-                } while (statementBuilder.GetOffset() < totalResultSetSize);
-                result = result + "</tbody></table></div>";
-                Debug.WriteLine("Number of results found: {0}", totalResultSetSize);
-            }
-            return result.Replace("\r", string.Empty).Replace("\n", string.Empty);
         }
 
         public static Parametro CreateOrder(String name, long advertiserId)
@@ -1389,18 +1297,13 @@ namespace WebApi.Helpers
 
         public static string printCertExcel(long orderId, System.DateTime? fechaDesde, System.DateTime? fechaHasta)
         {
-            
+
             //CambiarRed("5491998");
+            //CambiarRed("22474715684");
+            //orderId = 2934737245;
 
             using (ReportService reportService = user.GetService<ReportService>())
-                {
-                //string fecha = formatFecha(System.DateTime.Today.ToString());
-                // Set the file path where the report will be saved.
-                //String filePath = (@"C:\Users\Terminal\Desktop\" + anunciante + "_" + fecha + ".xlsx");
-                //String filePath = (@"C:\Users\Terminal\Desktop\reporte.csv");
-
-                //long orderId = long.Parse("2258726601");
-
+            {
                 // Create report job.
                 ReportJob reportJob = new ReportJob();
                 reportJob.reportQuery = new ReportQuery();
@@ -1429,8 +1332,6 @@ namespace WebApi.Helpers
 
                 // Set a custom date range
                 reportJob.reportQuery.dateRangeType = DateRangeType.CUSTOM_DATE;
-                //System.DateTime startDateTime = System.DateTime.Parse("01/03/2020");
-                //System.DateTime endDateTime = System.DateTime.Parse("30/03/2020");
                 reportJob.reportQuery.startDate = DateTimeUtilities
                     .FromDateTime((System.DateTime)fechaDesde, "America/Argentina/Buenos_Aires").date;
                 reportJob.reportQuery.endDate = DateTimeUtilities
@@ -1448,19 +1349,12 @@ namespace WebApi.Helpers
 
                     ReportUtilities reportUtilities =
                         new ReportUtilities(reportService, reportJob.id);
-
+                  
                     // Set download options.
                     ReportDownloadOptions options = new ReportDownloadOptions();
                     options.exportFormat = ExportFormat.XLSX;
-                    //options.exportFormat = ExportFormat.CSV_DUMP;
                     options.useGzipCompression = false;
                     reportUtilities.reportDownloadOptions = options;
-
-                    // Download the report.
-                    //using (ReportResponse reportResponse = reportUtilities.GetResponse())
-                    //{
-                    //    reportResponse.Save(filePath);
-                    //}
 
                     //Esperamos a que el reporte esté listo
                     ReportJobStatus estadoRep = ReportJobStatus.FAILED;
@@ -1472,8 +1366,94 @@ namespace WebApi.Helpers
                     //Obtenemos la URL del archivo
                     string linkReporte = reportService.getReportDownloadUrlWithOptions(reportJob.id, reportUtilities.reportDownloadOptions);
 
-                    //Console.WriteLine("Report saved to \"{0}\".", filePath);
                     return linkReporte;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Failed to run delivery report. Exception says \"{0}\"",
+                        e.Message);
+                    return "";
+                }
+            }
+        }
+
+        public static string printLineItemCSV(long lineId, System.DateTime? fechaDesde, System.DateTime? fechaHasta)
+        {
+            using (ReportService reportService = user.GetService<ReportService>())
+            {
+                string fecha = System.DateTime.Now.ToString();
+                string fechaFormat1 = fecha.Replace("/", "-");
+                string fechaFormat2 = fechaFormat1.Replace(":", "");
+                Random random = new Random();
+                string num = random.Next(1000).ToString();
+
+                // Set the file path where the report will be saved.
+                string nombreArch = fechaFormat2 + "_" + num + ".csv";
+                var folder = System.IO.Directory.GetCurrentDirectory();
+                var parent = System.IO.Directory.GetParent(folder);
+                var uploads = Path.Combine(parent.FullName, Startup.StaticConfig.GetSection("AppSettings").GetSection("FrontendFolder").Value, "files");
+                String filePath = Path.Combine(uploads, nombreArch);
+
+                // Create report job.
+                ReportJob reportJob = new ReportJob();
+                reportJob.reportQuery = new ReportQuery();
+                reportJob.reportQuery.dimensions = new Dimension[]
+                {
+                    //Dimension.ORDER_ID,
+                    //Dimension.ORDER_NAME,
+                    //Dimension.LINE_ITEM_ID,
+                    //Dimension.LINE_ITEM_NAME,
+                    Dimension.DATE
+                };
+                reportJob.reportQuery.dimensionAttributes = new DimensionAttribute[]
+                {
+                    //DimensionAttribute.ORDER_TRAFFICKER,
+                    //DimensionAttribute.ORDER_START_DATE_TIME,
+                    //DimensionAttribute.ORDER_END_DATE_TIME
+                };
+                reportJob.reportQuery.columns = new Column[]
+                {
+                    Column.AD_SERVER_IMPRESSIONS,
+                    Column.AD_SERVER_CLICKS,
+                    Column.AD_SERVER_CTR
+                    //Column.AD_SERVER_CPM_AND_CPC_REVENUE,
+                    //Column.AD_SERVER_WITHOUT_CPD_AVERAGE_ECPM
+                };
+
+                // Set a custom date range
+                reportJob.reportQuery.dateRangeType = DateRangeType.CUSTOM_DATE;
+                reportJob.reportQuery.startDate = DateTimeUtilities
+                    .FromDateTime((System.DateTime)fechaDesde, "America/Argentina/Buenos_Aires").date;
+                reportJob.reportQuery.endDate = DateTimeUtilities
+                    .FromDateTime((System.DateTime)fechaHasta, "America/Argentina/Buenos_Aires").date;
+
+                // Create statement object to filter for an order.
+                StatementBuilder statementBuilder = new StatementBuilder().Where("LINE_ITEM_ID = :id")
+                    .AddValue("id", lineId);
+                reportJob.reportQuery.statement = statementBuilder.ToStatement();
+
+                try
+                {
+                    // Run report job.
+                    reportJob = reportService.runReportJob(reportJob);
+
+                    ReportUtilities reportUtilities =
+                        new ReportUtilities(reportService, reportJob.id);
+
+                    // Set download options.
+                    ReportDownloadOptions options = new ReportDownloadOptions();
+                    options.exportFormat = ExportFormat.CSV_DUMP;
+                    options.useGzipCompression = false;
+                    reportUtilities.reportDownloadOptions = options;
+
+                    // Download the report.
+                    using (ReportResponse reportResponse = reportUtilities.GetResponse())
+                    {
+                        reportResponse.Save(filePath);
+                    }
+
+                    Console.WriteLine("Report saved to \"{0}\".", filePath);
+                    return filePath;
                 }
                 catch (Exception e)
                 {
@@ -1916,15 +1896,12 @@ namespace WebApi.Helpers
             LineItem result = new LineItem();
             using (LineItemService lineItemService = user.GetService<LineItemService>())
             {
-                // Set the ID of the line item.
-                long lineItemId = lineaId;
-
                 // Create a statement to get the line item.
                 StatementBuilder statementBuilder = new StatementBuilder()
                     .Where("id = :lineItemId")
                     .OrderBy("id ASC")
                     .Limit(1)
-                    .AddValue("lineItemId", lineItemId);
+                    .AddValue("lineItemId", lineaId);
 
                 // Get line items by statement.
                 LineItemPage page =
@@ -2017,16 +1994,16 @@ namespace WebApi.Helpers
             }
             return result;
         }
-        public static string formatFecha(string fecha)
-        {
-            string fechaFormat = "";
-            string[] arrFecha = fecha.Split(" ");
+        //public static string formatFecha(string fecha)
+        //{
+        //    string fechaFormat = "";
+        //    string[] arrFecha = fecha.Split(" ");
 
-            string[] arr = arrFecha[0].Split("/");
-            string formatDate = "";
-            formatDate = arr[0] + "-" + arr[1] + "-" + arr[2];
-            return formatDate;
-        }
+        //    string[] arr = arrFecha[0].Split("/");
+        //    string formatDate = "";
+        //    formatDate = arr[0] + "-" + arr[1] + "-" + arr[2];
+        //    return formatDate;
+        //}
 
     }
 }
