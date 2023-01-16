@@ -316,18 +316,6 @@ namespace WebApi.Services
                             result += "<td></td></tr>";
                         }
 
-                        //result += "<tr style='border-left: solid thin; border-right: solid thin; border-color: #e7e9eb; border-bottom-left-radius: .5rem; border-bottom-right-radius: .5rem;'>";
-                        //result += "<td style='font-weight: bold;background-color:#f7f7f7;' colspan='3' class='totales colspan2'> Totales Detalle </td>";
-                        //if (det.Tipo_tarifa == 0)
-                        //{
-                        //    result += "<td style='font-weight: bold;background-color:#f7f7f7;' class='totales pautado'>" + det.Cantidad + "</td>";
-
-                        //}
-                        //else
-                        //{
-                        //    result += "<td style='font-weight: bold;background-color:#f7f7f7;' class='totales pautado'> - </td>";
-                        //}
-
                         totalCTRImpresoD = (totalClicksD / totalImpresionesEmitidasD) * 100;
 
                         if (tabla.Count == 0)
@@ -336,14 +324,6 @@ namespace WebApi.Services
                             totalClicksD = 0;
                             totalCTRImpresoD = 0;
                         }
-                        //result += "<td style='font-weight: bold;background-color:#f7f7f7;' class='totales impreso'>" + totalImpresionesEmitidasD.ToString() + "</td>";
-                        //result += "<td style='font-weight: bold;background-color:#f7f7f7;' class='totales clicks' >" + totalClicksD.ToString() + "</td>";
-                        //result += "<td style='font-weight: bold;background-color:#f7f7f7;' class='ctr impreso totales'>" + Math.Round(totalCTRImpresoD, 2).ToString() + "%</td>";
-                        //result += "<td class='totales'></td></tr>";
-                        //result += "<tr><td></td><td></td><td></td><td></td><td></td></tr>"; //separador de Detalles
-
-                        //totalImpresionesEmitidas += totalImpresionesEmitidasD;
-                        //totalClicks += totalClicksD;
                     }
                 }
                 result += "<tr style='border-left: solid thin; border-right: solid thin; border-color: #e7e9eb; border-bottom-left-radius: .5rem; border-bottom-right-radius: .5rem;'>";
@@ -394,11 +374,6 @@ namespace WebApi.Services
             return GoogleAdManager.GetLineItemCreatives(lineItemId);
         }
 
-        //AGREGUE:
-        //public IEnumerable<Dg_emplazamientos> GetEmplazamientos(string redGAM)
-        //{
-        //    return GoogleAdManager.getEmplazamientos(redGAM);
-        //}
 
         public IEnumerable<Dg_emplazamientos> GetEmplazamientos(string codRed)
         {

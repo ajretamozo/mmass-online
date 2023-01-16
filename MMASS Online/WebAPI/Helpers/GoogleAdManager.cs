@@ -375,7 +375,8 @@ namespace WebApi.Helpers
             Order camp = GetOrder(orderId);
             string result = @"<div class='breakBefore'><div class='divImgCert add-mb-6'></div><p style='font-family: Roboto'><span style='font-weight: bold;'>Orden Publicitaria: </span>" + camp.name + "</p><p class='add-mb-6' style='font-family: Roboto'><span style='font-weight: bold;'>Anunciante: </span ><span id='txtAnunciante'>" + anunciante + "</span></p>";
             result = result + "<table id='detailsTable' class='table add-mb-6' style='font-family: Roboto'>";
-            result = result + " <thead><tr><th class='certTableHeader'> Detalle </th> <th class='sitio certTableHeader'> Sitio </th> <th class='fecha certTableHeader'> Fecha </th> <th class='pautado certTableHeader headerObjetivo'> Objetivo </th><th class='impreso certTableHeader'> Impresiones </th><th class='certTableHeader'> Clicks </th><th class='ctr pautado certTableHeader'> CTR </th> <th class='ctr impreso certTableHeader'> CTR </th><th class='certTableHeader' width='1px'></th>";
+            //result = result + " <thead><tr><th class='certTableHeader'> Detalle </th> <th class='sitio certTableHeader'> Sitio </th> <th class='fecha certTableHeader'> Fecha </th> <th class='pautado certTableHeader headerObjetivo'> Objetivo </th><th class='impreso certTableHeader'> Impresiones </th><th class='certTableHeader'> Clicks </th><th class='ctr pautado certTableHeader'> CTR </th> <th class='ctr impreso certTableHeader'> CTR </th><th class='certTableHeader' width='1px'></th>";
+            result = result + " <thead><tr><th class='certTableHeader'> Detalle </th> <th class='sitio certTableHeader'> Sitio </th> <th class='fecha certTableHeader'> Fecha </th> <th class='pautado certTableHeader headerObjetivo'> Objetivo </th><th class='impreso certTableHeader'> Impresiones </th><th class='certTableHeader'> Clicks </th> <th class='ctr impreso certTableHeader'> CTR </th><th class='certTableHeader' width='1px'></th>";
             result = result + "</tr></thead><tbody>";
             using (LineItemService lineItemService = user.GetService<LineItemService>())
             {
@@ -400,11 +401,11 @@ namespace WebApi.Helpers
                     {
                         totalResultSetSize = page.totalResultSetSize;
                         int i = page.startIndex;
-                        long totalImpresionesPautadas = 0;
-                        long totalImpresionesEmitidas = 0;
-                        long totalClicks = 0;
-                        long totalCTRPautado = 0;
-                        long totalCTRImpreso = 0;
+                        float totalImpresionesPautadas = 0;
+                        float totalImpresionesEmitidas = 0;
+                        float totalClicks = 0;
+                        //long totalCTRPautado = 0;
+                        float totalCTRImpreso = 0;
                         int cont = 0;
                         foreach (LineItem lineItem in page.results)
                         {
@@ -435,17 +436,19 @@ namespace WebApi.Helpers
                                 totalClicks += lineItem.stats.clicksDelivered;
                                 result += "<td class='impreso'>" + lineItem.stats.impressionsDelivered.ToString() + "</td>";
                                 result += "<td>" + lineItem.stats.clicksDelivered.ToString() + "</td>";
-                                if (lineItem.primaryGoal.units != 0)
-                                {
-                                    result += "<td class='ctr pautado'>" + lineItem.stats.clicksDelivered / lineItem.primaryGoal.units + "%</td>";
-                                }
-                                else
-                                {
-                                    result += "<td class='ctr pautado'>" + "0" + "%</td>";
-                                }
+                                //if (lineItem.primaryGoal.units != 0)
+                                //{
+                                //    result += "<td class='ctr pautado'>" + (float.Parse(lineItem.stats.clicksDelivered.ToString()) / float.Parse(lineItem.primaryGoal.units.ToString())) * 100 + "%</td>";
+                                //}
+                                //else
+                                //{
+                                //    result += "<td class='ctr pautado'>" + "0" + "%</td>";
+                                //}
+                                //float ctr = (float.Parse(lineItem.stats.clicksDelivered.ToString()) / float.Parse(lineItem.stats.impressionsDelivered.ToString())) * 100;
                                 if (lineItem.stats.impressionsDelivered != 0)
                                 {
-                                    result += "<td class='ctr impreso'>" + lineItem.stats.clicksDelivered / lineItem.stats.impressionsDelivered + "%</td>";
+                                    float ctr = (float.Parse(lineItem.stats.clicksDelivered.ToString()) / float.Parse(lineItem.stats.impressionsDelivered.ToString())) * 100;
+                                    result += "<td class='ctr impreso'>" + Math.Round(ctr, 2) + "%</td>";
                                 } else
                                 {
                                     result += "<td class='ctr impreso'>" + "0" + "%</td>";
@@ -454,27 +457,27 @@ namespace WebApi.Helpers
                             {
                                 result += "<td class='impreso'>" + "0" + "</td>";
                                 result += "<td>" + "0" + "</td>";
-                                result += "<td class='ctr pautado'>" + "0" + "%</td>";
+                                //result += "<td class='ctr pautado'>" + "0" + "%</td>";
                                 result += "<td class='ctr impreso'>" + "0" + "%</td>";
                             }
                             result += "<td></td></tr>";
                             cont++;
                         }
-                        if (totalImpresionesPautadas != 0)
-                        {
-                            totalCTRPautado = totalClicks / totalImpresionesPautadas;
-                        }
+                        //if (totalImpresionesPautadas != 0)
+                        //{
+                        //    totalCTRPautado = totalClicks / totalImpresionesPautadas;
+                        //}
                         if (totalImpresionesEmitidas != 0)
                         {
-                            totalCTRImpreso = totalClicks / totalImpresionesEmitidas;
+                            totalCTRImpreso = (totalClicks / totalImpresionesEmitidas) * 100;
                         }
                         result += "<tr>";
                         result += "<td style='font-weight: bold;background-color:#f7f7f7;' colspan='3' class='totales colspan2'> Totales </td>";
                         result += "<td style='font-weight: bold;background-color:#f7f7f7;' class='totales pautado'>" + totalImpresionesPautadas.ToString() + "</td>";
                         result += "<td style='font-weight: bold;background-color:#f7f7f7;' class='totales impreso'>" + totalImpresionesEmitidas.ToString() + "</td>";
                         result += "<td style='font-weight: bold;background-color:#f7f7f7;' class='totales' >" + totalClicks.ToString() + "</td>";
-                        result += "<td style='font-weight: bold;background-color:#f7f7f7;' class='ctr pautado totales'>" + totalCTRPautado + "%</td>";
-                        result += "<td style='font-weight: bold;background-color:#f7f7f7;' class='ctr impreso totales'>" + totalCTRImpreso + "%</td>";
+                        //result += "<td style='font-weight: bold;background-color:#f7f7f7;' class='ctr pautado totales'>" + totalCTRPautado + "%</td>";
+                        result += "<td style='font-weight: bold;background-color:#f7f7f7;' class='ctr impreso totales'>" + Math.Round(totalCTRImpreso, 2).ToString() + "%</td>";
                         result += "<td class='totales'></td></tr>";
                     }
 
@@ -1332,6 +1335,14 @@ namespace WebApi.Helpers
 
                 // Set a custom date range
                 reportJob.reportQuery.dateRangeType = DateRangeType.CUSTOM_DATE;
+                if (fechaDesde > System.DateTime.Now.Date)
+                {
+                    fechaDesde = System.DateTime.Now.Date;
+                }
+                if (fechaHasta > System.DateTime.Now.Date)
+                {
+                    fechaHasta = System.DateTime.Now.Date;
+                }
                 reportJob.reportQuery.startDate = DateTimeUtilities
                     .FromDateTime((System.DateTime)fechaDesde, "America/Argentina/Buenos_Aires").date;
                 reportJob.reportQuery.endDate = DateTimeUtilities
@@ -1422,6 +1433,14 @@ namespace WebApi.Helpers
 
                 // Set a custom date range
                 reportJob.reportQuery.dateRangeType = DateRangeType.CUSTOM_DATE;
+                if (fechaDesde > System.DateTime.Now.Date)
+                {
+                    fechaDesde = System.DateTime.Now.Date;
+                }
+                if (fechaHasta > System.DateTime.Now.Date)
+                {
+                    fechaHasta = System.DateTime.Now.Date;
+                }
                 reportJob.reportQuery.startDate = DateTimeUtilities
                     .FromDateTime((System.DateTime)fechaDesde, "America/Argentina/Buenos_Aires").date;
                 reportJob.reportQuery.endDate = DateTimeUtilities

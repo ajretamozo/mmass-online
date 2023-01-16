@@ -1128,7 +1128,7 @@
                                     </button>
                                     <div class="form-check-inline mr-0">
                                         <label class="form-check-label " for="checkListaParaFact" style="padding-right: 15px; margin-left: 10px;">
-                                            <input type="checkbox" style="margin-top: .4rem; margin-right: .2rem" class="form-check-input float-sm-left" id="checkListaParaFact" checked>Lista para facturar
+                                            <input type="checkbox" style="margin-top: .4rem; margin-right: .2rem" class="form-check-input float-sm-left" id="checkListaParaFact">Lista para facturar
                                         </label>
                                     </div>
                                 </div>
@@ -3808,6 +3808,17 @@
             $('#fechaHastaD').datetimepicker({ format: 'L', locale: 'es' });
             $('#fechaDesdeC').datetimepicker({ format: 'L', locale: 'es' });
             $('#fechaHastaC').datetimepicker({ format: 'L', locale: 'es' });
+
+            callWS("medios", "getParamById", JSON.stringify(4), function (parLista) {
+                if (parLista == 1) {
+                    $("checkListaParaFact")[0].checked = true;
+                    $("checkListaParaFact").change();
+                }
+                else {
+                    $("checkListaParaFact")[0].checked = false;
+                    $("checkListaParaFact").change();
+                }
+            });
 
             $("#divMessage").on("click", function () { $("#divMessage").hide(); });
             $.when(
