@@ -46,6 +46,13 @@ namespace WebApi.Controllers
             return Ok(result);
         }
 
+        [HttpPost("deleteASRelation")]
+        public IActionResult deleteASRelation(Contacto p)
+        {
+            var result = _contactoService.deleteASRelation(p.Id, p.IdContactoDigital, p.IdRed);
+            return Ok(result);
+        }
+
         [HttpPost("getAnunciantesPorAgencia")]
         public IActionResult GetAnunciantesPorAgencia([FromBody] int idAgencia)
         {

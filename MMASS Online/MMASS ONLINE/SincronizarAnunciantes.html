@@ -229,7 +229,13 @@
                 cont.Id = $(idGAMSel).attr("idContacto");
                 cont.IdContactoDigital = idGAM;
                 cont.IdRed = idRed;
-                callWS("contactos", "saveASRelation", JSON.stringify(cont), function (data) { onVincular(data, idGAM) });
+                var idButton = "#button" + idGAM;
+                if ($(idButton).val() == 1) {
+                    callWS("contactos", "saveASRelation", JSON.stringify(cont), function (data) { onVincular(data, idGAM) });
+                }
+                else {
+                    callWS("contactos", "deleteASRelation", JSON.stringify(cont), function (data) { onVincular(data, idGAM) });
+                }
             }
 
         }
@@ -238,9 +244,20 @@
         function onVincular(data, idGAM) {
             if (data == true) {
                 var idButton = "#button" + idGAM;
-                $(idButton).removeClass("btn-primary").addClass("btn-success");
-                $(idButton).css("background-color", "#c3e6cb");
-                showMessage("Anunciante vinculado", "success");
+                if ($(idButton).val() == 1) {
+                    $(idButton).removeClass("btn-primary").addClass("btn-success");
+                    $(idButton).css("background-color", "#c3e6cb");
+                    $(idButton).val(2);
+                    $(idButton).html('Desvincular');
+                    showMessage("Anunciante vinculado", "success");
+                }
+                else {
+                    $(idButton).removeClass("btn-success").addClass("btn-primary");
+                    $(idButton).css("background-color", "#6c757d");
+                    $(idButton).val(1);
+                    $(idButton).html('Vincular');
+                    showMessage("Anunciante desvinculado", "success");
+                }
             } else {
                 showMessage("Ocurrio un error al vincular el Anunciante", "alert");
             }
@@ -281,7 +298,7 @@
                 str = str + "<td class='col-xs-2' > " + anuncianteGAM.idContactoDigital + "</td > ";
                 str = str + "<td class='col-xs-4' > " + anuncianteGAM.razonSocial + "</td >";
                 str = str + '<td class="col-xs-4" >' + strCabeceraOption + " id='sel" + anuncianteGAM.idContactoDigital + "' >" + strOption + '</td >';
-                str = str + "<td class='col-xs-2' > <button type='button' id=button" + anuncianteGAM.idContactoDigital + " class='btn btn-secondary' onClick='vincular(" + anuncianteGAM.idContactoDigital + ", " + idRed + ")'>Vincular</button> </td >";
+                str = str + "<td class='col-xs-2' > <button type='button' id=button" + anuncianteGAM.idContactoDigital + " class='btn btn-secondary' value='1' onClick='vincular(" + anuncianteGAM.idContactoDigital + ", " + idRed + ")'>Vincular</button> </td >";
                 str = str + "</tr>";
 
                 $("#TableRenglones").append(str);
@@ -294,6 +311,8 @@
                 if ($(idAGam).val() != undefined) {
                     $(idButton).removeClass("btn-primary").addClass("btn-success");
                     $(idButton).css("background-color", "#c3e6cb");
+                    $(idButton).val(2);
+                    $(idButton).html('Desvincular');
                 }
             });
             //hidePleaseWait();

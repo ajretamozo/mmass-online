@@ -261,5 +261,36 @@ namespace WebApi.Entities
             else return false;
         }
 
+        public static bool deleteASRelation(int Id_contacto, string Id_ContactoDigital, int Id_Red)
+        {
+            string sql = "";
+            if ((Id_contacto != 0) && (Id_ContactoDigital != "") && (Id_Red != 0))
+            {
+                sql = "DELETE FROM dg_contacto_red_GAM " +
+                      "WHERE id_contacto=@id_contacto AND id_contactodigital=@id_contactodigital AND id_red=@id_red";
+
+                List<SqlParameter> parametros = new List<SqlParameter>()
+                {
+                    new SqlParameter()
+                    { ParameterName="@id_contacto",SqlDbType = SqlDbType.Int, Value = Id_contacto },
+                    new SqlParameter()
+                    { ParameterName="@id_contactodigital",SqlDbType = SqlDbType.NVarChar, Value = Id_ContactoDigital },
+                    new SqlParameter()
+                    { ParameterName="@id_red", SqlDbType = SqlDbType.Int, Value = Id_Red }
+              };
+                try
+                {
+                    DB.Execute(sql, parametros);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    return false;
+                }
+                return true;
+            }
+            else return false;
+        }
+
     }
 }
