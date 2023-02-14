@@ -233,7 +233,7 @@ namespace WebApi.Helpers
                 int pageSize = StatementBuilder.SUGGESTED_PAGE_LIMIT;
                 StatementBuilder statementBuilder = new StatementBuilder()
                    //.Where("OrderId = :oID and isArchived = false").OrderBy("id ASC")
-                   .Where("OrderId = :oID").OrderBy("id ASC")
+                   .Where("OrderId = :oID and isArchived = false").OrderBy("id ASC")
                    .Limit(pageSize)
                    .AddValue("oID", idOrder);
 

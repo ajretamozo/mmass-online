@@ -934,6 +934,7 @@ namespace WebApi.Services
             return formatDate;
         }
 
+        //AGREGAR COMPROBACION DE SI LA LINEA ESTA ARCHIVADA
         public ListaParametro ComprobarModificacionesD(Dg_orden_pub_as det)
         {
             ListaParametro cambiosL = new ListaParametro();

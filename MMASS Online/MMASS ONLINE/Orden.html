@@ -903,7 +903,7 @@
                                 </div>
 
                                 <div class="table-responsive mt-2">
-                                    <table class="table table-fixed" id="tReng">
+                                    <table class="table table-fixed" id="tReng" style="text-align: center;">
                                         <thead>
                                             <tr>
                                                 <th class="col-xs-3">Descripción</th>
@@ -1034,28 +1034,40 @@
                                     </div>
 
                                     <div class="row">
-                                        <div class="col-lg-3">
+                                        <div class="col-lg-2">
                                             <label>Precio Unitario</label>
                                             <div id="divPrecioUnitarioD">
                                                 <input type="number" id="precioUnitarioD" class="form-control" readonly="readonly" onchange="calcularNetoD(this)">
                                             </div>
                                         </div>
-                                        <div class="col-lg-3">
+                                        <div class="col-lg-2">
                                             <label id="cantidadL">Cantidad</label>
                                             <div id="divCantD">
                                                 <input type="number" id="cantidadD" class="form-control" onchange="calcularNetoD(this)">
                                             </div>
                                         </div>
-                                        <div class="col-lg-3">
+                                        <div class="col-lg-2">
                                             <label>% Descuento</label>
                                             <div id="divDescuentoD">
                                                 <input type="number" id="descuentoD" class="form-control" onchange="calcularNetoD(this)">
                                             </div>
                                         </div>
-                                        <div class="col-lg-3">
+                                        <div class="col-lg-2">
                                             <label>Total</label>
                                             <div id="divTotalD">
                                                 <input type="text" id="totalD" readonly="readonly" class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-2">
+                                            <label>% NC</label>
+                                            <div id="divConfNCD">
+                                                <input type="number" id="confNCD" class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-2">
+                                            <label>% FC</label>
+                                            <div id="divConfFCD">
+                                                <input type="number" id="confFCD" class="form-control">
                                             </div>
                                         </div>
                                     </div>
@@ -1098,11 +1110,11 @@
                                     <input type="number" class="form-control" value="0" readonly="readonly" id="neto1">
                                 </div>      <div class="col-sm">
                                     <label>Conf NC</label>
-                                    <input type="number" class="form-control" value="0" id="conf_nc" onchange="calculateTotals()">
+                                    <input type="number" class="form-control" value="0" id="conf_nc" onchange="calculateTotals()" disabled="disabled">
                                 </div>
                                 <div class="col-sm">
                                     <label>Conf FC</label>
-                                    <input type="number" class="form-control" value="0" id="conf_fc" onchange="calculateTotals()">
+                                    <input type="number" class="form-control" value="0" id="conf_fc" onchange="calculateTotals()" disabled="disabled">
                                 </div>
                                 <div class="col-sm">
                                     <label>Seg Neto</label>
@@ -1873,17 +1885,17 @@
                 if (item.tipo_tarifa == 0) {
                     data.Total_Impresiones += parseFloat(item.cantidad);
                 }
-                if (parseInt($("#neto1").val()) != 0) {
-                    item.porcconfnc = parseFloat(parseInt($("#conf_nc").val()) / parseInt($("#neto1").val()) * 100);
-                    item.porcconffc = parseFloat(parseInt($("#conf_fc").val()) / parseInt($("#neto1").val()) * 100);
-                    item.impconfnc = item.monto_neto / 100 * item.porcconfnc;
-                    item.impconffc = item.monto_neto / 100 * item.porcconffc;
-                } else {
-                    item.porcconfnc = 0;
-                    item.porcconffc = 0;
-                    item.impconfnc = 0;
-                    item.impconffc = 0;
-                }
+                //if (parseInt($("#neto1").val()) != 0) {
+                //    item.porcconfnc = parseFloat(parseInt($("#conf_nc").val()) / parseInt($("#neto1").val()) * 100);
+                //    item.porcconffc = parseFloat(parseInt($("#conf_fc").val()) / parseInt($("#neto1").val()) * 100);
+                //    item.impconfnc = item.monto_neto / 100 * item.porcconfnc;
+                //    item.impconffc = item.monto_neto / 100 * item.porcconffc;
+                //} else {
+                //    item.porcconfnc = 0;
+                //    item.porcconffc = 0;
+                //    item.impconfnc = 0;
+                //    item.impconffc = 0;
+                //}
                 //si es clon, seteo el id_google_ad_manager = 0
                 if(OpClon){
                     item.id_Google_Ad_Manager = 0;
@@ -1965,19 +1977,16 @@
 
         function calculateTotals() {
 
-            if (isNaN($("#conf_nc").val()) || $("#conf_nc").val() == "") {
-                $("#conf_nc").val(0);
-            }
-            if (isNaN($("#conf_fc").val()) || $("#conf_fc").val() == "") {
-                $("#conf_fc").val(0);
-            }
-
             var sumNetoRenglones = 0;
             var sumBrutoRenglones = 0;
+            var sumNCRenglones = 0;
+            var sumFCRenglones = 0;
             var neto2 = 0;
             Detalles.forEach(function (item, index) {
                 sumNetoRenglones += parseFloat(item.monto_neto);
                 sumBrutoRenglones += parseFloat(item.monto_bruto);
+                sumNCRenglones += item.impconfnc;
+                sumFCRenglones += item.impconffc;
             })
             $("#montoBruto").val(sumBrutoRenglones.toFixed(2));//le agregue tofixed
 
@@ -1987,10 +1996,13 @@
                 $("#porc_desc").val(0);
             }
 
+            $("#conf_nc").val(sumNCRenglones);
+            $("#conf_fc").val(sumFCRenglones);
 
             $("#neto1").val(sumNetoRenglones);
 
-            neto2 = sumNetoRenglones - parseFloat($("#conf_nc").val()) - parseFloat($("#conf_fc").val());
+            /*neto2 = sumNetoRenglones - parseFloat($("#conf_nc").val()) - parseFloat($("#conf_fc").val());*/
+            neto2 = sumNetoRenglones - sumNCRenglones - sumFCRenglones;
             $("#neto2").val(neto2.toFixed(2));
             //cTotal = neto2 * 1.21; CON IVA
             cTotal = neto2;
@@ -2032,8 +2044,8 @@
                 $('#sTituloDinamico2').remove();
                 $("#bAnular").attr("disabled", false);
                 $("#bClonar").attr("disabled", false);
-                $("#conf_nc").attr("disabled", true);
-                $("#conf_fc").attr("disabled", true);
+                //$("#conf_nc").attr("disabled", true);
+                //$("#conf_fc").attr("disabled", true);
                 $('#inpOrderNumber').val(data.op.nro_orden);
                 $("#inpOrderNumber").attr("id_op_dg", data.op.id_op_dg);
                 $("#inpOrderMonth").val(data.op.mes);
@@ -2702,8 +2714,11 @@
             }
 
             rDetalle.descripcion = $('#descripcionD').val();
+
             rDetalle.importe_unitario = parseFloat($('#precioUnitarioD').val());
+
             rDetalle.cantidad = parseInt($('#cantidadD').val());
+
             rDetalle.porc_dto = parseFloat($('#descuentoD').val());
             if (rDetalle.porc_dto == "") {
                 rDetalle.porc_dto = 0;
@@ -2711,6 +2726,21 @@
 
             rDetalle.monto_neto = parseFloat($('#totalD').val());
             rDetalle.monto_bruto = rDetalle.monto_neto * 100 / (100 - rDetalle.porc_dto)
+
+            if (parseFloat($("#confNCD").val()) != 0) {
+                rDetalle.porcconfnc = parseFloat($("#confNCD").val());
+                rDetalle.impconfnc = rDetalle.monto_neto / 100 * rDetalle.porcconfnc;
+            } else {
+                rDetalle.porcconfnc = 0;
+                rDetalle.impconfnc = 0;
+            }
+            if (parseFloat($("#confFCD").val()) != 0) {
+                rDetalle.porcconffc = parseFloat($("#confFCD").val());
+                rDetalle.impconffc = rDetalle.monto_neto / 100 * rDetalle.porcconffc;
+            } else {
+                rDetalle.porcconffc = 0;
+                rDetalle.impconffc = 0;
+            }
 
             if ($("#checkTarifaManualD").is(":checked")) {
                 //rDetalle.netomanual = rDetalle.monto_neto;
@@ -2978,6 +3008,8 @@
 
             cantD = $("#cantidadD").val();
             descD = $("#descuentoD").val();
+            //ncD = $("#confNCD").val();
+            //fcD = $("#confFCD").val();
             resultD = $("#precioUnitarioD").val();
 
             var divD = 1;
@@ -2997,6 +3029,12 @@
                 if (descD == "") {
                     descD = 0;
                 }
+                //if (ncD == "") {
+                //    ncD = 0;
+                //}
+                //if (fcD == "") {
+                //    fcD = 0;
+                //}
                 if (resultD == "" || resultD < 0) {
                     $("#resultD").val("");
                     $("#totalD").val("");
@@ -3007,20 +3045,17 @@
                     $("#totalD").val("");
                     return;
                 }
-                if (descD < -100 || descD > 100) {
-                    showMessage("El descuento no puede ser superior a 100");
-                    $("#descuentoD").val("");
-                    $("#totalD").val("");
-                    return;
-                }
             }
 
-            brutoD = resultD * (cantD / divD)
+            brutoD = resultD * (cantD / divD);
 
             resultD = brutoD - (brutoD * descD / 100);
 
-
             $("#totalD").val(resultD.toFixed(2));
+
+            //resultD2 = resultD1 - (resultD1 * ncD / 100) - (resultD1 * fcD / 100);
+
+            //$("#totalD").val(resultD2.toFixed(2));
         }
 
         function cargarModificarRenglon(r) {
@@ -3230,6 +3265,8 @@
             $('#cantidadD').val(rDetalle.cantidad);
             $('#descuentoD').val(rDetalle.porc_dto);
             $('#totalD').val(rDetalle.monto_neto);
+            $("#confNCD").val(rDetalle.porcconfnc);
+            $("#confFCD").val(rDetalle.porcconffc);
 
             if (rDetalle.id_det_conv > 0) {
                 $("#selDetConvenio option[value=" + rDetalle.id_det_conv + "]").attr("selected", "selected");
