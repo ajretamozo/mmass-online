@@ -1427,8 +1427,6 @@
             $('#fechaDesde').datetimepicker('date', moment(dateToFieldFormat(data.fecha), 'DD/MM/YYYY'));
             $('#fechaHasta').datetimepicker('date', moment(dateToFieldFormat(data.fecha_expiracion), 'DD/MM/YYYY'));
             $("#bAnular").attr("disabled", false);
-            //$("#conf_nc").attr("disabled", true);
-            //$("#conf_fc").attr("disabled", true);
 
             if (data.es_facturada && OpClon == false) {
                 $("#inpEsFacturada").val("SI");
@@ -1509,6 +1507,9 @@
                     $('#inpDescConvenio').val(data.desc_convenio);
                     fechaDConv = data.fecha_desde;
                     fechaHConv = data.fecha_hasta;
+                    if (data.tipo_Facturacion == 0 || data.tipo_Facturacion == 1) {
+                        $("#checkListaParaFact")[0].disabled = true;
+                    }
                 });
                 $("#selFacturar").attr("disabled", true);
                 $("#selFPago").attr("disabled", true);
@@ -2403,6 +2404,8 @@
             //AGREGUE (cantidadD disabled=false):
             $("#cantidadD").attr("disabled", false);
             $('#descuentoD').val(0);
+            $("#confNCD").val(0);
+            $("#confFCD").val(0);
             $('#totalD').val("");
             //callWS("medios", "getAll", '', function (data) { onPopulateSelectDone(data, 'selMediosD', 'id_medio', 'desc_medio'); });
             callWS("medios", "getPorEmpresa", JSON.stringify(idEmpresa), function (data) { onPopulateSelectDone(data, 'selMediosD', 'id_medio', 'desc_medio'); });
@@ -2537,7 +2540,6 @@
             return parametros;
         }
 
-        //punto de control
         //Parametro global para saber si la OP está abierta por otro usuario, bloqueada, si esta clonandose, si es anulada y si se esta clonando Detalle
         OpYaAbierta = false;
         OpBloqueada = false;
@@ -3273,6 +3275,11 @@
                 $("#selTipoTarifaD").attr("disabled", true);
                 $("#selTipoAvisoD").attr("disabled", true);
                 $("#selProductoD").attr("disabled", true);
+                $("#selTarifaD").attr("disabled", true);
+                $("#descuentoD").attr("disabled", true);
+                $("#confNCD").attr("disabled", true);
+                $("#confFCD").attr("disabled", true);
+                $("#checkTarifaManualD").attr("disabled", true);
             }
             if (OpClon) {
                 $("#selDetConvenio").attr("disabled", true);
@@ -3556,14 +3563,14 @@
             $("#selFacturar option[value=" + data.facturar_a + "]").attr("selected", "selected");
             $("#selFPago option[value=" + data.id_formapago + "]").attr("selected", "selected");
             $('#inpDescConvenio').val(data.desc_convenio);
-            if (data.porc_conf_nc != null && data.porc_conf_nc != 0) {
-                $('#conf_nc').val(data.porc_conf_nc);
-                $("#conf_nc").attr("disabled", true);
-            }
-            if (data.porc_conf_fc != null && data.porc_conf_fc != 0) {
-                $('#conf_fc').val(data.porc_conf_fc);
-                $("#conf_fc").attr("disabled", true);
-            }
+            //if (data.porc_conf_nc != null && data.porc_conf_nc != 0) {
+            //    $('#conf_nc').val(data.porc_conf_nc);
+            //    $("#conf_nc").attr("disabled", true);
+            //}
+            //if (data.porc_conf_fc != null && data.porc_conf_fc != 0) {
+            //    $('#conf_fc').val(data.porc_conf_fc);
+            //    $("#conf_fc").attr("disabled", true);
+            //}
             if (data.id_condpago_facturar != null && data.id_condpago_facturar != 0) {
                 $("#selPlazoP option[value=" + data.id_condpago_facturar + "]").attr("selected", "selected");
                 $("#selPlazoP").attr("disabled", true);
@@ -3574,6 +3581,11 @@
             $("#bBorrConvenios").attr("disabled", false);
             $("#selFacturar").attr("disabled", true);
             $("#selFPago").attr("disabled", true);
+            if (data.tipo_Facturacion == 0 || data.tipo_Facturacion == 1) {
+                $("#checkListaParaFact")[0].checked = false;
+                $("#checkListaParaFact").change();
+                $("#checkListaParaFact")[0].disabled = true;
+            }
 
             idConvenio = data.id_convenio;
 
@@ -3671,7 +3683,13 @@
             $("#selTipoTarifaD").val(data.forma_uso.id);
             $("#selTipoTarifaD").attr("disabled", true);
 
-            $("#selAreasGeo").val(data.id_area);
+            //Carga Area geo
+            if (data.id_area > 0) {
+                $("#selAreasGeo").val(data.id_area);
+            }
+            else {
+                $("#selAreasGeo").val(1);
+            }
 
             //Carga Tipos de Aviso
             tiposAviso = data.tipos_aviso;
@@ -3680,7 +3698,7 @@
                 $("#selTipoAvisoD").attr("disabled", true);
             }
             else {
-                /*                onTipoAvisoGetAll(tiposAviso, 'selTipoAvisoD', 'Id_tipo_aviso_dg', 'descripcion', 'Permite_envio_ads')*/
+                /*onTipoAvisoGetAll(tiposAviso, 'selTipoAvisoD', 'Id_tipo_aviso_dg', 'descripcion', 'Permite_envio_ads')*/
                 $("#selTipoAvisoD").attr("disabled", false);
             }
 
@@ -3786,6 +3804,22 @@
             }
             else {
                 $("#descuentoD").attr("disabled", false);
+            }
+
+            //Carga conf NC y FC
+            $('#confNCD').val(data.porc_conf_nc);
+            if (data.porc_conf_nc > 0) {
+                $("#confNCD").attr("disabled", true);
+            }
+            else {
+                $("#confNCD").attr("disabled", false);
+            }
+            $('#confFCD').val(data.porc_conf_fc);
+            if (data.porc_conf_fc > 0) {
+                $("#confFCD").attr("disabled", true);
+            }
+            else {
+                $("#confFCD").attr("disabled", false);
             }
         }
 
@@ -4627,6 +4661,8 @@
             $("#precioUnitarioD").attr("disabled", true);
             $("#cantidadD").attr("disabled", true);
             $("#descuentoD").attr("disabled", true);
+            $("#confNCD").attr("disabled", true);
+            $("#confFCD").attr("disabled", true);
             $(".bootstrap-duallistbox-container").find("*").prop("disabled", true);
             $("#GuardarRenglon").attr("disabled", true);
         }
@@ -4645,6 +4681,8 @@
             $("#precioUnitarioD").attr("disabled", false);
             $("#cantidadD").attr("disabled", false);
             $("#descuentoD").attr("disabled", false);
+            $("#confNCD").attr("disabled", false);
+            $("#confFCD").attr("disabled", false);
             $(".bootstrap-duallistbox-container").find("*").prop("disabled", false);
             $("#GuardarRenglon").attr("disabled", false);
         }
@@ -4666,8 +4704,8 @@
             $("#selPlazoP").attr("disabled", true);
             $("#selEjecutivo").attr("disabled", true);
             $("#bCargarNuevoRenglon").attr("disabled", true);
-            $("#conf_nc").attr("disabled", true);
-            $("#conf_fc").attr("disabled", true);
+            //$("#conf_nc").attr("disabled", true);
+            //$("#conf_fc").attr("disabled", true);
             $("#bSendOrdenAddServer").attr("disabled", true);
             $("#bAnular").attr("disabled", true);
             $("#checkListaParaFact")[0].disabled = true;

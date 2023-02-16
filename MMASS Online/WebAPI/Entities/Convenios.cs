@@ -31,13 +31,14 @@ namespace WebApi.Entities
         public float Porc_conf_nc { get; set; }
         public float Porc_conf_fc { get; set; }
         public int Id_condpago_facturar { get; set; }
+        public int Tipo_Facturacion { get; set; }     
 
 
         public static Convenios getByIdC9(int id_convenio)
         {
             string sqlCommand = @"select top 1 c.id_convenio, c.desc_convenio, cpa.id_formapago, c.id_agencia, c.id_anunciante, cp.id_producto, c.importe_total,
                                     c.fecha_desde, c.fecha_hasta, c.estado, c.observaciones, c.facturar_a, c.id_empresa, c.porc_conf_nc, c.porc_conf_fc, 
-                                    ag.razon_social as agencia_nombre, an.razon_social as anunciante_nombre, fp.desc_formapago as formapago_nombre, c.Id_PlazoPago  
+                                    ag.razon_social as agencia_nombre, an.razon_social as anunciante_nombre, fp.desc_formapago as formapago_nombre, c.Id_PlazoPago, c.tipo_facturacion   
                                     from convenio_anual_precios c
                                     left outer join contactos ag on ag.id_contacto = c.id_agencia
                                     left outer join contactos an on an.id_contacto = c.id_anunciante
@@ -94,6 +95,7 @@ namespace WebApi.Entities
                 {
                     resultado.Id_condpago_facturar = int.Parse(t.Rows[0]["Id_PlazoPago"].ToString());
                 }
+                resultado.Tipo_Facturacion = int.Parse(t.Rows[0]["tipo_facturacion"].ToString());
             }
             return resultado;
         }
@@ -102,7 +104,7 @@ namespace WebApi.Entities
         {
             string sqlCommand = @"select top 1 c.id_convenio, c.desc_convenio, cpa.id_formapago, c.id_agencia, c.id_anunciante, cp.id_producto, c.importe_total,
                                     c.fecha_desde, c.fecha_hasta, c.estado, c.observaciones, c.facturar_a, c.porc_conf_nc, c.porc_conf_fc, 
-                                    ag.razon_social as agencia_nombre, an.razon_social as anunciante_nombre, fp.desc_formapago as formapago_nombre, c.id_condpago_facturar  
+                                    ag.razon_social as agencia_nombre, an.razon_social as anunciante_nombre, fp.desc_formapago as formapago_nombre, c.id_condpago_facturar, c.tipo_facturacion   
                                     from convenio_anual_precios c
                                     left outer join contactos ag on ag.id_contacto = c.id_agencia
                                     left outer join contactos an on an.id_contacto = c.id_anunciante
@@ -164,6 +166,7 @@ namespace WebApi.Entities
                 {
                     resultado.Id_condpago_facturar = int.Parse(t.Rows[0]["id_condpago_facturar"].ToString());
                 }
+                resultado.Tipo_Facturacion = int.Parse(t.Rows[0]["tipo_facturacion"].ToString());
             }
             return resultado;
         }
@@ -173,7 +176,7 @@ namespace WebApi.Entities
             string sqlCommand = @"declare @fechaActual date = getdate()
                                     select c.id_convenio, c.desc_convenio, cpa.id_formapago, c.id_agencia, c.id_anunciante, c.importe_total,
                                     c.fecha_desde, c.fecha_hasta, c.estado, c.observaciones, c.facturar_a, c.id_empresa,
-                                    ag.razon_social as agencia_nombre, an.razon_social as anunciante_nombre, fp.desc_formapago as formapago_nombre
+                                    ag.razon_social as agencia_nombre, an.razon_social as anunciante_nombre, fp.desc_formapago as formapago_nombre, c.tipo_facturacion 
                                     from convenio_anual_precios c
                                     left outer join contactos ag on ag.id_contacto = c.id_agencia
                                     left outer join contactos an on an.id_contacto = c.id_anunciante
@@ -218,7 +221,8 @@ namespace WebApi.Entities
                 if (item["formapago_nombre"].ToString() != "")
                 {
                     elem.Formapago_nombre = item["formapago_nombre"].ToString();
-                }             
+                }
+                elem.Tipo_Facturacion = int.Parse(t.Rows[0]["tipo_facturacion"].ToString());
 
                 col.Add(elem);
             }
@@ -230,7 +234,7 @@ namespace WebApi.Entities
             string sqlCommand = @"declare @fechaActual date = getdate()
                                     select c.id_convenio, c.desc_convenio, cpa.id_formapago, c.id_agencia, c.id_anunciante, c.importe_total,
                                     c.fecha_desde, c.fecha_hasta, c.estado, c.observaciones, c.facturar_a, c.id_empresa,
-                                    ag.razon_social as agencia_nombre, an.razon_social as anunciante_nombre, fp.desc_formapago as formapago_nombre
+                                    ag.razon_social as agencia_nombre, an.razon_social as anunciante_nombre, fp.desc_formapago as formapago_nombre, c.tipo_facturacion 
                                     from convenio_anual_precios c
                                     left outer join contactos ag on ag.id_contacto = c.id_agencia
                                     left outer join contactos an on an.id_contacto = c.id_anunciante
@@ -308,6 +312,7 @@ namespace WebApi.Entities
                 {
                     elem.Formapago_nombre = item["formapago_nombre"].ToString();
                 }
+                elem.Tipo_Facturacion = int.Parse(t.Rows[0]["tipo_facturacion"].ToString());
 
                 col.Add(elem);
             }

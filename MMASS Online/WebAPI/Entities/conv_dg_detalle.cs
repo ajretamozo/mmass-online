@@ -96,9 +96,11 @@ namespace WebApi.Entities
        
         public static Conv_dg_detalle getById(int id_det_conv)
         {
-            string sqlCommand = " select id_det_conv, id_convenio, id_detalle, descripcion, fecha_desde, fecha_hasta, forma_uso, id_tarifa_dg, precio_unitario," +
-                                " porc_desc, porc_conf_nc, porc_conf_fc, id_area" +
-                                " from conv_dg_detalle where id_det_conv = " + id_det_conv.ToString();
+            string sqlCommand = " select id_det_conv, cd.id_convenio, id_detalle, descripcion, cd.fecha_desde, cd.fecha_hasta, forma_uso, id_tarifa_dg, precio_unitario," +
+                                " porc_desc, c.porc_conf_nc, c.porc_conf_fc, id_area" +
+                                " from conv_dg_detalle cd" +
+                                " inner join Convenio_Anual_Precios c on c.Id_Convenio=cd.id_convenio " +
+                                " where id_det_conv = " + id_det_conv.ToString();
            
             Conv_dg_detalle resultado = null;
             DataTable t = DB.Select(sqlCommand);
