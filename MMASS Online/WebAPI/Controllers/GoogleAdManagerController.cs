@@ -154,6 +154,13 @@ namespace WebApi.Controllers
             var ordenes = _GoogleAdManagerService.GetOpNuevas(parametros.Parametros);
             return Ok(ordenes);
         }
+        
+        [HttpPost("filtrarPedidos")]
+        public IActionResult filtrarPedidos(ListaParametro parametros)
+        {
+            var ordenes = _GoogleAdManagerService.FiltrarPedidos(parametros.Parametros);
+            return Ok(ordenes);
+        }
 
         [HttpPost("comprobarModificaciones")]
         public IActionResult ComprobarModificaciones([FromBody] Dg_orden_pub_ap order)

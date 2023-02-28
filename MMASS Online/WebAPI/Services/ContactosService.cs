@@ -24,6 +24,7 @@ namespace WebApi.Services
         bool deleteASRelation(int Id_contacto, string Id_ContactoDigital, int Id_Red);
         Contacto getContactoByIdGAMyRed(string idGam, int idRed);
         Contacto getContactoById(int id);
+        Contacto getContactoByIdyRed(int id, int idRed);
     }
 
     public class ContactoService : IContactoService
@@ -77,6 +78,11 @@ namespace WebApi.Services
         public Contacto getContactoById(int id)
         {
             return Contacto.getContactoById(id);
+        }
+
+        public Contacto getContactoByIdyRed(int id, int idRed)
+        {
+            return Contacto.getContactoByIdyRed(id, idRed);
         }
     }
 }

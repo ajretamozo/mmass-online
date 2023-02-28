@@ -207,6 +207,7 @@
             //beginWait();
             callWS("contactos", "getAnunciantes", '', function (data) { onCargarTabla(data, anunciantesGAM, idRed); });
         }
+
         function llenarStrOption(anunciantes) {
             var str = '<option value="-1">  </option>';
             $.each(anunciantes, function (it, anun) {
@@ -217,8 +218,8 @@
             });
             str = str + "</select >";
             return str;
-
         }
+
         function vincular(idGAM, idRed) {
             var idGAMSel = "#sel" + idGAM;
             idGAMSel = idGAMSel + ">option:selected";
@@ -240,7 +241,7 @@
 
         }
 
-
+        //DESABILITAR SELECT AL VINCULAR Y HABILITAR AL DESVINCULAR
         function onVincular(data, idGAM) {
             if (data == true) {
                 var idButton = "#button" + idGAM;

@@ -121,7 +121,7 @@ namespace WebApi.Helpers
                 StatementBuilder statementBuilder = new StatementBuilder()
 
                            .Where(where)
-                           .OrderBy("id ASC")
+                           .OrderBy("name ASC")
                            .Limit(pageSize)
                            .AddValue("type", CompanyType.ADVERTISER.ToString());
 
@@ -1816,13 +1816,15 @@ namespace WebApi.Helpers
                 if (p.Value.ToString() != "")
                 {
                     if (p.ParameterName == "descripcion")
-                        where = where + " and name like '%" + p.Value.ToString() + "%'";
+                        where = where + " and name like '%" + p.Value + "%'";
                     if (p.ParameterName == "id")
-                        where = where + " and id = " + p.Value.ToString();
-                    if (p.ParameterName == "fecha_desde")
-                        where = where + " and lastModifiedDateTime >= '" + p.Value.ToString() + "'";
-                    if (p.ParameterName == "fecha_hasta")
-                        where = where + " and lastModifiedDateTime <= '" + p.Value.ToString() + "'";
+                        where = where + " and id = " + p.Value;
+                    if (p.ParameterName == "Id_contacto")     
+                        where = where + " and advertiserId = " + p.Value;
+                    //if (p.ParameterName == "fecha_desde")
+                    //    where = where + " and lastModifiedDateTime >= '" + p.Value.ToString() + "'";
+                    //if (p.ParameterName == "fecha_hasta")
+                    //    where = where + " and lastModifiedDateTime <= '" + p.Value.ToString() + "'";
                 }
             }          
 
