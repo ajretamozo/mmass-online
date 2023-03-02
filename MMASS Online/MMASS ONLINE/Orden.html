@@ -718,11 +718,11 @@
                         <!--Filtros-->
                         <div class="row py-1">
                             <div class="col-md-3">
-                                <label for="idFiltro">ID OP: </label>
+                                <label for="idFiltro">ID: </label>
                                 <div class="input-group enterSearch"> <input type="number" id="idFiltro" class="form-control"></div>
                             </div>
                             <div class="col-md-3">
-                                <label for="descFiltro">Nombre OP: </label>
+                                <label for="descFiltro">Nombre: </label>
                                 <div class="input-group enterSearch"> <input type="text" id="descFiltro" class="form-control"></div>
                             </div>
                             <div class="col-md-3">
@@ -736,7 +736,7 @@
                         </div>
                         <!--Sinc Anunciante-->
                         <div class="row py-1" id="rowSincAnun" hidden="hidden">
-                            <div class="col-md-6"style="align-self: self-end;text-align: end;">
+                            <div class="col-md-6" style="align-self: self-end;text-align: end;">
                                 <label id="lblAnunNoSinc" style="color: red">*El Anunciante no está sincronizado con la Red AdServer seleccionada</label>
                             </div>
                             <div class="col-md-3">
@@ -776,6 +776,50 @@
                                 </thead>
                                 <tbody id="tablePedidos" class="small" align="center"></tbody>
                             </table>
+                        </div>
+                    </div>
+
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!--Modal Nuevo Pedido-->
+        <div class="modal fade" id="nuevoPedidoModal">
+            <div class="modal-dialog modal-xl modalConv">
+                <div class="modal-content shadow p-3 mb-5 bg-white rounded">
+
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="nuevoPedidoModalTitle">NUEVO PEDIDO ADSERVER</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+
+                    <!-- Modal body -->
+                    <div class="modal-body" id="nuevoPedidoModalBody">
+                        <!--Datos-->
+                        <div class="row py-1">
+                            <div class="col-md-3">
+                                <label for="selRedesPedido">Red AdServer: </label>
+                                <select class="form-control enterSearch" id="selRedesNuevoPedido" disabled="disabled"></select>
+                            </div>
+                            <div class="col-md-4">
+                                <label>Anunciante</label>
+                                <select class="form-control" id="selAnuncianteNuevoPedido" disabled="disabled"></select>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="descFiltro">Nombre: </label>
+                                <div class="input-group"> <input type="text" id="descNuevoPedido" class="form-control"></div>
+                            </div>
+                            <div class="col-md-2" style="align-self: end;">
+                                <button type="button" class="btn btn-dark" onclick="enviarOrdenAdServer()">
+                                    <span class="fa fa-cloud-upload"></span> Crear
+                                </button>
+                            </div>
                         </div>
                     </div>
 
@@ -1256,7 +1300,7 @@
                                 </div>
                                 <div class="col-lg-4"></div>
                                 <div class="col-lg-4 d-flex justify-content-end">
-                                    <!--<button type="button" data-id="sendOrderAS" id="bSendOrdenAddServer" class="btn actions btn-outline-dark btn-sm mr-1" disabled="disabled" onclick="enviarOrdenAddServer()" title="Exportar OP a AdServer">
+                                    <!--<button type="button" data-id="sendOrderAS" id="bSendOrdenAdServer" class="btn actions btn-outline-dark btn-sm mr-1" disabled="disabled" onclick="enviarOrdenAdServer()" title="Exportar OP a AdServer">
                                     <span class="fa fa-cloud-upload" id="brow"></span>
                                 </button>-->
                                     <button type="button" id="bGuardarOrden" class="btn actions btn-dark btn-sm mx-1" onclick="prevSaveOrder()">
@@ -1599,11 +1643,11 @@
             }
 
             if ((data.id_op_dg != undefined && data.id_op_dg != 0) && (data.id_Google_Ad_Manager == undefined || data.id_Google_Ad_Manager == 0) && data.es_facturada == false && data.es_anulada == 0) {
-                $("#bSendOrdenAddServer").attr("disabled", false);
+                $("#bSendOrdenAdServer").attr("disabled", false);
                 $('#inpIdOrdenAdServer').val("");
             }
             if (data.id_Google_Ad_Manager > 0 && OpClon == false) {
-                $("#bSendOrdenAddServer").css("background-color", "#c3e6cb");
+                $("#bSendOrdenAdServer").css("background-color", "#c3e6cb");
                 $('#inpIdOrdenAdServer').val(data.id_Google_Ad_Manager);
                 $('#inpIdOrdenAdServer').css("background-color", "#c3e6cb");
                 $("#bgetOrderASDetais").attr("disabled", false);
@@ -1676,7 +1720,7 @@
                 //$("#inpOrderNumber").val("");
                 //$("#inpFechaAlta").val("");
                 //$("#inpEsFacturada").val("NO");
-                $("#bSendOrdenAddServer").attr("disabled", true);
+                $("#bSendOrdenAdServer").attr("disabled", true);
                 $("#bAnular").attr("disabled", true);
                 $("#bClonar").attr("disabled", true);
                 $('#pTitulo').append('<span id="sTituloDinamico1"> - </span>');
@@ -2066,7 +2110,7 @@
             }
             data.id_red = $('#selRedes').val();
             callWS("dg_orden_pub_aps", "save", JSON.stringify(data), function (resultado) { onSaveOrder(resultado, data); }); 
-            $("#bSendOrdenAddServer").attr("disabled", false);
+            $("#bSendOrdenAdServer").attr("disabled", false);
             $("#bConvenios").attr("disabled", true);
             $("#bBorrConvenios").attr("disabled", true);
         }
@@ -3397,21 +3441,27 @@
             }
         }
 
-        function enviarOrdenAddServer() {
+        function enviarOrdenAdServer() {
             var msj = validarOrdenGam();
             if (msj != "") {
                 showMessage(msj, 'info')
             }
             else {
-                var idOrden = $("#inpOrderNumber").attr("id_op_dg");
-                callWS("googleAdManager", "createOrder", JSON.stringify(idOrden), function (data) { onSendOrder(data); });
+            //para mandar el nombre e iddigital del anunciante
+                params = {};
+                params.Id_red = $('#selRedesPedido').val();
+                params.Nombre = $('#descNuevoPedido').val();
+                params.Id_contacto = $('#selAnunciantePedido').val();
+                var parametros = setListaParametros(params);
+
+                callWS("googleAdManager", "createOrder", JSON.stringify(parametros), function (data) { onSendOrder(data); });
             }
         }
 
         function validarOrdenGam() {
             var mensaje = "";
-            if ($('#selRedes').val() == 0) {
-                mensaje += "Debe seleccionar una red AdServer";
+            if ($('#descNuevoPedido').val() == "") {
+                mensaje += "Debe indicar un nombre de Pedido";
             }
             return mensaje;
         }
@@ -3467,50 +3517,65 @@
             }
         }
 
+        //function onSendOrder(data) {
+        //    var msj = data.parameterName;
+        //    var r = data.value;
+        //    if (r > 0) {
+        //        showMessage(msj);
+
+        //        $("#bSendOrdenAdServer").attr("disabled", true);
+        //        $('#inpIdOrdenAdServer').val(r);
+        //        $("#bSendOrdenAdServer").css("background-color", "#c3e6cb");
+        //        $('#inpIdOrdenAdServer').css("background-color", "#c3e6cb");
+        //        $("#bgetOrderASDetais").attr("disabled", false);
+        //        recargarRenglones();
+
+        //        //Parametros para el Log
+        //        var parametros = {};
+        //        parametros.objeto = 'ORDEN PUBLICITARIA';
+        //        parametros.clave = $("#inpOrderNumber").attr("id_op_dg");
+        //        parametros.idusuario = $("#NombreUsuario").attr("data-id");
+        //        parametros.accion = 'EXPORTACION';
+        //        anio = $("#inpOrderYear").val();
+        //        mes = $("#inpOrderMonth").val();
+        //        nroOp = $("#inpOrderNumber").val();
+        //        adserver = $("#selRedes option:selected").text();
+        //        parametros.descripcion = 'Se exportó la OP Digital: ' + anio + '-' + mes + '-' + nroOp + ' al AdServer: ' + adserver;
+        //        var params = setListaParametros(parametros);
+        //        callWS("dg_orden_pub_aps", "grabarLog", JSON.stringify(params));
+        //    }
+        //    else {
+        //        if (r == -2) {
+        //            options = [
+        //                {
+        //                    optionDesc: "Aceptar",
+        //                    optionFunc: "sincAnunciante()"
+        //                },
+        //                {
+        //                    optionDesc: "Cancelar",
+        //                    optionFunc: ""
+        //                }
+        //            ];
+        //            var mensaje = "<div class='d-flex justify-content-center' style='text-align: center;'>" + msj + "</div>";
+        //            showModal(mensaje, options);
+        //        } else {
+        //            showMessage(msj, "error");
+        //        }
+        //    }
+        //}
+
         function onSendOrder(data) {
             var msj = data.parameterName;
             var r = data.value;
             if (r > 0) {
                 showMessage(msj);
 
-                $("#bSendOrdenAddServer").attr("disabled", true);
-                $('#inpIdOrdenAdServer').val(r);
-                $("#bSendOrdenAddServer").css("background-color", "#c3e6cb");
-                $('#inpIdOrdenAdServer').css("background-color", "#c3e6cb");
-                $("#bgetOrderASDetais").attr("disabled", false);
-                recargarRenglones();
-
-                //Parametros para el Log
-                var parametros = {};
-                parametros.objeto = 'ORDEN PUBLICITARIA';
-                parametros.clave = $("#inpOrderNumber").attr("id_op_dg");
-                parametros.idusuario = $("#NombreUsuario").attr("data-id");
-                parametros.accion = 'EXPORTACION';
-                anio = $("#inpOrderYear").val();
-                mes = $("#inpOrderMonth").val();
-                nroOp = $("#inpOrderNumber").val();
-                adserver = $("#selRedes option:selected").text();
-                parametros.descripcion = 'Se exportó la OP Digital: ' + anio + '-' + mes + '-' + nroOp + ' al AdServer: ' + adserver;
-                var params = setListaParametros(parametros);
-                callWS("dg_orden_pub_aps", "grabarLog", JSON.stringify(params));
+                $('#inpPedido').val($('#descNuevoPedido').val()); 
+                $('#inpIdPedido').val(r);
+                $("#nuevoPedidoModal").modal('hide');
             }
             else {
-                if (r == -2) {
-                    options = [
-                        {
-                            optionDesc: "Aceptar",
-                            optionFunc: "sincAnunciante()"
-                        },
-                        {
-                            optionDesc: "Cancelar",
-                            optionFunc: ""
-                        }
-                    ];
-                    var mensaje = "<div class='d-flex justify-content-center' style='text-align: center;'>" + msj + "</div>";
-                    showModal(mensaje, options);
-                } else {
-                    showMessage(msj, "error");
-                }
+                showMessage(msj, "error");
             }
         }
 
@@ -4448,7 +4513,7 @@
 
             $("#inpPedido").text("");
             $("#inpIdPedido").text("");
-            $('#bSendOrdenAddServer').attr("disabled", true);
+            $('#bSendOrdenAdServer').attr("disabled", true);
         }
 
         function onEmpresaSelected() {
@@ -4819,7 +4884,7 @@
             $("#bCargarNuevoRenglon").attr("disabled", true);
             //$("#conf_nc").attr("disabled", true);
             //$("#conf_fc").attr("disabled", true);
-            $("#bSendOrdenAddServer").attr("disabled", true);
+            $("#bSendOrdenAdServer").attr("disabled", true);
             $("#bAnular").attr("disabled", true);
             $("#checkListaParaFact")[0].disabled = true;
             $("#bcomprobarModificaciones").attr("disabled", true);
@@ -5205,7 +5270,7 @@
         }
 
         $("#inpDescOP").on("change keyup paste", function () {
-            $("#bSendOrdenAddServer").attr("disabled", true);
+            $("#bSendOrdenAdServer").attr("disabled", true);
         })
 
         function onTipoAvisoSelected() {
@@ -5295,6 +5360,10 @@
             params.Id_red = $('#selRedesPedido').val();
             params.Id_contacto = $('#selAnunciantePedido').val();
             var parametros = setListaParametros(params);
+
+            var anun = {};
+            anun.Id_contacto = $('#selAnunciantePedido').val();
+            anun.id_red = $('#selRedesPedido').val();
             //if ($('#fechaDesde').val() != "") {
             //    fDesde = new Date(moment($("#fechaDesde").val(), 'DD/MM/YYYY', true).format());
             //    mfDesde = moment(fDesde);
@@ -5315,8 +5384,8 @@
             //    }
             //}
 
-            callWS("contactos", "getContactoByIdyRed", JSON.stringify(parametros), function (data) {
-                if (data.length > 0) {
+            callWS("contactos", "getContactoByIdyRed", JSON.stringify(anun), function (data) {
+                if (data.id > 0) {
                     callWS("googleAdManager", "filtrarPedidos", JSON.stringify(parametros), function (data) { onGetOrdenesGAM(data); });
                 }
                 else {
@@ -5325,7 +5394,7 @@
                     objParametro.ParameterName = "nombre";
                     objParametro.Value = "";
 
-                    callWS("googleAdManager", "getAnunciantes", JSON.stringify(objParametro), onGetAnuncianteGAM);
+                    callWS("googleAdManager", "getAnunciantes", JSON.stringify(objParametro), function (data) { onGetAnuncianteGAM(data); });
 
                     //options = [
                     //    {
@@ -5410,18 +5479,18 @@
                     $("#bVincularAnun").css("background-color", "#c3e6cb");
                     $("#bVincularAnun").val(2);
                     $("#bVincularAnun").html('Desvincular');
-                    showMessage("Anunciante vinculado", "success");
                     $("#lblAnunNoSinc").text('');
                     $("#selAnunciantePedidoAS").attr("disabled", true);
+                    showMessage("Anunciante vinculado", "success");                   
                 }
                 else {
                     $("#bVincularAnun").removeClass("btn-success").addClass("btn-primary");
                     $("#bVincularAnun").css("background-color", "#6c757d");
                     $("#bVincularAnun").val(1);
                     $("#bVincularAnun").html('Vincular');
-                    showMessage("Anunciante desvinculado", "success");
                     $("#lblAnunNoSinc").text('*El Anunciante no está sincronizado con la Red AdServer seleccionada');
                     $("#selAnunciantePedidoAS").attr("disabled", false);
+                    showMessage("Anunciante desvinculado", "success");
                 }
             } else {
                 showMessage("Ocurrio un error al vincular el Anunciante", "alert");
@@ -5429,11 +5498,40 @@
         }
 
         function onGetOrdenesGAM(data) {
-            onCargarTablaPedidos('tablePedidos', data);
-            if (data.length == 0) {
-                //PREUNTAR SI QUIERE CREAR EL PEDIDO
-                showMessage("No se enontraron Pedidos", "info");
+            if (data.length > 0) {
+                onCargarTablaPedidos('tablePedidos', data);
             }
+            else {
+                options = [
+                        {
+                            optionDesc: "Aceptar",
+                        optionFunc: "prevCrearPedido()"
+                        },
+                        {
+                            optionDesc: "Cancelar",
+                            optionFunc: ""
+                        }
+                ];
+                var mensaje = "<div class='d-flex justify-content-center' style='text-align: center;'>No se encontraron Pedidos, ¿desea crear uno?</div>";
+                showModal(mensaje, options);
+                $("#pedidosModal").modal('hide');
+            }
+        }
+
+        function prevCrearPedido() {
+            $.when(
+                callWS("contactos", "getAnunciantes", '', function (data) { onPopulateSelectDone(data, 'selAnuncianteNuevoPedido', 'id', 'razonSocial'); }),
+                callWS("medios", "getAllRedes", '', function (data) { onCargarSelect(data, 'selRedesNuevoPedido', 'id_red', 'descripcion', 'codigo_red'); })
+            ).then(function () { crearPedido() });
+        }
+
+        function crearPedido() {          
+            var id_anunciante = $("#selAnunciante").val();
+            var id_red = $("#selRedes").val();
+            $("#selAnuncianteNuevoPedido option[value=" + id_anunciante + "]").attr("selected", "selected");
+            $("#selRedesNuevoPedido option[value=" + id_red + "]").attr("selected", "selected");
+
+            $("#nuevoPedidoModal").modal('show');
         }
 
         function onCargarTablaPedidos(tablaID, data) {
@@ -5449,7 +5547,7 @@
                 rowHTML += "<td class='col-xs-1'> " + dateToFieldFormat(ordenGAM.fecha) + "</td > ";
                 rowHTML += "<td class='col-xs-1'> " + dateToFieldFormat(ordenGAM.fecha_expiracion) + "</td > ";
                 rowHTML += "<td class='col-xs-1'>$ " + formatearMonto(ordenGAM.seg_neto) + "</td > ";
-                rowHTML += "<td class='col-xs-2' > <button type='button' id=button" + ordenGAM.id_Google_Ad_Manager + " class='btn btn-danger' style='height: 31px; width: 77.81px;font - size: inherit;' title='Importar OP' onClick='comprobarAnunciante(" + ordenGAM.id_Google_Ad_Manager + ", " + ordenGAM.id_red + ", " + ordenGAM.anunciante.idContactoDigital + ")'><span class='fa fa-cloud-download'></span></button> </td ></tr>";
+                rowHTML += '<td class="col-xs-2" > <button type="button" id=bSelpedido' + ordenGAM.id_Google_Ad_Manager + ' class="btn btn-danger" style="height: 31px; width: 77.81px;font - size: inherit;" title="Importar OP" onClick="seleccionarPedido(' + ordenGAM.id_Google_Ad_Manager + ', \'' + ordenGAM.observ + '\')"><span class="fa fa-cloud-download"></span></button> </td ></tr>';
                 rowHTML += "</tr>";
 
             });
@@ -5457,6 +5555,16 @@
             $("#" + tablaID).html(rowHTML);
 
             $("#pleaseWaitDialog").modal('hide');
+        }
+
+        function seleccionarPedido(idPedido, nombrePedido) {
+            $('#inpPedido').val(nombrePedido);
+            $('#inpIdPedido').val(idPedido);
+            $("#pedidosModal").modal('hide');
+        }
+
+        function formatearMonto(x) {
+            return Number.parseFloat(x).toFixed(2);
         }
 
     </script>

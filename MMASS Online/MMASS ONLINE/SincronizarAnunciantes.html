@@ -245,11 +245,13 @@
         function onVincular(data, idGAM) {
             if (data == true) {
                 var idButton = "#button" + idGAM;
+                var idSel = "#sel" + idGAM;
                 if ($(idButton).val() == 1) {
                     $(idButton).removeClass("btn-primary").addClass("btn-success");
                     $(idButton).css("background-color", "#c3e6cb");
                     $(idButton).val(2);
                     $(idButton).html('Desvincular');
+                    $(idSel).attr("disabled", true);
                     showMessage("Anunciante vinculado", "success");
                 }
                 else {
@@ -257,6 +259,7 @@
                     $(idButton).css("background-color", "#6c757d");
                     $(idButton).val(1);
                     $(idButton).html('Vincular');
+                    $(idSel).attr("disabled", false);
                     showMessage("Anunciante desvinculado", "success");
                 }
             } else {

@@ -29,7 +29,10 @@ namespace WebApi.Services
         String GetOrderDetails2(Dg_orden_pub_ap orden);
         String printCertExcel(Dg_orden_pub_ap orden);
         Dg_orden_pub_ap GetOrderById(long idGAM);
-        Parametro CreateOrder(long idOrden);
+        //V2
+        //Parametro CreateOrder(long idOrden);
+        //V3
+        Parametro CreateOrder(List<Parametro> parametros);
         //AGREGUE:
         Parametro CreateLineItems(Dg_orden_pub_as det);
         List<long> GetLineItemCreatives(long lineItemId);
@@ -78,33 +81,46 @@ namespace WebApi.Services
             return OrderGamAOrdenAp(ordenGam);
         }
 
-        //AGREGUE:
-        public Parametro CreateOrder(long idOrden)
+        //V2
+        //public Parametro CreateOrder(long idOrden)
+        //{
+        //    Parametro resultado = new Parametro();
+        //    Dg_orden_pub_ap op = Dg_orden_pub_ap.getById(Convert.ToInt32(idOrden));
+
+        //    if (op.anunciante.IdContactoDigital == null || DB.DLong(op.anunciante.IdContactoDigital) < 1)
+        //    {
+        //        resultado.ParameterName = "El Contacto no está sincronizado con Google Ad Manager. ¿Desea sincronizarlo?";
+        //        resultado.Value = "-2";
+        //    }
+        //    else
+        //    {
+        //        if (op.Id_Google_Ad_Manager > 0)
+        //        {
+        //            resultado = GoogleAdManager.UpdateOrder(op.Bitacora, DB.DLong(op.anunciante.IdContactoDigital), op.Id_Google_Ad_Manager);
+        //        }
+        //        else
+        //        {
+        //            resultado = GoogleAdManager.CreateOrder(op.Bitacora, DB.DLong(op.anunciante.IdContactoDigital));
+        //            if (long.Parse(resultado.Value) > 1)
+        //            {
+        //                Dg_orden_pub_ap.saveId_Google_Ad_Manager(idOrden, long.Parse(resultado.Value));
+        //            }
+        //        }
+        //    }
+
+        //    return resultado;
+        //}
+
+        //V3
+        public Parametro CreateOrder(List<Parametro> parametros)
         {
             Parametro resultado = new Parametro();
-            Dg_orden_pub_ap op = Dg_orden_pub_ap.getById(Convert.ToInt32(idOrden));
 
-            if (op.anunciante.IdContactoDigital == null || DB.DLong(op.anunciante.IdContactoDigital) < 1)
-            {
-                resultado.ParameterName = "El Contacto no está sincronizado con Google Ad Manager. ¿Desea sincronizarlo?";
-                resultado.Value = "-2";
-            }
-            else
-            {
-                if (op.Id_Google_Ad_Manager > 0)
-                {
-                    resultado = GoogleAdManager.UpdateOrder(op.Bitacora, DB.DLong(op.anunciante.IdContactoDigital), op.Id_Google_Ad_Manager);
-                }
-                else
-                {
-                    resultado = GoogleAdManager.CreateOrder(op.Bitacora, DB.DLong(op.anunciante.IdContactoDigital));
-                    if (long.Parse(resultado.Value) > 1)
-                    {
-                        Dg_orden_pub_ap.saveId_Google_Ad_Manager(idOrden, long.Parse(resultado.Value));
-                    }
-                }
-            }
+            Contacto anun = new Contacto();
+            anun = Contacto.getContactoByIdyRed(int.Parse(parametros[2].Value), int.Parse(parametros[0].Value));
 
+            resultado = GoogleAdManager.CreateOrder(parametros[1].Value, DB.DLong(anun.IdContactoDigital));
+           
             return resultado;
         }
 

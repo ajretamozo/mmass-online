@@ -64,10 +64,20 @@ namespace WebApi.Controllers
             return Ok(JsonConvert.SerializeObject(res));
         }
 
+        //V2
+        //[HttpPost("createOrder")]
+        //public IActionResult CreateOrder([FromBody] long idOrden)
+        //{
+        //    var res = _GoogleAdManagerService.CreateOrder(idOrden);
+        //    return Ok(res);
+
+        //}
+
+        //V3
         [HttpPost("createOrder")]
-        public IActionResult CreateOrder([FromBody] long idOrden)
+        public IActionResult CreateOrder(ListaParametro parametros)
         {
-            var res = _GoogleAdManagerService.CreateOrder(idOrden);
+            var res = _GoogleAdManagerService.CreateOrder(parametros.Parametros);
             return Ok(res);
 
         }

@@ -1001,29 +1001,28 @@ namespace WebApi.Entities
             return mi;
         }
 
-        //AGREGUE:
-        public static void saveId_Google_Ad_Manager (long idOp, long idGam)
-        {
-            string sql = "";
+        //public static void saveId_Google_Ad_Manager (long idOp, long idGam)
+        //{
+        //    string sql = "";
 
-            sql = "UPDATE dg_orden_pub_ap SET id_google_ad_manager = @idgam WHERE id_op_dg = @id_op_dg ";
+        //    sql = "UPDATE dg_orden_pub_ap SET id_google_ad_manager = @idgam WHERE id_op_dg = @id_op_dg ";
    
-            List<SqlParameter> parametrost = new List<SqlParameter>()
-            {
-                new SqlParameter()
-                { ParameterName="@id_op_dg",SqlDbType = SqlDbType.BigInt, Value = idOp },
-                new SqlParameter()
-                { ParameterName="@idgam",SqlDbType = SqlDbType.BigInt, Value = idGam }
-            };
-            try
-            {
-                DB.Execute(sql, parametrost);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-        }
+        //    List<SqlParameter> parametrost = new List<SqlParameter>()
+        //    {
+        //        new SqlParameter()
+        //        { ParameterName="@id_op_dg",SqlDbType = SqlDbType.BigInt, Value = idOp },
+        //        new SqlParameter()
+        //        { ParameterName="@idgam",SqlDbType = SqlDbType.BigInt, Value = idGam }
+        //    };
+        //    try
+        //    {
+        //        DB.Execute(sql, parametrost);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Console.WriteLine(ex.Message);
+        //    }
+        //}
 
         //public static bool existeOpGAMenBD(long idOpGAM, int idRed)
         //{
