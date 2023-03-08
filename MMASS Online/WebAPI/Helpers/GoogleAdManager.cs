@@ -1807,9 +1807,7 @@ namespace WebApi.Helpers
         {
             List<Order> OrdenesGAM = new List<Order>();
 
-            /*string where = "endDateTime >= :now";*/
-            //string where = "status != 'ARCHIVED' and endDateTime >= :now";
-            string where = "status != 'ARCHIVED'";
+            string where = "isArchived = false";
 
             foreach (Parametro p in parametros)
             {
@@ -1919,7 +1917,7 @@ namespace WebApi.Helpers
             {
                 // Create a statement to get the line item.
                 StatementBuilder statementBuilder = new StatementBuilder()
-                    .Where("id = :lineItemId")
+                    .Where("id = :lineItemId and isArchived = false")
                     .OrderBy("id ASC")
                     .Limit(1)
                     .AddValue("lineItemId", lineaId);

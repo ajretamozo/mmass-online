@@ -172,12 +172,12 @@ namespace WebApi.Controllers
             return Ok(ordenes);
         }
 
-        [HttpPost("comprobarModificaciones")]
-        public IActionResult ComprobarModificaciones([FromBody] Dg_orden_pub_ap order)
-        {
-            var res = _GoogleAdManagerService.ComprobarModificaciones(order);
-            return Ok(res);
-        }
+        //[HttpPost("comprobarModificaciones")]
+        //public IActionResult ComprobarModificaciones([FromBody] Dg_orden_pub_ap order)
+        //{
+        //    var res = _GoogleAdManagerService.ComprobarModificaciones(order);
+        //    return Ok(res);
+        //}
 
         [HttpPost("comprobarModificacionesD")]
         public IActionResult ComprobarModificacionesD([FromBody] Dg_orden_pub_as det)

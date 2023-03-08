@@ -57,6 +57,8 @@ namespace WebApi.Entities
         public int Tipo_dto5 { get; set; }
         public bool Ron { get; set; }
         public long Id_Google_Ad_Manager { get; set; }
+        public long Id_pedido_Google_Ad_Manager { get; set; }
+        public string Nombre_pedido_Google_Ad_Manager { get; set; }
         public int Id_det_conv { get; set; }
         public int Id_red { get; set; }
         public Dg_areas_geo areaGeo { get; set; }
@@ -129,7 +131,9 @@ namespace WebApi.Entities
             mi.Porc_dto5 = DB.DFloat(item["Porc_dto5"].ToString());
             mi.Imp_dto5 = DB.DFloat(item["Imp_dto5"].ToString());
             mi.Tipo_dto5 = DB.DInt(item["Tipo_dto5"].ToString());
-            mi.Id_Google_Ad_Manager=  DB.DLong(item["id_google_ad_manager"].ToString());
+            mi.Id_Google_Ad_Manager=  DB.DLong(item["id_google_ad_manager"].ToString());          
+            mi.Id_pedido_Google_Ad_Manager = DB.DLong(item["id_pedido_google_ad_manager"].ToString());
+            mi.Nombre_pedido_Google_Ad_Manager = item["nombre_pedido_Google_Ad_Manager"].ToString();
             mi.Ron = (item["ron"].ToString()=="1");
             mi.Id_det_conv = DB.DInt(item["id_det_conv"].ToString());
 
@@ -188,7 +192,7 @@ namespace WebApi.Entities
             sql += " id_tarifa_dg, tarifa_manual, id_categoria," +
             "tipo_tarifa, imp_tarifa, importe_unitario, cantidad, monto_bruto, porc_dto,monto_neto, netomanual," +
             "porcconfnc, porcconffc, impconffc, impconfnc, porc_dto1, imp_dto1, id_mtvo_dto1, tipo_dto1, porc_dto2, imp_dto2, id_mtvo_dto2, tipo_dto2," +
-            "porc_dto3, imp_dto3, id_mtvo_dto3, tipo_dto3, porc_dto4, imp_dto4, id_mtvo_dto4, tipo_dto4, porc_dto5, imp_dto5, id_mtvo_dto5, tipo_dto5,id_google_ad_manager, ron, id_area, id_det_conv, id_red) " +
+            "porc_dto3, imp_dto3, id_mtvo_dto3, tipo_dto3, porc_dto4, imp_dto4, id_mtvo_dto4, tipo_dto4, porc_dto5, imp_dto5, id_mtvo_dto5, tipo_dto5, id_google_ad_manager, id_pedido_google_ad_manager, nombre_pedido_google_ad_manager, ron, id_area, id_det_conv, id_red) " +
             " values (@id_op_dg, @id_detalle, @anio, @mes, @nro_orden, @fecha_desde, @fecha_hasta," +
             "@id_producto, @descripcion,";
             if (!progisnull)
@@ -198,7 +202,7 @@ namespace WebApi.Entities
             sql += " @id_tarifa_dg, @tarifa_manual, @id_categoria," +
             "@tipo_tarifa, @imp_tarifa, @importe_unitario, @cantidad, @monto_bruto, @porc_dto,@monto_neto, @netomanual," +
             "@porcconfnc, @porcconffc, @impconffc, @impconfnc, @porc_dto1, @imp_dto1, @id_mtvo_dto1, @tipo_dto1, @porc_dto2, @imp_dto2, @id_mtvo_dto2, @tipo_dto2," +
-            "@porc_dto3, @imp_dto3, @id_mtvo_dto3, @tipo_dto3, @porc_dto4, @imp_dto4, @id_mtvo_dto4, @tipo_dto4, @porc_dto5, @imp_dto5, @id_mtvo_dto5, @tipo_dto5,@id_google_ad_manager, @ron, @id_area, @id_det_conv, @id_red)";
+            "@porc_dto3, @imp_dto3, @id_mtvo_dto3, @tipo_dto3, @porc_dto4, @imp_dto4, @id_mtvo_dto4, @tipo_dto4, @porc_dto5, @imp_dto5, @id_mtvo_dto5, @tipo_dto5, @id_google_ad_manager, @id_pedido_google_ad_manager, @nombre_pedido_google_ad_manager, @ron, @id_area, @id_det_conv, @id_red)";
 
             List<SqlParameter> parametros = new List<SqlParameter>()
                 {
@@ -294,6 +298,10 @@ namespace WebApi.Entities
                     { ParameterName="@tipo_dto5",SqlDbType = SqlDbType.Int, Value = Tipo_dto5 },
                     new SqlParameter()
                     { ParameterName="@id_google_ad_manager",SqlDbType = SqlDbType.BigInt, Value = Id_Google_Ad_Manager},
+                    new SqlParameter()
+                    { ParameterName="@id_pedido_google_ad_manager",SqlDbType = SqlDbType.BigInt, Value = Id_pedido_Google_Ad_Manager},
+                    new SqlParameter()
+                    { ParameterName="@nombre_pedido_google_ad_manager",SqlDbType = SqlDbType.NVarChar, Value = Nombre_pedido_Google_Ad_Manager },
                     new SqlParameter()
                     { ParameterName="@ron",SqlDbType = SqlDbType.Int, Value = Ron}
                 };
@@ -594,7 +602,7 @@ namespace WebApi.Entities
                                    " monto_neto, netomanual, porcconfnc, porcconffc, impconfnc, impconffc," +
                                    " porc_dto1, imp_dto1, id_mtvo_dto1, tipo_dto1, porc_dto2, imp_dto2, id_mtvo_dto2, tipo_dto2," +
                                    " porc_dto3, imp_dto3, id_mtvo_dto3, tipo_dto3, porc_dto4, imp_dto4, id_mtvo_dto4, tipo_dto4," +
-                                   " porc_dto5, imp_dto5, id_mtvo_dto5, tipo_dto5,id_google_ad_manager, ron, id_area, id_det_conv, id_red from Dg_orden_pub_as where id_google_ad_manager = " + idGam.ToString() + " and id_red = " + idRed.ToString();
+                                   " porc_dto5, imp_dto5, id_mtvo_dto5, tipo_dto5, id_google_ad_manager, id_pedido_Google_Ad_Manager, nombre_pedido_Google_Ad_Manager, ron, id_area, id_det_conv, id_red from Dg_orden_pub_as where id_google_ad_manager = " + idGam.ToString() + " and id_red = " + idRed.ToString();
             DataTable td = DB.Select(strSql);
             Dg_orden_pub_as det = new Dg_orden_pub_as();
             if (td.Rows.Count == 1)
@@ -613,7 +621,7 @@ namespace WebApi.Entities
                                 " monto_neto, netomanual, porcconfnc, porcconffc, impconfnc, impconffc," +
                                 " porc_dto1, imp_dto1, id_mtvo_dto1, tipo_dto1, porc_dto2, imp_dto2, id_mtvo_dto2, tipo_dto2," +
                                 " porc_dto3, imp_dto3, id_mtvo_dto3, tipo_dto3, porc_dto4, imp_dto4, id_mtvo_dto4, tipo_dto4," +
-                                " porc_dto5, imp_dto5, id_mtvo_dto5, tipo_dto5,id_google_ad_manager, ron, id_area, id_det_conv, id_red from Dg_orden_pub_as where id_op_dg = " + idOp.ToString();
+                                " porc_dto5, imp_dto5, id_mtvo_dto5, tipo_dto5,id_google_ad_manager, id_pedido_Google_Ad_Manager, nombre_pedido_Google_Ad_Managerron, id_area, id_det_conv, id_red from Dg_orden_pub_as where id_op_dg = " + idOp.ToString();
             
             DataTable td = DB.Select(strSql);
             Dg_orden_pub_as det;
