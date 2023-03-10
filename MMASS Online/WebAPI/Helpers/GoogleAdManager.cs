@@ -12,6 +12,7 @@ using System.Configuration;
 using User = Google.Api.Ads.AdManager.v202208.User;
 using Google.Api.Ads.Common.Util;
 using System.IO;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace WebApi.Helpers
 {
@@ -28,7 +29,6 @@ namespace WebApi.Helpers
 
         public static long GetRedActual()
         {
-
             long netCode = 0;
 
             //AdManagerUser user = new AdManagerUser();
@@ -1926,9 +1926,10 @@ namespace WebApi.Helpers
                 LineItemPage page =
                     lineItemService.getLineItemsByStatement(statementBuilder.ToStatement());
                 
-                LineItem lineItem = page.results[0];
-
-                result = lineItem;
+                if (page.results != null)
+                {
+                    result = page.results[0];
+                }
             }
             return result;
         }

@@ -42,6 +42,7 @@ namespace WebApi.Entities
             }
             return resultado;
         }
+
         //public static List<Dg_emplazamientos> getAll()
         //{
         //    string sqlCommand = " select id_emplazamiento, descripcion, codigo_emplazamiento, es_borrado, id_red from dg_emplazamientos where es_borrado = 0 ";

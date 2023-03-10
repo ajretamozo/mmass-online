@@ -180,9 +180,9 @@ namespace WebApi.Controllers
         //}
 
         [HttpPost("comprobarModificacionesD")]
-        public IActionResult ComprobarModificacionesD([FromBody] Dg_orden_pub_as det)
+        public IActionResult ComprobarModificacionesD([FromBody] Dg_orden_pub_ap order)
         {
-            var res = _GoogleAdManagerService.ComprobarModificacionesD(det);
+            var res = _GoogleAdManagerService.ComprobarModificacionesD(order);
             return Ok(res);
         }
 

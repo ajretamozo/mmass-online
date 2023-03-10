@@ -1085,9 +1085,6 @@
                                     </div>
                                     <div class="row" style="padding-top: 15px;">
                                         <div class="col-lg-5">
-                                            <!--<label for="selRedes">Red AdServer</label>
-                                            <select class="form-control" id="selRedes" onchange="onRedSelected()"></select>-->
-
                                             <div class="row">
                                                 <div class="col-lg-8" style="padding-right: 0px;">
                                                     <label for="selRedes">Red AdServer</label>
@@ -1650,21 +1647,21 @@
                 $("#selEjecutivo option[value=" + data.ejecutivos[0].id_ejecutivo + "]").attr("selected", "selected");
             }
 
-            $("#selRedes option[value=" + data.id_red + "]").attr("selected", "selected");
-            if (data.id_red > 0) {
-                codRed = $('#selRedes>option:selected').attr("codigo_red");
-                CambiarRed(codRed);
-                $("#selRedes").attr("disabled", true);
-            }
+            //$("#selRedes option[value=" + data.id_red + "]").attr("selected", "selected");
+            //if (data.id_red > 0) {
+            //    codRed = $('#selRedes>option:selected').attr("codigo_red");
+            //    CambiarRed(codRed);
+            //    $("#selRedes").attr("disabled", true);
+            //}
 
-            if ((data.id_op_dg != undefined && data.id_op_dg != 0) && (data.id_Google_Ad_Manager == undefined || data.id_Google_Ad_Manager == 0) && data.es_facturada == false && data.es_anulada == 0) {
-                $("#bSendOrdenAdServer").attr("disabled", false);
-                $('#inpIdOrdenAdServer').val("");
-            }
+            //if ((data.id_op_dg != undefined && data.id_op_dg != 0) && (data.id_Google_Ad_Manager == undefined || data.id_Google_Ad_Manager == 0) && data.es_facturada == false && data.es_anulada == 0) {
+            //    $("#bSendOrdenAdServer").attr("disabled", false);
+            //    $('#inpIdOrdenAdServer').val("");
+            //}
             if (data.id_Google_Ad_Manager > 0 && OpClon == false) {
-                $("#bSendOrdenAdServer").css("background-color", "#c3e6cb");
-                $('#inpIdOrdenAdServer').val(data.id_Google_Ad_Manager);
-                $('#inpIdOrdenAdServer').css("background-color", "#c3e6cb");
+                //$("#bSendOrdenAdServer").css("background-color", "#c3e6cb");
+                //$('#inpIdOrdenAdServer').val(data.id_Google_Ad_Manager);
+                //$('#inpIdOrdenAdServer').css("background-color", "#c3e6cb");
                 $("#bgetOrderASDetais").attr("disabled", false);
             }
 
@@ -1716,8 +1713,8 @@
             if (data.id_Google_Ad_Manager > 0 && (data.id_op_dg != undefined && data.id_op_dg != 0) && data.es_anulada == 0 && data.es_facturada == false && OpClon == false) {
                 //codRed = $('#selRedes>option:selected').attr("codigo_red");
                 //comprobarModificaciones(data.id_op_dg, data.id_Google_Ad_Manager, codRed);
-                obtenerProgresoLineasGam(data);
-                comprobarNuevosDetalles();
+                /*obtenerProgresoLineasGam(data);*/
+                comprobarNuevosDetalles(); //TAL VEZ ELIMINAR
             }
 
             if (data.bloqueado == 0 && OpClon == false) {
@@ -1735,12 +1732,12 @@
                 //$("#inpOrderNumber").val("");
                 //$("#inpFechaAlta").val("");
                 //$("#inpEsFacturada").val("NO");
-                $("#bSendOrdenAdServer").attr("disabled", true);
+           /*     $("#bSendOrdenAdServer").attr("disabled", true);*/
                 $("#bAnular").attr("disabled", true);
                 $("#bClonar").attr("disabled", true);
                 $('#pTitulo').append('<span id="sTituloDinamico1"> - </span>');
                 $('#pTitulo').append('<span id="sTituloDinamico2" style="color: #007bff;">CLONACION</span>');
-                $("#selRedes").attr("disabled", false);
+  /*              $("#selRedes").attr("disabled", false);*/
             }
 
             if (OpSinc) {
@@ -1765,7 +1762,10 @@
             $("#conf_nc").val(data.imp_conf_nc);
             $("#conf_fc").val(data.imp_conf_fc);
             // $("#total").val(data.tercer_neto); //Total
-            //punto de control
+
+            comprobarModDetalle(data);
+            obtenerProgresoLineasGam(data);
+
             Detalles = data.detalles;
             $("#TableRenglones").empty();
             if (Detalles.length > 0) {
@@ -1776,13 +1776,8 @@
                     $("#selAgencia").attr("disabled", true);
             }
 
-            //Detalles.forEach(generarTablaDetalles);
-            Detalles.forEach(function (item) {
-                generarTablaDetalles(item);
-                if (item.id_Google_Ad_Manager > 0) {
-                    callWS("googleAdManager", "comprobarModificacionesD", JSON.stringify(item), function (data) { onComprobarModificacionesD(data); });
-                }
-            });
+            Detalles.forEach(generarTablaDetalles);
+
             getArchivos(data.id_op_dg.toString());
             calculateTotals();
         }
@@ -2125,13 +2120,13 @@
 
             data.Detalles = Detalles;
             data.desc_fact = "Orden Digital " + data.fInicio + " - " + data.fFin;
-            //AGREGUE (data.id_Google_Ad_Manager = $('#inpIdOrdenAdServer').val();):
-            if ($("#inpIdOrdenAdServer").val() != "") {
-                data.id_Google_Ad_Manager = $('#inpIdOrdenAdServer').val();
-            }
-            data.id_red = $('#selRedes').val();
+
+            //if ($("#inpIdOrdenAdServer").val() != "") {
+            //    data.id_Google_Ad_Manager = $('#inpIdOrdenAdServer').val();
+            //}
+            /*data.id_red = $('#selRedes').val();*/
             callWS("dg_orden_pub_aps", "save", JSON.stringify(data), function (resultado) { onSaveOrder(resultado, data); }); 
-            $("#bSendOrdenAdServer").attr("disabled", false);
+            /*$("#bSendOrdenAdServer").attr("disabled", false);*/
             $("#bConvenios").attr("disabled", true);
             $("#bBorrConvenios").attr("disabled", true);
         }
@@ -2254,17 +2249,8 @@
 
                 bloquearOp(data.op.id_op_dg);
 
-                Detalles.forEach(function (item) {
-                    if (item.id_Google_Ad_Manager > 0) {
-                        callWS("googleAdManager", "comprobarModificacionesD", JSON.stringify(item), function (data) { onComprobarModificacionesD(data); });
-                    }
-                });
-
-                //chequear esto
-                var op = {};
-                op.Id_Google_Ad_Manager = $('#inpIdOrdenAdServer').val();
-                op.Detalles = Detalles;
-                obtenerProgresoLineasGam(op);
+                comprobarModDetalle(data.op);
+                obtenerProgresoLineasGam(data.op);
               
                 DetallesASDelete.length = 0;
                 Detalles = data.op.detalles;
@@ -2580,13 +2566,10 @@
             $('#fechaDesdeD').datetimepicker('date', moment($("#fechaDesde").val(), 'DD/MM/YYYY'));
             $('#fechaHastaD').datetimepicker('date', moment($("#fechaHasta").val(), 'DD/MM/YYYY'));
             $('#inpIdLinea').val("");
-            //AGREGUE (comente disabled y agregué color):
-            //$('#inpIdLinea').attr("disabled",false);
             $('#inpIdLinea').css("background-color", "#e9ecef");
             $('#descripcionD').val("");
             $('#precioUnitarioD').val("");
             $('#cantidadD').val("");
-            //AGREGUE (cantidadD disabled=false):
             $("#cantidadD").attr("disabled", false);
             $('#descuentoD').val(0);
             $("#confNCD").val(0);
@@ -2598,7 +2581,7 @@
             callWS("Tipos_avisos", "getAll", '', function (data) { onTipoAvisoGetAll(data, 'selTipoAvisoD', 'id_categoria', 'descripcion', 'Permite_envio_ads', 'tipo_aviso_ads'); });
             callWS("medios", "getMedidas", JSON.stringify("0"), function (data) { onPopulateSelectMedidas(data, 'selMedidasD', 'id_medidadigital', 'descripcion', 'ancho', 'alto'); });
             callWS("medios", "getAllA", '', function (data) { onAreasGeoGetAll(data, 'selAreasGeo', 'Id_area', 'descripcion', 'Codigo_area', 'tipo'); });
-            callWS("medios", "getAllE", JSON.stringify(idRed), function (data) { onPopulateSelectEmplaza(data, 'selEmplazaD', 'id_emplazamiento', 'descripcion', 'codigo_emplazamiento'); });
+            callWS("medios", "getAllE", JSON.stringify(0), function (data) { onPopulateSelectEmplaza(data, 'selEmplazaD', 'id_emplazamiento', 'descripcion', 'codigo_emplazamiento'); });
             //callWS("programa", "getAllProgramasMedio", "1", function (data) {onPopulateSelectDone(data,'selPrograma','id_programa','desc_programa')})
             params = {}
             params.fecha_desta = dateToSqlFormat($('#fechaDesde').val());
@@ -3098,26 +3081,21 @@
 
         function recargarRenglones() {
             $("#TableRenglones").empty();
+            Detalles.forEach(generarTablaDetalles);
+            calculateTotals();
+
             if (Detalles.length > 0) {
-                //$("#selAgencia").attr("disabled", true);
                 $("#selAnunciante").attr("disabled", true);
                 $("#botLimpiar").attr("disabled", true);
                 $("#botLimpiar").attr("title", "No es posible limpiar Agencia - Anunciante si existen Detalles cargados");
-            }
 
-            Detalles.forEach(generarTablaDetalles);
-            calculateTotals();
-            //if ($('#inpIdOrdenAdServer').val() !== 0 && $('#inpIdOrdenAdServer').val() !== "" && $("#inpOrderNumber").attr("id_op_dg") > 0) {
-            //    comprobarModificaciones($("#inpOrderNumber").attr("id_op_dg"), $('#inpIdOrdenAdServer').val(), $('#selRedes>option:selected').attr("codigo_red"));
-            //    var op = {};
-            //    op.Id_Google_Ad_Manager = $('#inpIdOrdenAdServer').val();
-            //    op.Detalles = Detalles;
-            //    obtenerProgresoLineasGam(op);
-            //}
+                var op = {};
+                op.Detalles = Detalles;
+                comprobarModDetalle(op);
+                obtenerProgresoLineasGam(op);
+            }
         }
 
-        //AGREGUE (modifique onclick del boton sendaddserver y modifique IF del btn sendaddserver e IF del btn getorderdetails, en onclick='getOrderDetails(this) borré el this):
-        //&& det.id_op_dg !== undefined (va en el if para bsendaddserver)
         function generarTablaDetalles(det, index) {
             id = det.id_detalle;
 
@@ -3130,11 +3108,6 @@
             else {
                 str = str + " <td class='col-xs-2' dataid = '" + det.tipo_aviso_dg.id_categoria + "' > " + det.tipo_aviso_dg.descripcion + "</td > ";
             }
-            //str = str + " <td class='col-xs-2' dataid = '" + det.tipo_aviso_dg.id_tipo_aviso_dg + "' > " + det.tipo_aviso_dg.descripcion + "</td > ";
-            //nuev
-            //if (det.tarifa_dg.id_tarifa_dg == "" || det.tarifa_dg.id_tarifa_dg == undefined || det.tarifa_dg.id_tarifa_dg == null) {
-            //    str = str + "<td class='col-xs-1'> Custom </td>";
-            //}
             if (det.tarifa_dg == "" || det.tarifa_dg == undefined || det.tarifa_dg == null) {
                 str = str + "<td class='col-xs-1'> Por definir </td>";
             }
@@ -3156,7 +3129,7 @@
                 str = str + " <button type='button' data-id='" + id + "' disabled id='bSendAddServer" + id + "' class='btn actions btn-outline-dark btn-sm mr-1' onclick='enviarLineaAddServer(this)' title='Exportar Detalle a AdServer'> <span class='fa fa-cloud-upload ' id='brow" + id + "'></span></button>";
             }
             else {
-                if ((det.tipo_aviso_dg.permite_envio_ads === true || det.tipo_aviso_dg.permite_envio_ads == "true") && (det.id_op_dg != 0) && ($('#inpIdOrdenAdServer').val() !== 0 && $('#inpIdOrdenAdServer').val() !== "") && $("#inpEsFacturada").val() == 'NO') {
+                if ((det.tipo_aviso_dg.permite_envio_ads === true || det.tipo_aviso_dg.permite_envio_ads == "true") && (det.id_op_dg != 0) && ($('#inpIdPedido').val() !== 0 && $('#inpIdPedido').val() !== "") && $("#inpEsFacturada").val() == 'NO') {
                     str = str + " <button type='button' data-id='" + id + "'  id='bSendAddServer" + id + "' class='btn actions btn-outline-dark btn-sm mr-1' onclick='enviarLineaAddServer(this)' title='Exportar Detalle a AdServer'> <span class='fa fa-cloud-upload' id='brow" + id + "'></span></button>";
                 }
                 else {
@@ -3308,10 +3281,9 @@
             $('#selProductoD').empty();
             $('#selProductoD').append($options);
             $('#selProductoD').val = $('#selProducto').val();
-            idEmpresa = $('#selEmpresa').val();
+            //idEmpresa = $('#selEmpresa').val();
             $("#checkTarifaManualD")[0].checked = false;
             $("#checkTarifaManualD").change();
-            idRed = $('#selRedes').val();
             if ($("#inpEsFacturada").val() == 'SI' || OpAnulada == true || OpYaAbierta == true) {
                 bloquearCamposDetalle();
             }
@@ -3325,12 +3297,15 @@
                 tipoAviso = rDetalle.tipo_aviso_dg.tipo_aviso_ads;
             }
 
+            idRed = rDetalle.id_red;
+
             if (rDetalle.id_det_conv > 0) {
                 cargarSelectMultiConv($(r).attr("data-id"));
             }
             else {
                 $.when(
                     /*callWS("medios", "getPorEmpresa", JSON.stringify(idEmpresa), function (data) { onPopulateSelectDone(data, 'selMediosD', 'id_medio', 'desc_medio'); }),*/
+                    callWS("medios", "getAllRedes", '', function (data) { onCargarSelect(data, 'selRedes', 'id_red', 'descripcion', 'codigo_red'); }),
                     callWS("medios", "getAll", '', function (data) { onPopulateSelectDone(data, 'selMediosD', 'id_medio', 'desc_medio'); }),
                     callWS("tarifas", "getFormasUsoAll", '', function (data) { onPopulateSelectDone(data, 'selTipoTarifaD', 'id', 'descripcion'); }),
                     callWS("medios", "getMedidas", JSON.stringify(tipoAviso), function (data) { onPopulateSelectMedidas(data, 'selMedidasD', 'id_medidadigital', 'descripcion', 'ancho', 'alto'); }),
@@ -3439,7 +3414,9 @@
             }
 
             //Carga datos ad server
+            $("#selRedes option[value=" + rDetalle.id_red + "]").attr("selected", "selected");
             if (rDetalle.id_Google_Ad_Manager != 0 && rDetalle.id_Google_Ad_Manager != null && OpClon == false && DetalleClon == false) {
+                $("#selRedes").attr("disabled", true);
                 $("#inpIdLinea").val(rDetalle.id_Google_Ad_Manager);
                 $('#inpIdLinea').css("background-color", "#c3e6cb");
                 $("#bBuscarPedido").attr("disabled", true);               
@@ -3453,6 +3430,7 @@
                 /*}*/
             }
             else {
+                $("#selRedes").attr("disabled", false);
                 $('#inpIdLinea').css("background-color", "#e9ecef");
                 $("#inpIdLinea").val("");
                 $("#bcomprobarModificacionesD").attr("disabled", true);
@@ -3491,19 +3469,42 @@
         }
 
         function enviarOrdenAdServer() {
-            var msj = validarOrdenGam();
-            if (msj != "") {
-                showMessage(msj, 'info')
-            }
-            else {
-                params = {};
-                params.Id_red = $('#selRedesPedido').val();
-                params.Nombre = $('#descFiltroPedido').val();
-                params.Id_contacto = $('#selAnunciantePedido').val();
-                var parametros = setListaParametros(params);
+            params = {};
+            params.id = $("#idFiltroPedido").val();
+            params.descripcion = $('#descFiltroPedido').val();
+            params.Id_red = $('#selRedesPedido').val();
+            params.Id_contacto = $('#selAnunciantePedido').val();
+            var parametros = setListaParametros(params);
 
-                callWS("googleAdManager", "createOrder", JSON.stringify(parametros), function (data) { onSendOrder(data); });
-            }
+            var anun = {};
+            anun.Id_contacto = $('#selAnunciantePedido').val();
+            anun.id_red = $('#selRedesPedido').val();
+
+            callWS("contactos", "getContactoByIdyRed", JSON.stringify(anun), function (data) {
+                if (data.id > 0) {
+                    var msj = validarOrdenGam();
+                    if (msj != "") {
+                        showMessage(msj, 'info')
+                    }
+                    else {
+                        params = {};
+                        params.Id_red = $('#selRedesPedido').val();
+                        params.Nombre = $('#descFiltroPedido').val();
+                        params.Id_contacto = $('#selAnunciantePedido').val();
+                        var parametros = setListaParametros(params);
+
+                        callWS("googleAdManager", "createOrder", JSON.stringify(parametros), function (data) { onSendOrder(data); });
+                    }
+                }
+                else {
+                    var objParametro = {};
+
+                    objParametro.ParameterName = "nombre";
+                    objParametro.Value = "";
+
+                    callWS("googleAdManager", "getAnunciantes", JSON.stringify(objParametro), function (data) { onGetAnuncianteGAM(data); });
+                }
+            });
         }
 
         function validarOrdenGam() {
@@ -3868,7 +3869,7 @@
             idRed = $('#selRedes').val();
             idEmpresa = $('#selEmpresa').val();
             callWS("medios", "getMedidas", JSON.stringify("0"), function (data) { onPopulateSelectMedidas(data, 'selMedidasD', 'id_medidadigital', 'descripcion', 'ancho', 'alto'); });
-            callWS("medios", "getAllE", JSON.stringify(idRed), function (data) { onPopulateSelectEmplaza(data, 'selEmplazaD', 'id_emplazamiento', 'descripcion', 'codigo_emplazamiento'); });
+            callWS("medios", "getAllE", JSON.stringify(0), function (data) { onPopulateSelectEmplaza(data, 'selEmplazaD', 'id_emplazamiento', 'descripcion', 'codigo_emplazamiento'); });
             callWS("medios", "getAll", '', function (data) { onPopulateSelectDone(data, 'selMediosD', 'id_medio', 'desc_medio'); });
             //callWS("medios", "getPorEmpresa", JSON.stringify(idEmpresa), function (data) { onPopulateSelectDone(data, 'selMediosD', 'id_medio', 'desc_medio'); });
         }
@@ -4125,7 +4126,7 @@
                 callWS("contactos", "getEjecutivos", '', function (data) { onPopulateSelectDone(data, 'selEjecutivo', 'id', 'razonSocial'); }),
                 callWS("forma_pagos", "getAll", '', function (data) { onPopulateSelectDone(data, 'selFPago', 'id_formapago', 'desc_formapago'); }),
                 callWS("medios", "getAllPlazos", '', function (data) { onPopulateSelectDone(data, 'selPlazoP', 'id_condpagoap', 'desc_condpagoap'); }),
-                callWS("medios", "getAllRedes", '', function (data) { onCargarSelect(data, 'selRedes', 'id_red', 'descripcion', 'codigo_red'); }),
+                /*callWS("medios", "getAllRedes", '', function (data) { onCargarSelect(data, 'selRedes', 'id_red', 'descripcion', 'codigo_red'); }),*/
                 callWS("medios", "getAllConceptos", '', function (data) { onPopulateSelectDone(data, 'selConceptoN', 'id_concepto_negocio', 'desc_concepto_negocio'); }),
                 callWS("medios", "getAllClasificacion", '', function (data) { onPopulateSelectDone(data, 'selClasificacion', 'id_clasificacion_op', 'desc_clasificacion_op'); })
             ).then(function () { checkParameters(); }, function (data1, data2, data3, data4, data5, data6) {
@@ -4551,16 +4552,14 @@
             codRed = $('#selRedes>option:selected').attr("codigo_red");
             CambiarRed(codRed);
 
+            var pedidos = [];
+            onCargarTablaPedidos('tablePedidos', pedidos);
+
             //recargar emplazamientos
             callWS("medios", "getAllE", JSON.stringify(idRed), function (data) { onPopulateSelectEmplaza(data, 'selEmplazaD', 'id_emplazamiento', 'descripcion', 'codigo_emplazamiento'); });
 
-            //if ($("#inpOrderNumber").attr("id_op_dg") > 0) {
-            //    showMessage("Alerta! Emplazamientos reseteados", "info");
-            //}
-
-            $("#inpPedido").text("");
-            $("#inpIdPedido").text("");
-            $('#bSendOrdenAdServer').attr("disabled", true);
+            $("#inpPedido").val("");
+            $("#inpIdPedido").val("");
         }
 
         function onEmpresaSelected() {
@@ -4600,96 +4599,110 @@
             dualListContainer.find('.remove i').removeClass().addClass('fa fa-chevron-left');
         }
 
-        //function comprobarModificaciones(idOp, idGAM, codRed) {
-        //    var data = {};
-        //    data.id_op_dg = idOp;
-        //    data.id_Google_Ad_Manager = idGAM;
-        //    data.codigo_red = codRed;
+        function comprobarModDetalle(orden) {
+            callWS("googleAdManager", "comprobarModificacionesD", JSON.stringify(orden), function (data) { onComprobarModificacionesD(data); });
+        }
 
-        //    callWS("googleAdManager", "comprobarModificaciones", JSON.stringify(data), function (data) { onComprobarModificaciones(data); });
-        //}
+        function onComprobarModificacionesD(detalles) {
+            DiferenciasDetLin = [];
+            detalles.forEach(function (detalle) {
+                if (detalle.parametros.length > 1) {
+                    DiferenciasDetLin.push(detalle);
+                    arrValores = detalle.parametros[0].value.split("@@@");
+                    idDet = arrValores[0];
+                    $("#spanCompActD" + idDet).removeClass("invisible");
+                }
+            });
+        }
 
-        //function onComprobarModificaciones(data) {
-        //    if (data.parametros.length > 0) {
-        //        $("#bcomprobarModificaciones").attr("disabled", false);
-        //        $("#bcomprobarModificaciones").prop('title', 'Ver modificaciones en AdServer');
-        //        $("#spanCompAct").addClass("fa-pulse");
-        //        onPopulateTablasDif(data);
-        //    }
-        //    else {
-        //        $("#bcomprobarModificaciones").attr("disabled", true);
-        //        $("#bcomprobarModificaciones").prop('title', 'No hay modificaciones en AdServer');
-        //        $("#spanCompAct").removeClass("fa-pulse");
-        //    }
-        //    if (data.listaDetalles.length > 0) {
-        //        data.listaDetalles.forEach(function (det) {
-        //            $("#spanCompActD" + det).removeClass("invisible");
-        //        });
-        //    }
-        //}
+        function onPopulateTablasDifD(data) {
+            //se genera la tabla diferencias del detalle
+            rowHTML = '';
 
-        //function comprobarModificacionesButton() {
-        //    $("#modifModal").modal('show');
-        //}
+            var params2 = data.parametros.slice(1);
 
-        //function onPopulateTablasDif(data) {
-        //    //se genera la tabla diferencias en cabecera
-        //    rowHTML = ''
-        //    $.each(data.parametros, function (it, parametro) {
-        //        arr = parametro.value.split("@@@");
-        //        valViejo = arr[0];
-        //        valNuevo = arr[1];
+            $.each(params2, function (it, parametro) {
+                arrValores = parametro.value.split("@@@");
+                valViejo = arrValores[0];
+                valNuevo = arrValores[1];
 
-        //        var paraNameSinEsp = "";
-        //        if (parametro.parameterName.includes(" ") == true) {
-        //            arrPalabras = parametro.parameterName.split(" ");
-        //            arrPalabras.forEach(function (palabra) {
-        //                paraNameSinEsp += palabra;
-        //            });
-        //        }
-        //        else {
-        //            paraNameSinEsp = parametro.parameterName;
-        //        }
+                valoresNuevos = valNuevo;
+                if (parametro.parameterName == "Emplazamientos") {
+                    if (valNuevo.includes(",") == true) {
+                        arrComas = valNuevo.split(",");
+                        empSinCod = "";
+                        arrComas.forEach(function (emplaza) {
+                            arrCod = emplaza.split("$@%");
+                            if (empSinCod == "") {
+                                empSinCod = arrCod[0];
+                                valoresNuevos = arrCod[1];
+                            }
+                            else {
+                                empSinCod += ", " + arrCod[0];
+                                valoresNuevos += ", " + arrCod[1];
+                            }
+                        });
+                        valNuevo = empSinCod;
+                    }
+                    else {
+                        arrEmp = valNuevo.split("$@%");
+                        valNuevo = arrEmp[0];
+                        valoresNuevos = arrEmp[1];
+                    }
+                }
 
-        //        rowHTML += "<tr>";
-        //        rowHTML += "<td class='col-xs' style='text-align: center;'> " + parametro.parameterName + "</td > ";
-        //        rowHTML += "<td class='col-xs' style='text-align: center;'> " + valViejo + "</td >";
-        //        rowHTML += "<td class='col-xs' style='text-align: center;'> " + valNuevo + "</td >";
-        //        rowHTML += "<td class='col-xs pr-0 actions d-flex justify-content-center align-content-start'>";
-        //        rowHTML += "<button type='button' id='btnApl" + paraNameSinEsp + "'  class='btn actions btn-outline-dark btn-sm mr-1' onClick='aplicarCambio(\"" + paraNameSinEsp + "\", \"" + valNuevo + "\")' title='Aplicar cambios'><span class='fa fa-check'></span> Aplicar</button>";
-        //        rowHTML += "</td>";
-        //        rowHTML += "</tr>";
+                var paraNameSinEsp = "";
+                if (parametro.parameterName.includes(" ") == true) {
+                    arrPalabras = parametro.parameterName.split(" ");
+                    arrPalabras.forEach(function (palabra) {
+                        paraNameSinEsp += palabra;
+                    });
+                }
+                else {
+                    paraNameSinEsp = parametro.parameterName;
+                }
 
-        //    });
+                rowHTML += "<tr>";
+                rowHTML += "<td class='col-xs' style='text-align: center;'> " + parametro.parameterName + "</td > ";
+                rowHTML += "<td class='col-xs' style='text-align: center;'> " + valViejo + "</td >";
+                rowHTML += "<td class='col-xs' style='text-align: center;'> " + valNuevo + "</td >";
+                rowHTML += "<td class='col-xs pr-0 actions d-flex justify-content-center align-content-start'>";
+                rowHTML += "<button type='button' id='btnApl" + paraNameSinEsp + "D'  class='btn actions btn-outline-dark btn-sm mr-1' onClick='aplicarCambio(\"" + paraNameSinEsp + "D\", \"" + valoresNuevos + "\")' title='Aplicar cambios'><span class='fa fa-check' ></span> Aplicar</button>";
+                rowHTML += "</td>";
+                rowHTML += "</tr>";
 
-        //    $("#TableDifCabecera").html(rowHTML);
-        //}
+            });
+
+            $("#TableDifD").html(rowHTML);
+            $("#rowTabDifDet").html('');
+
+            $("#modifModalD").modal('show');
+        }
+
+        function comprobarModificacionesDButton() {
+            for (const item of DiferenciasDetLin) {
+                arrValores = item.parametros[0].value.split("@@@");
+                idGAM = arrValores[1];
+                idRed = arrValores[2];
+                if (idGAM == $("#inpIdLinea").val() && idRed == $('#selRedes').val()) {
+                    onPopulateTablasDifD(item);
+                    break;
+                }
+            }
+        }
 
         function aplicarCambio(paramName, valNuevo) {
 
             switch (paramName) {
-                //case 'Descripción':
-                //    $("#inpDescOP").val(valNuevo);
-                //    $("#btnApl" + paramName).addClass('btn-blue');
-                //    showMessage("Descripción actualizada", "info");
-                //    break;
-                //case 'VigenciaDesde':
-                //    $('#fechaDesde').datetimepicker('date', moment(dateToFieldFormat(valNuevo), 'DD/MM/YYYY'));
-                //    $("#btnApl" + paramName).addClass('btn-blue');
-                //    showMessage("Vigencia Desde actualizada", "info");
-                //    break;
-                //case 'VigenciaHasta':
-                //    $('#fechaHasta').datetimepicker('date', moment(dateToFieldFormat(valNuevo), 'DD/MM/YYYY'));
-                //    $("#btnApl" + paramName).addClass('btn-blue');
-                //    showMessage("Vigencia Hasta actualizada", "info");
-                //    break;
-                //case 'Seg Neto':
-                //    $("#neto2").val(valNuevo);
-                //    break;
                 case 'DescripciónD':
                     $("#descripcionD").val(valNuevo);
                     $("#btnApl" + paramName).addClass('btn-blue');
                     showMessage("Descripción actualizada", "info");
+                    break;
+                case 'NombrePedidoD':
+                    $("#inpPedido").val(valNuevo);
+                    $("#btnApl" + paramName).addClass('btn-blue');
+                    showMessage("Pedido actualizado", "info");
                     break;
                 case 'VigenciaDesdeD':
                     $('#fechaDesdeD').datetimepicker('date', moment(dateToFieldFormat(valNuevo), 'DD/MM/YYYY'));
@@ -4784,111 +4797,7 @@
                     $("#btnApl" + paramName).addClass('btn-blue');
                     showMessage("Medidas actualizadas", "info");
                     break;
-                //case 'TotalD':
-                //    $("#totalD").val(valNuevo);
-                //    break;
             }
-        }
-
-        //function comprobarModificacionesD(idDetGAM) {
-        //    var det = {};
-        //    det.id_Google_Ad_Manager = idDetGAM;
-        //    det.id_red = $('#selRedes').val();
-        //    callWS("googleAdManager", "comprobarModificacionesD", JSON.stringify(det), function (data) { onComprobarModificacionesD(data); });
-        //}
-
-        function comprobarModificacionesDButton() {           
-            //var det = {};
-            //det.id_Google_Ad_Manager = $("#inpIdLinea").val();
-            //det.id_red = $('#selRedes').val();
-            //callWS("googleAdManager", "comprobarModificacionesD", JSON.stringify(det), function (data) { onComprobarModificacionesD(data); });
-
-            //if (data != null) {
-            //    onPopulateTablasDifD(data);
-            //}
-
-            DiferenciasDetLin.forEach(function (item) {
-                arrValores = item.parametros[0].value.split("@@@");
-                idGAM = arrValores[1];
-                idRed = arrValores[2];
-                if (idGAM == $("#inpIdLinea").val() && idRed == $('#selRedes').val()) {                   
-                    onPopulateTablasDifD(item);
-                }
-            });
-        }
-
-        function onComprobarModificacionesD(detalle) {
-            DiferenciasDetLin = [];
-            if (detalle.parametros.length > 1) {
-                DiferenciasDetLin.push(detalle);
-                arrValores = detalle.parametros[0].value.split("@@@");
-                idDet = arrValores[0];
-                $("#spanCompActD" + idDet).removeClass("invisible");
-            }
-        }
-
-        function onPopulateTablasDifD(data) {
-            //se genera la tabla diferencias del detalle
-            rowHTML = '';
-
-            var params2 = data.parametros.slice(1);
-
-            $.each(params2, function (it, parametro) {
-                arrValores = parametro.value.split("@@@");
-                valViejo = arrValores[0];
-                valNuevo = arrValores[1];
-
-                valoresNuevos = valNuevo;
-                if (parametro.parameterName == "Emplazamientos") {
-                    if (valNuevo.includes(",") == true) {
-                        arrComas = valNuevo.split(",");
-                        empSinCod = "";
-                        arrComas.forEach(function (emplaza) {
-                            arrCod = emplaza.split("$@%");
-                            if (empSinCod == "") {
-                                empSinCod = arrCod[0];
-                                valoresNuevos = arrCod[1];
-                            }
-                            else {
-                                empSinCod += ", " + arrCod[0];
-                                valoresNuevos += ", " + arrCod[1];
-                            }
-                        });
-                        valNuevo = empSinCod;
-                    }
-                    else {
-                        arrEmp = valNuevo.split("$@%");
-                        valNuevo = arrEmp[0];
-                        valoresNuevos = arrEmp[1];
-                    }
-                }
-
-                var paraNameSinEsp = "";
-                if (parametro.parameterName.includes(" ") == true) {
-                    arrPalabras = parametro.parameterName.split(" ");
-                    arrPalabras.forEach(function (palabra) {
-                        paraNameSinEsp += palabra;
-                    });
-                }
-                else {
-                    paraNameSinEsp = parametro.parameterName;
-                }
-
-                rowHTML += "<tr>";
-                rowHTML += "<td class='col-xs' style='text-align: center;'> " + parametro.parameterName + "</td > ";
-                rowHTML += "<td class='col-xs' style='text-align: center;'> " + valViejo + "</td >";
-                rowHTML += "<td class='col-xs' style='text-align: center;'> " + valNuevo + "</td >";
-                rowHTML += "<td class='col-xs pr-0 actions d-flex justify-content-center align-content-start'>";
-                rowHTML += "<button type='button' id='btnApl" + paraNameSinEsp + "D'  class='btn actions btn-outline-dark btn-sm mr-1' onClick='aplicarCambio(\"" + paraNameSinEsp + "D\", \"" + valoresNuevos + "\")' title='Aplicar cambios'><span class='fa fa-check' ></span> Aplicar</button>";
-                rowHTML += "</td>";
-                rowHTML += "</tr>";
-
-            });
-
-            $("#TableDifD").html(rowHTML);
-            $("#rowTabDifDet").html('');
-
-            $("#modifModalD").modal('show');
         }
 
         function bloquearCamposDetalle() {
@@ -4896,6 +4805,7 @@
             $("#fechaHastaD").attr("disabled", true);
             $("#selProductoD").attr("disabled", true);
             $("#descripcionD").attr("disabled", true);
+            $("#selRedes").attr("disabled", true);
             $("#selPrograma").attr("disabled", true);
             $("#selTipoAvisoD").attr("disabled", true);
             $("#selTipoTarifaD").attr("disabled", true);
@@ -4916,6 +4826,7 @@
             $("#fechaHastaD").attr("disabled", false);
             $("#selProductoD").attr("disabled", false);
             $("#descripcionD").attr("disabled", false);
+            $("#selRedes").attr("disabled", false);
             $("#selPrograma").attr("disabled", false);
             $("#selTipoAvisoD").attr("disabled", false);
             $("#selTipoTarifaD").attr("disabled", false);
@@ -4935,7 +4846,7 @@
             $("#inpOrderNumberClient").attr("disabled", true);
             $("#OrdenCompraCliente").attr("disabled", true);
             $("#inpDescOP").attr("disabled", true); 
-            $("#selRedes").attr("disabled", true);
+            /*$("#selRedes").attr("disabled", true);*/
             $("#fechaDesde").attr("disabled", true);
             $("#fechaHasta").attr("disabled", true);
             $("#selEmpresa").attr("disabled", true);
@@ -5461,54 +5372,11 @@
                     objParametro.Value = "";
 
                     callWS("googleAdManager", "getAnunciantes", JSON.stringify(objParametro), function (data) { onGetAnuncianteGAM(data); });
-
-                    //options = [
-                    //    {
-                    //        optionDesc: "Aceptar",
-                    //        optionFunc: "sincAnunciante()"
-                    //    },
-                    //    {
-                    //        optionDesc: "Cancelar",
-                    //        optionFunc: ""
-                    //    }
-                    //];
-                    //var mensaje = "<div class='d-flex justify-content-center' style='text-align: center;'>El Anunciante de la OP no está sincronizado con ningún Anunciante de la Red AdServer seleccionada</div>";
-                    //showModal(mensaje, options);
-                //    showMessage("El Anunciante de la OP no está sincronizado con ningún Anunciante de la Red AdServer seleccionada", "alert");
                 }
             });
-            //if (params.red != 0 && params.red != null) {
-
-            //    for (param in params) {
-            //        if (params[param] == null) {
-            //            params[param] = '';
-            //        }
-            //    };
-
-            //var parametros = setListaParametros(params);
-
-            //callWS("googleAdManager", "filtrarPedidos", JSON.stringify(parametros), function (data) { onGetOrdenesGAM(data); });
-
-            //}
-            //else {
-            //    //PREGUNTAR SI DEASEA SINCRONIZARLO Y PONER OPCIONES PARA DE ACEPTAR, IR AL MODAL DE SINC ANUN
-            //    showMessage("El Anunciante de la OP no está sincronizado con ningún Anunciante de la Red AdServer seleccionada", "alert");
-            //}
         }
 
         function onGetAnuncianteGAM(anunciantes) {
-
-            //var sel = document.getElementById(idSelect);
-            //var selected = sel.options[sel.selectedIndex];
-
-            //var pObj = data;
-            //var listitems = '';
-            //$.each(pObj, function (it, iObj) {
-            //    listitems += '<option value=' + iObj[colId] + '>' + iObj[colDesc] + '</option>';
-            //});
-            //$("#" + idSelect).empty();
-            //$("#" + idSelect).append(listitems);
-
             var listitems = '<option value="-1">  </option>';
             $.each(anunciantes, function (it, anun) {
                 listitems = listitems + '<option value="' + anun.idContactoDigital + '">' + anun.razonSocial + ' </option>';
@@ -5568,37 +5436,39 @@
                 onCargarTablaPedidos('tablePedidos', data);
             }
             else {
-                options = [
-                        {
-                            optionDesc: "Aceptar",
-                        optionFunc: "prevCrearPedido()"
-                        },
-                        {
-                            optionDesc: "Cancelar",
-                            optionFunc: ""
-                        }
-                ];
-                var mensaje = "<div class='d-flex justify-content-center' style='text-align: center;'>No se encontraron Pedidos, ¿desea crear uno?</div>";
-                showModal(mensaje, options);
-                $("#pedidosModal").modal('hide');
+                onCargarTablaPedidos('tablePedidos', data);
+                showMessage("No se encontraron Pedidos", "info");
+                //options = [
+                //        {
+                //            optionDesc: "Aceptar",
+                //        optionFunc: "prevCrearPedido()"
+                //        },
+                //        {
+                //            optionDesc: "Cancelar",
+                //            optionFunc: ""
+                //        }
+                //];
+                //var mensaje = "<div class='d-flex justify-content-center' style='text-align: center;'>No se encontraron Pedidos, ¿desea crear uno?</div>";
+                //showModal(mensaje, options);
+                //$("#pedidosModal").modal('hide');
             }
         }
 
-        function prevCrearPedido() {
-            $.when(
-                callWS("contactos", "getAnunciantes", '', function (data) { onPopulateSelectDone(data, 'selAnuncianteNuevoPedido', 'id', 'razonSocial'); }),
-                callWS("medios", "getAllRedes", '', function (data) { onCargarSelect(data, 'selRedesNuevoPedido', 'id_red', 'descripcion', 'codigo_red'); })
-            ).then(function () { crearPedido() });
-        }
+        //function prevCrearPedido() {
+        //    $.when(
+        //        callWS("contactos", "getAnunciantes", '', function (data) { onPopulateSelectDone(data, 'selAnuncianteNuevoPedido', 'id', 'razonSocial'); }),
+        //        callWS("medios", "getAllRedes", '', function (data) { onCargarSelect(data, 'selRedesNuevoPedido', 'id_red', 'descripcion', 'codigo_red'); })
+        //    ).then(function () { crearPedido() });
+        //}
 
-        function crearPedido() {          
-            var id_anunciante = $("#selAnunciante").val();
-            var id_red = $("#selRedes").val();
-            $("#selAnuncianteNuevoPedido option[value=" + id_anunciante + "]").attr("selected", "selected");
-            $("#selRedesNuevoPedido option[value=" + id_red + "]").attr("selected", "selected");
+        //function crearPedido() {          
+        //    var id_anunciante = $("#selAnunciante").val();
+        //    var id_red = $("#selRedes").val();
+        //    $("#selAnuncianteNuevoPedido option[value=" + id_anunciante + "]").attr("selected", "selected");
+        //    $("#selRedesNuevoPedido option[value=" + id_red + "]").attr("selected", "selected");
 
-            $("#nuevoPedidoModal").modal('show');
-        }
+        //    $("#nuevoPedidoModal").modal('show');
+        //}
 
         function onCargarTablaPedidos(tablaID, data) {
             rowHTML = ''
