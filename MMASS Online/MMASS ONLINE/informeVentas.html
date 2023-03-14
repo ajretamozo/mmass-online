@@ -280,33 +280,6 @@
     <script type="text/javascript">
 
         $(function () {
-            //const getCellValue = (tr, idx) => tr.children[idx].innerText || tr.children[idx].textContent;
-
-            //const comparer = (idx, asc) => (a, b) => ((v1, v2) =>
-            //    v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2) ? v1 - v2 : v1.toString().localeCompare(v2)
-            //)(getCellValue(asc ? a : b, idx), getCellValue(asc ? b : a, idx));
-
-            //// do the work...
-            //document.querySelectorAll("th").forEach(th => th.style.cursor = "pointer");
-            //document.querySelectorAll('th').forEach(th => th.addEventListener('click', (() => {
-            //    var table = th.closest('table');
-            //    jtable = $(table);
-            //    Array.from(table.querySelectorAll('tbody>tr'))
-            //        .sort(comparer(Array.from(th.parentNode.children).indexOf(th), this.asc = !this.asc))
-            //        .forEach(tr => jtable.append(tr));
-            //})));
-
-            //$('input[type=text]').attr('autocomplete', 'off');
-            //$('a[data-toggle="tab"]').on('hide.bs.tab', function (e) {
-            //    idContentToHide = e.target.getAttribute("href");
-            //    idContentToShow = e.relatedTarget.getAttribute("href");
-            //    $(idContentToHide).hide();
-            //})
-            //$('a[data-toggle="tab"]').on('hidden.bs.tab', function (e) {
-            //    idContentToShow = e.relatedTarget.getAttribute("href");
-            //    $(idContentToShow).show();
-            //})
-
             $('#fechaDesde').datetimepicker({ format: 'L', locale: 'es' });
             $('#fechaHasta').datetimepicker({ format: 'L', locale: 'es' });
             $("#divNavBar").load("navBar.html");

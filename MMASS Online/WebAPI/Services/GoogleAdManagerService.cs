@@ -969,33 +969,61 @@ namespace WebApi.Services
             return cambioLEmplaza;
         }
 
-        public Parametro ImprimirMedidas(List<Dg_orden_pub_medidas> medidasBD, CreativePlaceholder[] medidasGam)
+        public Parametro ImprimirMedidas(List<Dg_orden_pub_medidas> medidasBD, CreativePlaceholder[] medidasGam, string tipoLinea)
         {
             Parametro cambioLMed = new Parametro();
             cambioLMed.ParameterName = "Medidas";
             string medBD = "";
             string medGam = "";
 
-            foreach (Dg_orden_pub_medidas med in medidasBD)
+            if (tipoLinea == "VIDEO_PLAYER")
             {
-                if (medBD == "")
+                foreach (Dg_orden_pub_medidas med in medidasBD)
                 {
-                    medBD = med.Ancho.ToString() + "x" + med.Alto.ToString();
+                    if (medBD == "")
+                    {
+                        medBD = med.Ancho.ToString() + "x" + med.Alto.ToString() + "v";
+                    }
+                    else
+                    {
+                        medBD += ", " + med.Ancho.ToString() + "x" + med.Alto.ToString() + "v";
+                    }
                 }
-                else
+                foreach (CreativePlaceholder cph in medidasGam)
                 {
-                    medBD += ", " + med.Ancho.ToString() + "x" + med.Alto.ToString();
+                    if (medGam == "")
+                    {
+                        medGam = cph.size.width.ToString() + "x" + cph.size.height.ToString() + "v";
+                    }
+                    else
+                    {
+                        medGam += ", " + cph.size.width.ToString() + "x" + cph.size.height.ToString() + "v";
+                    }
                 }
             }
-            foreach (CreativePlaceholder cph in medidasGam)
+            else
             {
-                if (medGam == "")
+                foreach (Dg_orden_pub_medidas med in medidasBD)
                 {
-                    medGam = cph.size.width.ToString() + "x" + cph.size.height.ToString();
+                    if (medBD == "")
+                    {
+                        medBD = med.Ancho.ToString() + "x" + med.Alto.ToString();
+                    }
+                    else
+                    {
+                        medBD += ", " + med.Ancho.ToString() + "x" + med.Alto.ToString();
+                    }
                 }
-                else
+                foreach (CreativePlaceholder cph in medidasGam)
                 {
-                    medGam += ", " + cph.size.width.ToString() + "x" + cph.size.height.ToString();
+                    if (medGam == "")
+                    {
+                        medGam = cph.size.width.ToString() + "x" + cph.size.height.ToString();
+                    }
+                    else
+                    {
+                        medGam += ", " + cph.size.width.ToString() + "x" + cph.size.height.ToString();
+                    }
                 }
             }
 
@@ -1029,15 +1057,9 @@ namespace WebApi.Services
                     //apuntamos a la red adserver del detalle
                     Dg_red_GAM red = Dg_red_GAM.getById(detalle.Id_red);
                     CambiarRed(red.Codigo_red.ToString());
-                    //long redActual = 0;
-                    //while (redActual != red.Codigo_red)
-                    //{
-                    //    redActual = GetRedActual();
-                    //}
 
                     ListaParametro cambiosL = new ListaParametro();
                     cambiosL.Parametros = new List<Parametro>();
-                    //Dg_orden_pub_as detalle = Dg_orden_pub_as.getByIdGam(det.Id_Google_Ad_Manager, det.Id_red);
                     LineItem linea = GoogleAdManager.GetLineItemById(detalle.Id_Google_Ad_Manager);
 
                     //informar datos del Detalle
@@ -1046,7 +1068,7 @@ namespace WebApi.Services
                     idDet.Value = detalle.Id_detalle.ToString() + "@@@" + detalle.Id_Google_Ad_Manager.ToString() + "@@@" + detalle.Id_red.ToString();
                     cambiosL.Parametros.Add(idDet);
 
-                    if (linea != null)
+                    if (linea.id > 0)
                     {
                         //se buscan diferencias entre la orden gam y la orden ap; si se encuentran, se devuelve la lista de cambios
                         switch (detalle.Tipo_tarifa)
@@ -1143,7 +1165,7 @@ namespace WebApi.Services
                         //Se comparan medidas
                         if (linea.creativePlaceholders.Length != detalle.Medidas.Count)
                         {
-                            cambiosL.Parametros.Add(ImprimirMedidas(detalle.Medidas, linea.creativePlaceholders));
+                            cambiosL.Parametros.Add(ImprimirMedidas(detalle.Medidas, linea.creativePlaceholders, linea.environmentType.ToString()));
                         }
 
                         else
@@ -1164,7 +1186,7 @@ namespace WebApi.Services
                                 }
                                 if (existe == false)
                                 {
-                                    cambiosL.Parametros.Add(ImprimirMedidas(detalle.Medidas, linea.creativePlaceholders));
+                                    cambiosL.Parametros.Add(ImprimirMedidas(detalle.Medidas, linea.creativePlaceholders, linea.environmentType.ToString()));
                                 }
                             }
                         }

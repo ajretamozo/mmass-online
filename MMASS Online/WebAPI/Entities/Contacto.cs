@@ -70,7 +70,7 @@ namespace WebApi.Entities
         {
             string sqlCommand = @"Select c.id_contacto, c.no_facturable, razon_social, g.id_contactodigital from contactos c
                                   left join dg_contacto_red_GAM g on c.id_contacto = g.id_contacto
-                                  where g.id_contactodigital = " + idGam + " and g.id_red = " + idRed.ToString();
+                                  where g.id_contactodigital = '" + idGam+ "' and g.id_red = " + idRed.ToString();
 
             Contacto contacto = new Contacto();
             DataTable t = DB.Select(sqlCommand);

@@ -241,7 +241,6 @@
 
         }
 
-        //DESABILITAR SELECT AL VINCULAR Y HABILITAR AL DESVINCULAR
         function onVincular(data, idGAM) {
             if (data == true) {
                 var idButton = "#button" + idGAM;
@@ -317,6 +316,7 @@
                     $(idButton).css("background-color", "#c3e6cb");
                     $(idButton).val(2);
                     $(idButton).html('Desvincular');
+                    $("#sel" + anuncianteGAM.idContactoDigital).attr("disabled", true);
                 }
             });
             //hidePleaseWait();

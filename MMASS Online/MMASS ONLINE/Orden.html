@@ -651,56 +651,6 @@
             </div>
         </div>
 
-        <!--Modal Sincronizar Anunciantes-->
-        <!--<div class="modal fade" id="sincAnunModal" style="overflow-y: auto">
-            <div class="modal-dialog modal-xl modalConv">
-                <div class="modal-content shadow p-3 mb-5 bg-white rounded">-->
-
-                    <!-- Modal Header -->
-                    <!--<div class="modal-header">
-                        <h4 class="modal-title" id="sincAnunModalTitle">SINCRONIZAR ANUNCIANTES</h4>
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    </div>-->
-
-                    <!-- Modal body -->
-                    <!--<div class="modal-body" id="sincAnunModalBody">
-                        <div class="row">
-                            <div class="col-md-4">
-                                <label for="descFiltro">Anunciante AdServer: </label>
-                                <div class="input-group enterSearch"> <input type="text" id="descFiltro" class="form-control"></div>
-                            </div>
-                            <div class="col-md-4 d-flex align-items-end">
-                                <button type="button" class="btn btn-dark btn-sm mx-1" onclick="buscarAnunGam()">
-                                    <span class="fa fa-search"></span> Buscar
-                                </button>
-                            </div>
-                        </div>
-                        <div class="row" style="padding-left: 20px; padding-right: 20px;">-->
-                            <!--Tabla Sincronizar Anunciantes-->
-                            <!--<div class="table-responsive mt-2 tableFixHead">
-                                <table class="table table-fixed table-striped" id="tModifCabecera">
-                                    <thead class="thead-dark">
-                                        <tr id="header" align="center">
-                                            <th class="col-xs-2">ID</th>
-                                            <th class="col-xs-4">Anunciante Ad Server</th>
-                                            <th class="col-xs-4">Contacto MMASS</th>
-                                            <th class="col-xs-2"></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="TableSincAnun" align="center"></tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>-->
-
-                    <!-- Modal footer -->
-                    <!--<div class="modal-footer">
-                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
-                    </div>
-
-                </div>
-            </div>
-        </div>-->
 
         <!--Modal Pedidos-->
         <div class="modal fade" id="pedidosModal">
@@ -791,49 +741,6 @@
             </div>
         </div>
 
-        <!--Modal Nuevo Pedido-->
-        <!--<div class="modal fade" id="nuevoPedidoModal">
-            <div class="modal-dialog modal-xl modalConv">
-                <div class="modal-content shadow p-3 mb-5 bg-white rounded">-->
-
-                    <!-- Modal Header -->
-                    <!--<div class="modal-header">
-                        <h4 class="modal-title" id="nuevoPedidoModalTitle">NUEVO PEDIDO ADSERVER</h4>
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    </div>-->
-
-                    <!-- Modal body -->
-                    <!--<div class="modal-body" id="nuevoPedidoModalBody">-->
-                        <!--Datos-->
-                        <!--<div class="row py-1">
-                            <div class="col-md-3">
-                                <label for="selRedesPedido">Red AdServer: </label>
-                                <select class="form-control enterSearch" id="selRedesNuevoPedido" disabled="disabled"></select>
-                            </div>
-                            <div class="col-md-4">
-                                <label>Anunciante</label>
-                                <select class="form-control" id="selAnuncianteNuevoPedido" disabled="disabled"></select>
-                            </div>
-                            <div class="col-md-3">
-                                <label for="descNuevoPedido">Nombre: </label>
-                                <div class="input-group"> <input type="text" id="descNuevoPedido" class="form-control"></div>
-                            </div>
-                            <div class="col-md-2" style="align-self: end;">
-                                <button type="button" class="btn btn-dark" onclick="enviarOrdenAdServer()">
-                                    <span class="fa fa-cloud-upload"></span> Crear
-                                </button>
-                            </div>
-                        </div>
-                    </div>-->
-
-                    <!-- Modal footer -->
-                    <!--<div class="modal-footer">
-                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
-                    </div>
-
-                </div>
-            </div>
-        </div>-->
 
         <div id="divMessage" class="alert" style="display:none;cursor:pointer;z-index:10000;" title="Click para cerrar"> </div>
         <div class="jumbotron mt-4 py-4 shadow p-3 mb-5 bg-white rounded" id="divOrderMain">
@@ -3138,10 +3045,10 @@
             }
             //  Botón eliminar renglon
             if ($("#inpEsFacturada").val() == 'SI' || OpAnulada == true || OpBloqueada == true) {
-                str = str + " <button type='button' data-id='" + id + "' disabled id='bEliminar" + id + "' class='btn actions btn-outline-dark btn-sm mr-1'  onclick='deleteRenglon(this, " + det.id_Google_Ad_Manager + ")' title='Eliminar Detalle'> <span class='fa fa-trash'></span></button>";
+                str = str + " <button type='button' id='bElim" + id + "' data-id='" + id + "' disabled id='bEliminar" + id + "' class='btn actions btn-outline-dark btn-sm mr-1'  onclick='deleteRenglon(this, " + det.id_Google_Ad_Manager + ")' title='Eliminar Detalle'> <span class='fa fa-trash'></span></button>";
             }
             else {
-                str = str + " <button type='button' data-id='" + id + "' class='btn actions btn-outline-dark btn-sm mr-1'  onclick='deleteRenglon(this, " + det.id_Google_Ad_Manager + ")' title='Eliminar Detalle'> <span class='fa fa-trash'></span></button>";
+                str = str + " <button type='button' id='bElim" + id + "' data-id='" + id + "' class='btn actions btn-outline-dark btn-sm mr-1'  onclick='deleteRenglon(this, " + det.id_Google_Ad_Manager + ")' title='Eliminar Detalle'> <span class='fa fa-trash'></span></button>";
             }
             //  Botón modificar renglon
             str = str + " <button type='button' data-id='" + id + "' class='btn actions btn-outline-dark btn-sm mr-1'  onclick='cargarModificarRenglon(this)' title='Editar Detalle'> <span class='fa fa-edit'></span></button>";
@@ -3628,7 +3535,16 @@
         }
 
         function deleteRenglon(r, id_Google_Ad_Manager) {
+            //var idr = 0;
+            //if (idDet > 0) {
+            //    idr = idDet;
+            //}
+            //else {
+            //    idr = $(r).attr("data-id");
+            //}
+
             var idr = $(r).attr("data-id");
+
             //sumo el detalle a la lista para archivar las lineas de pedidos en GAM
             if (id_Google_Ad_Manager > 0) {
                 var Det = {}
@@ -3639,7 +3555,6 @@
 
             r.parentElement.parentElement.remove();
            
-            /*var idr = $(r).attr("data-id");*/
             var indexOfObject;
        
                 for (let index = 0; index < Detalles.length; index++) {
@@ -4619,6 +4534,8 @@
             //se genera la tabla diferencias del detalle
             rowHTML = '';
 
+            arrValores = data.parametros[0].value.split("@@@");
+            idDet = arrValores[0];
             var params2 = data.parametros.slice(1);
 
             $.each(params2, function (it, parametro) {
@@ -4667,7 +4584,7 @@
                 rowHTML += "<td class='col-xs' style='text-align: center;'> " + valViejo + "</td >";
                 rowHTML += "<td class='col-xs' style='text-align: center;'> " + valNuevo + "</td >";
                 rowHTML += "<td class='col-xs pr-0 actions d-flex justify-content-center align-content-start'>";
-                rowHTML += "<button type='button' id='btnApl" + paraNameSinEsp + "D'  class='btn actions btn-outline-dark btn-sm mr-1' onClick='aplicarCambio(\"" + paraNameSinEsp + "D\", \"" + valoresNuevos + "\")' title='Aplicar cambios'><span class='fa fa-check' ></span> Aplicar</button>";
+                rowHTML += "<button type='button' id='btnApl" + paraNameSinEsp + "D'  class='btn actions btn-outline-dark btn-sm mr-1' onClick='aplicarCambio(\"" + paraNameSinEsp + "D\", \"" + valoresNuevos + "\", \"" + idDet + "\")' title='Aplicar cambios'><span class='fa fa-check' ></span> Aplicar</button>";
                 rowHTML += "</td>";
                 rowHTML += "</tr>";
 
@@ -4691,7 +4608,7 @@
             }
         }
 
-        function aplicarCambio(paramName, valNuevo) {
+        function aplicarCambio(paramName, valNuevo, idDet) {
 
             switch (paramName) {
                 case 'DescripciónD':
@@ -4782,11 +4699,13 @@
                 case 'MedidasD':
                     if (valNuevo != "") {
                         $.when(LimpiarEmpYMed('selMedidasD')).then(function () {
-                            var medidas = valNuevo.split(",")
+                            var medidas = valNuevo.split(", ")
                             var viewListMedidas = "<ul class=\"list-group\">"
                             if (medidas.length > 0) {
                                 medidas.forEach(function (medida) {
-                                    $("#selMedidasD option[medida=" + medida + "]").attr("selected", "selected");
+                                    $("#selMedidasD option").filter(function () {
+                                        return $(this).text() == medida;
+                                    }).prop('selected', true);
                                 });
                             }
                             viewListMedidas += "</ul>"
@@ -4797,7 +4716,31 @@
                     $("#btnApl" + paramName).addClass('btn-blue');
                     showMessage("Medidas actualizadas", "info");
                     break;
+                    //seguir: aplicar deleterenglon() en aceptar
+                case 'EstadoD':
+                    options = [
+                        {
+                            optionDesc: "Aceptar",
+                           /* optionFunc: "deleteRenglon('" + 0 + "','" + 0 + "','" + idDet + "')"*/
+                            optionFunc: "eliminarDetalleArchivado('" + idDet + "')"
+                        },
+                        {
+                            optionDesc: "Cancelar",
+                            optionFunc: ""
+                        }
+                    ];
+                    var mensaje = "<div class='d-flex justify-content-center'>¿Está seguro de eliminar el Detalle?</div>";
+                    showModal(mensaje, options);
+                    $("#modifModalD").modal('hide');
+                    break;
             }
+        }
+
+        function eliminarDetalleArchivado(idDet) {
+            var botonElim = "#bElim" + idDet;
+            $('#divDetailsRows').show();
+            $('#divAddRow').hide();
+            $(botonElim).click();
         }
 
         function bloquearCamposDetalle() {
@@ -4872,7 +4815,7 @@
                 checkAnularOrden();
             }
             else {
-                showMessage("La órden no puede ser anulada porque ya ha sido enviada al AdServer", "info")
+                showMessage("La Orden no puede ser anulada porque ya ha sido enviada al AdServer", "info")
             }
         }
 
@@ -4887,7 +4830,7 @@
                     optionFunc: ""
                 }
             ];
-            var mensaje = "<div class='d-flex justify-content-center'>¿Está seguro de anular la órden?</div>";
+            var mensaje = "<div class='d-flex justify-content-center'>¿Está seguro de anular la Orden?</div>";
             showModal(mensaje, options);
         }
 
@@ -4923,7 +4866,7 @@
                 callWS("dg_orden_pub_aps", "grabarLog", JSON.stringify(params));
             }
             else {
-                showMessage("Ocurrió un error al intentar anular la órden", "error");
+                showMessage("Ocurrió un error al intentar anular la Orden", "error");
             }
         }
 
@@ -4964,7 +4907,7 @@
 
         function onBloquearOp(res) {
             if (res == false) {
-                showMessage("Ocurrió un error al intentar bloquear la órden", "error");
+                showMessage("Ocurrió un error al intentar bloquear la Orden", "error");
             }
         }
 
@@ -4983,7 +4926,7 @@
 
         function onDesbloquearOp(res) {
             if (res == false) {
-                showMessage("Ocurrió un error al intentar desbloquear la órden", "error");
+                showMessage("Ocurrió un error al intentar desbloquear la Orden", "error");
             }
         }
 
@@ -5438,37 +5381,8 @@
             else {
                 onCargarTablaPedidos('tablePedidos', data);
                 showMessage("No se encontraron Pedidos", "info");
-                //options = [
-                //        {
-                //            optionDesc: "Aceptar",
-                //        optionFunc: "prevCrearPedido()"
-                //        },
-                //        {
-                //            optionDesc: "Cancelar",
-                //            optionFunc: ""
-                //        }
-                //];
-                //var mensaje = "<div class='d-flex justify-content-center' style='text-align: center;'>No se encontraron Pedidos, ¿desea crear uno?</div>";
-                //showModal(mensaje, options);
-                //$("#pedidosModal").modal('hide');
             }
         }
-
-        //function prevCrearPedido() {
-        //    $.when(
-        //        callWS("contactos", "getAnunciantes", '', function (data) { onPopulateSelectDone(data, 'selAnuncianteNuevoPedido', 'id', 'razonSocial'); }),
-        //        callWS("medios", "getAllRedes", '', function (data) { onCargarSelect(data, 'selRedesNuevoPedido', 'id_red', 'descripcion', 'codigo_red'); })
-        //    ).then(function () { crearPedido() });
-        //}
-
-        //function crearPedido() {          
-        //    var id_anunciante = $("#selAnunciante").val();
-        //    var id_red = $("#selRedes").val();
-        //    $("#selAnuncianteNuevoPedido option[value=" + id_anunciante + "]").attr("selected", "selected");
-        //    $("#selRedesNuevoPedido option[value=" + id_red + "]").attr("selected", "selected");
-
-        //    $("#nuevoPedidoModal").modal('show');
-        //}
 
         function onCargarTablaPedidos(tablaID, data) {
             rowHTML = ''
