@@ -263,35 +263,27 @@ namespace WebApi.Helpers
             return Lineas;
         }
 
-        public static List<LineItem> FilterLineItems(List<Parametro> parametros)
+        public static List<LineItem> FilterLineItems(List<Parametro> parametros, string listaOP)
         {
             List<LineItem> Lineas = new List<LineItem>();
 
-            string mifiltro = "status != 'ARCHIVED'";
-
+            string mifiltro = "isArchived = false";
+            
             foreach (Parametro p in parametros)
             {
                 if (p.Value.ToString() != "")
                 {
-                    if ((p.ParameterName == "idOp"))
-                        mifiltro = mifiltro + " and OrderId = " + p.Value;
-                    if ((p.ParameterName == "descripcionOp") && (p.Value.ToString() != ""))
-                    {
-                        //List<long> listaOP = GetOrderByName(p.Value);
-                        //mifiltro = mifiltro + " and OrderId IN " + listaOP;
-                        string listaOP = GetOrderByName(p.Value);
-                        mifiltro = mifiltro + " and OrderId IN (" + listaOP + ")";
-                    }
                     if ((p.ParameterName == "idDet"))
                         mifiltro = mifiltro + " and Id = " + p.Value;
                     if ((p.ParameterName == "descripcionDet"))
                         mifiltro = mifiltro + " and name like '%" + p.Value + "%'";
                     if (p.ParameterName == "fecha_desde")
-                        mifiltro = mifiltro + " and CreationDateTime >= '" + p.Value.ToString() + "'";
+                        mifiltro = mifiltro + " and startDateTime >= '" + p.Value.ToString() + "'";
                     if (p.ParameterName == "fecha_hasta")
-                        mifiltro = mifiltro + " and CreationDateTime <= '" + p.Value.ToString() + "'";
+                        mifiltro = mifiltro + " and endDateTime <= '" + p.Value.ToString() + "'";
                 }
             }
+            mifiltro = mifiltro + " and OrderId IN (" + listaOP + ")";
 
             using (LineItemService lineItemService = user.GetService<LineItemService>())
             {
@@ -654,7 +646,7 @@ namespace WebApi.Helpers
                     //Bloques de anuncio (Ad Units) - En toda la red
                     AdUnitTargeting adUnitTargeting = new AdUnitTargeting();
                     adUnitTargeting.adUnitId = rootId;
-                    adUnitTargeting.includeDescendants= true;
+                    adUnitTargeting.includeDescendants = true;
                     AdUnitTargeting[] targetPlacementIds = new AdUnitTargeting[]
                     {
                         adUnitTargeting
@@ -1813,9 +1805,9 @@ namespace WebApi.Helpers
             {
                 if (p.Value.ToString() != "")
                 {
-                    if (p.ParameterName == "descripcion")
+                    if (p.ParameterName == "descripcionOp")
                         where = where + " and name like '%" + p.Value + "%'";
-                    if (p.ParameterName == "id")
+                    if (p.ParameterName == "idOp")
                         where = where + " and id = " + p.Value;
                     if (p.ParameterName == "Id_contacto")     
                         where = where + " and advertiserId = " + p.Value;
@@ -1971,15 +1963,39 @@ namespace WebApi.Helpers
         //    return result;
         //}
 
-        public static string GetOrderByName(string nombre)
+        public static string GetIdOrderByFilters(List<Parametro> parametros)
         {
             string result = "";
+
+            string where = "isArchived = false";
+
+            foreach (Parametro p in parametros)
+            {
+                if (p.Value.ToString() != "")
+                {
+                    if (p.ParameterName == "descripcionOp")
+                        where = where + " and name like '%" + p.Value + "%'";
+                    if (p.ParameterName == "idOp")
+                        where = where + " and id = " + p.Value;
+                    if (p.ParameterName == "Id_contacto")
+                        where = where + " and advertiserId = " + p.Value;
+                }
+            }
+
             using (OrderService orderService = user.GetService<OrderService>())
             {
-                // Create a statement to select orders.             
-                int pageSize = StatementBuilder.SUGGESTED_PAGE_LIMIT;
-                StatementBuilder statementBuilder =
-                    new StatementBuilder().Where("name like '%" + nombre + "%'").OrderBy("id ASC").Limit(pageSize);
+                    // Create a statement to select orders.
+                    int pageSize = StatementBuilder.SUGGESTED_PAGE_LIMIT;
+                    StatementBuilder statementBuilder = new StatementBuilder()
+                        .Where(where)
+                        .OrderBy("lastModifiedDateTime DESC")
+                        .Limit(pageSize)
+                        .AddValue("now", DateTimeUtilities.FromDateTime(System.DateTime.Now, "America/Argentina/Buenos_Aires"));
+
+                //    // Create a statement to select orders.             
+                //    int pageSize = StatementBuilder.SUGGESTED_PAGE_LIMIT;
+                //StatementBuilder statementBuilder =
+                //    new StatementBuilder().Where("name like '%" + nombre + "%'").OrderBy("id ASC").Limit(pageSize);
 
                 // Retrieve a small amount of orders at a time, paging through until all
                 // orders have been retrieved.
@@ -2006,24 +2022,10 @@ namespace WebApi.Helpers
                         }
                     }
                 }
-                //else
-                //{
-                //    result = null;
-                //}
                 statementBuilder.IncreaseOffsetBy(pageSize);
             }
             return result;
         }
-        //public static string formatFecha(string fecha)
-        //{
-        //    string fechaFormat = "";
-        //    string[] arrFecha = fecha.Split(" ");
-
-        //    string[] arr = arrFecha[0].Split("/");
-        //    string formatDate = "";
-        //    formatDate = arr[0] + "-" + arr[1] + "-" + arr[2];
-        //    return formatDate;
-        //}
 
     }
 }

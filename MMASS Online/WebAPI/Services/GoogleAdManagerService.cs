@@ -1435,60 +1435,57 @@ namespace WebApi.Services
 
         public IEnumerable<Dg_orden_pub_as> GetDetNuevos(List<Parametro> parametros)
         {
-            List<LineItem> detallesGAM = GoogleAdManager.FilterLineItems(parametros);
             List<Dg_orden_pub_as> detallesNuevos = new List<Dg_orden_pub_as>();
+            int idRed = int.Parse(parametros[2].Value);
+            //apuntamos a la red adserver seleccionada
+            Dg_red_GAM red = Dg_red_GAM.getById(idRed);
+            CambiarRed(red.Codigo_red.ToString());
 
-            if (detallesGAM.Count == 0)
-            {
-                return detallesNuevos;
-            }
+            //al idContacto lo convertimos en idContactoDigital
+            Contacto anun = new Contacto();
+            anun = Contacto.getContactoByIdyRed(int.Parse(parametros[5].Value), idRed);
+            parametros[5].Value = anun.IdContactoDigital;
 
-            else
+            string listaOP = GoogleAdManager.GetIdOrderByFilters(parametros);
+            if (listaOP != "")
             {
-                int idRed = 0;
-                foreach (Parametro p in parametros)
+                List<LineItem> detallesGAM = GoogleAdManager.FilterLineItems(parametros, listaOP);
+
+                if (detallesGAM.Count == 0)
                 {
-                    if (p.ParameterName == "red")
-                    {
-                        idRed = int.Parse(p.Value);
-                        break;
-                    }
+                    return detallesNuevos;
                 }
-                List<Dg_orden_pub_as> detallesExistentes = Dg_orden_pub_as.getAll();
 
-                //Recorremos las lineas de pedido y las vamos comparando con los detalles existentes
-                foreach (LineItem linea in detallesGAM)
+                else
                 {
-                    bool existeDetalle = false;
-                    foreach (Dg_orden_pub_as detExis in detallesExistentes)
-                    {
-                        //Si encontramos la linea dentro de los detalles, se sale del for y buscamos la próxima linea
-                        if (linea.id == detExis.Id_Google_Ad_Manager && idRed == detExis.Id_red)
-                        {
-                            existeDetalle = true;
-                            break;
-                        }
-                    }
-                    //Si no se encuentra la linea de pedido dentro de los detalles existentes..
-                    if (!existeDetalle)
-                    {
-                        //Se corrobora que perteneza a una OP existente
-                        Dg_orden_pub_ap op = Dg_orden_pub_ap.getOpByIdGAM(linea.orderId, idRed);
+                    List<Dg_orden_pub_as> detallesExistentes = Dg_orden_pub_as.getByAnunRedFecha(parametros[5].Value, idRed, parametros[6].Value, parametros[7].Value);
 
-                        if (op.Nro_orden != 0)
+                    //Recorremos las lineas de pedido y las vamos comparando con los detalles existentes
+                    foreach (LineItem linea in detallesGAM)
+                    {
+                        bool existeDetalle = false;
+                        foreach (Dg_orden_pub_as detExis in detallesExistentes)
+                        {
+                            //Si encontramos la linea dentro de los detalles, se sale del for y buscamos la próxima linea
+                            if (linea.id == detExis.Id_Google_Ad_Manager && idRed == detExis.Id_red)
+                            {
+                                existeDetalle = true;
+                                break;
+                            }
+                        }
+                        //Si no se encuentra la linea de pedido dentro de los detalles existentes..
+                        if (!existeDetalle)
                         {
                             //Pasamos los datos de la linea al detalle
                             Dg_orden_pub_as detalle = new Dg_orden_pub_as();
 
-                            detalle.Id_op_dg = op.Id_op_dg;
-                            detalle.Anio = op.Anio;
-                            detalle.Mes = op.Mes;
-                            detalle.Nro_orden = op.Nro_orden;
                             string creatD = DateTimeUtilities.ToString(linea.creationDateTime, "yyyy/MM/dd");
                             if (creatD != "0")
                             {
                                 detalle.Fecha_creacion = System.DateTime.Parse(creatD);
                             }
+                            detalle.Id_pedido_Google_Ad_Manager = linea.orderId;
+                            detalle.Nombre_pedido_Google_Ad_Manager = linea.orderName;
                             detalle.Id_Google_Ad_Manager = linea.id;
                             detalle.Descripcion = linea.name;
                             detalle.Tarifa_manual = 1;
@@ -1508,10 +1505,10 @@ namespace WebApi.Services
 
                             detallesNuevos.Add(detalle);
                         }
-                    }                                 
+                    }
                 }
-                return detallesNuevos;
             }
+            return detallesNuevos;
         }
 
         public bool saveMail(Mail mail)

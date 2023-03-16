@@ -694,7 +694,7 @@
                                 <select class="form-control" id="selAnunciantePedidoAS"></select>
                             </div>
                             <div class="col-md-3" style="align-self: self-end;">
-                                <button type='button' class='btn btn-secondary' id="bVincularAnun" value='1' onclick="vincularAnun()">Vincular</button>
+                                <button type='button' class='btn btn-secondary' id="bVincularAnun" value='1' onclick="vincularAnun('selAnunciantePedidoAS','selAnunciantePedido','selRedesPedido','bVincularAnun')">Vincular</button>
                             </div>
                         </div>
                         <div class="row py-1">
@@ -728,6 +728,141 @@
                                     </tr>
                                 </thead>
                                 <tbody id="tablePedidos" class="small" align="center"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
+        <!--Modal Importar Detalle-->
+        <div class="modal fade" id="importarModal">
+            <div class="modal-dialog modal-xl modalConv">
+                <div class="modal-content shadow p-3 mb-5 bg-white rounded">
+
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="importarModalTitle">IMPORTAR LINEA DE PEDIDO ADSERVER</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+
+                    <!-- Modal body -->
+                    <div class="modal-body" id="importarModalBody">
+                        <!--Filtros-->
+                            <!--<div class="row py-1">
+                                <div class="col-md-4">
+                                    <label for="idFiltroD">ID OP: </label>
+                                    <div class="input-group enterSearch"> <input type="number" id="idFiltroOpD" class="form-control"></div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="descFiltroD">Nombre OP: </label>
+                                    <div class="input-group enterSearch"> <input type="text" id="descFiltroOpD" class="form-control"></div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="selRedesD">Red AdServer: </label>
+                                    <select class="form-control enterSearch" id="selRedesD" onchange="onRedSelectedD()"></select>
+                                </div>
+                            </div>-->
+                            <div class="row py-1">
+                                <div class="col-md-3">
+                                    <label for="idFiltroPedidoImp">ID Pedido: </label>
+                                    <div class="input-group enterSearch"> <input type="number" id="idFiltroPedidoImp" class="form-control"></div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="descFiltroPedidoImp">Nombre Pedido: </label>
+                                    <div class="input-group enterSearch"> <input type="text" id="descFiltroPedidoImp" class="form-control"></div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label>Anunciante</label>
+                                    <select class="form-control" id="selAnuncianteImp" disabled="disabled"></select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="selRedesImp">Red AdServer: </label>
+                                    <select class="form-control enterSearch" id="selRedesImp"></select>
+                                </div>
+                            </div>
+                            <div class="row py-1">
+                                <div class="col-md-3">
+                                    <label for="idFiltroLineaImp">ID Línea: </label>
+                                    <div class="input-group enterSearch"> <input type="number" id="idFiltroLineaImp" class="form-control"></div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="descFiltroLineaImp">Nombre Línea: </label>
+                                    <div class="input-group enterSearch"> <input type="text" id="descFiltroLineaImp" class="form-control"></div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label>Fecha de publicación:</label>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="input-group input-daterange">
+                                                <input type="text" class="form-control datetimepicker-input enterSearch" id="fechaDesdeImp" data-toggle="datetimepicker" data-target="#fechaDesdeD" disabled="disabled"/>
+                                                <span class="input-group-addon">hasta</span>
+                                                <input type="text" class="form-control datetimepicker-input enterSearch" id="fechaHastaImp" data-toggle="datetimepicker" data-target="#fechaHastaD" disabled="disabled"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--<div class="row py-1">
+                                <div class="col-md-4">
+                                </div>
+                                <div class="col-md-4">
+                                </div>
+                                <div class="col-md-4 d-flex justify-content-end align-items-end">
+                                    <button type="button" class="btn btn-dark btn-sm mx-1" onclick="filterImp()">
+                                        <span class="fa fa-search"></span> Buscar
+                                    </button>
+                                </div>
+                            </div>-->
+                        <!--Sinc Anunciante-->
+                        <div class="row py-1" id="rowSincAnunImp" hidden="hidden">
+                            <div class="col-md-6" style="align-self: self-end;text-align: end;">
+                                <label id="lblAnunNoSincImp" style="color: red">*El Anunciante no está sincronizado con la Red AdServer seleccionada</label>
+                            </div>
+                            <div class="col-md-3">
+                                <label>Anunciante AdServer</label>
+                                <select class="form-control" id="selAnuncianteSincImp"></select>
+                            </div>
+                            <div class="col-md-3" style="align-self: self-end;">
+                                <button type='button' class='btn btn-secondary' id="bVincularAnunImp" value='1' onclick="vincularAnun('selAnuncianteSincImp','selAnuncianteImp','selRedesImp','bVincularAnunImp')">Vincular</button>
+                            </div>
+                        </div>
+                        <div class="row py-1">
+                            <div class="col-md-4">
+                            </div>
+                            <div class="col-md-4">
+                            </div>
+                            <div class="col-md-4 d-flex justify-content-end align-items-end">
+                                <button type="button" class="btn btn-dark btn-sm mx-1" onclick="filterImp()">
+                                    <span class="fa fa-search"></span> Buscar
+                                </button>
+                            </div>
+                        </div>
+                        <!--Tabla-->
+                        <div class="table-responsive mt-2">
+                            <table class="table table-hover table-sm " id="tablaDetGAM">
+                                <thead align="center">
+                                    <tr id="header">
+                                        <th>N Orden</th>
+                                        <th class="col-xs-3">ID AdServer Detalle</th>
+                                        <th class="col-xs-9">Nombre Detalle</th>
+                                        <th class="col-xs-3">Fecha de Creación</th>
+                                        <th class="col-xs-9">Fecha Desde</th>
+                                        <th class="col-xs-9">Fecha Hasta</th>
+                                        <th class="col-xs-1">Cant.</th>
+                                        <th class="col-xs-9">Neto</th>
+                                        <th width="1px"></th>
+                                        <th width="1px"></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="TableLineas" class="small" align="center"></tbody>
                             </table>
                         </div>
                     </div>
@@ -939,9 +1074,12 @@
                                     <div class="col-lg-1">
                                         <label>DETALLES</label>
                                     </div>
-                                    <div class="col-lg-1">
-                                        <button type="button" class="btn  actions btn-outline-dark btn-sm" id="bCargarNuevoRenglon" onclick="cargarNuevoRenglon()" title="Nuevo Detalle">
+                                    <div class="col-lg-2">
+                                        <button type="button" class="btn  actions btn-outline-dark btn-sm" id="bCargarNuevoRenglon" onclick="cargarNuevoRenglon()" title="Nuevo Detalle" style="padding-top: 2px; padding-bottom: 2px; margin-right: 10px; padding-right: 10px; padding-left: 10px;">
                                             <span class="fa fa-plus"></span>
+                                        </button>
+                                        <button type="button" class="btn  actions btn-outline-dark btn-sm" id="bImportarNuevoRenglon" onclick="importarNuevoRenglon()" title="Importar Detalle AdServer" style="padding-top: 2px;padding-bottom: 2px;">
+                                            <span class="fa fa-cloud-download"></span>
                                         </button>
                                     </div>
                                     <div class="col-lg-6">
@@ -999,7 +1137,7 @@
                                                 </div>
                                                 <div class="col-lg-4" style="padding-top: 32px; text-align: end; padding-right: 15px; padding-left: 0px;">
                                                     <button type="button" id="bcomprobarModificacionesD" class="btn btn-dark" onclick="comprobarModificacionesDButton()" title="Ver diferencias en AdServer">
-                                                        <span class="fa fa-cloud-download"></span> Diferencias
+                                                        <span class="fa fa-refresh"></span> Diferencias
                                                     </button>
                                                 </div>
                                             </div>
@@ -3033,14 +3171,14 @@
             $('.disableOnEdit').attr("disabled", false);
             //  Botón enviar renglon a AdServer
             if (det.tipo_aviso_dg == "" || det.tipo_aviso_dg == undefined || det.tipo_aviso_dg == null || OpAnulada == true || OpBloqueada == true) {
-                str = str + " <button type='button' data-id='" + id + "' disabled id='bSendAddServer" + id + "' class='btn actions btn-outline-dark btn-sm mr-1' onclick='enviarLineaAddServer(this)' title='Exportar Detalle a AdServer'> <span class='fa fa-cloud-upload ' id='brow" + id + "'></span></button>";
+                str = str + " <button type='button' data-id='" + id + "' disabled id='bSendAddServer" + id + "' class='btn actions btn-outline-dark btn-sm mr-1' onclick='enviarLineaAddServer(this)' title='Exportar Detalle AdServer'> <span class='fa fa-cloud-upload ' id='brow" + id + "'></span></button>";
             }
             else {
                 if ((det.tipo_aviso_dg.permite_envio_ads === true || det.tipo_aviso_dg.permite_envio_ads == "true") && (det.id_op_dg != 0) && ($('#inpIdPedido').val() !== 0 && $('#inpIdPedido').val() !== "") && $("#inpEsFacturada").val() == 'NO') {
-                    str = str + " <button type='button' data-id='" + id + "'  id='bSendAddServer" + id + "' class='btn actions btn-outline-dark btn-sm mr-1' onclick='enviarLineaAddServer(this)' title='Exportar Detalle a AdServer'> <span class='fa fa-cloud-upload' id='brow" + id + "'></span></button>";
+                    str = str + " <button type='button' data-id='" + id + "'  id='bSendAddServer" + id + "' class='btn actions btn-outline-dark btn-sm mr-1' onclick='enviarLineaAddServer(this)' title='Exportar Detalle AdServer'> <span class='fa fa-cloud-upload' id='brow" + id + "'></span></button>";
                 }
                 else {
-                    str = str + " <button type='button' data-id='" + id + "' disabled id='bSendAddServer" + id + "' class='btn actions btn-outline-dark btn-sm mr-1' onclick='enviarLineaAddServer(this)' title='Exportar Detalle a AdServer'> <span class='fa fa-cloud-upload' id='brow" + id + "'></span></button>";
+                    str = str + " <button type='button' data-id='" + id + "' disabled id='bSendAddServer" + id + "' class='btn actions btn-outline-dark btn-sm mr-1' onclick='enviarLineaAddServer(this)' title='Exportar Detalle AdServer'> <span class='fa fa-cloud-upload' id='brow" + id + "'></span></button>";
                 }
             }
             //  Botón eliminar renglon
@@ -3069,7 +3207,7 @@
                 str = str + "<span class='fa fa-exclamation fa-pulse' id='brow" + id + "' title='Detalle no guardado''></span></td>";
             }
             // Alerta Modificaciones en Linea de Pedido en AdServer
-            str = str + "<td id='tdMod" + id + "' style='padding-top: 16px;'><span class='fa fa-cloud-download fa-pulse invisible' id='spanCompActD" + id + "' title='Hay modificaciones en AdServer'></span></td></td></tr>";
+            str = str + "<td id='tdMod" + id + "' style='padding-top: 16px;'><span class='fa fa-refresh fa-pulse invisible' id='spanCompActD" + id + "' title='Hay modificaciones en AdServer'></span></td></td></tr>";
             $("#TableRenglones").append(str);
             //  Colorear verde renglon enviado a AdServer
             if (det.id_Google_Ad_Manager != undefined && det.id_Google_Ad_Manager != 0 && OpClon == false) {
@@ -4020,6 +4158,8 @@
             $('#fechaHastaD').datetimepicker({ format: 'L', locale: 'es' });
             $('#fechaDesdeC').datetimepicker({ format: 'L', locale: 'es' });
             $('#fechaHastaC').datetimepicker({ format: 'L', locale: 'es' });
+            $('#fechaDesdeImp').datetimepicker({ format: 'L', locale: 'es' });
+            $('#fechaHastaImp').datetimepicker({ format: 'L', locale: 'es' });
 
             callWS("medios", "getParamById", JSON.stringify(4), function (parLista) {
                 if (parLista.valor == 1) {
@@ -5275,8 +5415,8 @@
         function filterPedidos() {
             /*rows = $("tr").not("#header");*/
             params = {};
-            params.id = $("#idFiltroPedido").val();
-            params.descripcion = $('#descFiltroPedido').val();
+            params.idOp = $("#idFiltroPedido").val();
+            params.descripcionOp = $('#descFiltroPedido').val();
             params.Id_red = $('#selRedesPedido').val();
             params.Id_contacto = $('#selAnunciantePedido').val();
             var parametros = setListaParametros(params);
@@ -5284,25 +5424,6 @@
             var anun = {};
             anun.Id_contacto = $('#selAnunciantePedido').val();
             anun.id_red = $('#selRedesPedido').val();
-            //if ($('#fechaDesde').val() != "") {
-            //    fDesde = new Date(moment($("#fechaDesde").val(), 'DD/MM/YYYY', true).format());
-            //    mfDesde = moment(fDesde);
-            //    if (mfDesde.isValid()) {
-            //        params.fecha_desde = dateToSqlFormat($('#fechaDesde').val());
-            //    } else {
-            //        error += "Formato 'Fecha Desde' invalido";
-            //    }
-            //}
-            //if ($('#fechaHasta').val() != "") {
-            //    fHasta = new Date(moment($("#fechaHasta").val(), 'DD/MM/YYYY', true).format());
-            //    mfHasta = moment(fHasta);
-            //    if (mfHasta.isValid()) {
-            //        params.fecha_hasta = dateToSqlFormat($('#fechaHasta').val());
-            //    } else {
-            //        if (error != '') { error += ' / ' }
-            //        error += "Formato 'Fecha Hasta' invalido";
-            //    }
-            //}
 
             callWS("contactos", "getContactoByIdyRed", JSON.stringify(anun), function (data) {
                 if (data.id > 0) {
@@ -5314,59 +5435,73 @@
                     objParametro.ParameterName = "nombre";
                     objParametro.Value = "";
 
-                    callWS("googleAdManager", "getAnunciantes", JSON.stringify(objParametro), function (data) { onGetAnuncianteGAM(data); });
+                    callWS("googleAdManager", "getAnunciantes", JSON.stringify(objParametro), function (data) { onGetAnuncianteGAM(data, "selAnunciantePedidoAS", "rowSincAnun"); });
                 }
             });
         }
 
-        function onGetAnuncianteGAM(anunciantes) {
+        function onGetAnuncianteGAM(anunciantes, selAnunAS, rowAnun) {
             var listitems = '<option value="-1">  </option>';
             $.each(anunciantes, function (it, anun) {
                 listitems = listitems + '<option value="' + anun.idContactoDigital + '">' + anun.razonSocial + ' </option>';
             });
-            $("#selAnunciantePedidoAS").empty();
-            $("#selAnunciantePedidoAS").append(listitems);
+            $("#" + selAnunAS).empty();
+            $("#" + selAnunAS).append(listitems);
+            //$("#selAnunciantePedidoAS").empty();
+            //$("#selAnunciantePedidoAS").append(listitems);
 
-            $("#rowSincAnun").attr("hidden", false);
+            $("#" + rowAnun).attr("hidden", false);
+            /*$("#rowSincAnun").attr("hidden", false);*/
         }
 
-        function vincularAnun() {
-            var idGAMSel = $("#selAnunciantePedidoAS").val();
+        function vincularAnun(selAnunAS, selAnun, selRedes, bAnun) {
+            /*var idGAMSel = $("#selAnunciantePedidoAS").val();*/
+            var idGAMSel = $("#" + selAnunAS).val();
             if (idGAMSel == undefined) {
                 showMessage("Seleccione un anunciante en el dropdown", "info");
             } else {
                 var cont = {};
-                cont.Id = $("#selAnunciantePedido").val();
+                /*cont.Id = $("#selAnunciantePedido").val();*/
+                cont.Id = $("#" + selAnun).val();
                 cont.IdContactoDigital = idGAMSel;
-                cont.IdRed = $("#selRedesPedido").val();
-                if ($("#bVincularAnun").val() == 1) {
-                    callWS("contactos", "saveASRelation", JSON.stringify(cont), function (data) { onVincularAnun(data) });
+                /*cont.IdRed = $("#selRedesPedido").val();*/
+                cont.IdRed = $("#" + selRedes).val();
+                /*if ($("#bVincularAnun").val() == 1) {*/
+                if ($("#" + bAnun).val() == 1) {
+                    callWS("contactos", "saveASRelation", JSON.stringify(cont), function (data) { onVincularAnun(data, selAnunAS, selAnun, selRedes, bAnun) });
                 }
                 else {
-                    callWS("contactos", "deleteASRelation", JSON.stringify(cont), function (data) { onVincularAnun(data) });
+                    callWS("contactos", "deleteASRelation", JSON.stringify(cont), function (data) { onVincularAnun(data, selAnunAS, selAnun, selRedes, bAnun) });
                 }
             }
 
         }
 
-        function onVincularAnun(data) {
+        function onVincularAnun(data, bAnun, lblAnun, selAnunAS) {
             if (data == true) {
-                if ($("#bVincularAnun").val() == 1) {
-                    $("#bVincularAnun").removeClass("btn-primary").addClass("btn-success");
-                    $("#bVincularAnun").css("background-color", "#c3e6cb");
-                    $("#bVincularAnun").val(2);
-                    $("#bVincularAnun").html('Desvincular');
-                    $("#lblAnunNoSinc").text('');
-                    $("#selAnunciantePedidoAS").attr("disabled", true);
+                //if ($("#bVincularAnun").val() == 1) {
+                //    $("#bVincularAnun").removeClass("btn-primary").addClass("btn-success");
+                //    $("#bVincularAnun").css("background-color", "#c3e6cb");
+                //    $("#bVincularAnun").val(2);
+                //    $("#bVincularAnun").html('Desvincular');
+                //    $("#lblAnunNoSinc").text('');
+                //    $("#selAnunciantePedidoAS").attr("disabled", true);
+                if ($("#" + bAnun).val() == 1) {
+                    $("#" + bAnun).removeClass("btn-primary").addClass("btn-success");
+                    $("#" + bAnun).css("background-color", "#c3e6cb");
+                    $("#" + bAnun).val(2);
+                    $("#" + bAnun).html('Desvincular');
+                    $("#" + lblAnun).text('');
+                    $("#" + selAnunAS).attr("disabled", true);
                     showMessage("Anunciante vinculado", "success");                   
                 }
                 else {
-                    $("#bVincularAnun").removeClass("btn-success").addClass("btn-primary");
-                    $("#bVincularAnun").css("background-color", "#6c757d");
-                    $("#bVincularAnun").val(1);
-                    $("#bVincularAnun").html('Vincular');
-                    $("#lblAnunNoSinc").text('*El Anunciante no está sincronizado con la Red AdServer seleccionada');
-                    $("#selAnunciantePedidoAS").attr("disabled", false);
+                    $("#" + bAnun).removeClass("btn-success").addClass("btn-primary");
+                    $("#" + bAnun).css("background-color", "#6c757d");
+                    $("#" + bAnun).val(1);
+                    $("#" + bAnun).html('Vincular');
+                    $("#" + lblAnun).text('*El Anunciante no está sincronizado con la Red AdServer seleccionada');
+                    $("#" + selAnunAS).attr("disabled", false);
                     showMessage("Anunciante desvinculado", "success");
                 }
             } else {
@@ -5415,6 +5550,115 @@
 
         function formatearMonto(x) {
             return Number.parseFloat(x).toFixed(2);
+        }
+
+        function importarNuevoRenglon() {
+            $.when(
+                callWS("contactos", "getAnunciantes", '', function (data) { onPopulateSelectDone(data, 'selAnuncianteImp', 'id', 'razonSocial'); }),
+                callWS("medios", "getAllRedes", '', function (data) { onCargarSelect(data, 'selRedesImp', 'id_red', 'descripcion', 'codigo_red'); })
+            ).then(function () { onImportarNuevoRenglon() });
+        }
+
+        function onImportarNuevoRenglon() {
+            var id_anunciante = $("#selAnunciante").val();
+            $('#fechaDesdeImp').datetimepicker('date', $("#fechaDesde").val());
+            $('#fechaHastaImp').datetimepicker('date', $("#fechaHasta").val());
+            $("#selAnuncianteImp option[value=" + id_anunciante + "]").attr("selected", "selected");
+
+            $("#importarModal").modal('show');
+        } 
+
+        function filterImp() {
+            rows = $("tr").not("#header");
+            params = {};
+            params.idOp = $("#idFiltroPedidoImp").val();
+            params.descripcionOp = $('#descFiltroPedidoImp').val();
+            params.red = $('#selRedesImp').val();
+            params.idDet = $("#idFiltroLineaImp").val();
+            params.descripcionDet = $('#descFiltroLineaImp').val();
+            params.Id_contacto = $('#selAnuncianteImp').val();
+            if ($('#fechaDesdeImp').val() != "") {
+                fDesde = new Date(moment($("#fechaDesdeImp").val(), 'DD/MM/YYYY', true).format());
+                mfDesde = moment(fDesde);
+                if (mfDesde.isValid()) {
+                    params.fecha_desde = dateToSqlFormat($('#fechaDesdeImp').val());
+                } else {
+                    error += "Formato 'Fecha Desde' invalido";
+                }
+            }
+            if ($('#fechaHastaImp').val() != "") {
+                fHasta = new Date(moment($("#fechaHastaImp").val(), 'DD/MM/YYYY', true).format());
+                mfHasta = moment(fHasta);
+                if (mfHasta.isValid()) {
+                    params.fecha_hasta = dateToSqlFormat($('#fechaHastaImp').val());
+                } else {
+                    if (error != '') { error += ' / ' }
+                    error += "Formato 'Fecha Hasta' invalido";
+                }
+            }
+
+            if (params.red != 0 && params.red != null) {
+
+                for (param in params) {
+                    if (params[param] == null) {
+                        params[param] = '';
+                    }
+                };
+
+                var parametros = setListaParametros(params);
+
+                var anun = {};
+                anun.Id_contacto = $('#selAnuncianteImp').val();
+                anun.id_red = $('#selRedesImp').val();
+
+                callWS("contactos", "getContactoByIdyRed", JSON.stringify(anun), function (data) {
+                    if (data.id > 0) {
+                        callWS("googleAdManager", "getDetNuevos", JSON.stringify(parametros), function (data) { onGetDetallesGAM(data); });
+                    }
+                    else {
+                        var objParametro = {};
+
+                        objParametro.ParameterName = "nombre";
+                        objParametro.Value = "";
+
+                        callWS("googleAdManager", "getAnunciantes", JSON.stringify(objParametro), function (data) { onGetAnuncianteGAM(data, "selAnuncianteSincImp", "rowAnuncianteSincImp"); });
+                    }
+                });
+            }
+            else {
+                showMessage("Seleccione una Red AdServer", "alert");
+            }
+        }
+
+        function onGetDetallesGAM(data) {
+            onCargarTablaD('TableLineas', data);
+            if (data.length == 0) {
+                showMessage("No se enontraron Líneas", "info");
+            }
+        }
+
+        function onCargarTablaD(tablaID, data) {
+            rowHTML = ''
+
+            $.each(data, function (it, detGAM) {
+
+                rowHTML += "<tr>";
+                rowHTML += "<td class='col-xs-1'>" + detGAM.anio + "-" + detGAM.mes + "-" + detGAM.nro_orden + "</td>";
+                rowHTML += "<td class='col-xs-1'> " + detGAM.id_Google_Ad_Manager + "</td > ";
+                rowHTML += "<td class='col-xs-1'> " + detGAM.descripcion + "</td > ";
+                rowHTML += "<td class='col-xs-1'> " + dateToFieldFormat(detGAM.fecha_creacion) + "</td > ";
+                rowHTML += "<td class='col-xs-1'> " + dateToFieldFormat(detGAM.fecha_desde) + "</td > ";
+                rowHTML += "<td class='col-xs-1'> " + dateToFieldFormat(detGAM.fecha_hasta) + "</td > ";
+                rowHTML += "<td class='col-xs-1'> " + detGAM.cantidad + "</td > ";
+                rowHTML += "<td class='col-xs-1'>$ " + formatearMonto(detGAM.monto_neto) + "</td > ";
+                rowHTML += "<td class='col-xs-2' > <button type='button' id=button" + detGAM.id_Google_Ad_Manager + " class='btn btn-danger' style='height: 31px; width: 77.81px;font - size: inherit;' title='Importar Detalle' onClick='RedireccionD(" + detGAM.id_op_dg + ")'> <span class='fa fa-cloud-download'></span></button> </td ></tr>";
+                rowHTML += "</tr>";
+
+            });
+
+            $("#" + tablaID).html(rowHTML);
+
+            $("#pleaseWaitDialog").modal('hide');
         }
 
     </script>
