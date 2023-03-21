@@ -607,15 +607,15 @@
 
                     <!-- Modal Header -->
                     <div class="modal-header">
-                        <h4 class="modal-title" id="modifModalDTitle">MODIFICACIONES OP EN ADSERVER</h4>
+                        <h4 class="modal-title" id="modifModalDTitle">DIFERENCIAS CON LINEA EN ADSERVER</h4>
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                     </div>
 
                     <!-- Modal body -->
                     <div class="modal-body" id="modifModalDBody">
-                        <div class="row justify-content-center">
+                        <!--<div class="row justify-content-center">
                             <label><b>Detalles</b></label>
-                        </div>
+                        </div>-->
                         <div class="row" style="padding-left: 20px; padding-right: 20px;">
                             <!--Tabla Dif Cabecera-->
                             <div class="table-responsive mt-2 tableFixHead">
@@ -712,12 +712,12 @@
                             </div>
                         </div>
                         <!--Tabla-->
-                        <div class="table-responsive mt-2">
-                            <table class="table table-hover table-sm " id="tablaPedidos">
+                        <div class="table-responsive tableFixHead mt-2">
+                            <table class="table table-fixed table-hover table-sm " id="tablaPedidos">
                                 <thead align="center">
                                     <tr id="header">
-                                        <th class="col-xs-3">ID AdServer OP</th>
-                                        <th class="col-xs-9">Nombre OP</th>
+                                        <th class="col-xs-3">ID Pedido</th>
+                                        <th class="col-xs-9">Nombre Pedido</th>
                                         <th class="col-xs-9">Anunciante</th>
                                         <th class="col-xs-3">Fecha Ultima Modificación</th>
                                         <th class="col-xs-9">Fecha Desde</th>
@@ -846,17 +846,18 @@
                             </div>
                         </div>
                         <!--Tabla-->
-                        <div class="table-responsive mt-2">
-                            <table class="table table-hover table-sm " id="tablaDetGAM">
+                        <div class="table-responsive mt-2 tableFixHead">
+                            <table class="table table-fixed table-hover table-sm " id="tablaDetGAM">
                                 <thead align="center">
                                     <tr id="header">
-                                        <th>N Orden</th>
-                                        <th class="col-xs-3">ID AdServer Detalle</th>
-                                        <th class="col-xs-9">Nombre Detalle</th>
+                                        <th class="col-xs-3">ID Pedido</th>
+                                        <th class="col-xs-9">Nombre Pedido</th>
+                                        <th class="col-xs-3">ID Línea de Pedido</th>
+                                        <th class="col-xs-9">Nombre Línea de Pedido</th>
                                         <th class="col-xs-3">Fecha de Creación</th>
                                         <th class="col-xs-9">Fecha Desde</th>
                                         <th class="col-xs-9">Fecha Hasta</th>
-                                        <th class="col-xs-1">Cant.</th>
+                                        <th class="col-xs-1">Cantidad</th>
                                         <th class="col-xs-9">Neto</th>
                                         <th width="1px"></th>
                                         <th width="1px"></th>
@@ -2760,6 +2761,7 @@
         OpAnulada = false;
         OpSinc = false;
         DetalleClon = false;
+        TipoAvisoClase = 0;
         //Parametro global para llevar los detalles sincronizados con AdServer a eliminar
         DetallesASDelete = [];
         //Parametro global para llevar las diferencias entre detalles y lineas de pedido sincronizadas
@@ -3410,6 +3412,7 @@
             tipo_aviso = rDetalle.tipo_aviso_dg;
             if (tipo_aviso != undefined) {
                 $("#selTipoAvisoD option[value=" + tipo_aviso.id_categoria + "]").attr("selected", "selected");
+                TipoAvisoClase = tipo_aviso.tipo_aviso_ads;
             }
 
             //Carga areasGeo
@@ -3973,6 +3976,7 @@
             if (tiposAviso.length == 1) {
                 $("#selTipoAvisoD option[value=" + tiposAviso[0].id_categoria + "]").attr("selected", "selected");
                 $("#selTipoAvisoD").attr("disabled", true);
+                TipoAvisoClase = tiposAviso[0].id_categoria;
             }
             else {
                 /*onTipoAvisoGetAll(tiposAviso, 'selTipoAvisoD', 'Id_tipo_aviso_dg', 'descripcion', 'Permite_envio_ads')*/
@@ -5335,10 +5339,14 @@
 
         function onTipoAvisoSelected() {
             var tipoAviso = $('#selTipoAvisoD option:selected').attr("tipo_aviso_ads");
-            //recargar medidas
-            callWS("medios", "getMedidas", JSON.stringify(tipoAviso), function (data) { onPopulateSelectMedidas(data, 'selMedidasD', 'id_medidadigital', 'descripcion', 'ancho', 'alto'); });      
-
+            if (TipoAvisoClase != tipoAviso) {
+                //recargar medidas
+                callWS("medios", "getMedidas", JSON.stringify(tipoAviso), function (data) { onPopulateSelectMedidas(data, 'selMedidasD', 'id_medidadigital', 'descripcion', 'ancho', 'alto'); }); 
+            }     
+        
             filterTarifas();
+
+            TipoAvisoClase = tipoAviso;
         }
 
         function validarFechasCabecYDet(fechaDesdeCab, fechaHastaCab) {
@@ -5479,13 +5487,6 @@
 
         function onVincularAnun(data, bAnun, lblAnun, selAnunAS) {
             if (data == true) {
-                //if ($("#bVincularAnun").val() == 1) {
-                //    $("#bVincularAnun").removeClass("btn-primary").addClass("btn-success");
-                //    $("#bVincularAnun").css("background-color", "#c3e6cb");
-                //    $("#bVincularAnun").val(2);
-                //    $("#bVincularAnun").html('Desvincular');
-                //    $("#lblAnunNoSinc").text('');
-                //    $("#selAnunciantePedidoAS").attr("disabled", true);
                 if ($("#" + bAnun).val() == 1) {
                     $("#" + bAnun).removeClass("btn-primary").addClass("btn-success");
                     $("#" + bAnun).css("background-color", "#c3e6cb");
@@ -5631,19 +5632,20 @@
         }
 
         function onGetDetallesGAM(data) {
-            onCargarTablaD('TableLineas', data);
+            onCargarTablaDGam('TableLineas', data);
             if (data.length == 0) {
                 showMessage("No se enontraron Líneas", "info");
             }
         }
 
-        function onCargarTablaD(tablaID, data) {
+        function onCargarTablaDGam(tablaID, data) {
             rowHTML = ''
 
             $.each(data, function (it, detGAM) {
 
                 rowHTML += "<tr>";
-                rowHTML += "<td class='col-xs-1'>" + detGAM.anio + "-" + detGAM.mes + "-" + detGAM.nro_orden + "</td>";
+                rowHTML += "<td class='col-xs-1'>" + detGAM.id_pedido_Google_Ad_Manager + "</td>";
+                rowHTML += "<td class='col-xs-1'>" + detGAM.nombre_pedido_Google_Ad_Manager + "</td>";
                 rowHTML += "<td class='col-xs-1'> " + detGAM.id_Google_Ad_Manager + "</td > ";
                 rowHTML += "<td class='col-xs-1'> " + detGAM.descripcion + "</td > ";
                 rowHTML += "<td class='col-xs-1'> " + dateToFieldFormat(detGAM.fecha_creacion) + "</td > ";
@@ -5651,7 +5653,7 @@
                 rowHTML += "<td class='col-xs-1'> " + dateToFieldFormat(detGAM.fecha_hasta) + "</td > ";
                 rowHTML += "<td class='col-xs-1'> " + detGAM.cantidad + "</td > ";
                 rowHTML += "<td class='col-xs-1'>$ " + formatearMonto(detGAM.monto_neto) + "</td > ";
-                rowHTML += "<td class='col-xs-2' > <button type='button' id=button" + detGAM.id_Google_Ad_Manager + " class='btn btn-danger' style='height: 31px; width: 77.81px;font - size: inherit;' title='Importar Detalle' onClick='RedireccionD(" + detGAM.id_op_dg + ")'> <span class='fa fa-cloud-download'></span></button> </td ></tr>";
+                rowHTML += "<td class='col-xs-2' > <button type='button' id=bSelLinea" + detGAM.id_Google_Ad_Manager + " class='btn btn-dark' style='height: 31px; width: 77.81px; font-size: inherit;' title='Importar Detalle' onClick='selLinea(" + JSON.stringify(detGAM) + ")'> <span class='fa fa-cloud-download'></span></button> </td ></tr>";
                 rowHTML += "</tr>";
 
             });
@@ -5659,6 +5661,15 @@
             $("#" + tablaID).html(rowHTML);
 
             $("#pleaseWaitDialog").modal('hide');
+        }
+
+        function selLinea(linea) {
+            var idDet = Detalles.length + 1;
+            linea.id_detalle = idDet;
+            $.when(
+                Detalles.push(linea),
+                $('#bSelLinea' + linea.id_Google_Ad_Manager).attr('data-id', idDet)
+            ).then(function () { var boton = $('#bSelLinea' + linea.id_Google_Ad_Manager); cargarModificarRenglon(boton); $("#importarModal").modal('hide'); });
         }
 
     </script>

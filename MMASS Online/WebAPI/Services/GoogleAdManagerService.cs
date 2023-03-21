@@ -1478,19 +1478,54 @@ namespace WebApi.Services
                         {
                             //Pasamos los datos de la linea al detalle
                             Dg_orden_pub_as detalle = new Dg_orden_pub_as();
+                            List<Dg_orden_pub_emplazamientos> emplazamientos = new List<Dg_orden_pub_emplazamientos>();
+                            List<Dg_orden_pub_medidas> medidas = new List<Dg_orden_pub_medidas>();
 
+                            switch (linea.costType)
+                            {
+                                case CostType.CPM:
+                                    detalle.Tipo_tarifa = 0;
+                                    break;
+                                case CostType.CPD:
+                                    detalle.Tipo_tarifa = 1;
+                                    break;
+                                case CostType.CPC:
+                                    detalle.Tipo_tarifa = 3;
+                                    break;
+                                case CostType.CPA:
+                                    detalle.Tipo_tarifa = 4;
+                                    break;
+                            }
+                            
                             string creatD = DateTimeUtilities.ToString(linea.creationDateTime, "yyyy/MM/dd");
                             if (creatD != "0")
                             {
                                 detalle.Fecha_creacion = System.DateTime.Parse(creatD);
                             }
+                            detalle.Id_red = idRed;
                             detalle.Id_pedido_Google_Ad_Manager = linea.orderId;
                             detalle.Nombre_pedido_Google_Ad_Manager = linea.orderName;
                             detalle.Id_Google_Ad_Manager = linea.id;
                             detalle.Descripcion = linea.name;
                             detalle.Tarifa_manual = 1;
+                            detalle.Importe_unitario = (float)(linea.costPerUnit.microAmount / 1000000.0);
+                            detalle.Porc_dto = (float)linea.discount;
                             detalle.Cantidad = (int)linea.primaryGoal.units;
                             detalle.Monto_neto = (float)(linea.budget.microAmount / 1000000.0);
+                            if (linea.targeting.geoTargeting != null)
+                            {
+                                Dg_areas_geo area = new Dg_areas_geo();
+                                area.Id_area = Dg_areas_geo.getByCodigo(linea.targeting.geoTargeting.targetedLocations[0].id).Id_area;
+                                detalle.areaGeo = area;
+                            }
+                            if (linea.environmentType.ToString() == "VIDEO_PLAYER")
+                            {
+                                detalle.tipo_aviso_dg = Dg_tipos_avisos.getByDesc("Video");
+                            }
+                            else
+                            {
+                                detalle.tipo_aviso_dg = Dg_tipos_avisos.getByDesc("Banner");
+                            }
                             string startD = DateTimeUtilities.ToString(linea.startDateTime, "yyyy/MM/dd");
                             string endD = DateTimeUtilities.ToString(linea.endDateTime, "yyyy/MM/dd");
 
@@ -1501,6 +1536,39 @@ namespace WebApi.Services
                             if (endD != "0")
                             {
                                 detalle.Fecha_hasta = System.DateTime.Parse(endD);
+                            }
+
+                            if (linea.targeting.inventoryTargeting.targetedPlacementIds != null)
+                            {
+                                foreach (long idEmpla in linea.targeting.inventoryTargeting.targetedPlacementIds)
+                                {
+                                    Dg_orden_pub_emplazamientos emplaza = new Dg_orden_pub_emplazamientos();
+                                    emplaza.Codigo_emplazamiento = idEmpla;
+                                    emplaza.Id_emplazamiento = Dg_emplazamientos.getByCodigo2(idEmpla, idRed).Id_emplazamiento;
+                                    emplazamientos.Add(emplaza);
+                                }
+                                detalle.Emplazamientos = emplazamientos;
+                            }
+                            if (linea.creativePlaceholders != null)
+                            {
+                                foreach (CreativePlaceholder cph in linea.creativePlaceholders)
+                                {
+                                    Dg_orden_pub_medidas medida = new Dg_orden_pub_medidas();
+                                    string desc = "";
+                                    if (linea.environmentType.ToString() == "VIDEO_PLAYER")
+                                    {
+                                        desc = cph.size.width.ToString() + "x" + cph.size.height.ToString() + "v";
+                                    }
+                                    else
+                                    {
+                                        desc = cph.size.width.ToString() + "x" + cph.size.height.ToString();
+                                    }
+                                    medida.Id_medidadigital = Dg_medidas.getByDescripcion(desc).Id_medidadigital;
+                                    medida.Ancho = cph.size.width;
+                                    medida.Alto = cph.size.height;
+                                    medidas.Add(medida);
+                                }
+                                detalle.Medidas = medidas;
                             }
 
                             detallesNuevos.Add(detalle);

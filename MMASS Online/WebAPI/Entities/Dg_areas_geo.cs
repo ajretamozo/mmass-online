@@ -40,6 +40,22 @@ namespace WebApi.Entities
             }
             return resultado;
         }
+
+        public static Dg_areas_geo getByCodigo(long codigo)
+        {
+            string sqlCommand = " select id_area, codigo_area, descripcion, tipo from dg_areas_geo" +
+                                " where codigo_area = " + codigo.ToString();
+            Dg_areas_geo resultado;
+            resultado = new Dg_areas_geo();
+            DataTable t = DB.Select(sqlCommand);
+
+            if (t.Rows.Count == 1)
+            {
+                resultado = getDg_areas_geo(t.Rows[0]);
+            }
+            return resultado;
+        }
+
         public static List<Dg_areas_geo> getAll()
         {
             string sqlCommand = " select id_area, codigo_area, descripcion, tipo from dg_areas_geo order by id_area";
