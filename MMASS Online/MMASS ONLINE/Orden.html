@@ -1137,7 +1137,7 @@
                                                     <select class="form-control" id="selRedes" onchange="onRedSelected()"></select>
                                                 </div>
                                                 <div class="col-lg-4" style="padding-top: 32px; text-align: end; padding-right: 15px; padding-left: 0px;">
-                                                    <button type="button" id="bcomprobarModificacionesD" class="btn btn-dark" onclick="comprobarModificacionesDButton()" title="Ver diferencias en AdServer">
+                                                    <button type="button" id="bcomprobarModificacionesD" class="btn btn-dark" onclick="comprobarModificacionesDButton()" title="Ver diferencias en AdServer" disabled="disabled">
                                                         <span class="fa fa-refresh"></span> Diferencias
                                                     </button>
                                                 </div>
@@ -1756,11 +1756,13 @@
                 $("#checkListaParaFact").change();
             }
 
-            if (data.id_Google_Ad_Manager > 0 && (data.id_op_dg != undefined && data.id_op_dg != 0) && data.es_anulada == 0 && data.es_facturada == false && OpClon == false) {
+            if ((data.id_op_dg != undefined && data.id_op_dg != 0) && data.es_anulada == 0 && data.es_facturada == false && OpClon == false) {
                 //codRed = $('#selRedes>option:selected').attr("codigo_red");
                 //comprobarModificaciones(data.id_op_dg, data.id_Google_Ad_Manager, codRed);
                 /*obtenerProgresoLineasGam(data);*/
-                comprobarNuevosDetalles(); //TAL VEZ ELIMINAR
+                /*comprobarNuevosDetalles();*/
+                comprobarModDetalle(data);
+                obtenerProgresoLineasGam(data);
             }
 
             if (data.bloqueado == 0 && OpClon == false) {
@@ -1771,6 +1773,8 @@
                 OpBloqueada = true;
                 bloquearCamposCabecera();
             }
+
+            Detalles = data.detalles;
 
             if (OpClon) {
                 //$("#inpOrderMonth").val("");
@@ -1783,7 +1787,13 @@
                 $("#bClonar").attr("disabled", true);
                 $('#pTitulo').append('<span id="sTituloDinamico1"> - </span>');
                 $('#pTitulo').append('<span id="sTituloDinamico2" style="color: #007bff;">CLONACION</span>');
-  /*              $("#selRedes").attr("disabled", false);*/
+                /*              $("#selRedes").attr("disabled", false);*/
+
+                Detalles.forEach(function (detalle) {
+                    detalle.id_Google_Ad_Manager = 0;
+                    detalle.id_pedido_Google_Ad_Manager = 0;
+                    detalle.nombre_pedido_Google_Ad_Manager = '';
+                });
             }
 
             if (OpSinc) {
@@ -1809,10 +1819,6 @@
             $("#conf_fc").val(data.imp_conf_fc);
             // $("#total").val(data.tercer_neto); //Total
 
-            comprobarModDetalle(data);
-            obtenerProgresoLineasGam(data);
-
-            Detalles = data.detalles;
             $("#TableRenglones").empty();
             if (Detalles.length > 0) {
                 $("#selAnunciante").attr("disabled", true);
@@ -2114,9 +2120,11 @@
                 //    item.impconffc = 0;
                 //}
                 //si es clon, seteo el id_google_ad_manager = 0
-                if(OpClon){
-                    item.id_Google_Ad_Manager = 0;
-                }
+                //if(OpClon){
+                //    item.id_Google_Ad_Manager = 0;
+                //    item.id_pedido_Google_Ad_Manager = 0;
+                //    item.nombre_pedido_Google_Ad_Manager = '';
+                //}
             })
 
             if (DetallesASDelete.length > 0) {
@@ -2597,8 +2605,9 @@
                 showMessage("Seleccione un Ejecutivo", "info");
                 return 0;
             }
-            idRed = $('#selRedes').val();
-            idEmpresa = $('#selEmpresa').val();
+
+            //var idRed = $('#selRedes').val();
+            //var idEmpresa = $('#selEmpresa').val();
 
             $("#checkTarifaManualD")[0].checked = false;
             $("#checkTarifaManualD").change();
@@ -2623,6 +2632,7 @@
             $('#totalD').val("");
             callWS("medios", "getAll", '', function (data) { onPopulateSelectDone(data, 'selMediosD', 'id_medio', 'desc_medio'); });
             //callWS("medios", "getPorEmpresa", JSON.stringify(idEmpresa), function (data) { onPopulateSelectDone(data, 'selMediosD', 'id_medio', 'desc_medio'); });
+            callWS("medios", "getAllRedes", '', function (data) { onCargarSelect(data, 'selRedes', 'id_red', 'descripcion', 'codigo_red'); });
             callWS("tarifas", "getFormasUsoAll", '', function (data) { onPopulateSelectDone(data, 'selTipoTarifaD', 'id', 'descripcion'); });
             callWS("Tipos_avisos", "getAll", '', function (data) { onTipoAvisoGetAll(data, 'selTipoAvisoD', 'id_categoria', 'descripcion', 'Permite_envio_ads', 'tipo_aviso_ads'); });
             callWS("medios", "getMedidas", JSON.stringify("0"), function (data) { onPopulateSelectMedidas(data, 'selMedidasD', 'id_medidadigital', 'descripcion', 'ancho', 'alto'); });
@@ -2635,7 +2645,6 @@
             params.vigente = 1;
             //callWS("tarifas", "filter", JSON.stringify(setListaParametros(params)), function (data) { onTarifasGetAll(data, 'selTarifaD', 'id_tarifa_dg', 'descripcion'); })
 
-            //nuev
             if (idConvenio > 0) {
                 data = {};
                 data.id_convenio = idConvenio;
@@ -2649,7 +2658,7 @@
 
         }
 
-        //AGREGUE (cantidad = días al seleccionar CPD Sponsor):
+        //(cantidad = días al seleccionar CPD Sponsor):
         function filterTarifas() {
             if (tieneTarifa == false) {
                 var day1 = new Date(dateToSqlFormat($('#fechaDesdeD').val()));
@@ -2831,7 +2840,7 @@
             }
         }
 
-        //punto de control
+
         function addRenglon(id) {
             //if (id > 0) {
             //    id--;
@@ -2964,6 +2973,7 @@
                 //rDetalle.netomanual = rDetalle.monto_neto;
                 rDetalle.tarifa_manual = 1;
             } else {
+                rDetalle.tarifa_manual = 0;
                 rDetalle.imp_tarifa = parseFloat($('#precioUnitarioD').val());
             }
 
@@ -3185,10 +3195,10 @@
             }
             //  Botón eliminar renglon
             if ($("#inpEsFacturada").val() == 'SI' || OpAnulada == true || OpBloqueada == true) {
-                str = str + " <button type='button' id='bElim" + id + "' data-id='" + id + "' disabled id='bEliminar" + id + "' class='btn actions btn-outline-dark btn-sm mr-1'  onclick='deleteRenglon(this, " + det.id_Google_Ad_Manager + ")' title='Eliminar Detalle'> <span class='fa fa-trash'></span></button>";
+                str = str + " <button type='button' id='bElim" + id + "' data-id='" + id + "' disabled id='bEliminar" + id + "' class='btn actions btn-outline-dark btn-sm mr-1'  onclick='deleteRenglon(this)' title='Eliminar Detalle'> <span class='fa fa-trash'></span></button>";
             }
             else {
-                str = str + " <button type='button' id='bElim" + id + "' data-id='" + id + "' class='btn actions btn-outline-dark btn-sm mr-1'  onclick='deleteRenglon(this, " + det.id_Google_Ad_Manager + ")' title='Eliminar Detalle'> <span class='fa fa-trash'></span></button>";
+                str = str + " <button type='button' id='bElim" + id + "' data-id='" + id + "' class='btn actions btn-outline-dark btn-sm mr-1'  onclick='deleteRenglon(this)' title='Eliminar Detalle'> <span class='fa fa-trash'></span></button>";
             }
             //  Botón modificar renglon
             str = str + " <button type='button' data-id='" + id + "' class='btn actions btn-outline-dark btn-sm mr-1'  onclick='cargarModificarRenglon(this)' title='Editar Detalle'> <span class='fa fa-edit'></span></button>";
@@ -3344,7 +3354,7 @@
                 tipoAviso = rDetalle.tipo_aviso_dg.tipo_aviso_ads;
             }
 
-            idRed = rDetalle.id_red;
+            var idRed = rDetalle.id_red;
 
             if (rDetalle.id_det_conv > 0) {
                 cargarSelectMultiConv($(r).attr("data-id"));
@@ -3452,13 +3462,19 @@
             if (rDetalle.tarifa_dg != null) {
                 $.when(filterTarifas()).then(function () {
                     $("#selTarifaD option[value=" + rDetalle.tarifa_dg.id_tarifa_dg + "]").attr("selected", "selected");
-                    if (rDetalle.tarifa_manual) {
-                        $("#checkTarifaManualD")[0].checked = true;
-                        $("#checkTarifaManualD").change();
-                        $("#precioUnitarioD").val(rDetalle.importe_unitario);
-                        $("#precioUnitarioD").change();
-                    }
-                }, function data() { });
+                    //if (rDetalle.tarifa_manual) {
+                    //    $("#checkTarifaManualD")[0].checked = true;
+                    //    $("#checkTarifaManualD").change();
+                    //    $("#precioUnitarioD").val(rDetalle.importe_unitario);
+                    //    $("#precioUnitarioD").change();
+                    //}
+                }/*, function data() { }*/);
+            }
+            if (rDetalle.tarifa_manual) {
+                $("#checkTarifaManualD")[0].checked = true;
+                $("#checkTarifaManualD").change();
+                $("#precioUnitarioD").val(rDetalle.importe_unitario);
+                $("#precioUnitarioD").change();
             }
 
             //Carga datos ad server
@@ -3613,53 +3629,6 @@
             }
         }
 
-        //function onSendOrder(data) {
-        //    var msj = data.parameterName;
-        //    var r = data.value;
-        //    if (r > 0) {
-        //        showMessage(msj);
-
-        //        $("#bSendOrdenAdServer").attr("disabled", true);
-        //        $('#inpIdOrdenAdServer').val(r);
-        //        $("#bSendOrdenAdServer").css("background-color", "#c3e6cb");
-        //        $('#inpIdOrdenAdServer').css("background-color", "#c3e6cb");
-        //        $("#bgetOrderASDetais").attr("disabled", false);
-        //        recargarRenglones();
-
-        //        //Parametros para el Log
-        //        var parametros = {};
-        //        parametros.objeto = 'ORDEN PUBLICITARIA';
-        //        parametros.clave = $("#inpOrderNumber").attr("id_op_dg");
-        //        parametros.idusuario = $("#NombreUsuario").attr("data-id");
-        //        parametros.accion = 'EXPORTACION';
-        //        anio = $("#inpOrderYear").val();
-        //        mes = $("#inpOrderMonth").val();
-        //        nroOp = $("#inpOrderNumber").val();
-        //        adserver = $("#selRedes option:selected").text();
-        //        parametros.descripcion = 'Se exportó la OP Digital: ' + anio + '-' + mes + '-' + nroOp + ' al AdServer: ' + adserver;
-        //        var params = setListaParametros(parametros);
-        //        callWS("dg_orden_pub_aps", "grabarLog", JSON.stringify(params));
-        //    }
-        //    else {
-        //        if (r == -2) {
-        //            options = [
-        //                {
-        //                    optionDesc: "Aceptar",
-        //                    optionFunc: "sincAnunciante()"
-        //                },
-        //                {
-        //                    optionDesc: "Cancelar",
-        //                    optionFunc: ""
-        //                }
-        //            ];
-        //            var mensaje = "<div class='d-flex justify-content-center' style='text-align: center;'>" + msj + "</div>";
-        //            showModal(mensaje, options);
-        //        } else {
-        //            showMessage(msj, "error");
-        //        }
-        //    }
-        //}
-
         function onSendOrder(data) {
             var msj = data.parameterName;
             var r = data.value;
@@ -3675,23 +3644,14 @@
             }
         }
 
-        function deleteRenglon(r, id_Google_Ad_Manager) {
-            //var idr = 0;
-            //if (idDet > 0) {
-            //    idr = idDet;
-            //}
-            //else {
-            //    idr = $(r).attr("data-id");
-            //}
+        function deleteRenglon(r) {
+            var rId = $(r).attr("data-id");
 
-            var idr = $(r).attr("data-id");
+            var rDetalle = Detalles.find(detalle => detalle.id_detalle == rId);
 
-            //sumo el detalle a la lista para archivar las lineas de pedidos en GAM
-            if (id_Google_Ad_Manager > 0) {
-                var Det = {}
-                Det.Descripcion = $("#row" + idr ).attr("descripcion");
-                Det.id_Google_Ad_Manager = id_Google_Ad_Manager;
-                DetallesASDelete.push(Det);
+            if (rDetalle.id_op_dg > 0 && rDetalle.id_Google_Ad_Manager > 0) {
+                //sumo el detalle a la lista para archivar las lineas de pedidos en GAM
+                DetallesASDelete.push(rDetalle);
             }
 
             r.parentElement.parentElement.remove();
@@ -3699,7 +3659,7 @@
             var indexOfObject;
        
                 for (let index = 0; index < Detalles.length; index++) {
-                    if (Detalles[index].id_detalle == idr) {
+                    if (Detalles[index].id_detalle == rId) {
                         indexOfObject = index;
                     }
                 }           
@@ -3922,8 +3882,8 @@
         }
 
         function LimpiarSelectMultiples() {
-            idRed = $('#selRedes').val();
-            idEmpresa = $('#selEmpresa').val();
+            //idRed = $('#selRedes').val();
+            //idEmpresa = $('#selEmpresa').val();
             callWS("medios", "getMedidas", JSON.stringify("0"), function (data) { onPopulateSelectMedidas(data, 'selMedidasD', 'id_medidadigital', 'descripcion', 'ancho', 'alto'); });
             callWS("medios", "getAllE", JSON.stringify(0), function (data) { onPopulateSelectEmplaza(data, 'selEmplazaD', 'id_emplazamiento', 'descripcion', 'codigo_emplazamiento'); });
             callWS("medios", "getAll", '', function (data) { onPopulateSelectDone(data, 'selMediosD', 'id_medio', 'desc_medio'); });
@@ -4607,8 +4567,8 @@
         }
 
         function onRedSelected() {
-            idRed = $('#selRedes').val();
-            codRed = $('#selRedes>option:selected').attr("codigo_red");
+            var idRed = $('#selRedes').val();
+            var codRed = $('#selRedes>option:selected').attr("codigo_red");
             CambiarRed(codRed);
 
             var pedidos = [];
@@ -4743,8 +4703,8 @@
         function comprobarModificacionesDButton() {
             for (const item of DiferenciasDetLin) {
                 arrValores = item.parametros[0].value.split("@@@");
-                idGAM = arrValores[1];
-                idRed = arrValores[2];
+                var idGAM = arrValores[1];
+                var idRed = arrValores[2];
                 if (idGAM == $("#inpIdLinea").val() && idRed == $('#selRedes').val()) {
                     onPopulateTablasDifD(item);
                     break;
@@ -4860,12 +4820,10 @@
                     $("#btnApl" + paramName).addClass('btn-blue');
                     showMessage("Medidas actualizadas", "info");
                     break;
-                    //seguir: aplicar deleterenglon() en aceptar
                 case 'EstadoD':
                     options = [
                         {
                             optionDesc: "Aceptar",
-                           /* optionFunc: "deleteRenglon('" + 0 + "','" + 0 + "','" + idDet + "')"*/
                             optionFunc: "eliminarDetalleArchivado('" + idDet + "')"
                         },
                         {
@@ -4948,7 +4906,7 @@
             $("#bCargarNuevoRenglon").attr("disabled", true);
             //$("#conf_nc").attr("disabled", true);
             //$("#conf_fc").attr("disabled", true);
-            $("#bSendOrdenAdServer").attr("disabled", true);
+            //$("#bSendOrdenAdServer").attr("disabled", true);
             $("#bAnular").attr("disabled", true);
             $("#checkListaParaFact")[0].disabled = true;
             //$("#bcomprobarModificaciones").attr("disabled", true);
@@ -5176,112 +5134,6 @@
             });
         }
 
-        //function sincAnunciante() {
-
-        //    $.when($("#modalCenter").modal('hide')).then(function () {
-        //        sincAnunciante2();
-        //    });
-
-        //    //$("#modalCenter").modal('hide'); 
-        //    //$("#sincAnunModal").modal('show'); 
-        //}
-
-        //function sincAnunciante2() {
-        //    $("#sincAnunModal").modal('show');
-        //}
-
-        //function buscarAnunGam() {
-        //    /*rows = $("tr").not("#header");*/
-        //    desc = $("#descFiltro").val();
-        //    red = $("#selRedes").val();
-        //    codRed = $('#selRedes>option:selected').attr("codigo_red");
-
-        //    if (red != 0 && red != null) {
-        //        var objParametro = {};
-
-        //        objParametro.ParameterName = "nombre";
-        //        objParametro.Value = desc;
-
-        //        $.when(CambiarRed(codRed)
-        //        ).then(sincAnunciante3(objParametro));
-        //    }
-        //    else {
-        //        showMessage("Seleccione una Red AdServer", "alert");
-        //    }
-        //}
-
-        //function sincAnunciante3(objParametro) {
-        //    callWS("googleAdManager", "getAnunciantes", JSON.stringify(objParametro), onGetAnuncianteGAM);
-        //}
-
-        //function onGetAnuncianteGAM(data) {
-        //    if (data.length != 0) {
-        //        getAnunciantes(data);
-        //    }
-        //    else {
-        //        onCargarTablaSinc(data)
-        //        showMessage("No se enontraron Anunciantes", "info");
-        //    }
-        //}
-
-        //function getAnunciantes(anunciantesGAM) {
-        //    idRed = $('#selRedes').val();
-        //    anunciante = {};
-        //    anunciante.id = $("#selAnunciante").val();
-        //    anunciante.razonSocial = $("#selAnunciante option:selected").text();
-        //    /*$("#pleaseWaitDialog").modal();*/
-        //    onCargarTablaSinc(anunciante, anunciantesGAM, idRed);
-        //}
-
-        //function onCargarTablaSinc(anunciante, anunciantesGAM, idRed) {
-        //    $("#TableSincAnun tr").remove()       
-
-        //    $.each(anunciantesGAM, function (it, anuncianteGAM) {
-        //        var str = '';
-        //        str = "<tr>";
-        //        str = str + "<td class='col-xs-2' > " + anuncianteGAM.idContactoDigital + "</td > ";
-        //        str = str + "<td class='col-xs-4' > " + anuncianteGAM.razonSocial + "</td >";
-        //        str = str + "<td class='col-xs-4' > <select class='form-control' style = 'width: 426px;' id=sel" + anuncianteGAM.idContactoDigital + "> <option value=" + anunciante.id + ">" + anunciante.razonSocial + " </option> </select > </td >";
-        //        str = str + "<td class='col-xs-2' > <button type='button' id=button" + anuncianteGAM.idContactoDigital + " class='btn btn-secondary' onClick='vincular(" + anuncianteGAM.idContactoDigital + ", " + idRed + ")'>Vincular</button> </td >";
-        //        str = str + "</tr>";
-   
-        //        $("#TableSincAnun").append(str);
-
-        //        var idAGam = "#sel" + anuncianteGAM.idContactoDigital;
-        //        var idButton = "#button" + anuncianteGAM.idContactoDigital;
-        //        $(idAGam).val(anuncianteGAM.idContactoDigital);
-        //        if ($(idAGam).val() != undefined) {
-        //            $(idButton).removeClass("btn-primary").addClass("btn-success");
-        //            $(idButton).css("background-color", "#c3e6cb");
-        //        }
-        //    });
-        //}
-
-        //function vincular(idGAM, idRed) {
-        //    var idGAMSel = "#sel" + idGAM;
-        //    idGAMSel = idGAMSel + ">option:selected";
-        //    if ($(idGAMSel).val() == undefined) {
-        //        showMessage("Seleccione un anunciante en el dropdown", "info");
-        //    } else {
-        //        var cont = {};
-        //        cont.Id = $(idGAMSel).val();
-        //        cont.IdContactoDigital = idGAM;
-        //        cont.IdRed = idRed;
-        //        callWS("contactos", "saveASRelation", JSON.stringify(cont), function (data) { onVincular(data, idGAM) });
-        //    }
-        //}
-
-        //function onVincular(data, idGAM) {
-        //    if (data == true) {
-        //        var idButton = "#button" + idGAM;
-        //        $(idButton).removeClass("btn-primary").addClass("btn-success");
-        //        $(idButton).css("background-color", "#c3e6cb");
-        //        showMessage("Anunciante vinculado", "success");
-        //    } else {
-        //        showMessage("Ocurrió un error al vincular el Anunciante", "alert");
-        //    }
-        //}
-
         function obtenerProgresoLineasGam(op) {
             callWS("googleAdManager", "obtenerProgresoLineasGam", JSON.stringify(op), function (data) { onObtenerProg(data) });
         }
@@ -5308,34 +5160,34 @@
             callWS("googleAdManager", "cambiarRed", codRed);
         }
 
-        function comprobarNuevosDetalles() {
-            var data = {};
-            data.id_op_dg = $("#inpOrderNumber").attr("id_op_dg");
-            data.id_Google_Ad_Manager = $('#inpIdOrdenAdServer').val();
-            data.id_red = $('#selRedes').val();
+        //function comprobarNuevosDetalles() {
+        //    var data = {};
+        //    data.id_op_dg = $("#inpOrderNumber").attr("id_op_dg");
+        //    data.id_Google_Ad_Manager = $('#inpIdOrdenAdServer').val();
+        //    data.id_red = $('#selRedes').val();
 
-            callWS("googleAdManager", "comprobarNuevosDetalles", JSON.stringify(data), function (data) { onComprobarNuevosDetalles(data); });
-        }
+        //    callWS("googleAdManager", "comprobarNuevosDetalles", JSON.stringify(data), function (data) { onComprobarNuevosDetalles(data); });
+        //}
 
-        function onComprobarNuevosDetalles(detalles) {
-            if (detalles.length > 0) {
-                showMessage("Se encontraron " + detalles.length + " nuevos Detalles", "info")
-                //Se recorrren los nuevos detalles y se les asigna un 'id_detalle'
-                var contDet = Detalles.length + 1;
-                $.each(detalles, function (it, detalle) {
-                    detalle.id_detalle = contDet;
-                    contDet++;
-                    Detalles.push(detalle);
-                });
-                recargarRenglones();
-                //Detalles.forEach(generarTablaDetalles);
-                //calculateTotals();
-            }
-        }
+        //function onComprobarNuevosDetalles(detalles) {
+        //    if (detalles.length > 0) {
+        //        showMessage("Se encontraron " + detalles.length + " nuevos Detalles", "info")
+        //        //Se recorrren los nuevos detalles y se les asigna un 'id_detalle'
+        //        var contDet = Detalles.length + 1;
+        //        $.each(detalles, function (it, detalle) {
+        //            detalle.id_detalle = contDet;
+        //            contDet++;
+        //            Detalles.push(detalle);
+        //        });
+        //        recargarRenglones();
+        //        //Detalles.forEach(generarTablaDetalles);
+        //        //calculateTotals();
+        //    }
+        //}
 
-        $("#inpDescOP").on("change keyup paste", function () {
-            $("#bSendOrdenAdServer").attr("disabled", true);
-        })
+        //$("#inpDescOP").on("change keyup paste", function () {
+        //    $("#bSendOrdenAdServer").attr("disabled", true);
+        //})
 
         function onTipoAvisoSelected() {
             var tipoAviso = $('#selTipoAvisoD option:selected').attr("tipo_aviso_ads");
@@ -5554,6 +5406,46 @@
         }
 
         function importarNuevoRenglon() {
+            if ($("#fechaHasta").val() == "" || $("#fechaDesde").val() == "") {
+                showMessage("Debe seleccionar la vigencia de la orden", "info");
+                return 0;
+            }
+            if ($("#selAgencia").val() == null) {
+                showMessage("Seleccione una Agencia", "info");
+                return 0;
+            }
+            if ($("#selAnunciante").val() == null) {
+                showMessage("Seleccione un Anunciante", "info");
+                return 0;
+            }
+            if ($("#selProducto").val() == null) {
+                showMessage("Seleccione un Producto", "info");
+                return 0;
+            }
+            if ($("#selEmpresa").val() == null) {
+                showMessage("Seleccione una Empresa", "info");
+                return 0;
+            }
+            if ($("#selConceptoN").val() == null) {
+                showMessage("Seleccione un Concepto de Negocio", "info");
+                return 0;
+            }
+            if ($("#selClasificacion").val() == null) {
+                showMessage("Seleccione una Clasificación Orden", "info");
+                return false;
+            }
+            if ($("#selFPago").val() == null) {
+                showMessage("Seleccione un Tipo de Venta", "info");
+                return 0;
+            }
+            if ($("#selPlazoP").val() == null) {
+                showMessage("Seleccione un Plazo de Pago", "info");
+                return 0;
+            }
+            if ($("#selEjecutivo").val() == null || $("#selEjecutivo").val() == 0) {
+                showMessage("Seleccione un Ejecutivo", "info");
+                return 0;
+            }
             $.when(
                 callWS("contactos", "getAnunciantes", '', function (data) { onPopulateSelectDone(data, 'selAnuncianteImp', 'id', 'razonSocial'); }),
                 callWS("medios", "getAllRedes", '', function (data) { onCargarSelect(data, 'selRedesImp', 'id_red', 'descripcion', 'codigo_red'); })
@@ -5561,6 +5453,8 @@
         }
 
         function onImportarNuevoRenglon() {
+            var lineas = [];
+            onCargarTablaDGam('TableLineas', lineas);
             var id_anunciante = $("#selAnunciante").val();
             $('#fechaDesdeImp').datetimepicker('date', $("#fechaDesde").val());
             $('#fechaHastaImp').datetimepicker('date', $("#fechaHasta").val());

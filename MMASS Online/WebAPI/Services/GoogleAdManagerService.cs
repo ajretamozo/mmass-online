@@ -1458,7 +1458,7 @@ namespace WebApi.Services
 
                 else
                 {
-                    List<Dg_orden_pub_as> detallesExistentes = Dg_orden_pub_as.getByAnunRedFecha(parametros[5].Value, idRed, parametros[6].Value, parametros[7].Value);
+                    List<Dg_orden_pub_as> detallesExistentes = Dg_orden_pub_as.getByAnunRedFecha(anun.Id_contacto, idRed, parametros[6].Value, parametros[7].Value);
 
                     //Recorremos las lineas de pedido y las vamos comparando con los detalles existentes
                     foreach (LineItem linea in detallesGAM)

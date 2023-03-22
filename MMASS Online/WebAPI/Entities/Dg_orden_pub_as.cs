@@ -678,7 +678,7 @@ namespace WebApi.Entities
             return detalles;
         }
 
-        public static List<Dg_orden_pub_as> getByAnunRedFecha(string idAnun, int idRed, string fechaD, string fechaH)
+        public static List<Dg_orden_pub_as> getByAnunRedFecha(int idAnun, int idRed, string fechaD, string fechaH)
         {
             List<Dg_orden_pub_as> detalles = new List<Dg_orden_pub_as>();
 
