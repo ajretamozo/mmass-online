@@ -2069,10 +2069,8 @@
             data.producto = {};
             data.producto.Id_producto = $("#selProducto").val();
             data.medio = {};
-            data.medio.Id_medio = 0;///
-
-            data.Tipo_orden = 4; // Revisar
-
+            data.medio.Id_medio = 0;
+            data.Tipo_orden = 4; 
             data.idFormaPago = "1";
             data.Monto_bruto = $("#montoBruto").val();
             data.Es_anulada = 0;
@@ -2175,12 +2173,8 @@
             data.Detalles = Detalles;
             data.desc_fact = "Orden Digital " + data.fInicio + " - " + data.fFin;
 
-            //if ($("#inpIdOrdenAdServer").val() != "") {
-            //    data.id_Google_Ad_Manager = $('#inpIdOrdenAdServer').val();
-            //}
-            /*data.id_red = $('#selRedes').val();*/
             callWS("dg_orden_pub_aps", "save", JSON.stringify(data), function (resultado) { onSaveOrder(resultado, data); }); 
-            /*$("#bSendOrdenAdServer").attr("disabled", false);*/
+
             $("#bConvenios").attr("disabled", true);
             $("#bBorrConvenios").attr("disabled", true);
         }
@@ -2607,7 +2601,7 @@
             }
 
             //var idRed = $('#selRedes').val();
-            //var idEmpresa = $('#selEmpresa').val();
+            var idEmpresa = $('#selEmpresa').val();
 
             $("#checkTarifaManualD")[0].checked = false;
             $("#checkTarifaManualD").change();
@@ -5273,7 +5267,6 @@
         } 
 
         function filterPedidos() {
-            /*rows = $("tr").not("#header");*/
             params = {};
             params.idOp = $("#idFiltroPedido").val();
             params.descripcionOp = $('#descFiltroPedido').val();
@@ -5307,26 +5300,19 @@
             });
             $("#" + selAnunAS).empty();
             $("#" + selAnunAS).append(listitems);
-            //$("#selAnunciantePedidoAS").empty();
-            //$("#selAnunciantePedidoAS").append(listitems);
-
             $("#" + rowAnun).attr("hidden", false);
-            /*$("#rowSincAnun").attr("hidden", false);*/
         }
 
         function vincularAnun(selAnunAS, selAnun, selRedes, bAnun) {
-            /*var idGAMSel = $("#selAnunciantePedidoAS").val();*/
             var idGAMSel = $("#" + selAnunAS).val();
             if (idGAMSel == undefined) {
                 showMessage("Seleccione un anunciante en el dropdown", "info");
             } else {
                 var cont = {};
-                /*cont.Id = $("#selAnunciantePedido").val();*/
                 cont.Id = $("#" + selAnun).val();
                 cont.IdContactoDigital = idGAMSel;
-                /*cont.IdRed = $("#selRedesPedido").val();*/
                 cont.IdRed = $("#" + selRedes).val();
-                /*if ($("#bVincularAnun").val() == 1) {*/
+
                 if ($("#" + bAnun).val() == 1) {
                     callWS("contactos", "saveASRelation", JSON.stringify(cont), function (data) { onVincularAnun(data, selAnunAS, selAnun, selRedes, bAnun) });
                 }
