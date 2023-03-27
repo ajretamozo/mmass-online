@@ -51,10 +51,19 @@ function isUserLogged() {
 }
 
 function cerrarSesion() {
-    sessionStorage.setItem('token', null);
-    location.href = '/login.html';
-    
+    if (window.location.href.indexOf("/orden.html") > -1) {
+        desbloquearOp();
+        setTimeout(function () {
+            sessionStorage.setItem('token', null);
+            location.href = '/login.html';
+        }, 5);
+    }
+    else {
+        sessionStorage.setItem('token', null);
+        location.href = '/login.html';
+    }
 } 
+
 function autentificar(user, pass, onDone,onError) {
     $.when(
         callWS("users", "authenticate", '{"username": "' + user + '","password": "' + pass + '"}', function (data) { _onAutentificar(data);  })

@@ -192,6 +192,8 @@ namespace WebApi.Services
                     if (long.Parse(resultado.Value) > 0)
                     {
                         Dg_orden_pub_as.saveId_Google_Ad_Manager(det.Id_op_dg, det.Id_detalle, long.Parse(resultado.Value));
+                        //grabamos parametro para que OrderList sepa que op pintar de verde
+                        Dg_orden_pub_ap.saveId_Google_Ad_Manager(det.Id_op_dg);
 
                         //enviar notificación por mail
                         if (paramEnviarMail == 1 || paramEnviarMail == 2 || paramEnviarMail == 5 || paramEnviarMail == 6)

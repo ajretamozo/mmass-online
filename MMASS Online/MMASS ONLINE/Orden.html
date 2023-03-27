@@ -1704,12 +1704,10 @@
             //    $("#bSendOrdenAdServer").attr("disabled", false);
             //    $('#inpIdOrdenAdServer').val("");
             //}
-            if (data.id_Google_Ad_Manager > 0 && OpClon == false) {
-                //$("#bSendOrdenAdServer").css("background-color", "#c3e6cb");
-                //$('#inpIdOrdenAdServer').val(data.id_Google_Ad_Manager);
-                //$('#inpIdOrdenAdServer').css("background-color", "#c3e6cb");
-                $("#bgetOrderASDetais").attr("disabled", false);
-            }
+            //if (data.id_Google_Ad_Manager > 0 && OpClon == false) {
+                // VER QUE HACER CON ESTO
+                //$("#bgetOrderASDetais").attr("disabled", false);
+            //}
 
             $("#bConvenios").attr("disabled", true);
 
@@ -1745,7 +1743,7 @@
                 $("#bClonar").attr("disabled", false);
             }
 
-            if (data.parafacturar == 0 && data.nro_orden > 0) {
+            if (data.parafacturar == 0 && data.nro_orden > 0 && data.es_facturada == false) {
                 $("#checkListaParaFact")[0].checked = false;
                 $("#checkListaParaFact").change();
             }
@@ -2101,29 +2099,19 @@
 
             data.Total_Avisos = 0;
             data.Total_Impresiones = 0;
+            data.id_Google_Ad_Manager = 0;
+
             Detalles.forEach(function (item, index) {
                 data.Total_Avisos += 1;
                 if (item.tipo_tarifa == 0) {
                     data.Total_Impresiones += parseFloat(item.cantidad);
                 }
-                //if (parseInt($("#neto1").val()) != 0) {
-                //    item.porcconfnc = parseFloat(parseInt($("#conf_nc").val()) / parseInt($("#neto1").val()) * 100);
-                //    item.porcconffc = parseFloat(parseInt($("#conf_fc").val()) / parseInt($("#neto1").val()) * 100);
-                //    item.impconfnc = item.monto_neto / 100 * item.porcconfnc;
-                //    item.impconffc = item.monto_neto / 100 * item.porcconffc;
-                //} else {
-                //    item.porcconfnc = 0;
-                //    item.porcconffc = 0;
-                //    item.impconfnc = 0;
-                //    item.impconffc = 0;
-                //}
-                //si es clon, seteo el id_google_ad_manager = 0
-                //if(OpClon){
-                //    item.id_Google_Ad_Manager = 0;
-                //    item.id_pedido_Google_Ad_Manager = 0;
-                //    item.nombre_pedido_Google_Ad_Manager = '';
-                //}
-            })
+
+                //guardamos parametro en id_google_ad_manager para detectar si la OP contiene o no algún detalle sincronizado y pintarlo de verde en OrderList
+                if (item.id_Google_Ad_Manager > 0) {
+                    data.id_Google_Ad_Manager = 1;
+                }
+            });
 
             if (DetallesASDelete.length > 0) {
                 var orden = {};
@@ -3180,7 +3168,7 @@
                 str = str + " <button type='button' data-id='" + id + "' disabled id='bSendAddServer" + id + "' class='btn actions btn-outline-dark btn-sm mr-1' onclick='enviarLineaAddServer(this)' title='Exportar Detalle AdServer'> <span class='fa fa-cloud-upload ' id='brow" + id + "'></span></button>";
             }
             else {
-                if ((det.tipo_aviso_dg.permite_envio_ads === true || det.tipo_aviso_dg.permite_envio_ads == "true") && (det.id_op_dg != 0) && ($('#inpIdPedido').val() !== 0 && $('#inpIdPedido').val() !== "") && $("#inpEsFacturada").val() == 'NO') {
+                if ((det.tipo_aviso_dg.permite_envio_ads === true || det.tipo_aviso_dg.permite_envio_ads == "true") && det.id_op_dg != 0 && det.id_pedido_Google_Ad_Manager > 0 && $("#inpEsFacturada").val() == 'NO') {
                     str = str + " <button type='button' data-id='" + id + "'  id='bSendAddServer" + id + "' class='btn actions btn-outline-dark btn-sm mr-1' onclick='enviarLineaAddServer(this)' title='Exportar Detalle AdServer'> <span class='fa fa-cloud-upload' id='brow" + id + "'></span></button>";
                 }
                 else {
@@ -5007,16 +4995,12 @@
             }
         }
 
-        //window.addEventListener('beforeunload', desbloquearOp());
-
         function desbloquearOp() {
             if (OpYaAbierta == false) {
                 var opBloq = {}
                 opBloq.id_op_dg = $("#inpOrderNumber").attr("id_op_dg");
                 opBloq.id_usuario = $("#NombreUsuario").attr("data-id");
                 callWS("dg_orden_pub_aps", "desbloquearOp", JSON.stringify(opBloq));
-                //navigator.sendBeacon("http://localhost:5000/dg_orden_pub_aps/desbloquearOp", JSON.stringify(opBloq));
-                //enviarConBeacon("dg_orden_pub_aps", "desbloquearOp", JSON.stringify(opBloq));
             }
         }
 
