@@ -482,19 +482,19 @@
                                     <select class="form-control" id="selEmpresaC"></select>
                                 </div>
                                 <div class="col-md-2">
-                                    <label>Descripción:</label>
+                                    <label>Descripciónlabel>
                                     <div class="row align-items-center">
                                         <div class="col-md-12"> <div class="input-group enterSearch"> <input type="text" id="inpDescConv" class="form-control"> </div> </div>
                                     </div>
                                 </div>
                                 <div class="col-md-2">
-                                    <label>Agencia:</label>
+                                    <label>Agencia</label>
                                     <div class="row align-items-center">
                                         <div class="col-md-12"> <div class="input-group enterSearch"> <input type="text" id="inpDescAgencia" class="form-control"> </div> </div>
                                     </div>
                                 </div>
                                 <div class="col-md-2">
-                                    <label>Anunciante:</label>
+                                    <label>Anunciante</label>
                                     <div class="row align-items-center">
                                         <div class="col-md-12"> <div class="input-group enterSearch"> <input type="text" id="inpDescAnunciante" class="form-control"> </div> </div>
                                     </div>
@@ -502,7 +502,7 @@
                                 <div class="col-md-4">
                                     <div class="row align-items-center">
                                         <div class="col-md-7">
-                                            <label>Vigencia del Convenio:</label>
+                                            <label>Vigencia del Convenio</label>
                                             <div id="OrderDateSpam" class="row">
                                                 <div class="col-md-12">
                                                     <div class="input-group input-daterange">
@@ -668,11 +668,11 @@
                         <!--Filtros-->
                         <div class="row py-1">
                             <div class="col-md-3">
-                                <label for="idFiltroPedido">ID: </label>
+                                <label for="idFiltroPedido">ID</label>
                                 <div class="input-group enterSearch"> <input type="number" id="idFiltroPedido" class="form-control"></div>
                             </div>
                             <div class="col-md-3">
-                                <label for="descFiltroPedido">Nombre: </label>
+                                <label for="descFiltroPedido">Nombre</label>
                                 <div class="input-group enterSearch"> <input type="text" id="descFiltroPedido" class="form-control"></div>
                             </div>
                             <div class="col-md-3">
@@ -680,7 +680,7 @@
                                 <select class="form-control" id="selAnunciantePedido" disabled="disabled"></select>
                             </div>
                             <div class="col-md-3">
-                                <label for="selRedesPedido">Red AdServer: </label>
+                                <label for="selRedesPedido">Red AdServer</label>
                                 <select class="form-control enterSearch" id="selRedesPedido" disabled="disabled"></select>
                             </div>
                         </div>
@@ -772,11 +772,11 @@
                             </div>-->
                             <div class="row py-1">
                                 <div class="col-md-3">
-                                    <label for="idFiltroPedidoImp">ID Pedido: </label>
+                                    <label for="idFiltroPedidoImp">ID Pedido</label>
                                     <div class="input-group enterSearch"> <input type="number" id="idFiltroPedidoImp" class="form-control"></div>
                                 </div>
                                 <div class="col-md-3">
-                                    <label for="descFiltroPedidoImp">Nombre Pedido: </label>
+                                    <label for="descFiltroPedidoImp">Nombre Pedido</label>
                                     <div class="input-group enterSearch"> <input type="text" id="descFiltroPedidoImp" class="form-control"></div>
                                 </div>
                                 <div class="col-md-3">
@@ -784,21 +784,21 @@
                                     <select class="form-control" id="selAnuncianteImp" disabled="disabled"></select>
                                 </div>
                                 <div class="col-md-3">
-                                    <label for="selRedesImp">Red AdServer: </label>
+                                    <label for="selRedesImp">Red AdServer</label>
                                     <select class="form-control enterSearch" id="selRedesImp"></select>
                                 </div>
                             </div>
                             <div class="row py-1">
                                 <div class="col-md-3">
-                                    <label for="idFiltroLineaImp">ID Línea: </label>
+                                    <label for="idFiltroLineaImp">ID Línea</label>
                                     <div class="input-group enterSearch"> <input type="number" id="idFiltroLineaImp" class="form-control"></div>
                                 </div>
                                 <div class="col-md-3">
-                                    <label for="descFiltroLineaImp">Nombre Línea: </label>
+                                    <label for="descFiltroLineaImp">Nombre Línea</label>
                                     <div class="input-group enterSearch"> <input type="text" id="descFiltroLineaImp" class="form-control"></div>
                                 </div>
                                 <div class="col-md-3">
-                                    <label>Fecha de publicación:</label>
+                                    <label>Fecha de publicación</label>
                                     <div class="row">
                                         <div class="col-md-12">
                                             <div class="input-group input-daterange">
@@ -822,7 +822,7 @@
                                 </div>
                             </div>-->
                         <!--Sinc Anunciante-->
-                        <div class="row py-1" id="rowSincAnunImp" hidden="hidden">
+                        <div class="row py-1" id="rowAnuncianteSincImp" hidden="hidden">
                             <div class="col-md-6" style="align-self: self-end;text-align: end;">
                                 <label id="lblAnunNoSincImp" style="color: red">*El Anunciante no está sincronizado con la Red AdServer seleccionada</label>
                             </div>
@@ -1347,7 +1347,7 @@
                                     <button type="button" id="bClonar" disabled="disabled" class="btn actions btn-dark btn-sm mx-1" onclick="prevClonarOrden()">
                                         <span class="fa fa-clone"></span> Clonar OP
                                     </button>
-                                    <button type="button" id="bAnular" disabled="disabled" class="btn actions btn-dark btn-sm mx-1" onclick="prevAnularOrden()">
+                                    <button type="button" id="bAnular" disabled="disabled" class="btn actions btn-dark btn-sm mx-1" onclick="checkAnularOrden()">
                                         <span class="fa fa-ban"></span> Anular OP
                                     </button>
                                     <div class="form-check-inline mr-0">
@@ -1410,7 +1410,7 @@
 
                     <div class="row">
                         <div class="col-lg-11">
-                            <label>Adjuntar archivo:</label>
+                            <label>Adjuntar archivo</label>
                             <form enctype="multipart/form-data" id="formuploadajax" method="post">
                                 <input type="file" id="archivo1" name="archivo1" />
                                 <input type="submit" class="btn btn-dark btn-sm my-1" value="Subir archivo" style="float:right" />
@@ -1551,22 +1551,21 @@
             var op = getUrlParameter("orderId")
             var data = {};
             data.Id_op_dg = op;
-            //var idUser = getUserId();
             if (op != undefined) {
                 callWS("dg_orden_pub_aps", "getById", JSON.stringify(data), onGetOrder);
             }
 
             //si la OP viene de SincronizarOP
-            var op1 = getUrlParameter("orderAdServer")
-            if (op1 != undefined) {
-                OpSinc = true;
-                arr = op1.split(",");
-                var Id_op_gam = arr[0];
-                var codRed = arr[1];
+            //var op1 = getUrlParameter("orderAdServer")
+            //if (op1 != undefined) {
+            //    OpSinc = true;
+            //    arr = op1.split(",");
+            //    var Id_op_gam = arr[0];
+            //    var codRed = arr[1];
 
-                $.when(CambiarRed(codRed))
-                 .then(getOrdenGAM(Id_op_gam));
-            }
+            //    $.when(CambiarRed(codRed))
+            //     .then(getOrdenGAM(Id_op_gam));
+            //}
 
             //si la OP viene de SincronizarLinea
             var op3 = getUrlParameter("orderIdSinc")
@@ -1682,6 +1681,7 @@
             if (OpClon == false) {
                 $("#inpOrderNumber").val(data.nro_orden);
                 $("#inpOrderNumber").attr("id_op_dg", data.id_op_dg);
+                $("#selEmpresa").attr("disabled", true);
             }
             if (data.formasPago.length > 0) {
                 $("#selFPago option[value=" + data.formasPago[0].forma_pago.id_formapago + "]").attr("selected", "selected");
@@ -1704,10 +1704,11 @@
             //    $("#bSendOrdenAdServer").attr("disabled", false);
             //    $('#inpIdOrdenAdServer').val("");
             //}
-            //if (data.id_Google_Ad_Manager > 0 && OpClon == false) {
-                // VER QUE HACER CON ESTO
-                //$("#bgetOrderASDetais").attr("disabled", false);
-            //}
+            if (data.id_Google_Ad_Manager > 0 && OpClon == false) {
+                $("#bAnular").attr("disabled", true);
+                $("#bAnular").attr("title", "La Orden no puede ser anulada ya que tiene Detalles vinculados con AdServer");
+                //$("#bgetOrderASDetais").attr("disabled", false); VER QUE HACER CON ESTO
+            }
 
             $("#bConvenios").attr("disabled", true);
 
@@ -1756,9 +1757,6 @@
 
             if ((data.id_op_dg != undefined && data.id_op_dg != 0) && data.es_anulada == 0 && data.es_facturada == false && OpClon == false) {
                 //codRed = $('#selRedes>option:selected').attr("codigo_red");
-                //comprobarModificaciones(data.id_op_dg, data.id_Google_Ad_Manager, codRed);
-                /*obtenerProgresoLineasGam(data);*/
-                /*comprobarNuevosDetalles();*/
                 comprobarModDetalle(data);
                 obtenerProgresoLineasGam(data);
             }
@@ -1775,17 +1773,10 @@
             Detalles = data.detalles;
 
             if (OpClon) {
-                //$("#inpOrderMonth").val("");
-                //$("#inpOrderYear").val("");
-                //$("#inpOrderNumber").val("");
-                //$("#inpFechaAlta").val("");
-                //$("#inpEsFacturada").val("NO");
-           /*     $("#bSendOrdenAdServer").attr("disabled", true);*/
                 $("#bAnular").attr("disabled", true);
                 $("#bClonar").attr("disabled", true);
                 $('#pTitulo').append('<span id="sTituloDinamico1"> - </span>');
                 $('#pTitulo').append('<span id="sTituloDinamico2" style="color: #007bff;">CLONACION</span>');
-                /*              $("#selRedes").attr("disabled", false);*/
 
                 Detalles.forEach(function (detalle) {
                     detalle.id_Google_Ad_Manager = 0;
@@ -1794,14 +1785,14 @@
                 });
             }
 
-            if (OpSinc) {
-                $("#bAnular").attr("disabled", true);
-                $("#bClonar").attr("disabled", true);
-            }
+            //if (OpSinc) {
+            //    $("#bAnular").attr("disabled", true);
+            //    $("#bClonar").attr("disabled", true);
+            //}
 
-            if (OpClon == false && OpSinc == false) {
-                $("#selEmpresa").attr("disabled", true);
-            }
+            //if (OpClon == false && OpSinc == false) {
+            //    $("#selEmpresa").attr("disabled", true);
+            //}
 
             //data.Id_condpagoap = 1; //Arreglar
 
@@ -2245,11 +2236,18 @@
                 callWS("dg_orden_pub_aps", "grabarLog", JSON.stringify(params));
 
                 OpClon = false;
-                OpSinc = false;
+                /*OpSinc = false;*/
                 
                 $('#sTituloDinamico1').remove();
                 $('#sTituloDinamico2').remove();
-                $("#bAnular").attr("disabled", false);
+                if (data.op.id_Google_Ad_Manager > 0) {
+                    $("#bAnular").attr("disabled", true);
+                    $("#bAnular").attr("title", "La Orden no puede ser anulada ya que tiene Detalles vinculados con AdServer");
+                }
+                else {
+                    $("#bAnular").attr("disabled", false);
+                    $("#bAnular").attr("title", "Anular Orden");
+                }
                 $("#bClonar").attr("disabled", false);
                 //$("#conf_nc").attr("disabled", true);
                 //$("#conf_fc").attr("disabled", true);
@@ -2612,6 +2610,11 @@
             $("#confNCD").val(0);
             $("#confFCD").val(0);
             $('#totalD').val("");
+            $("#bcomprobarModificacionesD").attr("disabled", true); 
+            $("#selRedes").attr("disabled", false);
+            $("#bBuscarPedido").attr("disabled", false); 
+            $('#inpPedido').val("");
+            $('#inpIdPedido').val("");
             callWS("medios", "getAll", '', function (data) { onPopulateSelectDone(data, 'selMediosD', 'id_medio', 'desc_medio'); });
             //callWS("medios", "getPorEmpresa", JSON.stringify(idEmpresa), function (data) { onPopulateSelectDone(data, 'selMediosD', 'id_medio', 'desc_medio'); });
             callWS("medios", "getAllRedes", '', function (data) { onCargarSelect(data, 'selRedes', 'id_red', 'descripcion', 'codigo_red'); });
@@ -2750,9 +2753,11 @@
         OpBloqueada = false;
         OpClon = false;
         OpAnulada = false;
-        OpSinc = false;
+        //OpSinc = false;
         DetalleClon = false;
         TipoAvisoClase = 0;
+        //Parametro global para llevar el último Detalle importado
+        var detImportado = false;
         //Parametro global para llevar los detalles sincronizados con AdServer a eliminar
         DetallesASDelete = [];
         //Parametro global para llevar las diferencias entre detalles y lineas de pedido sincronizadas
@@ -2993,6 +2998,7 @@
                     id = Detalles.length + 1;
                     rDetalle.id_detalle = id;
                     Detalles.push(rDetalle);
+                    detImportado = false;
                 }
                 //Vuelvo el boton al estado inicial
                 $("#GuardarRenglon").attr("onclick", "prevAddRenglon(-1)");
@@ -4524,12 +4530,16 @@
         //        });
         //}
 
-        //AGREGUE:
+
         function cancelarCargaDetalle() {
             $("#GuardarRenglon").attr("onclick", "prevAddRenglon(-1)");
             $('#divDetailsRows').show();
             $('#divAddRow').hide();
             DetalleClon = false;
+            if (detImportado == true) {
+                Detalles.pop();
+                detImportado = false;
+            }
         }
 
         function nuevaOrden() {
@@ -4832,7 +4842,8 @@
             $("#fechaHastaD").attr("disabled", true);
             $("#selProductoD").attr("disabled", true);
             $("#descripcionD").attr("disabled", true);
-            $("#selRedes").attr("disabled", true);
+            $("#selRedes").attr("disabled", true); 
+            $("#bBuscarPedido").attr("disabled", true);
             $("#selPrograma").attr("disabled", true);
             $("#selTipoAvisoD").attr("disabled", true);
             $("#selTipoTarifaD").attr("disabled", true);
@@ -4854,6 +4865,7 @@
             $("#selProductoD").attr("disabled", false);
             $("#descripcionD").attr("disabled", false);
             $("#selRedes").attr("disabled", false);
+            $("#bBuscarPedido").attr("disabled", false);
             $("#selPrograma").attr("disabled", false);
             $("#selTipoAvisoD").attr("disabled", false);
             $("#selTipoTarifaD").attr("disabled", false);
@@ -4873,7 +4885,6 @@
             $("#inpOrderNumberClient").attr("disabled", true);
             $("#OrdenCompraCliente").attr("disabled", true);
             $("#inpDescOP").attr("disabled", true); 
-            /*$("#selRedes").attr("disabled", true);*/
             $("#fechaDesde").attr("disabled", true);
             $("#fechaHasta").attr("disabled", true);
             $("#selEmpresa").attr("disabled", true);
@@ -4886,22 +4897,21 @@
             $("#selPlazoP").attr("disabled", true);
             $("#selEjecutivo").attr("disabled", true);
             $("#bCargarNuevoRenglon").attr("disabled", true);
+            $("#bImportarNuevoRenglon").attr("disabled", true);
             //$("#conf_nc").attr("disabled", true);
             //$("#conf_fc").attr("disabled", true);
-            //$("#bSendOrdenAdServer").attr("disabled", true);
             $("#bAnular").attr("disabled", true);
             $("#checkListaParaFact")[0].disabled = true;
-            //$("#bcomprobarModificaciones").attr("disabled", true);
         }
 
-        function prevAnularOrden() {
-            if ($('#inpIdOrdenAdServer').val() == "") {
-                checkAnularOrden();
-            }
-            else {
-                showMessage("La Orden no puede ser anulada porque ya ha sido enviada al AdServer", "info")
-            }
-        }
+        //function prevAnularOrden() {
+        //    if ($('#inpIdOrdenAdServer').val() == "") {
+        //        checkAnularOrden();
+        //    }
+        //    else {
+        //        showMessage("La Orden no puede ser anulada porque ya ha sido enviada al AdServer", "info")
+        //    }
+        //}
 
         function checkAnularOrden() {
             options = [
@@ -4926,7 +4936,7 @@
 
         function onAnularOrden(data) {
             if (data == true) {
-                OpAnulada == true;
+                OpAnulada = true;
                 $('#pTitulo').append('<span id="sTituloDinamico"> - </span>');
                 $('#pTitulo').append('<span id="sTituloDinamico" style="color: red;">ANULADA</span>');
                 bloquearCamposCabecera();
@@ -5455,7 +5465,7 @@
                 fHasta = new Date(moment($("#fechaHastaImp").val(), 'DD/MM/YYYY', true).format());
                 mfHasta = moment(fHasta);
                 if (mfHasta.isValid()) {
-                    params.fecha_hasta = dateToSqlFormat($('#fechaHastaImp').val());
+                    params.fecha_hasta = dateToSqlFormat($('#fechaHastaImp').val()) + 'T23:59:59';
                 } else {
                     if (error != '') { error += ' / ' }
                     error += "Formato 'Fecha Hasta' invalido";
@@ -5528,6 +5538,7 @@
         }
 
         function selLinea(linea) {
+            detImportado = true;
             var idDet = Detalles.length + 1;
             linea.id_detalle = idDet;
             $.when(
