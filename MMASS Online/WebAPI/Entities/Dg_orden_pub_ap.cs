@@ -490,7 +490,7 @@ namespace WebApi.Entities
             tRow = string.Format(tRow, dr["id_op_dg"], dr["numero"], vigencia, dr["agencia"], dr["anunciante"], dr["desc_producto"], dr["neto"]);
             return tRow;
         }
-        //AGREGUE (id_area en Detalle):
+
         public static Dg_orden_pub_ap getById(int Id)
         {
             string sqlCommand = " select dg.id_op_dg, dg.anio, dg.mes, dg.nro_orden, dg.id_empresa, dg.id_medio, dg.es_varios_medios, dg.fecha, " +

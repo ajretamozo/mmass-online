@@ -257,31 +257,51 @@ namespace WebApi.Services
                 result = result + " <thead><tr><th class='certTableHeader'> Detalle </th> <th class='sitio certTableHeader'> Sitio </th> <th class='fecha certTableHeader'> Fecha </th> <th class='pautado certTableHeader headerObjetivo'> Objetivo </th><th class='impreso certTableHeader'> Impresiones </th><th class='clicks certTableHeader'> Clicks </th><th class='ctr impreso certTableHeader'> CTR </th><th class='certTableHeader' width='1px'></th>";
                 result = result + "</tr></thead>";
 
+                //Datos generales del Detalle
+                result += "<tr style='border: solid thin; border-color: #e7e9eb;'>";
+                result += "<td style='font-weight: bold;'>" + det.Descripcion + "</td>";
+                if (det.Medios.Count() > 1)
+                {
+                    result += "<td class='sitio' id='txtSitio' style='font-weight: bold;'>RON</td>";
+                }
+                else
+                {
+                    string med = Medio.getById(det.Medios[0].Id_medio).Desc_medio;
+                    result += "<td class='sitio' id='txtSitio' style='font-weight: bold;'>" + med + "</td>";
+                }
+
+                result += "<td class='fecha' style='font-weight: bold;'>" + FormatFecha(det.Fecha_desde.ToString()) + " - " + FormatFecha(det.Fecha_hasta.ToString()) + "</td>";
+                result += "</tr> ";
+
                 float totalImpresionesEmitidasD = 0;
                 float totalClicksD = 0;
                 float totalCTRImpresoD = 0;
 
                 if (det.Id_Google_Ad_Manager > 0)
                 {
+                    //apuntamos a la red adserver del detalle
+                    Dg_red_GAM red = Dg_red_GAM.getById(det.Id_red);
+                    CambiarRed(red.Codigo_red.ToString());
+
                     //se genera el reporte csv por día para este Detalle
                     string ruta = GoogleAdManager.printLineItemCSV(det.Id_Google_Ad_Manager, det.Fecha_desde, det.Fecha_hasta);
                     if ( ruta != "")
                     {
-                        //Datos generales del Detalle
-                        result += "<tr style='border: solid thin; border-color: #e7e9eb;'>";
-                        result += "<td style='font-weight: bold;'>" + det.Descripcion + "</td>";
-                        if (det.Medios.Count() > 1)
-                        {
-                            result += "<td class='sitio' id='txtSitio' style='font-weight: bold;'>RON</td>";
-                        }
-                        else
-                        {
-                            string med = Medio.getById(det.Medios[0].Id_medio).Desc_medio;
-                            result += "<td class='sitio' id='txtSitio' style='font-weight: bold;'>" + med + "</td>";
-                        }
+                        ////Datos generales del Detalle
+                        //result += "<tr style='border: solid thin; border-color: #e7e9eb;'>";
+                        //result += "<td style='font-weight: bold;'>" + det.Descripcion + "</td>";
+                        //if (det.Medios.Count() > 1)
+                        //{
+                        //    result += "<td class='sitio' id='txtSitio' style='font-weight: bold;'>RON</td>";
+                        //}
+                        //else
+                        //{
+                        //    string med = Medio.getById(det.Medios[0].Id_medio).Desc_medio;
+                        //    result += "<td class='sitio' id='txtSitio' style='font-weight: bold;'>" + med + "</td>";
+                        //}
 
-                        result += "<td class='fecha' style='font-weight: bold;'>" + FormatFecha(det.Fecha_desde.ToString()) + " - " + FormatFecha(det.Fecha_hasta.ToString()) + "</td>";
-                        result += "</tr> ";
+                        //result += "<td class='fecha' style='font-weight: bold;'>" + FormatFecha(det.Fecha_desde.ToString()) + " - " + FormatFecha(det.Fecha_hasta.ToString()) + "</td>";
+                        //result += "</tr> ";
 
                         //extraemos y procesamos los datos del csv
                         string ubicacionArchivo = ruta;

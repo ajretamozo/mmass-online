@@ -694,7 +694,7 @@
                                 <select class="form-control" id="selAnunciantePedidoAS"></select>
                             </div>
                             <div class="col-md-3" style="align-self: self-end;">
-                                <button type='button' class='btn btn-secondary' id="bVincularAnun" value='1' onclick="vincularAnun('selAnunciantePedidoAS','selAnunciantePedido','selRedesPedido','bVincularAnun')">Vincular</button>
+                                <button type='button' class='btn btn-secondary' id="bVincularAnun" value='1' onclick="vincularAnun('selAnunciantePedidoAS','selAnunciantePedido','selRedesPedido','bVincularAnun', 'lblAnunNoSinc')">Vincular</button>
                             </div>
                         </div>
                         <div class="row py-1">
@@ -831,7 +831,7 @@
                                 <select class="form-control" id="selAnuncianteSincImp"></select>
                             </div>
                             <div class="col-md-3" style="align-self: self-end;">
-                                <button type='button' class='btn btn-secondary' id="bVincularAnunImp" value='1' onclick="vincularAnun('selAnuncianteSincImp','selAnuncianteImp','selRedesImp','bVincularAnunImp')">Vincular</button>
+                                <button type='button' class='btn btn-secondary' id="bVincularAnunImp" value='1' onclick="vincularAnun('selAnuncianteSincImp','selAnuncianteImp','selRedesImp','bVincularAnunImp', 'lblAnunNoSincImp')">Vincular</button>
                             </div>
                         </div>
                         <div class="row py-1">
@@ -884,7 +884,7 @@
             <!-- TABS -->
             <nav class="nav nav-tabs mb-3">
                 <a class="nav-link active" id="principal-tab" data-toggle="tab" href="#principal" role="tab" aria-controls="principal" aria-selected="true">General</a>
-                <a class="nav-link" id="archivos-tab" data-toggle="tab" href="#archivos" role="tab" aria-controls="archivos" aria-selected="false">Certificacion</a>
+                <a class="nav-link" id="archivos-tab" data-toggle="tab" href="#archivos" role="tab" aria-controls="archivos" aria-selected="false">Certificación</a>
             </nav>
             <div class="tab-content" id="tabsContent">
                 <div class="tab-pane fade show active" id="principal" role="tabpanel" aria-labelledby="principal-tab">
@@ -5297,7 +5297,7 @@
             $("#" + rowAnun).attr("hidden", false);
         }
 
-        function vincularAnun(selAnunAS, selAnun, selRedes, bAnun) {
+        function vincularAnun(selAnunAS, selAnun, selRedes, bAnun, lblAnun) {
             var idGAMSel = $("#" + selAnunAS).val();
             if (idGAMSel == undefined) {
                 showMessage("Seleccione un anunciante en el dropdown", "info");
@@ -5308,10 +5308,10 @@
                 cont.IdRed = $("#" + selRedes).val();
 
                 if ($("#" + bAnun).val() == 1) {
-                    callWS("contactos", "saveASRelation", JSON.stringify(cont), function (data) { onVincularAnun(data, selAnunAS, selAnun, selRedes, bAnun) });
+                    callWS("contactos", "saveASRelation", JSON.stringify(cont), function (data) { onVincularAnun(data, bAnun, lblAnun, selAnunAS) });
                 }
                 else {
-                    callWS("contactos", "deleteASRelation", JSON.stringify(cont), function (data) { onVincularAnun(data, selAnunAS, selAnun, selRedes, bAnun) });
+                    callWS("contactos", "deleteASRelation", JSON.stringify(cont), function (data) { onVincularAnun(data, bAnun, lblAnun, selAnunAS) });
                 }
             }
 

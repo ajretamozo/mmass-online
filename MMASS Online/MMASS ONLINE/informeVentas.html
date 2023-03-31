@@ -179,7 +179,7 @@
 
                     <!--ACCIONES-->
                     <div class="mt-2 noPrint">
-                        <button type="button" class="btn btn-dark btn-sm mx-1" onclick="test();">
+                        <button type="button" class="btn btn-dark btn-sm mx-1" onclick="filtrarOrdenes();">
                             Consultar
                         </button>
                         <button type="button" class="btn btn-dark btn-sm mx-1" onclick="imprimir();">
@@ -243,12 +243,24 @@
                                 <select id="selAgencias" class="selectpicker form-control" data-deselect-all-text="Ninguno" data-select-all-text="Todos" data-none-selected-text="Seleccionar" data-actions-box="true" data-size="10" data-live-search="true" multiple></select>
                             </div>
                         </div>
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label>Medios</label>
+                                <select id="selMedios" class="selectpicker form-control" data-deselect-all-text="Ninguno" data-select-all-text="Todos" data-none-selected-text="Seleccionar" data-actions-box="true" data-size="10" data-live-search="true" multiple></select>
+                            </div>
+                        </div>
                     </div>
                     <div class="row py-1 noPrint">
                         <div class="col-lg-4">
                             <div class="form-group">
                                 <label>Anunciantes</label>
                                 <select id="selAnunciantes" class="selectpicker form-control" data-deselect-all-text="Ninguno" data-select-all-text="Todos" data-none-selected-text="Seleccionar" data-actions-box="true" data-size="10" data-live-search="true" multiple></select>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label>Tipos de Venta</label>
+                                <select id="selTiposVenta" class="selectpicker form-control" data-deselect-all-text="Ninguno" data-select-all-text="Todos" data-none-selected-text="Seleccionar" data-actions-box="true" data-size="10" data-live-search="true" multiple></select>
                             </div>
                         </div>
                     </div>
@@ -259,12 +271,24 @@
                                 <select id="selProductos" class="selectpicker form-control" data-deselect-all-text="Ninguno" data-select-all-text="Todos" data-none-selected-text="Seleccionar" data-actions-box="true" data-size="10" data-live-search="true" multiple></select>
                             </div>
                         </div>
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label>Empresas</label>
+                                <select id="selEmpresas" class="selectpicker form-control" data-deselect-all-text="Ninguno" data-select-all-text="Todos" data-none-selected-text="Seleccionar" data-actions-box="true" data-size="10" data-live-search="true" multiple></select>
+                            </div>
+                        </div>
                     </div>
                     <div class="row py-1 noPrint">
                         <div class="col-lg-4">
                             <div class="form-group">
                                 <label>Ejecutivos</label>
                                 <select id="selEjecutivos" class="selectpicker form-control" data-deselect-all-text="Ninguno" data-select-all-text="Todos" data-none-selected-text="Seleccionar" data-actions-box="true" data-size="10" data-live-search="true" multiple></select>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label>Facturación</label>
+                                <select id="selFacturacion" class="selectpicker form-control" data-deselect-all-text="Ninguno" data-select-all-text="Todos" data-none-selected-text="Seleccionar" data-actions-box="true" data-size="10" data-live-search="true" multiple></select>
                             </div>
                         </div>
                     </div>
@@ -288,7 +312,7 @@
             document.body.style.backgroundImage = "url(./fondoM3.png)";
         });
 
-        function test(idTable) {
+        function filtrarOrdenes(idTable) {
             error = '';
             params = {};
             tipo = $('input[type=radio]:checked').val();
@@ -350,6 +374,34 @@
             });
             listaEjecutivos = listaEjecutivos.slice(0, -1);
             params.ListaEjecutivos = listaEjecutivos;
+
+            listaMedios = "";
+            $.each($("#selMedios").val(), function (it, medio) {
+                listaMedios += medio + ",";
+            });
+            listaMedios = listaMedios.slice(0, -1);
+            params.listaMedios = listaMedios;
+
+            listaTiposVenta = "";
+            $.each($("#selTiposVenta").val(), function (it, tipoVenta) {
+                listaTiposVenta += tipoVenta + ",";
+            });
+            listaTiposVenta = listaTiposVenta.slice(0, -1);
+            params.listaTiposVenta = listaTiposVenta;
+
+            listaEmpresas = "";
+            $.each($("#selEmpresas").val(), function (it, empresa) {
+                listaEmpresas += empresa + ",";
+            });
+            listaEmpresas = listaEmpresas.slice(0, -1);
+            params.listaEmpresas = listaEmpresas;
+
+            listaFacturacion = "";
+            $.each($("#selFacturacion").val(), function (it, factura) {
+                listaFacturacion += factura + ",";
+            });
+            listaFacturacion = listaFacturacion.slice(0, -1);
+            params.listaFacturacion = listaFacturacion;
 
             for (param in params) {
                 if (params[param] == null) {
@@ -618,6 +670,10 @@
                 callWS("contactos", "getAnunciantes", '', function (data) { onPopulateSelectDone(data, 'selAnunciantes', 'id_contacto', 'razonSocial'); }),
                 callWS("productos", "getAll", '', function (data) { onPopulateSelectDone(data, 'selProductos', 'id_producto', 'desc_producto'); }),
                 callWS("contactos", "getEjecutivos", '', function (data) { onPopulateSelectDone(data, 'selEjecutivos', 'id', 'razonSocial'); }),
+                callWS("medios", "getAll", '', function (data) { onPopulateSelectDone(data, 'selMedios', 'id_medio', 'desc_medio'); }),
+                callWS("forma_pagos", "getAll", '', function (data) { onPopulateSelectDone(data, 'selTiposVenta', 'id_formapago', 'desc_formapago'); }),
+                callWS("empresas", "getall", '', function (data) { onPopulateSelectDone(data, 'selEmpresas', 'id_empresa', 'razon_social'); }),
+                onPopulateSelectFact(),
                 $('#fechaDesde').val(moment().startOf('month').format('DD/MM/YYYY')),
                 $('#fechaHasta').val(moment().endOf('month').format('DD/MM/YYYY'))
             ).then(function () { }, function (data1, data2) {
@@ -638,6 +694,21 @@
                 $("#" + idSelect).val([]);
             }
             if ($("#" + idSelect).attr('multiple') == 'multiple') {
+                $('.selectpicker').selectpicker('refresh');
+            }
+        }
+
+        function onPopulateSelectFact() {
+            var listitems = '';
+
+            listitems += '<option value=1>Facturadas</option>';
+            listitems += '<option value=2>No Facturadas</option>';
+
+            $("#selFacturacion").empty();
+            $("#selFacturacion").append(listitems);
+            $("#selFacturacion").val([]);
+
+            if ($("#selFacturacion").attr('multiple') == 'multiple') {
                 $('.selectpicker').selectpicker('refresh');
             }
         }

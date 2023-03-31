@@ -48,7 +48,8 @@ namespace WebApi.Entities
                             ap.id_anunciante, an.razon_social as anunciante, 
                             cast(ap.anio as varchar(4)) + '-' + cast(ap.mes as varchar(2)) + '-' + cast(ap.nro_orden as varchar(5)) as nro_orden,
                             ap.nro_orden_ag, ap.primer_neto, ap.imp_conf_nc, ap.imp_conf_fc, ap.seg_neto,
-                            p.desc_producto as producto, cast(op.anio as varchar(4)) + '-' + cast(op.mes as varchar(2)) + '-' + cast(op.nro_orden as varchar(5)) as nro_orden_rel, ";
+                            p.desc_producto as producto, cast(op.anio as varchar(4)) + '-' + cast(op.mes as varchar(2)) + '-' + cast(op.nro_orden as varchar(5)) as nro_orden_rel, 
+                            c.razon_social,  ";
                             
             if (tipo != "0")
             {
@@ -62,12 +63,12 @@ namespace WebApi.Entities
             {
                 sqlCommand += ",apm.id_medio, m.desc_medio as medio, apm.porcentaje";
             }
-            sqlCommand += " from dg_orden_pub_ap ap inner join dg_orden_pub_as det on det.id_op_dg = ap.id_op_dg inner join contactos ag on ag.id_contacto = ap.id_agencia inner join contactos an on an.id_contacto = ap.id_anunciante inner join productos p on p.id_producto = ap.id_producto left outer join orden_pub_ap op on ap.id_op_relacionada = op.id_op inner join dg_orden_pub_ejecutivos ej on ej.id_op_dg=ap.id_op_dg";
+            sqlCommand += " from dg_orden_pub_ap ap inner join dg_orden_pub_as det on det.id_op_dg = ap.id_op_dg inner join contactos ag on ag.id_contacto = ap.id_agencia inner join contactos an on an.id_contacto = ap.id_anunciante inner join productos p on p.id_producto = ap.id_producto left outer join orden_pub_ap op on ap.id_op_relacionada = op.id_op inner join dg_orden_pub_ejecutivos ej on ej.id_op_dg=ap.id_op_dg inner join contactos c on c.id_contacto=ej.id_ejecutivo";
             
-            if (tipo == "2")
-            {
-                sqlCommand += " inner join dg_orden_pub_medios apm on apm.id_op_dg = ap.id_op_dg and apm.id_op_dg = det.id_op_dg and apm.id_detalle = det.id_detalle inner join medios m on m.id_medio = apm.id_medio ";
-            }
+            //if (tipo == "2")
+            //{
+                sqlCommand += " inner join dg_orden_pub_medios apm on apm.id_op_dg = ap.id_op_dg and apm.id_op_dg = det.id_op_dg and apm.id_detalle = det.id_detalle inner join medios m on m.id_medio = apm.id_medio inner join Dg_orden_pub_pagos fdp on fdp.id_op_dg = ap.id_op_dg ";
+            //}
             sqlCommand += " where (ap.es_anulada = 0 or ap.es_anulada is null)";
 
             string groupby = "";
@@ -116,6 +117,23 @@ namespace WebApi.Entities
                     }
                     if ((p.ParameterName == "ListaEjecutivos") && (p.Value.ToString() != ""))
                         mifiltro = mifiltro + " and ej.id_ejecutivo in (" + p.Value + ")";
+                    if ((p.ParameterName == "ListaMedios") && (p.Value.ToString() != ""))
+                        mifiltro = mifiltro + " and apm.id_medio in (" + p.Value + ")";
+                    if ((p.ParameterName == "listaTiposVenta") && (p.Value.ToString() != ""))
+                        mifiltro = mifiltro + " and fdp.id_formapago in (" + p.Value + ")";
+                    if ((p.ParameterName == "listaEmpresas") && (p.Value.ToString() != ""))
+                        mifiltro = mifiltro + " and ap.id_empresa in (" + p.Value + ")";
+                    if ((p.ParameterName == "listaFacturacion") && (p.Value.ToString() != ""))
+                    {
+                        if (p.Value.ToString() == "1")
+                        {
+                            mifiltro = mifiltro + " and ap.es_facturada = 1";
+                        }
+                        else
+                        {
+                            mifiltro = mifiltro + " and ap.es_facturada != 1";
+                        }
+                    }
                 }
             }   
 

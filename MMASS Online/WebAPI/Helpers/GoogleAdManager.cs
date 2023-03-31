@@ -891,7 +891,18 @@ namespace WebApi.Helpers
                 catch (AdManagerApiException e)
                 {
                     ApiException innerException = e.ApiException as ApiException;
-                    msj = "Ocurrio un error al intentar guardar la Línea de pedido en Google Ad Manager: " + innerException.message;
+                    if (innerException.message.Contains("UniqueError.NOT_UNIQUE"))
+                    {
+                        msj = "Ya existe una Línea de Pedido con la misma Descripción para el Pedido seleccionado";
+                    }                   
+                    else if (innerException.message.Contains("LineItemError.FRACTIONAL_PERCENTAGE_NOT_ALLOWED"))
+                    {
+                        msj = "El AdServer no permite un porcentaje de Descuento fraccionario";
+                    }
+                    else
+                    {
+                        msj = "Ocurrio un error al intentar guardar la Línea de pedido en Google Ad Manager: " + innerException.message;
+                    }
                 }
             }
             resultado.ParameterName = msj;
@@ -903,8 +914,6 @@ namespace WebApi.Helpers
         public static Dg_orden_pub_as UpdateLineItem(string tipoAviso, String name, float cost, long units, double discount, System.DateTime? fechaDesde, System.DateTime? fechaHasta, List<Dg_orden_pub_medidas> medidas, Dg_areas_geo areaGeo, List<Dg_orden_pub_emplazamientos> emplazamientos, int tipoTarifa, long Id, int paramSinc)
         {
             Dg_orden_pub_as resultado = new Dg_orden_pub_as();
-            long result = -1;
-            string msj = "";
             string rootId = "";
 
             using (NetworkService networkService = user.GetService<NetworkService>())
@@ -1161,7 +1170,18 @@ namespace WebApi.Helpers
                 {
                     ApiException innerException = e.ApiException as ApiException;
                     resultado.Id_Google_Ad_Manager = -1;
-                    resultado.UsuarioSesion = "Ocurrio un error al intentar actualizar la Línea de pedido en Google Ad Manager: " + innerException.message; //se guarda el error
+                    if (innerException.message.Contains("UniqueError.NOT_UNIQUE"))
+                    {
+                        resultado.UsuarioSesion = "Ya existe una Línea de Pedido con la misma Descripción para el Pedido seleccionado";
+                    }
+                    else if (innerException.message.Contains("LineItemError.FRACTIONAL_PERCENTAGE_NOT_ALLOWED"))
+                    {
+                        resultado.UsuarioSesion = "El AdServer no permite un porcentaje de Descuento fraccionario";
+                    }
+                    else
+                    {
+                        resultado.UsuarioSesion = "Ocurrio un error al intentar guardar la Línea de pedido en Google Ad Manager: " + innerException.message;
+                    }
                 }
             }
 
