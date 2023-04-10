@@ -108,5 +108,12 @@ namespace WebApi.Controllers
         {
             _Dg_orden_pub_apService.grabarLog(parametros.Parametros);
         }
+
+        [HttpPost("filterDet")]
+        public IActionResult filterDet(ListaParametro parametros)
+        {
+            var detalles = _Dg_orden_pub_apService.filterDet(parametros.Parametros);
+            return Ok(detalles);
+        }
     }
 }

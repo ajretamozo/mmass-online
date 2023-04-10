@@ -307,6 +307,32 @@
                         </label>
                     </div>
                 </div>
+                <div id="rowSincDet">
+                    <div class="row py-1">
+                        <div class="col-md-6">
+                        </div>
+                        <div class="col-md-6">
+                            <input type="checkbox" id="checkCreSinc" style="margin-bottom: .8rem; margin-right: .2rem" onclick="permitirSincD()">
+                            <label for="checkCreSinc">Creación de Línea de Pedido</label>
+                        </div>
+                    </div>
+                    <div class="row py-1">
+                        <div class="col-md-6">
+                        </div>
+                        <div class="col-md-6">
+                            <input type="checkbox" id="checkModSinc" style="margin-bottom: .8rem; margin-right: .2rem" onclick="permitirSincD()">
+                            <label for="checkModSinc">Modificación de Línea de Pedido</label>
+                        </div>
+                    </div>
+                    <div class="row py-1">
+                        <div class="col-md-6">
+                        </div>
+                        <div class="col-md-6">
+                            <input type="checkbox" id="checkArcSinc" style="margin-bottom: .8rem; margin-right: .2rem" onclick="permitirSincD()">
+                            <label for="checkArcSinc">Archivado de Línea de Pedido</label>
+                        </div>
+                    </div>
+                </div>
                 <div class="row py-1">
                     <div class="col-md-6">
                         <label>Notificaciones por Mail</label>
@@ -390,14 +416,106 @@
         }
 
         function iniPermitirSinc(param, check) {
-            if (param.valor == 1) {
-                $("#" + check)[0].checked = true;
-                $("#" + check).change();
-            }
-            else {
-                $("#" + check)[0].checked = false;
-                $("#" + check).change();
-            }
+            //if (param.valor == 1) {
+            //    $("#" + check)[0].checked = true;
+            //    $("#" + check).change();
+            //}
+            //else {
+            //    $("#" + check)[0].checked = false;
+            //    $("#" + check).change();
+            //}
+            var valor = param.valor;
+            switch (valor) {
+                case '0':
+                    $("#" + check)[0].checked = false;
+                    $("#" + check).change();
+                    $("#rowSincDet").hide();
+
+                    $("#checkCreSinc")[0].checked = false;
+                    $("#checkCreSinc").change();
+                    $("#checkModSinc")[0].checked = false;
+                    $("#checkModSinc").change();
+                    $("#checkArcSinc")[0].checked = false;
+                    $("#checkArcSinc").change();
+                    break;
+                case '1':
+                    $("#" + check)[0].checked = true;
+                    $("#" + check).change();
+
+                    $("#checkCreSinc")[0].checked = true;
+                    $("#checkCreSinc").change();
+                    $("#checkModSinc")[0].checked = true;
+                    $("#checkModSinc").change();
+                    $("#checkArcSinc")[0].checked = true;
+                    $("#checkArcSinc").change();
+                    break;
+                case '2':
+                    $("#" + check)[0].checked = true;
+                    $("#" + check).change();
+
+                    $("#checkCreSinc")[0].checked = true;
+                    $("#checkCreSinc").change();
+                    $("#checkModSinc")[0].checked = false;
+                    $("#checkModSinc").change();
+                    $("#checkArcSinc")[0].checked = false;
+                    $("#checkArcSinc").change();
+                    break;
+                case '3':
+                    $("#" + check)[0].checked = true;
+                    $("#" + check).change();
+
+                    $("#checkCreSinc")[0].checked = false;
+                    $("#checkCreSinc").change();
+                    $("#checkModSinc")[0].checked = true;
+                    $("#checkModSinc").change();
+                    $("#checkArcSinc")[0].checked = false;
+                    $("#checkArcSinc").change();
+                    break;
+                case '4':
+                    $("#" + check)[0].checked = true;
+                    $("#" + check).change();
+
+                    $("#checkCreSinc")[0].checked = false;
+                    $("#checkCreSinc").change();
+                    $("#checkModSinc")[0].checked = false;
+                    $("#checkModSinc").change();
+                    $("#checkArcSinc")[0].checked = true;
+                    $("#checkArcSinc").change();
+                    break;
+                case '5':
+                    $("#" + check)[0].checked = true;
+                    $("#" + check).change();
+
+                    $("#checkCreSinc")[0].checked = true;
+                    $("#checkCreSinc").change();
+                    $("#checkModSinc")[0].checked = true;
+                    $("#checkModSinc").change();
+                    $("#checkArcSinc")[0].checked = false;
+                    $("#checkArcSinc").change();
+                    break;
+                case '6':
+                    $("#" + check)[0].checked = true;
+                    $("#" + check).change();
+
+                    $("#checkCreSinc")[0].checked = true;
+                    $("#checkCreSinc").change();
+                    $("#checkModSinc")[0].checked = false;
+                    $("#checkModSinc").change();
+                    $("#checkArcSinc")[0].checked = true;
+                    $("#checkArcSinc").change();
+                    break;
+                case '7':
+                    $("#" + check)[0].checked = true;
+                    $("#" + check).change();
+
+                    $("#checkCreSinc")[0].checked = false;
+                    $("#checkCreSinc").change();
+                    $("#checkModSinc")[0].checked = true;
+                    $("#checkModSinc").change();
+                    $("#checkArcSinc")[0].checked = true;
+                    $("#checkArcSinc").change();
+                    break;
+            }         
         }
 
         function iniActMail(param, check) {
@@ -539,11 +657,38 @@
         }
 
         function permitirSinc() {
+            //param = {};
+            //param.id_parametro = 2;
+            //param.valor = 0;
+            //if (document.getElementById("checkPermitirSinc").checked == true) {
+            //    param.valor = 1;
+            //}
+            //callWS("medios", "cambiarParam", JSON.stringify(param), function (data) { onPermitirSinc(data, param); });
             param = {};
             param.id_parametro = 2;
             param.valor = 0;
             if (document.getElementById("checkPermitirSinc").checked == true) {
                 param.valor = 1;
+                //se muestra el detalle de sincronización
+                $("#checkCreSinc")[0].checked = true;
+                $("#checkCreSinc").change();
+                $("#checkModSinc")[0].checked = true;
+                $("#checkModSinc").change();
+                $("#checkArcSinc")[0].checked = true;
+                $("#checkArcSinc").change();
+
+                $("#rowSincDet").show();
+            }
+            else {
+                //se oculta el detalle de sincronización
+                $("#rowSincDet").hide();
+
+                $("#checkCreSinc")[0].checked = false;
+                $("#checkCreSinc").change();
+                $("#checkModSinc")[0].checked = false;
+                $("#checkModSinc").change();
+                $("#checkArcSinc")[0].checked = false;
+                $("#checkArcSinc").change();
             }
             callWS("medios", "cambiarParam", JSON.stringify(param), function (data) { onPermitirSinc(data, param); });
         }
@@ -565,6 +710,48 @@
                     showMessage("Ocurrió un error al intentar activar la sincronización", "error");
                 }
             }
+        }
+
+        function permitirSincD() {
+            param = {};
+            param.id_parametro = 2;
+            param.valor;
+            //envía todas
+            if (document.getElementById("checkCreSinc").checked == true && document.getElementById("checkModSinc").checked == true && document.getElementById("checkArcSinc").checked == true) {
+                param.valor = 1;
+            }
+            //envía creacion
+            else if (document.getElementById("checkCreSinc").checked == true && document.getElementById("checkModSinc").checked == false && document.getElementById("checkArcSinc").checked == false) {
+                param.valor = 2;
+            }
+            //envía modificacion
+            else if (document.getElementById("checkCreSinc").checked == false && document.getElementById("checkModSinc").checked == true && document.getElementById("checkArcSinc").checked == false) {
+                param.valor = 3;
+            }
+            //envía archivado
+            else if (document.getElementById("checkCreSinc").checked == false && document.getElementById("checkModSinc").checked == false && document.getElementById("checkArcSinc").checked == true) {
+                param.valor = 4;
+            }
+            //envía creacion y modificacion
+            else if (document.getElementById("checkCreSinc").checked == true && document.getElementById("checkModSinc").checked == true && document.getElementById("checkArcSinc").checked == false) {
+                param.valor = 5;
+            }
+            //envía creacion y archivado
+            else if (document.getElementById("checkCreSinc").checked == true && document.getElementById("checkModSinc").checked == false && document.getElementById("checkArcSinc").checked == true) {
+                param.valor = 6;
+            }
+            //envía modificacion y archivado
+            else if (document.getElementById("checkCreSinc").checked == false && document.getElementById("checkModSinc").checked == true && document.getElementById("checkArcSinc").checked == true) {
+                param.valor = 7;
+            }
+            //no envía
+            else {
+                param.valor = 0;
+                $("#checkPermitirSinc")[0].checked = false;
+                $("#checkPermitirSinc").change();
+                $("#rowSincDet").hide();
+            }
+            callWS("medios", "cambiarParam", JSON.stringify(param));
         }
 
         function activarMail() {

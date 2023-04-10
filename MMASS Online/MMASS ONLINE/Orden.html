@@ -2010,14 +2010,14 @@
         }
 
         function advertenciaDeleteDetalle() {
-            callWS("medios", "getParamById", JSON.stringify(2), function (param) {
+            //callWS("medios", "getParamById", JSON.stringify(2), function (param) {
                 var mensaje = "";
-                if (param.valor == 1) {
-                    mensaje = "<div class='d-flex justify-content-center' style='text-align: center;'>Los Detalles eliminados serán archivados en el AdServer</div>";
-                }
-                else {
-                    mensaje = "<div class='d-flex justify-content-center' style='text-align: center;'>Los Detalles eliminados serán archivados en el AdServer. En el caso de estar publicándose, serán pausados</div>";
-                }
+                //if (param.valor == 1) {
+                    mensaje = "<div class='d-flex justify-content-center' style='text-align: center;'>Los Detalles eliminados podrían ser archivados en el AdServer</div>";
+                //}
+                //else {
+                //    mensaje = "<div class='d-flex justify-content-center' style='text-align: center;'>Los Detalles eliminados podrían ser archivados en el AdServer. En el caso de estar publicándose, serán pausados</div>";
+                //}
                 options = [
                     {
                         optionDesc: "Aceptar",
@@ -2029,7 +2029,7 @@
                     }
                 ];
                 showModal(mensaje, options);
-            });
+            //});
         }
 
         function saveOrder() {
@@ -2054,7 +2054,7 @@
             data.agencia.Id_contacto = $("#selAgencia").val();
             data.anunciante = {};
             data.anunciante.Id_contacto = $("#selAnunciante").val();
-            data.anunciante.RazonSocial = $("#selAnunciante option:selected").text();
+            data.anunciante.Nombre_com = $("#selAnunciante option:selected").text();
             data.producto = {};
             data.producto.Id_producto = $("#selProducto").val();
             data.medio = {};
@@ -2113,7 +2113,7 @@
                 orden.Bitacora = $("#inpDescOP").val();
                 orden.Detalles = DetallesASDelete;
                 orden.UsuarioSesion = $("#NombreUsuario").text();
-                callWS("googleAdManager", "archivarPausarLineItems", JSON.stringify(orden));
+                callWS("googleAdManager", "archivarLineItems", JSON.stringify(orden));
             }
 
             //if ($("#selOrdenRelacionada").val() == "" || $("#selOrdenRelacionada").val() == undefined) {
@@ -2318,9 +2318,9 @@
                 data.anunciante.id = an;
                 data.agencia.id = ag;
                 //callWS("dg_orden_pub_aps", "getOrdenesRadio", JSON.stringify(data), function (data) { onPopulateSelectDone(data, 'selOrdenRelacionada', 'id', 'descripcion'); });
-                callWS("contactos", "getAgenciasPorAnunciante", an, function (data) { onPopulateSelectDone(data, 'selAgencia', 'id', 'razonSocial'); });
+                callWS("contactos", "getAgenciasPorAnunciante", an, function (data) { onPopulateSelectDone(data, 'selAgencia', 'id', 'nombre_com'); });
             } else {
-                callWS("contactos", "getAgenciasPorAnunciante", an, function (data) { onPopulateSelectDone(data, 'selAgencia', 'id', 'razonSocial'); });
+                callWS("contactos", "getAgenciasPorAnunciante", an, function (data) { onPopulateSelectDone(data, 'selAgencia', 'id', 'nombre_com'); });
             }
             //data.agencia = {};
             //data.anunciante = {};
@@ -2336,14 +2336,14 @@
             if (an == null) {
                 $('#selProductoD').empty();
                 $('#selProducto').empty();
-                callWS("contactos", "getAnunciantesPorAgencia", ag, function (data) { onPopulateSelectDone(data, 'selAnunciante', 'id', 'razonSocial'); });
+                callWS("contactos", "getAnunciantesPorAgencia", ag, function (data) { onPopulateSelectDone(data, 'selAnunciante', 'id', 'nombre_com'); });
             } else {
                 data.agencia = {};
                 data.anunciante = {};
                 data.anunciante.id = an;
                 data.agencia.id = ag;
                 //callWS("dg_orden_pub_aps", "getOrdenesRadio", JSON.stringify(data), function (data) { onPopulateSelectDone(data, 'selOrdenRelacionada', 'id', 'descripcion'); });
-                callWS("contactos", "getAnunciantesPorAgencia", ag, function (data) { onPopulateSelectDone(data, 'selAnunciante', 'id', 'razonSocial'); });
+                callWS("contactos", "getAnunciantesPorAgencia", ag, function (data) { onPopulateSelectDone(data, 'selAnunciante', 'id', 'nombre_com'); });
             }
         }
 
@@ -2352,7 +2352,7 @@
             ag = $('#selAgencia').val();
             pr = $('#selProducto').val();
             if (ag == null && an == null) {
-                callWS("contactos", "getAnunciantesPorProducto", pr, function (data) { onPopulateSelectDone(data, 'selAnunciante', 'id', 'razonSocial'); });
+                callWS("contactos", "getAnunciantesPorProducto", pr, function (data) { onPopulateSelectDone(data, 'selAnunciante', 'id', 'nombre_com'); });
             }
         }
 
@@ -2444,7 +2444,7 @@
             }
 
             if ((idSelect == "selAnunciante" || idSelect == "selAgencia" || idSelect == "selProducto") && selected != undefined) {
-                //Carga las opciones filtradas per deja seleccionada la que estaba
+                //Carga las opciones filtradas pero deja seleccionada la que estaba
                 $("#" + idSelect).val(selected.value);
             }
 
@@ -2538,8 +2538,8 @@
             $("#selAnunciante").val([]);
             $("#selProducto").val([]);
             callWS("productos", "getAll", '', function (data) { onPopulateSelectDone(data, 'selProducto', 'id_producto', 'desc_producto'); });
-            callWS("contactos", "getAgencias", '', function (data) { onPopulateSelectDone(data, 'selAgencia', 'id', 'razonSocial'); });
-            callWS("contactos", "getAnunciantes", '', function (data) { onPopulateSelectDone(data, 'selAnunciante', 'id', 'razonSocial'); });
+            callWS("contactos", "getAgencias", '', function (data) { onPopulateSelectDone(data, 'selAgencia', 'id', 'nombre_com'); });
+            callWS("contactos", "getAnunciantes", '', function (data) { onPopulateSelectDone(data, 'selAnunciante', 'id', 'nombre_com'); });
         }
 
 
@@ -3749,8 +3749,8 @@
             $("#selProducto").attr("disabled", false);
             //$("#selAgencia option[value=" + data.id_agencia + "]").attr("selected", "selected");
             //$("#selAnunciante option[value=" + data.id_anunciante + "]").attr("selected", "selected");
-            callWS("contactos", "getContactoById", JSON.stringify(ag), function (agencia) { onPopulateSelecectContactoConv(agencia, 'selAgencia', 'id', 'razonSocial'); })
-            callWS("contactos", "getContactoById", JSON.stringify(an), function (anunciante) { onPopulateSelecectContactoConv(anunciante, 'selAnunciante', 'id', 'razonSocial'); })
+            callWS("contactos", "getContactoById", JSON.stringify(ag), function (agencia) { onPopulateSelecectContactoConv(agencia, 'selAgencia', 'id', 'nombre_com'); })
+            callWS("contactos", "getContactoById", JSON.stringify(an), function (anunciante) { onPopulateSelecectContactoConv(anunciante, 'selAnunciante', 'id', 'nombre_com'); })
             $("#selAgencia option[value=" + data.id_agencia + "]").attr("selected", "selected");
             $("#selAnunciante option[value=" + data.id_anunciante + "]").attr("selected", "selected");
             if (data.id_producto != null && data.id_producto != 0) {
@@ -4126,8 +4126,8 @@
 
             $("#divMessage").on("click", function () { $("#divMessage").hide(); });
             $.when(
-                callWS("contactos", "getAgencias", '', function (data) { onPopulateSelectDone(data, 'selAgencia', 'id', 'razonSocial'); }),
-                callWS("contactos", "getAnunciantes", '', function (data) { onPopulateSelectDone(data, 'selAnunciante', 'id', 'razonSocial'); }),
+                callWS("contactos", "getAgencias", '', function (data) { onPopulateSelectDone(data, 'selAgencia', 'id', 'nombre_com'); }),
+                callWS("contactos", "getAnunciantes", '', function (data) { onPopulateSelectDone(data, 'selAnunciante', 'id', 'nombre_com'); }),
                 callWS("productos", "getAll", '', function (data) { onPopulateSelectDone(data, 'selProducto', 'id_producto', 'desc_producto'); }),
                 callWS("empresas", "getall", '', function (data) { onPopulateSelectDone(data, 'selEmpresa', 'id_empresa', 'razon_social'); }),
                 callWS("contactos", "getEjecutivos", '', function (data) { onPopulateSelectDone(data, 'selEjecutivo', 'id', 'razonSocial'); }),
@@ -5246,7 +5246,7 @@
 
         function buscarPedido() {
             $.when(
-                callWS("contactos", "getAnunciantes", '', function (data) { onPopulateSelectDone(data, 'selAnunciantePedido', 'id', 'razonSocial'); }),
+                callWS("contactos", "getAnunciantes", '', function (data) { onPopulateSelectDone(data, 'selAnunciantePedido', 'id', 'nombre_com'); }),
                 callWS("medios", "getAllRedes", '', function (data) { onCargarSelect(data, 'selRedesPedido', 'id_red', 'descripcion', 'codigo_red'); })
             ).then(function () { onBuscarPedido() });
         }
@@ -5290,7 +5290,7 @@
         function onGetAnuncianteGAM(anunciantes, selAnunAS, rowAnun) {
             var listitems = '<option value="-1">  </option>';
             $.each(anunciantes, function (it, anun) {
-                listitems = listitems + '<option value="' + anun.idContactoDigital + '">' + anun.razonSocial + ' </option>';
+                listitems = listitems + '<option value="' + anun.idContactoDigital + '">' + anun.nombre_com + ' </option>';
             });
             $("#" + selAnunAS).empty();
             $("#" + selAnunAS).append(listitems);
@@ -5427,7 +5427,7 @@
                 return 0;
             }
             $.when(
-                callWS("contactos", "getAnunciantes", '', function (data) { onPopulateSelectDone(data, 'selAnuncianteImp', 'id', 'razonSocial'); }),
+                callWS("contactos", "getAnunciantes", '', function (data) { onPopulateSelectDone(data, 'selAnuncianteImp', 'id', 'nombre_com'); }),
                 callWS("medios", "getAllRedes", '', function (data) { onCargarSelect(data, 'selRedesImp', 'id_red', 'descripcion', 'codigo_red'); })
             ).then(function () { onImportarNuevoRenglon() });
         }

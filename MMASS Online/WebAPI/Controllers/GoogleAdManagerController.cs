@@ -138,10 +138,10 @@ namespace WebApi.Controllers
             return Ok(res);
         }
 
-        [HttpPost("archivarPausarLineItems")]
+        [HttpPost("archivarLineItems")]
         public IActionResult ArchivarPausarLineItems(Dg_orden_pub_ap op)
         {
-            var res = _GoogleAdManagerService.ArchivarPausarLineItems(op);
+            var res = _GoogleAdManagerService.ArchivarLineItems(op);
             return Ok(res);
         }
 
@@ -184,6 +184,13 @@ namespace WebApi.Controllers
         {
             var res = _GoogleAdManagerService.ComprobarModificacionesD(order);
             return Ok(res);
+        }
+
+        [HttpPost("ComprobarModificacionesDSincro")]
+        public IActionResult ComprobarModificacionesDSincro(ListaParametro parametros)
+        {
+            var detalles = _GoogleAdManagerService.ComprobarModificacionesDSincro(parametros.Parametros);
+            return Ok(detalles);
         }
 
         [HttpPost("obtenerProgresoLineasGam")]

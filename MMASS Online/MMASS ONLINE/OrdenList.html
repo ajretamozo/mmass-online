@@ -392,8 +392,8 @@
                 }
                 rowHTML += "<td class='col-xs-1'>" + dateToFieldFormat(iord.fecha) + ' - ' + dateToFieldFormat(iord.fecha_expiracion) + "</td>";
                 rowHTML += "<td class='col-xs-1'>" + iord.bitacora + "</td>";
-                rowHTML += "<td class='col-xs-1'>" + iord.agencia.razonSocial + "</td>";
-                rowHTML += "<td class='col-xs-1'>" + iord.anunciante.razonSocial + "</td>";
+                rowHTML += "<td class='col-xs-1'>" + iord.agencia.nombre_com + "</td>";
+                rowHTML += "<td class='col-xs-1'>" + iord.anunciante.nombre_com + "</td>";
                 rowHTML += "<td class='col-xs-1'>" + iord.producto.desc_producto + "</td>";
                 rowHTML += "<td class='col-xs-1'>$ " + formatearMonto(iord.seg_neto) + "</td>";
                 if (iord.es_facturada) {

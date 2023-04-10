@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
+using WebApi.Entities;
 using WebApi.Helpers;
 
 namespace WebApi.Entities
@@ -704,28 +705,98 @@ namespace WebApi.Entities
             return detalles;
         }
 
-        //public static void saveId_Google_Ad_Manager(long idOp, long idGam)
-        //{
-        //    string sql = "";
+        public static void saveId_Google_Ad_Manager(long idOp, long idGam)
+        {
+            string sql = "";
 
-        //    sql = "UPDATE dg_orden_pub_as SET id_pedido_google_ad_manager = @idgam WHERE id_op_dg = @id_op_dg ";
+            sql = "UPDATE dg_orden_pub_as SET id_pedido_google_ad_manager = @idgam WHERE id_op_dg = @id_op_dg ";
 
-        //    List<SqlParameter> parametrost = new List<SqlParameter>()
-        //    {
-        //        new SqlParameter()
-        //        { ParameterName="@id_op_dg",SqlDbType = SqlDbType.BigInt, Value = idOp },
-        //        new SqlParameter()
-        //        { ParameterName="@idgam",SqlDbType = SqlDbType.BigInt, Value = idGam }
-        //    };
-        //    try
-        //    {
-        //        DB.Execute(sql, parametrost);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Console.WriteLine(ex.Message);
-        //    }
-        //}
+            List<SqlParameter> parametrost = new List<SqlParameter>()
+            {
+                new SqlParameter()
+                { ParameterName="@id_op_dg",SqlDbType = SqlDbType.BigInt, Value = idOp },
+                new SqlParameter()
+                { ParameterName="@idgam",SqlDbType = SqlDbType.BigInt, Value = idGam }
+            };
+            try
+            {
+                DB.Execute(sql, parametrost);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
 
+        public static List<Dg_orden_pub_as> filter(List<Parametro> parametros)
+        {
+            List<Dg_orden_pub_as> detalles = new List<Dg_orden_pub_as>();
+
+            string strSql = @"SELECT d.* 
+                              FROM dg_orden_pub_as d 
+                              JOIN dg_orden_pub_ap dg ON dg.id_op_dg=d.id_op_dg
+                              JOIN dg_red_GAM r ON r.id_red = d.id_red 
+                              WHERE d.id_google_ad_manager > 0 AND dg.es_anulada = 0 
+                              AND (dg.es_facturada = 0 OR dg.es_facturada is null) 
+                              AND d.id_red is not null AND r.es_borrado = 0 ";
+
+            string mifiltro = "";
+
+            foreach (Parametro p in parametros)
+            {
+                if (p.Value.ToString() != "")
+                {
+                    if ((p.ParameterName == "anio") && (p.Value.ToString() != ""))
+                    {
+                        mifiltro = mifiltro + " and ((dg.anio = " + p.Value + " and op.id_op is null)";
+                        mifiltro = mifiltro + " or op.anio = " + p.Value + ") ";
+                    }
+                    if ((p.ParameterName == "mes") && (p.Value.ToString() != ""))
+                    {
+                        mifiltro = mifiltro + " and ((dg.mes = " + p.Value + " and op.id_op is null)";
+                        mifiltro = mifiltro + " or op.mes = " + p.Value + ") ";
+                    }
+                    if ((p.ParameterName == "nro_orden") && (p.Value.ToString() != ""))
+                    {
+                        mifiltro = mifiltro + " and ((dg.nro_orden = " + p.Value + " and op.id_op is null)";
+                        mifiltro = mifiltro + " or op.nro_orden = " + p.Value + ") ";
+                    }
+                    if ((p.ParameterName == "bitacora") && (p.Value.ToString() != ""))
+                        mifiltro = mifiltro + " and dg.bitacora like '%" + p.Value + "%'";
+                    if ((p.ParameterName == "fecha_desde") && (p.Value.ToString() != ""))
+                        mifiltro = mifiltro + " and dg.fecha >= '" + p.Value.ToString() + "'";
+                    if ((p.ParameterName == "fecha_hasta") && (p.Value.ToString() != ""))
+                        mifiltro = mifiltro + " and dg.fecha_expiracion <= '" + p.Value.ToString() + "'";
+                    if ((p.ParameterName == "anunciante") && (p.Value.ToString() != ""))
+                        mifiltro = mifiltro + " and dg.id_anunciante = " + p.Value;
+                    if ((p.ParameterName == "id_empresa") && (p.Value.ToString() != ""))
+                        mifiltro = mifiltro + " and dg.id_empresa = " + p.Value;
+                    if ((p.ParameterName == "red") && (p.Value.ToString() != ""))
+                        mifiltro = mifiltro + " and dg.id_red = " + p.Value;
+                }
+            }
+
+            DataTable td = DB.Select(strSql + mifiltro + " ORDER BY d.id_op_dg DESC");
+            foreach (DataRow r in td.Rows)
+            {
+                Dg_orden_pub_as det = getDg_orden_pub_as(r);
+
+                //Dg_orden_pub_as det = new Dg_orden_pub_as();
+
+                //det.Anio = int.Parse(r["Anio"].ToString());
+                //det.Mes = int.Parse(r["Mes"].ToString());
+                //det.Nro_orden = int.Parse(r["Nro_orden"].ToString());
+                //det.Descripcion = r["Descripcion"].ToString();
+                //det.Id_Google_Ad_Manager = DB.DLong(r["id_google_ad_manager"].ToString());
+                //det.Fecha_desde = DB.DFecha(r["Fecha_desde"].ToString());
+                //det.Fecha_hasta = DB.DFecha(r["Fecha_hasta"].ToString());
+                //det.Cantidad = DB.DInt(r["Cantidad"].ToString());
+                //det.Monto_neto = DB.DFloat(r["Monto_neto"].ToString());
+
+                detalles.Add(det);
+            }
+
+            return detalles;
+        }
     }
 }

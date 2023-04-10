@@ -23,6 +23,10 @@ namespace WebApi.Entities
         public float Imp_conf_nc { get; set; }
         public float Imp_conf_fc { get; set; }
         public float Segundo_neto { get; set; }
+        public string Ejecutivo { get; set; }
+        public string TipoVenta { get; set; }
+        public string Empresa { get; set; }
+        public int EsFacturado { get; set; }
         /* Detalle */
         public int Id_detalle { get; set; }
         public int Id_producto { get; set; }
@@ -33,7 +37,7 @@ namespace WebApi.Entities
         public string Medio { get; set; }
         public float Porc_ron { get; set; }
 
-        //AGREGUE (modifique las fechas):
+
         public static List<R_Ventas> filterBy(List<Parametro> parametros)
         {
             string tipo = "0";
@@ -49,7 +53,7 @@ namespace WebApi.Entities
                             cast(ap.anio as varchar(4)) + '-' + cast(ap.mes as varchar(2)) + '-' + cast(ap.nro_orden as varchar(5)) as nro_orden,
                             ap.nro_orden_ag, ap.primer_neto, ap.imp_conf_nc, ap.imp_conf_fc, ap.seg_neto,
                             p.desc_producto as producto, cast(op.anio as varchar(4)) + '-' + cast(op.mes as varchar(2)) + '-' + cast(op.nro_orden as varchar(5)) as nro_orden_rel, 
-                            c.razon_social,  ";
+                            c.razon_social as ejecutivo, fp.desc_formapago, em.nombre as empresa, ap.es_facturada, ";
                             
             if (tipo != "0")
             {
@@ -63,18 +67,18 @@ namespace WebApi.Entities
             {
                 sqlCommand += ",apm.id_medio, m.desc_medio as medio, apm.porcentaje";
             }
-            sqlCommand += " from dg_orden_pub_ap ap inner join dg_orden_pub_as det on det.id_op_dg = ap.id_op_dg inner join contactos ag on ag.id_contacto = ap.id_agencia inner join contactos an on an.id_contacto = ap.id_anunciante inner join productos p on p.id_producto = ap.id_producto left outer join orden_pub_ap op on ap.id_op_relacionada = op.id_op inner join dg_orden_pub_ejecutivos ej on ej.id_op_dg=ap.id_op_dg inner join contactos c on c.id_contacto=ej.id_ejecutivo";
-            
-            //if (tipo == "2")
-            //{
-                sqlCommand += " inner join dg_orden_pub_medios apm on apm.id_op_dg = ap.id_op_dg and apm.id_op_dg = det.id_op_dg and apm.id_detalle = det.id_detalle inner join medios m on m.id_medio = apm.id_medio inner join Dg_orden_pub_pagos fdp on fdp.id_op_dg = ap.id_op_dg ";
-            //}
+            sqlCommand += " from dg_orden_pub_ap ap inner join dg_orden_pub_as det on det.id_op_dg = ap.id_op_dg inner join contactos ag on ag.id_contacto = ap.id_agencia inner join contactos an on an.id_contacto = ap.id_anunciante inner join productos p on p.id_producto = ap.id_producto left outer join orden_pub_ap op on ap.id_op_relacionada = op.id_op inner join dg_orden_pub_ejecutivos ej on ej.id_op_dg=ap.id_op_dg inner join contactos c on c.id_contacto=ej.id_ejecutivo  inner join Dg_orden_pub_pagos ofp on ofp.id_op_dg = ap.id_op_dg inner join formas_pago fp on fp.id_formapago=ofp.id_formapago inner join empresa em on em.id_empresa=ap.id_empresa";
+
+            if (tipo == "2")
+            {
+                sqlCommand += " inner join dg_orden_pub_medios apm on apm.id_op_dg = ap.id_op_dg and apm.id_op_dg = det.id_op_dg and apm.id_detalle = det.id_detalle inner join medios m on m.id_medio = apm.id_medio";
+            }
             sqlCommand += " where (ap.es_anulada = 0 or ap.es_anulada is null)";
 
             string groupby = "";
             if (tipo == "0")
             {
-                groupby += " group by ap.id_op_dg, ap.id_agencia, ag.razon_social, ap.id_anunciante, an.razon_social, cast(ap.anio as varchar(4)) + '-' + cast(ap.mes as varchar(2)) + '-' + cast(ap.nro_orden as varchar(5)), ap.nro_orden_ag, ap.primer_neto, ap.imp_conf_nc, ap.imp_conf_fc, ap.seg_neto, ap.id_producto, p.desc_producto, cast(op.anio as varchar(4)) + '-' + cast(op.mes as varchar(2)) + '-' + cast(op.nro_orden as varchar(5)) ";
+                groupby += " group by ap.id_op_dg, ap.id_agencia, ag.razon_social, ap.id_anunciante, an.razon_social, cast(ap.anio as varchar(4)) + '-' + cast(ap.mes as varchar(2)) + '-' + cast(ap.nro_orden as varchar(5)), ap.nro_orden_ag, ap.primer_neto, ap.imp_conf_nc, ap.imp_conf_fc, ap.seg_neto, ap.id_producto, p.desc_producto, cast(op.anio as varchar(4)) + '-' + cast(op.mes as varchar(2)) + '-' + cast(op.nro_orden as varchar(5)), c.razon_social, fp.desc_formapago, em.nombre, ap.es_facturada ";
             }
             
             string mifiltro = "";
@@ -112,8 +116,7 @@ namespace WebApi.Entities
                         } else
                         {
                             mifiltro = mifiltro + " and det.id_producto in (" + p.Value + ")";
-                        }
-                        
+                        }                       
                     }
                     if ((p.ParameterName == "ListaEjecutivos") && (p.Value.ToString() != ""))
                         mifiltro = mifiltro + " and ej.id_ejecutivo in (" + p.Value + ")";
@@ -123,15 +126,15 @@ namespace WebApi.Entities
                         mifiltro = mifiltro + " and fdp.id_formapago in (" + p.Value + ")";
                     if ((p.ParameterName == "listaEmpresas") && (p.Value.ToString() != ""))
                         mifiltro = mifiltro + " and ap.id_empresa in (" + p.Value + ")";
-                    if ((p.ParameterName == "listaFacturacion") && (p.Value.ToString() != ""))
+                    if ((p.ParameterName == "listaFacturacion") && (p.Value.ToString() != ""))                        
                     {
-                        if (p.Value.ToString() == "1")
+                        if (p.Value.ToString().Contains("1"))
                         {
-                            mifiltro = mifiltro + " and ap.es_facturada = 1";
+                            mifiltro = mifiltro + " and ap.es_facturada in (" + p.Value + ")";
                         }
                         else
                         {
-                            mifiltro = mifiltro + " and ap.es_facturada != 1";
+                            mifiltro = mifiltro + " and (ap.es_facturada != 1 or ap.es_facturada is null)";
                         }
                     }
                 }
@@ -180,6 +183,17 @@ namespace WebApi.Entities
                     elem.Medio = item["medio"].ToString();
                     elem.Porc_ron = float.Parse(item["porcentaje"].ToString());
                 };
+                elem.Ejecutivo = item["ejecutivo"].ToString();
+                elem.TipoVenta = item["desc_formapago"].ToString();
+                elem.Empresa = item["empresa"].ToString();
+                if(item["es_facturada"] != null)
+                {
+                    elem.EsFacturado = DB.DInt(item["es_facturada"].ToString());
+                }
+                else
+                {
+                    elem.EsFacturado = 0;
+                }
 
                 col.Add(elem);
             }

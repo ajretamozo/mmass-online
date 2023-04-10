@@ -47,13 +47,14 @@ namespace WebApi.Services
         IEnumerable<Dg_medidas> GetMedidas();
         IEnumerable<Dg_medidas> GetMedidasTodasRedes(List<Parametro> parametros);
         IEnumerable<Dg_medidas> GetMedidasVideoTodasRedes(List<Parametro> parametros);
-        long ArchivarPausarLineItems(Dg_orden_pub_ap op);
+        long ArchivarLineItems(Dg_orden_pub_ap op);
         void CambiarRed(string netCode);
         long GetRedActual();
         IEnumerable<Dg_orden_pub_ap> GetOpNuevas(List<Parametro> parametros); 
         IEnumerable<Dg_orden_pub_ap> FiltrarPedidos(List<Parametro> parametros);
         //ListaParametro ComprobarModificaciones(Dg_orden_pub_ap order);
         List<ListaParametro> ComprobarModificacionesD(Dg_orden_pub_ap order);
+        List<Dg_orden_pub_as> ComprobarModificacionesDSincro(List<Parametro> parametros);
         List<Parametro> obtenerProgresoLineasGam(Dg_orden_pub_ap order);
         IEnumerable<Dg_orden_pub_as> comprobarNuevosDetalles(Dg_orden_pub_ap order);
         IEnumerable<Dg_orden_pub_as> GetDetNuevos(List<Parametro> parametros);
@@ -129,91 +130,119 @@ namespace WebApi.Services
         {
             Parametro resultado = new Parametro();
 
-            if (det.Tipo_tarifa!=0 && det.Tipo_tarifa != 1&& det.Tipo_tarifa != 3)
+            //se obtiene el param sinc auto para ver el grado de sincronización con adserver
+            int paramSinc = int.Parse(Dg_parametro.getById(2).Valor);
+
+            if (paramSinc == 0 || paramSinc == 4)
             {
-                resultado.ParameterName = "La Forma de Uso debe ser CPM, CPD o CPC";
-                resultado.Value = "-3";
+                resultado.ParameterName = "La Creación/Modificación de Líneas de Pedido está desactivada. Si es Administrador, puede activarla desde el Panel de Configuración";
+                resultado.Value = "-4";
                 return resultado;
             }
+
             else
             {
-                int paramEnviarMail = int.Parse(Dg_parametro.getById(3).Valor);
-                //Dg_orden_pub_ap dg = Dg_orden_pub_ap.getById(det.Id_op_dg);
-                if (det.Id_Google_Ad_Manager > 0)
+                if (det.Tipo_tarifa != 0 && det.Tipo_tarifa != 1 && det.Tipo_tarifa != 3)
                 {
-                    //se obtiene el param sinc auto para ver si se archivan o pausan las lineas
-                    int paramSinc = int.Parse(Dg_parametro.getById(2).Valor);
-
-                    Dg_red_GAM red = Dg_red_GAM.getById(det.Id_red);
-                    CambiarRed(red.Codigo_red.ToString());
-                    Dg_orden_pub_as res = GoogleAdManager.UpdateLineItem(det.tipo_aviso_dg.Descripcion, det.Descripcion, det.Importe_unitario, det.Cantidad, det.Porc_dto, det.Fecha_desde, det.Fecha_hasta, det.Medidas, det.areaGeo, det.Emplazamientos, det.Tipo_tarifa, det.Id_Google_Ad_Manager, paramSinc);
-                    resultado.Value = res.Id_Google_Ad_Manager.ToString(); //se devuelve el idGam
-                    if (res.Id_Google_Ad_Manager > 0)
-                    {
-                        resultado.ParameterName = "La Línea de pedido en Google Ad Manager se ha actualizado con éxito con el ID: " + res.Id_Google_Ad_Manager;
-                        
-                        //enviar notificación por mail
-                        if (paramEnviarMail == 1 || paramEnviarMail == 3 || paramEnviarMail == 5 || paramEnviarMail == 7)
-                        {
-                            string asunto = "MMASS Online - Modificación de Línea de Pedido";
-                            string msj = "Se ha modificado la Línea de Pedido <b>" + det.Descripcion + "</b>, " +
-                                          "ID: <b>" + det.Id_Google_Ad_Manager + "</b> perteneciente al Pedido <b>" +
-                                          det.Nombre_pedido_Google_Ad_Manager + "</b>, ID: <b>" + det.Id_pedido_Google_Ad_Manager + "</b><br>" +
-                                          "Número de Orden MMASS: <b>" + det.Anio + "-" + det.Mes + "-" + det.Nro_orden + "</b><br>" +
-                                          "La Línea de Pedido ha quedado en el estado: <b>" + res.UsuarioSesion + "</b><br>" +
-                                          "Usuario MMASS Online: <b>" + det.UsuarioSesion + "</b><br>" +
-                                          "--------------------------------------------------------------------" +
-                                          "---------------------------------------------------------------<br>" +
-                                          "<font size=1>No responder este mensaje</font><br>" +
-                                          "<H5>Sistema de Notificaciones MMASS Online</H5>";
-                            enviarMail(asunto, msj);
-                        }
-                    }
-                    else
-                    {
-                        resultado.ParameterName = res.UsuarioSesion; //se devuelve el mensaje de error
-                    }
+                    resultado.ParameterName = "La Forma de Uso debe ser CPM, CPD o CPC";
+                    resultado.Value = "-3";
+                    return resultado;
                 }
                 else
                 {
-                    if (det.Fecha_desde < System.DateTime.Now.Date)
+                    int paramEnviarMail = int.Parse(Dg_parametro.getById(3).Valor);
+                    if (det.Id_Google_Ad_Manager > 0)
                     {
-                        resultado.ParameterName = "La Fecha de Inicio del Detalle no puede estar en el pasado";
-                        resultado.Value = "-2";
-                        return resultado;
+                        if (paramSinc == 2 || paramSinc == 6)
+                        {
+                            resultado.ParameterName = "La Modificación de Líneas de Pedido está desactivada. Si es Administrador, puede activarla desde el Panel de Configuración";
+                            resultado.Value = "-5";
+                            return resultado;
+                        }
+                        else
+                        {
+                            Dg_red_GAM red = Dg_red_GAM.getById(det.Id_red);
+                            CambiarRed(red.Codigo_red.ToString());
+                            Dg_orden_pub_as res = GoogleAdManager.UpdateLineItem(det.tipo_aviso_dg.Descripcion, det.Descripcion, det.Importe_unitario, det.Cantidad, det.Porc_dto, det.Fecha_desde, det.Fecha_hasta, det.Medidas, det.areaGeo, det.Emplazamientos, det.Tipo_tarifa, det.Id_Google_Ad_Manager, paramSinc);
+                            resultado.Value = res.Id_Google_Ad_Manager.ToString(); //se devuelve el idGam
+                            if (res.Id_Google_Ad_Manager > 0)
+                            {
+                                resultado.ParameterName = "La Línea de pedido en Google Ad Manager se ha actualizado con éxito con el ID: " + res.Id_Google_Ad_Manager;
+
+                                //enviar notificación por mail
+                                if (paramEnviarMail == 1 || paramEnviarMail == 3 || paramEnviarMail == 5 || paramEnviarMail == 7)
+                                {
+                                    string asunto = "MMASS Online - Modificación de Línea de Pedido";
+                                    string msj = "Se ha modificado la Línea de Pedido <b>" + det.Descripcion + "</b>, " +
+                                                  "ID: <b>" + det.Id_Google_Ad_Manager + "</b> perteneciente al Pedido <b>" +
+                                                  det.Nombre_pedido_Google_Ad_Manager + "</b>, ID: <b>" + det.Id_pedido_Google_Ad_Manager + "</b><br>" +
+                                                  "Número de Orden MMASS: <b>" + det.Anio + "-" + det.Mes + "-" + det.Nro_orden + "</b><br>" +
+                                                  "La Línea de Pedido ha quedado en el estado: <b>" + res.UsuarioSesion + "</b><br>" +
+                                                  "Usuario MMASS Online: <b>" + det.UsuarioSesion + "</b><br>" +
+                                                  "--------------------------------------------------------------------" +
+                                                  "---------------------------------------------------------------<br>" +
+                                                  "<font size=1>No responder este mensaje</font><br>" +
+                                                  "<H5>Sistema de Notificaciones MMASS Online</H5>";
+                                    enviarMail(asunto, msj);
+                                }
+                            }
+                            else
+                            {
+                                resultado.ParameterName = res.UsuarioSesion; //se devuelve el mensaje de error
+                            }
+                            return resultado;
+                        }                       
                     }
                     else
                     {
-                        Dg_red_GAM red = Dg_red_GAM.getById(det.Id_red);
-                        CambiarRed(red.Codigo_red.ToString());
-                        resultado = GoogleAdManager.CreateLineItems(det.tipo_aviso_dg.Tipo_aviso_ads, det.Descripcion, det.Id_pedido_Google_Ad_Manager, det.Importe_unitario, det.Cantidad, det.Porc_dto, det.Fecha_desde, det.Fecha_hasta, det.Medidas, det.areaGeo, det.Emplazamientos, det.Tipo_tarifa);
-                    }
-
-                    if (long.Parse(resultado.Value) > 0)
-                    {
-                        Dg_orden_pub_as.saveId_Google_Ad_Manager(det.Id_op_dg, det.Id_detalle, long.Parse(resultado.Value));
-                        //grabamos parametro para que OrderList sepa que op pintar de verde
-                        Dg_orden_pub_ap.saveId_Google_Ad_Manager(det.Id_op_dg);
-
-                        //enviar notificación por mail
-                        if (paramEnviarMail == 1 || paramEnviarMail == 2 || paramEnviarMail == 5 || paramEnviarMail == 6)
+                        if (paramSinc == 3 || paramSinc == 7)
                         {
-                            string asunto = "MMASS Online - Creación de Línea de Pedido";
-                            string msj = @"Se ha creado la Línea de Pedido <b>" + det.Descripcion + "</b>, " +
-                                          "ID: <b>" + resultado.Value + "</b> perteneciente al Pedido <b>" +
-                                          det.Nombre_pedido_Google_Ad_Manager + "</b>, ID: <b>" + det.Id_pedido_Google_Ad_Manager + "</b><br>" +
-                                          "Número de Orden MMASS: <b>" + det.Anio + "-" + det.Mes + "-" + det.Nro_orden + "</b><br>" +
-                                          "La Línea de Pedido ha quedado en el estado: <b>DRAFT</b><br>" +
-                                          "Usuario MMASS Online: <b>" + det.UsuarioSesion + "</b><br>" +
-                                          "--------------------------------------------------------------------" +
-                                          "---------------------------------------------------------------<br>" +
-                                          "<font size=1>No responder este mensaje</font><br>" +
-                                          "<H5>Sistema de Notificaciones MMASS Online</H5>";
-                            enviarMail(asunto, msj);
+                            resultado.ParameterName = "La Creación de Líneas de Pedido está desactivada. Si es Administrador, puede activarla desde el Panel de Configuración";
+                            resultado.Value = "-5";
+                            return resultado;
                         }
-                    }
+                        else
+                        {
+                            if (det.Fecha_desde < System.DateTime.Now.Date)
+                            {
+                                resultado.ParameterName = "La Fecha de Inicio del Detalle no puede estar en el pasado";
+                                resultado.Value = "-2";
+                                return resultado;
+                            }
+                            else
+                            {
+                                Dg_red_GAM red = Dg_red_GAM.getById(det.Id_red);
+                                CambiarRed(red.Codigo_red.ToString());
+                                resultado = GoogleAdManager.CreateLineItems(det.tipo_aviso_dg.Tipo_aviso_ads, det.Descripcion, det.Id_pedido_Google_Ad_Manager, det.Importe_unitario, det.Cantidad, det.Porc_dto, det.Fecha_desde, det.Fecha_hasta, det.Medidas, det.areaGeo, det.Emplazamientos, det.Tipo_tarifa);
+                            }
+
+                            if (long.Parse(resultado.Value) > 0)
+                            {
+                                Dg_orden_pub_as.saveId_Google_Ad_Manager(det.Id_op_dg, det.Id_detalle, long.Parse(resultado.Value));
+                                //grabamos parametro para que OrderList sepa que op pintar de verde
+                                Dg_orden_pub_ap.saveId_Google_Ad_Manager(det.Id_op_dg);
+
+                                //enviar notificación por mail
+                                if (paramEnviarMail == 1 || paramEnviarMail == 2 || paramEnviarMail == 5 || paramEnviarMail == 6)
+                                {
+                                    string asunto = "MMASS Online - Creación de Línea de Pedido";
+                                    string msj = @"Se ha creado la Línea de Pedido <b>" + det.Descripcion + "</b>, " +
+                                                  "ID: <b>" + resultado.Value + "</b> perteneciente al Pedido <b>" +
+                                                  det.Nombre_pedido_Google_Ad_Manager + "</b>, ID: <b>" + det.Id_pedido_Google_Ad_Manager + "</b><br>" +
+                                                  "Número de Orden MMASS: <b>" + det.Anio + "-" + det.Mes + "-" + det.Nro_orden + "</b><br>" +
+                                                  "La Línea de Pedido ha quedado en el estado: <b>DRAFT</b><br>" +
+                                                  "Usuario MMASS Online: <b>" + det.UsuarioSesion + "</b><br>" +
+                                                  "--------------------------------------------------------------------" +
+                                                  "---------------------------------------------------------------<br>" +
+                                                  "<font size=1>No responder este mensaje</font><br>" +
+                                                  "<H5>Sistema de Notificaciones MMASS Online</H5>";
+                                    enviarMail(asunto, msj);
+                                }
+                            }
+                            return resultado;
+                        }
+                    }                    
                 }
-                return resultado;
             }
         }
 
@@ -433,44 +462,49 @@ namespace WebApi.Services
             return GoogleAdManager.GetMedidasVideoTodasRedes(parametros);
         }
 
-        public long ArchivarPausarLineItems(Dg_orden_pub_ap op)
+        public long ArchivarLineItems(Dg_orden_pub_ap op)
         {
             int result = 0;
-            //si obtiene el param sinc auto para ver si se archivan o pausan las lineas
+            //si obtiene el param sinc auto para ver si se archivan o no las líneas eliminadas
             int paramSinc = int.Parse(Dg_parametro.getById(2).Valor);
-            foreach (Dg_orden_pub_as det in op.Detalles)
+            if(paramSinc == 1 || paramSinc == 4 || paramSinc == 6 || paramSinc == 7)
             {
-                result = GoogleAdManager.ArchivarPausarLineItem(det.Id_Google_Ad_Manager, paramSinc);
-                if (result > 0)
+                foreach (Dg_orden_pub_as det in op.Detalles)
                 {
-                    //enviar notificación por mail
-                    string estadoLinea = "";
-                    if (result == 1)
+                    Dg_red_GAM red = Dg_red_GAM.getById(det.Id_red);
+                    CambiarRed(red.Codigo_red.ToString());
+                    result = GoogleAdManager.ArchivarLineItem(det.Id_Google_Ad_Manager);
+                    if (result > 0)
                     {
-                        estadoLinea = "PAUSED";
-                    }
-                    else
-                    {
-                        estadoLinea = "ARCHIVED";
-                    }
-                    int paramEnviarMail = int.Parse(Dg_parametro.getById(3).Valor);
-                    if (paramEnviarMail == 1 || paramEnviarMail == 4 || paramEnviarMail == 6 || paramEnviarMail == 7)
-                    {
-                        string asunto = "MMASS Online - Eliminación de Línea de Pedido";
-                        string msj = @"Se ha eliminado la Línea de Pedido <b>" + det.Descripcion + "</b>, " +
-                                      "ID: <b>" + det.Id_Google_Ad_Manager + "</b> perteneciente al Pedido <b>" +
-                                      op.Bitacora + "</b>, ID: <b>" + op.Id_Google_Ad_Manager + "</b><br>" +
-                                      "Número de Orden MMASS: <b>" + op.Anio + "-" + op.Mes + "-" + op.Nro_orden + "</b><br>" +
-                                      "La Línea de Pedido ha quedado en el estado: <b>" + estadoLinea + "</b><br>" +
-                                      "Usuario MMASS Online: <b>" + op.UsuarioSesion + "</b><br>" +
-                                      "--------------------------------------------------------------------" +
-                                      "---------------------------------------------------------------<br>" +
-                                      "<font size=1>No responder este mensaje</font><br>" +
-                                      "<H5>Sistema de Notificaciones MMASS Online</H5>";
-                        enviarMail(asunto, msj);
+                        //enviar notificación por mail
+                        //string estadoLinea = "";
+                        //if (result == 1)
+                        //{
+                        //    estadoLinea = "PAUSED";
+                        //}
+                        //else
+                        //{
+                        //    estadoLinea = "ARCHIVED";
+                        //}
+                        int paramEnviarMail = int.Parse(Dg_parametro.getById(3).Valor);
+                        if (paramEnviarMail == 1 || paramEnviarMail == 4 || paramEnviarMail == 6 || paramEnviarMail == 7)
+                        {
+                            string asunto = "MMASS Online - Eliminación de Línea de Pedido";
+                            string msj = @"Se ha eliminado la Línea de Pedido <b>" + det.Descripcion + "</b>, " +
+                                          "ID: <b>" + det.Id_Google_Ad_Manager + "</b> perteneciente al Pedido <b>" +
+                                          op.Bitacora + "</b>, ID: <b>" + op.Id_Google_Ad_Manager + "</b><br>" +
+                                          "Número de Orden MMASS: <b>" + op.Anio + "-" + op.Mes + "-" + op.Nro_orden + "</b><br>" +
+                                          "La Línea de Pedido ha quedado en el estado: <b>ARCHIVADA</b><br>" +
+                                          "Usuario MMASS Online: <b>" + op.UsuarioSesion + "</b><br>" +
+                                          "--------------------------------------------------------------------" +
+                                          "---------------------------------------------------------------<br>" +
+                                          "<font size=1>No responder este mensaje</font><br>" +
+                                          "<H5>Sistema de Notificaciones MMASS Online</H5>";
+                            enviarMail(asunto, msj);
+                        }
                     }
                 }
-            }
+            }         
             return result;
         }
 
@@ -515,7 +549,7 @@ namespace WebApi.Services
                         //ordenNueva.Id_red = idRed;
                         ordenNueva.Id_Google_Ad_Manager = order.id;
                         ordenNueva.Observ = order.name;
-                        ordenNueva.Anunciante_nombre = anun.RazonSocial;
+                        ordenNueva.Anunciante_nombre = anun.Nombre_com;
                         //anun.IdContactoDigital = order.advertiserId.ToString();
                         //ordenNueva.anunciante = anun;
                         ordenNueva.Seg_neto = (order.totalBudget.microAmount) / 1000000;
@@ -1275,6 +1309,192 @@ namespace WebApi.Services
             }
 
             return detallesCambios;
+        }
+
+        public List<Dg_orden_pub_as> ComprobarModificacionesDSincro(List<Parametro> parametros)
+        {
+            List<Dg_orden_pub_as> detallesMod = new List<Dg_orden_pub_as>();
+            Dg_orden_pub_ap order = new Dg_orden_pub_ap();
+            order.Detalles = Dg_orden_pub_as.filter(parametros);
+
+            foreach (Dg_orden_pub_as detalle in order.Detalles)
+            {
+                    //apuntamos a la red adserver del detalle
+                    Dg_red_GAM red = Dg_red_GAM.getById(detalle.Id_red);
+                    CambiarRed(red.Codigo_red.ToString());
+
+                bool modificado = false;
+                    LineItem linea = GoogleAdManager.GetLineItemById(detalle.Id_Google_Ad_Manager);
+
+                    //informar datos del Detalle
+                    //Parametro idDet = new Parametro();
+                    //idDet.ParameterName = "datosDet";
+                    //idDet.Value = detalle.Id_detalle.ToString() + "@@@" + detalle.Id_Google_Ad_Manager.ToString() + "@@@" + detalle.Id_red.ToString();
+                    //cambiosL.Parametros.Add(idDet);
+
+                if (linea.id > 0)
+                {
+                        //se buscan diferencias entre la orden gam y la orden ap; si se encuentran, se devuelve la lista de cambios
+                        switch (detalle.Tipo_tarifa)
+                        {
+                            case 0:
+                                if (linea.costType != CostType.CPM)
+                                {
+                                detallesMod.Add(detalle);
+                                continue;
+                            }
+                                break;
+                            case 1:
+                                if (linea.costType != CostType.CPD)
+                                {
+                                detallesMod.Add(detalle);
+                                continue;
+                            }
+                                break;
+                            case 2:
+                                {
+                                detallesMod.Add(detalle);
+                                continue;
+                            }
+                                break;
+                            case 3:
+                                if (linea.costType != CostType.CPC)
+                                {
+                                detallesMod.Add(detalle);
+                                continue;
+                            }
+                                break;
+                            case 4:
+                                if (linea.costType != CostType.CPA)
+                                {
+                                detallesMod.Add(detalle);
+                                continue;
+                            }
+                                break;
+                        }
+
+                        if (linea.name != detalle.Descripcion)
+                        {
+                        detallesMod.Add(detalle);
+                        continue;
+                    }
+
+                        //Se comparan emplazamientos
+                        int cantEmpGam = 0;
+                        long[] emplazasLinea = { };
+
+                        if (linea.targeting.inventoryTargeting.targetedPlacementIds != null)
+                        {
+                            cantEmpGam = linea.targeting.inventoryTargeting.targetedPlacementIds.Length;
+                            emplazasLinea = linea.targeting.inventoryTargeting.targetedPlacementIds;
+                        }
+
+                        if (cantEmpGam != detalle.Emplazamientos.Count)
+                        {
+                        detallesMod.Add(detalle);
+                        continue;
+                    }
+
+                        else
+                        {
+                            foreach (Dg_orden_pub_emplazamientos emp in detalle.Emplazamientos)
+                            {
+                                bool existeEmp = false;
+                                foreach (long idEmpla in emplazasLinea)
+                                {
+                                    if (idEmpla == emp.Codigo_emplazamiento)
+                                    {
+                                        existeEmp = true;
+                                    break;
+                                    }
+                                }
+                                if (existeEmp == false)
+                                {
+                                detallesMod.Add(detalle);
+                                continue;
+                            }
+                            }
+                        }
+
+                        //Se comparan medidas
+                        if (linea.creativePlaceholders.Length != detalle.Medidas.Count)
+                        {
+                        detallesMod.Add(detalle);
+                        continue;
+                    }
+
+                        else
+                        {
+                            foreach (Dg_orden_pub_medidas med in detalle.Medidas)
+                            {
+                                string medAg = med.Ancho.ToString() + "x" + med.Alto.ToString();
+                                bool existe = false;
+                                foreach (CreativePlaceholder cph in linea.creativePlaceholders)
+                                {
+                                    string medGam = cph.size.width.ToString() + "x" + cph.size.height.ToString();
+
+                                    if (String.Equals(medGam, medAg))
+                                    {
+                                        existe = true;
+                                    break;
+                                    }
+                                }
+                                if (existe == false)
+                                {
+                                detallesMod.Add(detalle);
+                                continue;
+                            }
+                            }
+                        }
+
+                        if ((linea.costPerUnit.microAmount / 1000000.0) != detalle.Importe_unitario)
+                        {
+                        detallesMod.Add(detalle);
+                        continue;
+                    }
+
+                        if ((float)linea.discount != detalle.Porc_dto)
+                        {
+                        detallesMod.Add(detalle);
+                        continue;
+                    }
+
+                        if (linea.costType != CostType.CPD && (int)linea.primaryGoal.units != detalle.Cantidad)
+                        {
+                        detallesMod.Add(detalle);
+                        continue;
+                    }
+
+                        if (System.DateTime.Parse(DateTimeUtilities.ToString(linea.startDateTime, "yyyy/MM/dd")) != detalle.Fecha_desde)
+                        {
+                        detallesMod.Add(detalle);
+                        continue;
+                    }
+
+                        if (System.DateTime.Parse(DateTimeUtilities.ToString(linea.endDateTime, "yyyy/MM/dd")) != detalle.Fecha_hasta)
+                        {
+                        detallesMod.Add(detalle);
+                        continue;
+                    }
+
+                        if (linea.orderName != detalle.Nombre_pedido_Google_Ad_Manager)
+                        {
+                        detallesMod.Add(detalle);
+                        continue;
+                    }
+                }
+                else
+                {
+                    detallesMod.Add(detalle);
+                    continue;
+                }
+                //if (modificado == true)
+                //{
+                //    detallesMod.Add(detalle);
+                //}            
+            }
+
+            return detallesMod;
         }
 
         public List<Parametro> obtenerProgresoLineasGam(Dg_orden_pub_ap order)

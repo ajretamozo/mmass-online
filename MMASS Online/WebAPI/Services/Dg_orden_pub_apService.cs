@@ -36,6 +36,7 @@ namespace WebApi.Services
         bool anularOrden(int id);
         bool existeOpNombre(int id, string nom);
         void grabarLog(List<Parametro> datosLog);
+        IEnumerable<Dg_orden_pub_as> filterDet(List<Parametro> parametros);
     }
     public class Dg_orden_pub_apM : Dg_orden_pub_ap {
         public int result { get; set; }
@@ -156,6 +157,11 @@ namespace WebApi.Services
         public void grabarLog(List<Parametro> datosLog)
         {
             Dg_orden_pub_ap.grabarLog(datosLog);
+        }
+
+        public IEnumerable<Dg_orden_pub_as> filterDet(List<Parametro> parametros)
+        {
+            return Dg_orden_pub_as.filter(parametros);
         }
 
     }

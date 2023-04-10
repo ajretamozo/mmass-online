@@ -145,7 +145,7 @@ namespace WebApi.Helpers
                             {
                                 Anunciante = new Contacto();
                                 Anunciante.IdContactoDigital = company.id.ToString();
-                                Anunciante.RazonSocial = company.name;
+                                Anunciante.Nombre_com = company.name;
                                 Anunciantes.Add(Anunciante);
                             }
                         }
@@ -1757,7 +1757,7 @@ namespace WebApi.Helpers
                 }
         }
 
-        public static int ArchivarPausarLineItem(long Id, int paramSinc)
+        public static int ArchivarLineItem(long Id)
         {
             int result = -1;
             //AdManagerUser user = new AdManagerUser();
@@ -1782,20 +1782,20 @@ namespace WebApi.Helpers
 
                     LineItem lineItem = page.results[0];
 
-                    //si el param sinc auto con adserver esta desactivado, se pausa la linea en el caso de estar activa
-                    if (paramSinc == 0 && lineItem.status == ComputedStatus.DELIVERING)
-                    {
-                        //// Create action.
-                        PauseLineItems action = new PauseLineItems();
+                    ////si el param sinc auto con adserver esta desactivado, se pausa la linea en el caso de estar activa
+                    //if (paramSinc == 0 && lineItem.status == ComputedStatus.DELIVERING)
+                    //{
+                    //    //// Create action.
+                    //    PauseLineItems action = new PauseLineItems();
 
-                        //// Perform action.
-                        UpdateResult uResult =
-                            lineItemService.performLineItemAction(action, statementBuilder.ToStatement());
+                    //    //// Perform action.
+                    //    UpdateResult uResult =
+                    //        lineItemService.performLineItemAction(action, statementBuilder.ToStatement());
                         
-                        result = 1;
-                    }
-                    else
-                    {
+                    //    result = 1;
+                    //}
+                    //else
+                    //{
                         //// Create action.
                         ArchiveLineItems action = new ArchiveLineItems();
 
@@ -1804,7 +1804,7 @@ namespace WebApi.Helpers
                             lineItemService.performLineItemAction(action,statementBuilder.ToStatement());
 
                         result = 2;
-                    }
+                    //}
                 }
                 catch (Exception e)
                 {

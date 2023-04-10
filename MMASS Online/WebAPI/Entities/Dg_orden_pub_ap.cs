@@ -202,7 +202,7 @@ namespace WebApi.Entities
             }
             return mi;
         }
-        //AGREGUE (id_area en Detalle):
+
         //completar metodo
         public static List<Dg_orden_pub_ap> filter(List<Parametro> parametros)
         {
@@ -746,7 +746,7 @@ namespace WebApi.Entities
                 }
                 if (Bitacora == "")
                 {
-                    Bitacora = anunciante.RazonSocial + "_" + Anio.ToString() + "_" + Mes.ToString() + "_" + Nro_orden;
+                    Bitacora = anunciante.Nombre_com + "_" + Anio.ToString() + "_" + Mes.ToString() + "_" + Nro_orden;
                 }
                 parametros.Add(new SqlParameter() { ParameterName = "@bitacora", SqlDbType = SqlDbType.NVarChar, Value = Bitacora });               
                 parametros.Add(new SqlParameter() { ParameterName = "@Id_facturar", SqlDbType = SqlDbType.Int, Value = DB.DInt(Id_facturar) });

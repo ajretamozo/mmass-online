@@ -212,7 +212,7 @@
             var str = '<option value="-1">  </option>';
             $.each(anunciantes, function (it, anun) {
 
-                str = str + '<option idContacto="' + anun.id + '" value="' + anun.idContactoDigital + '">' + anun.razonSocial + ' </option>';
+                str = str + '<option idContacto="' + anun.id + '" value="' + anun.idContactoDigital + '">' + anun.nombre_com + ' </option>';
 
 
             });
@@ -299,7 +299,7 @@
                 var str = '';
                 str = "<tr>";
                 str = str + "<td class='col-xs-2' > " + anuncianteGAM.idContactoDigital + "</td > ";
-                str = str + "<td class='col-xs-4' > " + anuncianteGAM.razonSocial + "</td >";
+                str = str + "<td class='col-xs-4' > " + anuncianteGAM.nombre_com + "</td >";
                 str = str + '<td class="col-xs-4" >' + strCabeceraOption + " id='sel" + anuncianteGAM.idContactoDigital + "' >" + strOption + '</td >';
                 str = str + "<td class='col-xs-2' > <button type='button' id=button" + anuncianteGAM.idContactoDigital + " class='btn btn-secondary' value='1' onClick='vincular(" + anuncianteGAM.idContactoDigital + ", " + idRed + ")'>Vincular</button> </td >";
                 str = str + "</tr>";

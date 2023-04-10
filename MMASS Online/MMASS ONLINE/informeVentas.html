@@ -190,7 +190,7 @@
                         </button>
                     </div>
                     <!--Tabla detallada-->
-                    <div id="divTablaDet" class="table-responsive mt-2 vh-100" style="display:none;">
+                    <div id="divTablaDet" class="table-responsive mt-2 vh-100" style="display: none; text-align: center;">
                         <table id="table" class='table table-sm tableFixHead'>
                             <thead>
                                 <tr>
@@ -199,21 +199,25 @@
                                     <th>Producto</th>
                                     <th>NroOrd</th>
                                     <th>OrdAg</th>
+                                    <th>Empresa</th>
+                                    <th>Tipo de Venta</th>
+                                    <th>Facturada</th>
+                                    <th>Ejecutivo</th>
                                     <th class="align-center">Impresiones</th>
-                                    <th>Medios</th>
-                                    <th class="monto">%Medio</th>
-                                    <th class="monto">Subtotal</th>
-                                    <th class="monto">% NC</th>
-                                    <th class="monto">Subtotal1</th>
-                                    <th class="monto">% FC</th>
-                                    <th class="monto">Total</th>
+                                    <th style="text-align: center;">Medios</th>
+                                    <th class="monto" style="text-align: center;">%Medio</th>
+                                    <th class="monto" style="text-align: center;">Subtotal</th>
+                                    <th class="monto" style="text-align: center;">% NC</th>
+                                    <th class="monto" style="text-align: center;">Subtotal1</th>
+                                    <th class="monto" style="text-align: center;">% FC</th>
+                                    <th class="monto" style="text-align: center;">Total</th>
                                 </tr>
                             </thead>
                             <tbody id="tableReport" class="small"></tbody>
                         </table>
                     </div>
                     <!--Tabla agrupada-->
-                    <div id="divTablaAgrup" class="table-responsive mt-2 vh-100" style="display:none;">
+                    <div id="divTablaAgrup" class="table-responsive mt-2 vh-100" style="display: none; text-align: center;">
                         <table id="tablaAgrup" class='table table-sm tableFixHead'>
                             <thead>
                                 <tr>
@@ -222,12 +226,16 @@
                                     <th>Producto</th>
                                     <th>NroOrd</th>
                                     <th>OrdAg</th>
+                                    <th>Empresa</th>
+                                    <th>Tipo de Venta</th>
+                                    <th>Facturada</th>
+                                    <th>Ejecutivo</th>
                                     <th class="align-center">Impresiones</th>
-                                    <th class="monto">Subtotal</th>
-                                    <th class="monto">% NC</th>
-                                    <th class="monto">Subtotal1</th>
-                                    <th class="monto">% FC</th>
-                                    <th class="monto">Total</th>
+                                    <th class="monto" style="text-align: center;">Subtotal</th>
+                                    <th class="monto" style="text-align: center;">% NC</th>
+                                    <th class="monto" style="text-align: center;">Subtotal1</th>
+                                    <th class="monto" style="text-align: center;">% FC</th>
+                                    <th class="monto" style="text-align: center;">Total</th>
                                 </tr>
                             </thead>
                             <tbody id="tableReportAgrup" class="small"></tbody>
@@ -245,10 +253,16 @@
                         </div>
                         <div class="col-lg-4">
                             <div class="form-group">
-                                <label>Medios</label>
-                                <select id="selMedios" class="selectpicker form-control" data-deselect-all-text="Ninguno" data-select-all-text="Todos" data-none-selected-text="Seleccionar" data-actions-box="true" data-size="10" data-live-search="true" multiple></select>
+                                <label>Facturación</label>
+                                <select id="selFacturacion" class="selectpicker form-control" data-deselect-all-text="Ninguno" data-select-all-text="Todos" data-none-selected-text="Seleccionar" data-actions-box="true" data-size="10" data-live-search="true" multiple></select>
                             </div>
                         </div>
+                        <!--<div class="col-lg-4">
+        <div class="form-group">
+            <label>Medios</label>
+            <select id="selMedios" class="selectpicker form-control" data-deselect-all-text="Ninguno" data-select-all-text="Todos" data-none-selected-text="Seleccionar" data-actions-box="true" data-size="10" data-live-search="true" multiple></select>
+        </div>
+    </div>-->
                     </div>
                     <div class="row py-1 noPrint">
                         <div class="col-lg-4">
@@ -283,12 +297,6 @@
                             <div class="form-group">
                                 <label>Ejecutivos</label>
                                 <select id="selEjecutivos" class="selectpicker form-control" data-deselect-all-text="Ninguno" data-select-all-text="Todos" data-none-selected-text="Seleccionar" data-actions-box="true" data-size="10" data-live-search="true" multiple></select>
-                            </div>
-                        </div>
-                        <div class="col-lg-4">
-                            <div class="form-group">
-                                <label>Facturación</label>
-                                <select id="selFacturacion" class="selectpicker form-control" data-deselect-all-text="Ninguno" data-select-all-text="Todos" data-none-selected-text="Seleccionar" data-actions-box="true" data-size="10" data-live-search="true" multiple></select>
                             </div>
                         </div>
                     </div>
@@ -375,12 +383,12 @@
             listaEjecutivos = listaEjecutivos.slice(0, -1);
             params.ListaEjecutivos = listaEjecutivos;
 
-            listaMedios = "";
-            $.each($("#selMedios").val(), function (it, medio) {
-                listaMedios += medio + ",";
-            });
-            listaMedios = listaMedios.slice(0, -1);
-            params.listaMedios = listaMedios;
+            //listaMedios = "";
+            //$.each($("#selMedios").val(), function (it, medio) {
+            //    listaMedios += medio + ",";
+            //});
+            //listaMedios = listaMedios.slice(0, -1);
+            //params.listaMedios = listaMedios;
 
             listaTiposVenta = "";
             $.each($("#selTiposVenta").val(), function (it, tipoVenta) {
@@ -467,7 +475,11 @@
                 sumSubtotal1Ag = 0;
                 sumTotalAg = 0;
                 rowHTML += "<tr class='tableexport-ignore table-secondary agGroup' agencia='" + itAg + "'>"
-                rowHTML += "<td colspan='13'> AGENCIA: " + itAg + "</td>";
+                if (tipo == 2) {
+                    rowHTML += "<td colspan='17' style='text-align: initial;'> AGENCIA: " + itAg + "</td>";
+                } else {
+                    rowHTML += "<td colspan='15' style='text-align: initial;'> AGENCIA: " + itAg + "</td>";
+                }
                 rowHTML += "</tr>"
                 //grupo anunciante
                 $.each(groupAg, function (itAn, groupAn) {
@@ -476,7 +488,11 @@
                     sumSubtotal1An = 0;
                     sumTotalAn = 0;
                     rowHTML += "<tr class='tableexport-ignore table-secondary anGroup' anunciante='" + itAn + "'>"
-                    rowHTML += "<td></td><td colspan='12'>         ANUNCIANTE: " + itAn + "</td>";
+                    if (tipo == 2) {
+                        rowHTML += "<td></td><td colspan='16' style='text-align: initial;'>         ANUNCIANTE: " + itAn + "</td>";
+                    } else {
+                        rowHTML += "<td></td><td colspan='14' style='text-align: initial;'>         ANUNCIANTE: " + itAn + "</td>";
+                    }
                     rowHTML += "</tr>"
                     //filas detalle
                     $.each(groupAn, function (it, iord) {
@@ -507,21 +523,30 @@
                         rowHTML += "<td class='col-xs-1'>" + iord.producto + "</td>";
                         rowHTML += "<td style='mso-number-format:\"\@\";' class='col-xs-1'>" + iord.nro_orden + "</td>";
                         rowHTML += "<td class='col-xs-1'>" + iord.nro_orden_agencia + "</td>";
+                        rowHTML += "<td class='col-xs-1'>" + iord.empresa + "</td>";
+                        rowHTML += "<td class='col-xs-1'>" + iord.tipoVenta + "</td>";
+                        if (iord.esFacturado == 1) {
+                            rowHTML += "<td class='col-xs-1'>SI</td>";
+                        }
+                        else {
+                            rowHTML += "<td class='col-xs-1'>NO</td>";
+                        }
+                        rowHTML += "<td class='col-xs-1'>" + iord.ejecutivo + "</td>";
 
 
                         if (tipo == 2) {
                             rowHTML += "<td class='align-center col-xs-1'>" + roundSinFormato(impXmedio, 2) + "</td>";
                             rowHTML += "<td class='col-xs-1'>" + iord.medio + "</td>";
-                            rowHTML += "<td class='monto col-xs-1'>" + iord.porc_ron + "%</td>";
+                            rowHTML += "<td class='monto col-xs-1' style='text-align: center;'>" + iord.porc_ron + "%</td>";
                         } else {
                             rowHTML += "<td class='align-center col-xs-1'>" + iord.cantidad_impresiones + "</td>";
                         }
 
-                        rowHTML += "<td class='monto col-xs-1'>$" + round(subtotal, 2) + "</td>";
-                        rowHTML += "<td class='monto col-xs-1'>" + round(porcNC, 2) + "%</td>";
-                        rowHTML += "<td class='monto col-xs-1'>$" + round(subtotal1, 2) + "</td>";
-                        rowHTML += "<td class='monto col-xs-1'>" + round(porcFC, 2) + "%</td>";
-                        rowHTML += "<td class='monto col-xs-1'>$" + round(total, 2) + "</td>";
+                        rowHTML += "<td class='monto col-xs-1' style='text-align: center;'>$" + round(subtotal, 2) + "</td>";
+                        rowHTML += "<td class='monto col-xs-1' style='text-align: center;'>" + round(porcNC, 2) + "%</td>";
+                        rowHTML += "<td class='monto col-xs-1' style='text-align: center;'>$" + round(subtotal1, 2) + "</td>";
+                        rowHTML += "<td class='monto col-xs-1' style='text-align: center;'>" + round(porcFC, 2) + "%</td>";
+                        rowHTML += "<td class='monto col-xs-1' style='text-align: center;'>$" + round(total, 2) + "</td>";
                         rowHTML += '</tr>'
 
                         //incremento totales anunciante
@@ -538,16 +563,16 @@
                     })
                     //totales anunciante
                     rowHTML += "<tr class='tableexport-ignore table-secondary anGroup' anunciante='" + itAn + "'>"
-                    rowHTML += "<td></td><td colspan='4'> TOTALES ANUNCIANTE: " + itAn + "</td>";
+                    rowHTML += "<td></td><td colspan='8' style='text-align: initial;'> TOTALES ANUNCIANTE: " + itAn + "</td>";
                     rowHTML += "<td class='align-center'>" + roundSinFormato(sumImpresionesAn, 2) + "</td>";
 
                     if (tipo == 2) {
                         rowHTML += "<td></td><td></td>";
                     }
 
-                    rowHTML += "<td class='monto'>$" + round(sumSubtotalAn, 2) + "</td><td></td>";
-                    rowHTML += "<td class='monto'>$" + round(sumSubtotal1An, 2) + "</td><td></td>";
-                    rowHTML += "<td class='monto'>$" + round(sumTotalAn, 2) + "</td>";
+                    rowHTML += "<td class='monto' style='text-align: center;'>$" + round(sumSubtotalAn, 2) + "</td><td></td>";
+                    rowHTML += "<td class='monto' style='text-align: center;'>$" + round(sumSubtotal1An, 2) + "</td><td></td>";
+                    rowHTML += "<td class='monto' style='text-align: center;'>$" + round(sumTotalAn, 2) + "</td>";
                     rowHTML += "</tr>"
 
 
@@ -559,16 +584,16 @@
                 })
                 //totales agencia
                 rowHTML += "<tr class='tableexport-ignore table-secondary agGroup' agencia='" + itAg + "'>"
-                rowHTML += "<td colspan='5'> TOTALES AGENCIA: " + itAg + "</td>";
+                rowHTML += "<td colspan='9' style='text-align: initial;'> TOTALES AGENCIA: " + itAg + "</td>";
                 rowHTML += "<td class='align-center'>" + sumImpresionesAg + "</td>";
 
                 if (tipo == 2) {
                     rowHTML += "<td></td><td></td>";
                 }
 
-                rowHTML += "<td class='monto'>$" + round(sumSubtotalAg, 2) + "</td><td></td>";
-                rowHTML += "<td class='monto'>$" + round(sumSubtotal1Ag, 2) + "</td><td></td>";
-                rowHTML += "<td class='monto'>$" + round(sumTotalAg, 2) + "</td>";
+                rowHTML += "<td class='monto' style='text-align: center;'>$" + round(sumSubtotalAg, 2) + "</td><td></td>";
+                rowHTML += "<td class='monto' style='text-align: center;'>$" + round(sumSubtotal1Ag, 2) + "</td><td></td>";
+                rowHTML += "<td class='monto' style='text-align: center;'>$" + round(sumTotalAg, 2) + "</td>";
                 rowHTML += "</tr>"
 
                 //incremento totales generales
@@ -579,16 +604,16 @@
             })
             //totales
             rowHTML += "<tr class='tableexport-ignore table-secondary'>"
-            rowHTML += "<td colspan='5'> TOTALES: </td>";
+            rowHTML += "<td colspan='9' style='text-align: initial;'> TOTALES: </td>";
             rowHTML += "<td class='align-center'>" + sumImpresionesGral + "</td>";
 
             if (tipo == 2) {
                 rowHTML += "<td></td><td></td>";
             }
 
-            rowHTML += "<td class='monto'>$" + round(sumSubtotalGral, 2) + "</td><td></td>";
-            rowHTML += "<td class='monto'>$" + round(sumSubtotal1Gral, 2) + "</td><td></td>";
-            rowHTML += "<td class='monto'>$" + round(sumTotalGral, 2) + "</td>";
+            rowHTML += "<td class='monto' style='text-align: center;'>$" + round(sumSubtotalGral, 2) + "</td><td></td>";
+            rowHTML += "<td class='monto' style='text-align: center;'>$" + round(sumSubtotal1Gral, 2) + "</td><td></td>";
+            rowHTML += "<td class='monto' style='text-align: center;'>$" + round(sumTotalGral, 2) + "</td>";
             rowHTML += "</tr>"
             $("#" + idTable).html(rowHTML);
 
@@ -656,18 +681,9 @@
         }
 
         function populateFields() {
-
-            //Llenar select Medios
-            //callWS("medios", "getAll", '', function (data) { onPopulateSelectDone(data, 'selMedios', 'id_medio', 'desc_medio'); });
-            //// Llenar select Tipos de Aviso
-            //callWS("tipos_avisos", "getAll", '', function (data) { onPopulateSelectDone(data, 'selTipoPublicidad', 'id_tipo_aviso_dg', 'descripcion'); });
-            //// Llenar select Formas de uso
-            //callWS("tarifas", "getFormasUsoAll", '', function (data) { onPopulateSelectDone(data, 'selFormaUso', 'id', 'descripcion'); });
-
-
             $.when(
-                callWS("contactos", "getAgencias", '', function (data) { onPopulateSelectDone(data, 'selAgencias', 'id_contacto', 'razonSocial'); }),
-                callWS("contactos", "getAnunciantes", '', function (data) { onPopulateSelectDone(data, 'selAnunciantes', 'id_contacto', 'razonSocial'); }),
+                callWS("contactos", "getAgencias", '', function (data) { onPopulateSelectDone(data, 'selAgencias', 'id_contacto', 'nombre_com'); }),
+                callWS("contactos", "getAnunciantes", '', function (data) { onPopulateSelectDone(data, 'selAnunciantes', 'id_contacto', 'nombre_com'); }),
                 callWS("productos", "getAll", '', function (data) { onPopulateSelectDone(data, 'selProductos', 'id_producto', 'desc_producto'); }),
                 callWS("contactos", "getEjecutivos", '', function (data) { onPopulateSelectDone(data, 'selEjecutivos', 'id', 'razonSocial'); }),
                 callWS("medios", "getAll", '', function (data) { onPopulateSelectDone(data, 'selMedios', 'id_medio', 'desc_medio'); }),
@@ -702,7 +718,7 @@
             var listitems = '';
 
             listitems += '<option value=1>Facturadas</option>';
-            listitems += '<option value=2>No Facturadas</option>';
+            listitems += '<option value=0>No Facturadas</option>';
 
             $("#selFacturacion").empty();
             $("#selFacturacion").append(listitems);
