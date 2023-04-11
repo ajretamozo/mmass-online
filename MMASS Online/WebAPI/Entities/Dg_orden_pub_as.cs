@@ -679,31 +679,31 @@ namespace WebApi.Entities
             return detalles;
         }
 
-        public static List<Dg_orden_pub_as> getByAnunRedFecha(int idAnun, int idRed, string fechaD, string fechaH)
-        {
-            List<Dg_orden_pub_as> detalles = new List<Dg_orden_pub_as>();
+        //public static List<Dg_orden_pub_as> getByAnunRedFecha(int idAnun, int idRed, string fechaD, string fechaH)
+        //{
+        //    List<Dg_orden_pub_as> detalles = new List<Dg_orden_pub_as>();
 
-            string strSql = @"SELECT d.id_google_ad_manager, d.id_red FROM dg_orden_pub_as d JOIN dg_orden_pub_ap o ON o.id_op_dg=d.id_op_dg 
-                              WHERE o.id_anunciante = " + idAnun.ToString() + " AND d.id_red = " + idRed.ToString() + " AND " +
-                              "d.fecha_desde >= '" + fechaD.ToString() + "' AND d.fecha_hasta <= '" + fechaH.ToString() + "'"; 
+        //    string strSql = @"SELECT d.id_google_ad_manager, d.id_red FROM dg_orden_pub_as d JOIN dg_orden_pub_ap o ON o.id_op_dg=d.id_op_dg 
+        //                      WHERE o.id_anunciante = " + idAnun.ToString() + " AND d.id_red = " + idRed.ToString() + " AND " +
+        //                      "d.fecha_desde >= '" + fechaD.ToString() + "' AND d.fecha_hasta <= '" + fechaH.ToString() + "'"; 
 
-            DataTable td = DB.Select(strSql);
-            foreach (DataRow r in td.Rows)
-            {
-                Dg_orden_pub_as det = new Dg_orden_pub_as();
-                det.Id_Google_Ad_Manager = long.Parse(r["id_google_ad_manager"].ToString());
-                if (r["id_red"].ToString() == "")
-                {
-                    det.Id_red = 0;
-                }
-                else
-                {
-                    det.Id_red = int.Parse(r["id_red"].ToString());
-                }
-                detalles.Add(det);
-            }
-            return detalles;
-        }
+        //    DataTable td = DB.Select(strSql);
+        //    foreach (DataRow r in td.Rows)
+        //    {
+        //        Dg_orden_pub_as det = new Dg_orden_pub_as();
+        //        det.Id_Google_Ad_Manager = long.Parse(r["id_google_ad_manager"].ToString());
+        //        if (r["id_red"].ToString() == "")
+        //        {
+        //            det.Id_red = 0;
+        //        }
+        //        else
+        //        {
+        //            det.Id_red = int.Parse(r["id_red"].ToString());
+        //        }
+        //        detalles.Add(det);
+        //    }
+        //    return detalles;
+        //}
 
         public static void saveId_Google_Ad_Manager(long idOp, long idGam)
         {
@@ -767,12 +767,12 @@ namespace WebApi.Entities
                         mifiltro = mifiltro + " and dg.fecha >= '" + p.Value.ToString() + "'";
                     if ((p.ParameterName == "fecha_hasta") && (p.Value.ToString() != ""))
                         mifiltro = mifiltro + " and dg.fecha_expiracion <= '" + p.Value.ToString() + "'";
-                    if ((p.ParameterName == "anunciante") && (p.Value.ToString() != ""))
+                    if ((p.ParameterName == "Id_contacto") && (p.Value.ToString() != ""))
                         mifiltro = mifiltro + " and dg.id_anunciante = " + p.Value;
                     if ((p.ParameterName == "id_empresa") && (p.Value.ToString() != ""))
                         mifiltro = mifiltro + " and dg.id_empresa = " + p.Value;
-                    if ((p.ParameterName == "red") && (p.Value.ToString() != ""))
-                        mifiltro = mifiltro + " and dg.id_red = " + p.Value;
+                    if ((p.ParameterName == "red") && (p.Value.ToString() != "0"))
+                        mifiltro = mifiltro + " and d.id_red = " + p.Value;
                 }
             }
 

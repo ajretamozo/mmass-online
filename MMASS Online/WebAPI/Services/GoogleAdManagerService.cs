@@ -1311,187 +1311,240 @@ namespace WebApi.Services
             return detallesCambios;
         }
 
+
         public List<Dg_orden_pub_as> ComprobarModificacionesDSincro(List<Parametro> parametros)
         {
             List<Dg_orden_pub_as> detallesMod = new List<Dg_orden_pub_as>();
             Dg_orden_pub_ap order = new Dg_orden_pub_ap();
             order.Detalles = Dg_orden_pub_as.filter(parametros);
 
-            foreach (Dg_orden_pub_as detalle in order.Detalles)
+            if(order.Detalles.Count == 0)
             {
+                return detallesMod;
+            }
+
+            int idRed = int.Parse(parametros[4].Value);
+
+            string listaOP = "";
+            List <LineItem> detallesGAM = new List<LineItem>();
+
+            if (idRed > 0)
+            {
+                //apuntamos a la red adserver del detalle
+                Dg_red_GAM red = Dg_red_GAM.getById(idRed);
+                CambiarRed(red.Codigo_red.ToString());
+
+                //al idContacto lo convertimos en idContactoDigital
+                if (parametros[6].Value != "")
+                {
+                    Contacto anun = new Contacto();
+                    anun = Contacto.getContactoByIdyRed(int.Parse(parametros[6].Value), idRed);
+                    parametros[6].Value = anun.IdContactoDigital;
+                }
+
+                listaOP = GoogleAdManager.GetIdOrderByFilters(parametros);
+                if (listaOP != "")
+                {
+                    detallesGAM = GoogleAdManager.FilterLineItems(parametros, listaOP);
+                }
+            }
+            else
+            {
+                string idCont = "";
+                List <Dg_red_GAM> redes = Dg_red_GAM.getAll();
+                foreach(Dg_red_GAM red in redes)
+                {
+                    idCont = parametros[6].Value;
                     //apuntamos a la red adserver del detalle
-                    Dg_red_GAM red = Dg_red_GAM.getById(detalle.Id_red);
                     CambiarRed(red.Codigo_red.ToString());
 
-                bool modificado = false;
-                    LineItem linea = GoogleAdManager.GetLineItemById(detalle.Id_Google_Ad_Manager);
+                    //al idContacto lo convertimos en idContactoDigital
+                    if (idCont != "")
+                    {
+                        Contacto anun = new Contacto();
+                        anun = Contacto.getContactoByIdyRed(int.Parse(idCont), red.Id_red);
+                        parametros[6].Value = anun.IdContactoDigital;
+                    }
 
-                    //informar datos del Detalle
-                    //Parametro idDet = new Parametro();
-                    //idDet.ParameterName = "datosDet";
-                    //idDet.Value = detalle.Id_detalle.ToString() + "@@@" + detalle.Id_Google_Ad_Manager.ToString() + "@@@" + detalle.Id_red.ToString();
-                    //cambiosL.Parametros.Add(idDet);
+                    listaOP = GoogleAdManager.GetIdOrderByFilters(parametros);
+                    if (listaOP != "")
+                    {
+                        detallesGAM.AddRange(GoogleAdManager.FilterLineItems(parametros, listaOP));
+                    }
 
-                if (linea.id > 0)
+                    parametros[6].Value = idCont;
+                }
+            }
+
+            foreach (Dg_orden_pub_as detalle in order.Detalles)
+            {
+                //apuntamos a la red adserver del detalle
+                //Dg_red_GAM red = Dg_red_GAM.getById(detalle.Id_red);
+                //CambiarRed(red.Codigo_red.ToString());
+
+                bool existeDet = false;
+
+                foreach (LineItem linea in detallesGAM)
                 {
-                        //se buscan diferencias entre la orden gam y la orden ap; si se encuentran, se devuelve la lista de cambios
-                        switch (detalle.Tipo_tarifa)
-                        {
-                            case 0:
-                                if (linea.costType != CostType.CPM)
-                                {
-                                detallesMod.Add(detalle);
-                                continue;
-                            }
-                                break;
-                            case 1:
-                                if (linea.costType != CostType.CPD)
-                                {
-                                detallesMod.Add(detalle);
-                                continue;
-                            }
-                                break;
-                            case 2:
-                                {
-                                detallesMod.Add(detalle);
-                                continue;
-                            }
-                                break;
-                            case 3:
-                                if (linea.costType != CostType.CPC)
-                                {
-                                detallesMod.Add(detalle);
-                                continue;
-                            }
-                                break;
-                            case 4:
-                                if (linea.costType != CostType.CPA)
-                                {
-                                detallesMod.Add(detalle);
-                                continue;
-                            }
-                                break;
-                        }
-
-                        if (linea.name != detalle.Descripcion)
-                        {
-                        detallesMod.Add(detalle);
-                        continue;
-                    }
-
-                        //Se comparan emplazamientos
-                        int cantEmpGam = 0;
-                        long[] emplazasLinea = { };
-
-                        if (linea.targeting.inventoryTargeting.targetedPlacementIds != null)
-                        {
-                            cantEmpGam = linea.targeting.inventoryTargeting.targetedPlacementIds.Length;
-                            emplazasLinea = linea.targeting.inventoryTargeting.targetedPlacementIds;
-                        }
-
-                        if (cantEmpGam != detalle.Emplazamientos.Count)
-                        {
-                        detallesMod.Add(detalle);
-                        continue;
-                    }
-
-                        else
-                        {
-                            foreach (Dg_orden_pub_emplazamientos emp in detalle.Emplazamientos)
+                    if (detalle.Id_Google_Ad_Manager == linea.id)
+                    {
+                        existeDet = true;
+                            //se buscan diferencias entre la orden gam y la orden ap
+                            switch (detalle.Tipo_tarifa)
                             {
-                                bool existeEmp = false;
-                                foreach (long idEmpla in emplazasLinea)
-                                {
-                                    if (idEmpla == emp.Codigo_emplazamiento)
+                                case 0:
+                                    if (linea.costType != CostType.CPM)
                                     {
-                                        existeEmp = true;
+                                        detallesMod.Add(detalle);
+                                        continue;
+                                    }
                                     break;
+                                case 1:
+                                    if (linea.costType != CostType.CPD)
+                                    {
+                                        detallesMod.Add(detalle);
+                                        continue;
+                                    }
+                                    break;
+                                case 2:
+                                    {
+                                        detallesMod.Add(detalle);
+                                        continue;
+                                    }
+                                    break;
+                                case 3:
+                                    if (linea.costType != CostType.CPC)
+                                    {
+                                        detallesMod.Add(detalle);
+                                        continue;
+                                    }
+                                    break;
+                                case 4:
+                                    if (linea.costType != CostType.CPA)
+                                    {
+                                        detallesMod.Add(detalle);
+                                        continue;
+                                    }
+                                    break;
+                            }
+
+                            if (linea.name != detalle.Descripcion)
+                            {
+                                detallesMod.Add(detalle);
+                                continue;
+                            }
+
+                            //Se comparan emplazamientos
+                            int cantEmpGam = 0;
+                            long[] emplazasLinea = { };
+
+                            if (linea.targeting.inventoryTargeting.targetedPlacementIds != null)
+                            {
+                                cantEmpGam = linea.targeting.inventoryTargeting.targetedPlacementIds.Length;
+                                emplazasLinea = linea.targeting.inventoryTargeting.targetedPlacementIds;
+                            }
+
+                            if (cantEmpGam != detalle.Emplazamientos.Count)
+                            {
+                                detallesMod.Add(detalle);
+                                continue;
+                            }
+
+                            else
+                            {
+                                foreach (Dg_orden_pub_emplazamientos emp in detalle.Emplazamientos)
+                                {
+                                    bool existeEmp = false;
+                                    foreach (long idEmpla in emplazasLinea)
+                                    {
+                                        if (idEmpla == emp.Codigo_emplazamiento)
+                                        {
+                                            existeEmp = true;
+                                            break;
+                                        }
+                                    }
+                                    if (existeEmp == false)
+                                    {
+                                        detallesMod.Add(detalle);
+                                        continue;
                                     }
                                 }
-                                if (existeEmp == false)
-                                {
+                            }
+
+                            //Se comparan medidas
+                            if (linea.creativePlaceholders.Length != detalle.Medidas.Count)
+                            {
                                 detallesMod.Add(detalle);
                                 continue;
                             }
-                            }
-                        }
 
-                        //Se comparan medidas
-                        if (linea.creativePlaceholders.Length != detalle.Medidas.Count)
-                        {
-                        detallesMod.Add(detalle);
-                        continue;
-                    }
-
-                        else
-                        {
-                            foreach (Dg_orden_pub_medidas med in detalle.Medidas)
+                            else
                             {
-                                string medAg = med.Ancho.ToString() + "x" + med.Alto.ToString();
-                                bool existe = false;
-                                foreach (CreativePlaceholder cph in linea.creativePlaceholders)
+                                foreach (Dg_orden_pub_medidas med in detalle.Medidas)
                                 {
-                                    string medGam = cph.size.width.ToString() + "x" + cph.size.height.ToString();
-
-                                    if (String.Equals(medGam, medAg))
+                                    string medAg = med.Ancho.ToString() + "x" + med.Alto.ToString();
+                                    bool existe = false;
+                                    foreach (CreativePlaceholder cph in linea.creativePlaceholders)
                                     {
-                                        existe = true;
-                                    break;
+                                        string medGam = cph.size.width.ToString() + "x" + cph.size.height.ToString();
+
+                                        if (String.Equals(medGam, medAg))
+                                        {
+                                            existe = true;
+                                            break;
+                                        }
+                                    }
+                                    if (existe == false)
+                                    {
+                                        detallesMod.Add(detalle);
+                                        continue;
                                     }
                                 }
-                                if (existe == false)
-                                {
+                            }
+
+                            if ((linea.costPerUnit.microAmount / 1000000.0) != detalle.Importe_unitario)
+                            {
                                 detallesMod.Add(detalle);
                                 continue;
                             }
+
+                            if ((float)linea.discount != detalle.Porc_dto)
+                            {
+                                detallesMod.Add(detalle);
+                                continue;
                             }
-                        }
 
-                        if ((linea.costPerUnit.microAmount / 1000000.0) != detalle.Importe_unitario)
-                        {
-                        detallesMod.Add(detalle);
-                        continue;
-                    }
+                            if (linea.costType != CostType.CPD && (int)linea.primaryGoal.units != detalle.Cantidad)
+                            {
+                                detallesMod.Add(detalle);
+                                continue;
+                            }
 
-                        if ((float)linea.discount != detalle.Porc_dto)
-                        {
-                        detallesMod.Add(detalle);
-                        continue;
-                    }
+                            if (System.DateTime.Parse(DateTimeUtilities.ToString(linea.startDateTime, "yyyy/MM/dd")) != detalle.Fecha_desde)
+                            {
+                                detallesMod.Add(detalle);
+                                continue;
+                            }
 
-                        if (linea.costType != CostType.CPD && (int)linea.primaryGoal.units != detalle.Cantidad)
-                        {
-                        detallesMod.Add(detalle);
-                        continue;
-                    }
+                            if (System.DateTime.Parse(DateTimeUtilities.ToString(linea.endDateTime, "yyyy/MM/dd")) != detalle.Fecha_hasta)
+                            {
+                                detallesMod.Add(detalle);
+                                continue;
+                            }
 
-                        if (System.DateTime.Parse(DateTimeUtilities.ToString(linea.startDateTime, "yyyy/MM/dd")) != detalle.Fecha_desde)
-                        {
-                        detallesMod.Add(detalle);
-                        continue;
-                    }
-
-                        if (System.DateTime.Parse(DateTimeUtilities.ToString(linea.endDateTime, "yyyy/MM/dd")) != detalle.Fecha_hasta)
-                        {
-                        detallesMod.Add(detalle);
-                        continue;
-                    }
-
-                        if (linea.orderName != detalle.Nombre_pedido_Google_Ad_Manager)
-                        {
-                        detallesMod.Add(detalle);
-                        continue;
+                            if (linea.orderName != detalle.Nombre_pedido_Google_Ad_Manager)
+                            {
+                                detallesMod.Add(detalle);
+                                continue;
+                            }
                     }
                 }
-                else
+
+                if (existeDet == false)
                 {
                     detallesMod.Add(detalle);
                     continue;
                 }
-                //if (modificado == true)
-                //{
-                //    detallesMod.Add(detalle);
-                //}            
             }
 
             return detallesMod;
@@ -1675,23 +1728,209 @@ namespace WebApi.Services
             }       
         }
 
+        //public IEnumerable<Dg_orden_pub_as> GetDetNuevos(List<Parametro> parametros)
+        //{
+        //    List<Dg_orden_pub_as> detallesNuevos = new List<Dg_orden_pub_as>();
+        //    int idRed = int.Parse(parametros[2].Value);
+        //    //apuntamos a la red adserver seleccionada
+        //    Dg_red_GAM red = Dg_red_GAM.getById(idRed);
+        //    CambiarRed(red.Codigo_red.ToString());
+
+        //    //al idContacto lo convertimos en idContactoDigital
+        //    Contacto anun = new Contacto();
+        //    anun = Contacto.getContactoByIdyRed(int.Parse(parametros[5].Value), idRed);
+        //    parametros[5].Value = anun.IdContactoDigital;
+
+        //    string listaOP = GoogleAdManager.GetIdOrderByFilters(parametros);
+        //    if (listaOP != "")
+        //    {
+        //        List<LineItem> detallesGAM = GoogleAdManager.FilterLineItems(parametros, listaOP);
+
+        //        if (detallesGAM.Count == 0)
+        //        {
+        //            return detallesNuevos;
+        //        }
+
+        //        else
+        //        {
+        //            List<Dg_orden_pub_as> detallesExistentes = Dg_orden_pub_as.getByAnunRedFecha(anun.Id_contacto, idRed, parametros[6].Value, parametros[7].Value);
+
+        //            //Recorremos las lineas de pedido y las vamos comparando con los detalles existentes
+        //            foreach (LineItem linea in detallesGAM)
+        //            {
+        //                bool existeDetalle = false;
+        //                foreach (Dg_orden_pub_as detExis in detallesExistentes)
+        //                {
+        //                    //Si encontramos la linea dentro de los detalles, se sale del for y buscamos la próxima linea
+        //                    if (linea.id == detExis.Id_Google_Ad_Manager && idRed == detExis.Id_red)
+        //                    {
+        //                        existeDetalle = true;
+        //                        break;
+        //                    }
+        //                }
+        //                //Si no se encuentra la linea de pedido dentro de los detalles existentes..
+        //                if (!existeDetalle)
+        //                {
+        //                    //Pasamos los datos de la linea al detalle
+        //                    Dg_orden_pub_as detalle = new Dg_orden_pub_as();
+        //                    List<Dg_orden_pub_emplazamientos> emplazamientos = new List<Dg_orden_pub_emplazamientos>();
+        //                    List<Dg_orden_pub_medidas> medidas = new List<Dg_orden_pub_medidas>();
+
+        //                    switch (linea.costType)
+        //                    {
+        //                        case CostType.CPM:
+        //                            detalle.Tipo_tarifa = 0;
+        //                            break;
+        //                        case CostType.CPD:
+        //                            detalle.Tipo_tarifa = 1;
+        //                            break;
+        //                        case CostType.CPC:
+        //                            detalle.Tipo_tarifa = 3;
+        //                            break;
+        //                        case CostType.CPA:
+        //                            detalle.Tipo_tarifa = 4;
+        //                            break;
+        //                    }
+
+        //                    string creatD = DateTimeUtilities.ToString(linea.creationDateTime, "yyyy/MM/dd");
+        //                    if (creatD != "0")
+        //                    {
+        //                        detalle.Fecha_creacion = System.DateTime.Parse(creatD);
+        //                    }
+        //                    detalle.Id_red = idRed;
+        //                    detalle.Id_pedido_Google_Ad_Manager = linea.orderId;
+        //                    detalle.Nombre_pedido_Google_Ad_Manager = linea.orderName;
+        //                    detalle.Id_Google_Ad_Manager = linea.id;
+        //                    detalle.Descripcion = linea.name;
+        //                    detalle.Tarifa_manual = 1;
+        //                    detalle.Importe_unitario = (float)(linea.costPerUnit.microAmount / 1000000.0);
+        //                    detalle.Porc_dto = (float)linea.discount;
+        //                    detalle.Cantidad = (int)linea.primaryGoal.units;
+        //                    detalle.Monto_neto = (float)(linea.budget.microAmount / 1000000.0);
+        //                    if (linea.targeting.geoTargeting != null)
+        //                    {
+        //                        Dg_areas_geo area = new Dg_areas_geo();
+        //                        area.Id_area = Dg_areas_geo.getByCodigo(linea.targeting.geoTargeting.targetedLocations[0].id).Id_area;
+        //                        detalle.areaGeo = area;
+        //                    }
+        //                    if (linea.environmentType.ToString() == "VIDEO_PLAYER")
+        //                    {
+        //                        detalle.tipo_aviso_dg = Dg_tipos_avisos.getByDesc("Video");
+        //                    }
+        //                    else
+        //                    {
+        //                        detalle.tipo_aviso_dg = Dg_tipos_avisos.getByDesc("Banner");
+        //                    }
+        //                    string startD = DateTimeUtilities.ToString(linea.startDateTime, "yyyy/MM/dd");
+        //                    string endD = DateTimeUtilities.ToString(linea.endDateTime, "yyyy/MM/dd");
+
+        //                    if (startD != "0")
+        //                    {
+        //                        detalle.Fecha_desde = System.DateTime.Parse(startD);
+        //                    }
+        //                    if (endD != "0")
+        //                    {
+        //                        detalle.Fecha_hasta = System.DateTime.Parse(endD);
+        //                    }
+
+        //                    if (linea.targeting.inventoryTargeting.targetedPlacementIds != null)
+        //                    {
+        //                        foreach (long idEmpla in linea.targeting.inventoryTargeting.targetedPlacementIds)
+        //                        {
+        //                            Dg_orden_pub_emplazamientos emplaza = new Dg_orden_pub_emplazamientos();
+        //                            emplaza.Codigo_emplazamiento = idEmpla;
+        //                            emplaza.Id_emplazamiento = Dg_emplazamientos.getByCodigo2(idEmpla, idRed).Id_emplazamiento;
+        //                            emplazamientos.Add(emplaza);
+        //                        }
+        //                        detalle.Emplazamientos = emplazamientos;
+        //                    }
+        //                    if (linea.creativePlaceholders != null)
+        //                    {
+        //                        foreach (CreativePlaceholder cph in linea.creativePlaceholders)
+        //                        {
+        //                            Dg_orden_pub_medidas medida = new Dg_orden_pub_medidas();
+        //                            string desc = "";
+        //                            if (linea.environmentType.ToString() == "VIDEO_PLAYER")
+        //                            {
+        //                                desc = cph.size.width.ToString() + "x" + cph.size.height.ToString() + "v";
+        //                            }
+        //                            else
+        //                            {
+        //                                desc = cph.size.width.ToString() + "x" + cph.size.height.ToString();
+        //                            }
+        //                            medida.Id_medidadigital = Dg_medidas.getByDescripcion(desc).Id_medidadigital;
+        //                            medida.Ancho = cph.size.width;
+        //                            medida.Alto = cph.size.height;
+        //                            medidas.Add(medida);
+        //                        }
+        //                        detalle.Medidas = medidas;
+        //                    }
+
+        //                    detallesNuevos.Add(detalle);
+        //                }
+        //            }
+        //        }
+        //    }
+        //    return detallesNuevos;
+        //}
+
         public IEnumerable<Dg_orden_pub_as> GetDetNuevos(List<Parametro> parametros)
         {
             List<Dg_orden_pub_as> detallesNuevos = new List<Dg_orden_pub_as>();
             int idRed = int.Parse(parametros[2].Value);
-            //apuntamos a la red adserver seleccionada
-            Dg_red_GAM red = Dg_red_GAM.getById(idRed);
-            CambiarRed(red.Codigo_red.ToString());
 
-            //al idContacto lo convertimos en idContactoDigital
-            Contacto anun = new Contacto();
-            anun = Contacto.getContactoByIdyRed(int.Parse(parametros[5].Value), idRed);
-            parametros[5].Value = anun.IdContactoDigital;
+            string listaOP = "";
+            List<LineItem> detallesGAM = new List<LineItem>();
 
-            string listaOP = GoogleAdManager.GetIdOrderByFilters(parametros);
-            if (listaOP != "")
+            if (idRed > 0)
             {
-                List<LineItem> detallesGAM = GoogleAdManager.FilterLineItems(parametros, listaOP);
+                //apuntamos a la red adserver del detalle
+                Dg_red_GAM red = Dg_red_GAM.getById(idRed);
+                CambiarRed(red.Codigo_red.ToString());
+
+                //al idContacto lo convertimos en idContactoDigital
+                if (parametros[5].Value != "")
+                {
+                    Contacto anun = new Contacto();
+                    anun = Contacto.getContactoByIdyRed(int.Parse(parametros[5].Value), idRed);
+                    parametros[5].Value = anun.IdContactoDigital;
+                }
+
+                listaOP = GoogleAdManager.GetIdOrderByFilters(parametros);
+                if (listaOP != "")
+                {
+                    detallesGAM = GoogleAdManager.FilterLineItems(parametros, listaOP);
+                }
+            }
+            else
+            {
+                List<Dg_red_GAM> redes = Dg_red_GAM.getAll();
+
+                string idCont = "";
+                foreach (Dg_red_GAM red in redes)
+                {
+                    idCont = parametros[5].Value;
+
+                    //apuntamos a la red adserver del detalle
+                    CambiarRed(red.Codigo_red.ToString());
+
+                    //al idContacto lo convertimos en idContactoDigital
+                    if (idCont != "")
+                    {
+                        Contacto anun = new Contacto();
+                        anun = Contacto.getContactoByIdyRed(int.Parse(idCont), red.Id_red);
+                        parametros[5].Value = anun.IdContactoDigital;
+                    }
+                    
+                    listaOP = GoogleAdManager.GetIdOrderByFilters(parametros);
+                    if (listaOP != "")
+                    {
+                        detallesGAM.AddRange(GoogleAdManager.FilterLineItems(parametros, listaOP));
+                    }
+
+                    parametros[5].Value = idCont;
+                }
+            }
 
                 if (detallesGAM.Count == 0)
                 {
@@ -1700,7 +1939,7 @@ namespace WebApi.Services
 
                 else
                 {
-                    List<Dg_orden_pub_as> detallesExistentes = Dg_orden_pub_as.getByAnunRedFecha(anun.Id_contacto, idRed, parametros[6].Value, parametros[7].Value);
+                    List<Dg_orden_pub_as> detallesExistentes = Dg_orden_pub_as.filter(parametros);
 
                     //Recorremos las lineas de pedido y las vamos comparando con los detalles existentes
                     foreach (LineItem linea in detallesGAM)
@@ -1738,7 +1977,7 @@ namespace WebApi.Services
                                     detalle.Tipo_tarifa = 4;
                                     break;
                             }
-                            
+
                             string creatD = DateTimeUtilities.ToString(linea.creationDateTime, "yyyy/MM/dd");
                             if (creatD != "0")
                             {
@@ -1817,7 +2056,6 @@ namespace WebApi.Services
                         }
                     }
                 }
-            }
             return detallesNuevos;
         }
 

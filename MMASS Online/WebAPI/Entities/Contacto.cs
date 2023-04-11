@@ -54,18 +54,29 @@ namespace WebApi.Entities
             Contacto contacto = new Contacto();
             DataTable t = DB.Select(sqlCommand);
 
-            foreach (DataRow item in t.Rows)
+            if(t.Rows.Count > 0)
+            {
+                foreach (DataRow item in t.Rows)
+                {
+                    contacto = new Contacto
+                    {
+                        Id = int.Parse(item["id_contacto"].ToString()),
+                        Id_contacto = int.Parse(item["id_contacto"].ToString()),
+                        IdContactoDigital = item["id_contactodigital"].ToString(),
+                        RazonSocial = item["razon_social"].ToString(),
+                        Nombre_com = item["nombre_com"].ToString(),
+                        No_facturable = !(item["no_facturable"].ToString() == "1")
+                    };
+                }
+            }
+            else
             {
                 contacto = new Contacto
                 {
-                    Id = int.Parse(item["id_contacto"].ToString()),
-                    Id_contacto = int.Parse(item["id_contacto"].ToString()),
-                    IdContactoDigital = item["id_contactodigital"].ToString(),
-                    RazonSocial = item["razon_social"].ToString(),
-                    Nombre_com = item["nombre_com"].ToString(),
-                No_facturable = !(item["no_facturable"].ToString() == "1")
+                    IdContactoDigital = "0"
                 };
             }
+           
             return contacto;
         }
 
