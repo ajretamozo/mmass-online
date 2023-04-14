@@ -180,6 +180,10 @@
                             <div class="col-md-4 "> <div class="input-group"> <input type="text" id="inpOrderMonth" class="form-control enterSearch"> </div> </div>
                             <div class="col-md-4 "> <div class="input-group"> <input type="text" id="inpOrderNumber" class="form-control enterSearch"> </div> </div>
                         </div>
+                        <label>Agencia</label>
+                        <div class="row align-items-center">
+                            <div class="col-md-12"> <div class="input-group enterSearch"> <input type="text" id="inpDescAgencia" class="form-control"> </div> </div>
+                        </div>
                         <label>Vigencia Orden</label>
                         <div id="OrderDateSpam" class="row">
                             <div class="col-md-12">
@@ -190,23 +194,19 @@
                                 </div>
                             </div>
                         </div>
-                        <label>Agencia</label>
-                        <div class="row align-items-center">
-                            <div class="col-md-12"> <div class="input-group enterSearch"> <input type="text" id="inpDescAgencia" class="form-control"> </div> </div>
-                        </div>
                     </div>
                     <div class="col-md-3">
                         <label>Descripción</label>
                         <div class="row align-items-center">
                             <div class="col-md-12"> <div class="input-group enterSearch"> <input type="text" id="inpDescripcion" class="form-control"> </div> </div>
                         </div>
-                        <label>Empresa</label>
-                        <div class="row align-items-center">
-                            <div class="col-md-12"> <select class="form-control enterSearch" id="selEmpresa"> </select> </div>
-                        </div>
                         <label>Anunciante</label>
                         <div class="row align-items-center">
                             <div class="col-md-12"> <div class="input-group enterSearch"> <input type="text" id="inpDescAnunciante" class="form-control"> </div> </div>
+                        </div>
+                        <label>Empresa</label>
+                        <div class="row align-items-center">
+                            <div class="col-md-12"> <select class="form-control enterSearch" id="selEmpresa"> </select> </div>
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -216,10 +216,10 @@
                                 <div class="row align-items-center">
                                     <div class="col-md-12"> <div class="input-group enterSearch"> <input type="text" id="inpOrderNumberClient" class="form-control"> </div> </div>
                                 </div>
-                                <label>Red AdServer</label>
+                                <!--<label>Red AdServer</label>
                                 <div class="row align-items-center">
                                     <div class="col-md-12"> <select class="form-control enterSearch" id="selRedes"> </select> </div>
-                                </div>
+                                </div>-->
                                 <label>Producto</label>
                                 <div class="row align-items-center">
                                     <div class="col-md-12"> <div class="input-group enterSearch"> <input type="text" id="inpDescProducto" class="form-control"> </div> </div>
@@ -280,7 +280,7 @@
                                 <span class="fa fa-search"></span> Buscar
                             </button>
                             <button type="button" class="btn btn-dark btn-sm mx-1" onclick="nuevaOrden()">
-                                <span class="fa fa-check"></span> Nueva Orden
+                                <span class="fa fa-file"></span> Nueva Orden
                             </button>
                             <!--TEST-->
                             <!--<button type="button" class="btn btn-dark btn-sm mx-1" onclick="reporteTest()">

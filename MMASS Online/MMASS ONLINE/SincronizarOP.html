@@ -175,32 +175,143 @@
 
                     <!-- Modal body -->
                     <div class="modal-body" id="sincAnunModalBody">
-                        <div class="row">
+                        <!--<div class="row">
+        <div class="col-md-4">
+            <label for="descFiltroAnun">Anunciante AdServer: </label>
+            <div class="input-group enterSearch"> <input type="text" id="descFiltroAnun" class="form-control"></div>
+        </div>
+        <div class="col-md-4 d-flex align-items-end">
+            <button type="button" class="btn btn-dark btn-sm mx-1" onclick="buscarAnunGam()">
+                <span class="fa fa-search"></span> Buscar
+            </button>
+        </div>
+    </div>
+    <div class="row" style="padding-left: 20px; padding-right: 20px;">-->
+                        <!--Tabla Sincronizar Anunciantes-->
+                        <!--<div class="table-responsive mt-2 tableFixHead">
+            <table class="table table-fixed table-striped" id="tModifCabecera">
+                <thead class="thead-dark">
+                    <tr id="header" align="center">
+                        <th class="col-xs-2">ID</th>
+                        <th class="col-xs-4">Anunciante Ad Server</th>
+                        <th class="col-xs-4">Contacto MMASS</th>
+                        <th class="col-xs-2"></th>
+                    </tr>
+                </thead>
+                <tbody id="TableSincAnun" align="center"></tbody>
+            </table>
+        </div>
+    </div>-->
+                        <div class="row justify-content-around">
                             <div class="col-md-4">
-                                <label for="descFiltroAnun">Anunciante AdServer: </label>
-                                <div class="input-group enterSearch"> <input type="text" id="descFiltroAnun" class="form-control"></div>
+                                <label>Anunciante AdServer</label>
+                                <select class="form-control" id="selAnunciantePedidoAS" disabled="disabled"></select>
                             </div>
-                            <div class="col-md-4 d-flex align-items-end">
-                                <button type="button" class="btn btn-dark btn-sm mx-1" onclick="buscarAnunGam()">
-                                    <span class="fa fa-search"></span> Buscar
-                                </button>
+                            <div class="col-md-4">
+                                <label>Anunciante MMASS</label>
+                                <select class="form-control" id="selAnuncianteM"></select>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="selRedesAun">Red AdServer</label>
+                                <select class="form-control enterSearch" id="selRedesAnun" disabled="disabled"></select>
                             </div>
                         </div>
-                        <div class="row" style="padding-left: 20px; padding-right: 20px;">
-                            <!--Tabla Sincronizar Anunciantes-->
-                            <div class="table-responsive mt-2 tableFixHead">
-                                <table class="table table-fixed table-striped" id="tModifCabecera">
-                                    <thead class="thead-dark">
-                                        <tr id="header" align="center">
-                                            <th class="col-xs-2">ID</th>
-                                            <th class="col-xs-4">Anunciante Ad Server</th>
-                                            <th class="col-xs-4">Contacto MMASS</th>
-                                            <th class="col-xs-2"></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="TableSincAnun" align="center"></tbody>
-                                </table>
+                        <div class="row justify-content-end py-3">
+                            <!--<div class="col-md-4">
+        </div>
+        <div class="col-md-4">
+        </div>
+        <div class="col-md-4" style="left: 78px;">
+            <div class="col-md-10 px-0 d-flex justify-content-end">
+                <button type="button" class="btn btn-dark btn-sm mx-1" onclick=" $('#divDetailsRows').show();$('#divAddRow').hide(); searchOrders();">
+                    <span class="fa fa-search"></span> Buscar
+                </button>
+            </div>
+        </div>-->
+                            <div class="col-md-2" style="align-self: self-end;">
+                                <button type='button' class='btn btn-secondary' id="bVincularAnun" value='1' onclick="vincularAnun('selAnunciantePedidoAS','selAnunciantePedido','selRedesPedido','bVincularAnun', 'lblAnunNoSinc')">Vincular</button>
                             </div>
+                        </div>
+                    </div>
+
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!--Modal Ordenes-->
+        <div class="modal fade" id="ordenesModal">
+            <div class="modal-dialog modal-xl modalConv">
+                <div class="modal-content shadow p-3 mb-5 bg-white rounded">
+
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="ordenesModalTitle">ORDENES PUBLICITARIAS</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+
+                    <!-- Modal body -->
+                    <div class="modal-body" id="ordenesModalBody">
+                        <!--Filtros-->
+                        <div id="divOrderData">
+                            <div class="row justify-content-around">
+                                <div class="col-md-4">
+                                    <label>Número de Orden</label>
+                                    <div id="OrderNumberComplete" class="row">
+                                        <div class="col-md-4 "> <div class="input-group"> <input type="text" id="inpOrderYear" class="form-control enterSearch"></div> </div>
+                                        <div class="col-md-4 "> <div class="input-group"> <input type="text" id="inpOrderMonth" class="form-control enterSearch"> </div> </div>
+                                        <div class="col-md-4 "> <div class="input-group"> <input type="text" id="inpOrderNumber" class="form-control enterSearch"> </div> </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label>Descripción</label>
+                                    <div class="row align-items-center">
+                                        <div class="col-md-12"> <div class="input-group enterSearch"> <input type="text" id="inpDescripcionOp" class="form-control"> </div> </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label>Empresa</label>
+                                    <div class="row align-items-center">
+                                        <div class="col-md-12"> <select class="form-control enterSearch" id="selEmpresaOp"> </select> </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row py-3">
+                                <div class="col-md-4">
+                                </div>
+                                <div class="col-md-4">
+                                </div>
+                                <div class="col-md-4" style="text-align: end;padding-right: 11px;">
+                                    <button type="button" class="btn btn-dark btn-sm mx-1" onclick="openOrder()">
+                                        <span class="fa fa-file"></span> Nueva Orden
+                                    </button>
+                                    <button type="button" class="btn btn-dark btn-sm mx-1" onclick=" searchOrders();">
+                                        <span class="fa fa-search"></span> Buscar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <!--Tabla-->
+                        <div id="tabla" class="table-responsive mt-2">
+                            <table id="dataOp" class='table table-hover table-sm '>
+                                <thead align="center">
+                                    <tr>
+                                        <th>N Orden</th>
+                                        <th>Vigencia</th>
+                                        <th>Descripción</th>
+                                        <th>Agencia</th>
+                                        <th>Anunciante</th>
+                                        <th>Producto</th>
+                                        <th>Neto</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="TableRenglonesOp" class="small" align="center"></tbody>
+                            </table>
+
                         </div>
                     </div>
 
@@ -219,75 +330,75 @@
             <!-- TABS -->
             <nav class="nav nav-tabs mb-3">
                 <!--<a class="nav-link active" id="ordenes-tab" data-toggle="tab" href="#ordenes" role="tab" aria-controls="ordenes" aria-selected="true" onclick="onRedSelected()">OP Nuevas</a>-->
-                <a class="nav-link active" id="mods-tab" data-toggle="tab" href="#mods" role="tab" aria-controls="mods" aria-selected="true" onclick="onRedSelectedM()">Modificados</a>
-                <a class="nav-link" id="detalles-tab" data-toggle="tab" href="#detalles" role="tab" aria-controls="detalles" aria-selected="false" onclick="onRedSelectedD()">Nuevos</a>
+                <a class="nav-link active" id="mods-tab" data-toggle="tab" href="#mods" role="tab" aria-controls="mods" aria-selected="true">Modificados</a>
+                <a class="nav-link" id="detalles-tab" data-toggle="tab" href="#detalles" role="tab" aria-controls="detalles" aria-selected="false">Nuevos</a>
             </nav>
             <div class="tab-content" id="tabsContent">
                 <!-- TAB ORDENES -->
                 <!--<div class="tab-pane fade show active" id="ordenes" role="tabpanel" aria-labelledby="ordenes-tab">
 
-                    <div class="row py-1">
-                        <div class="col-md-4">
-                            <label for="idFiltro">ID OP</label>
-                            <div class="input-group enterSearch"> <input type="number" id="idFiltro" class="form-control"></div>
-                        </div>
-                        <div class="col-md-4">
-                            <label for="descFiltro">Nombre OP</label>
-                            <div class="input-group enterSearch"> <input type="text" id="descFiltro" class="form-control"></div>
-                        </div>
-                        <div class="col-md-4">
-                            <label for="selRedes">Red AdServer</label>
-                            <select class="form-control enterSearch" id="selRedes" onchange="onRedSelected()"></select>
-                        </div>
+                <div class="row py-1">
+                    <div class="col-md-4">
+                        <label for="idFiltro">ID OP</label>
+                        <div class="input-group enterSearch"> <input type="number" id="idFiltro" class="form-control"></div>
                     </div>
-                    <div class="row py-1">
-                        <div class="col-md-4">
-                            <label>Fecha de Creación</label>
-                            <div id="OrderDateSpam" class="row">
-                                <div class="col-md-12">
-                                    <div class="input-group input-daterange">
-                                        <input type="text" class="form-control datetimepicker-input enterSearch" id="fechaDesde" data-toggle="datetimepicker" data-target="#fechaDesde" />
-                                        <span class="input-group-addon">hasta</span>
-                                        <input type="text" class="form-control datetimepicker-input enterSearch" id="fechaHasta" data-toggle="datetimepicker" data-target="#fechaHasta" />
-                                    </div>
+                    <div class="col-md-4">
+                        <label for="descFiltro">Nombre OP</label>
+                        <div class="input-group enterSearch"> <input type="text" id="descFiltro" class="form-control"></div>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="selRedes">Red AdServer</label>
+                        <select class="form-control enterSearch" id="selRedes" onchange="onRedSelected()"></select>
+                    </div>
+                </div>
+                <div class="row py-1">
+                    <div class="col-md-4">
+                        <label>Fecha de Creación</label>
+                        <div id="OrderDateSpam" class="row">
+                            <div class="col-md-12">
+                                <div class="input-group input-daterange">
+                                    <input type="text" class="form-control datetimepicker-input enterSearch" id="fechaDesde" data-toggle="datetimepicker" data-target="#fechaDesde" />
+                                    <span class="input-group-addon">hasta</span>
+                                    <input type="text" class="form-control datetimepicker-input enterSearch" id="fechaHasta" data-toggle="datetimepicker" data-target="#fechaHasta" />
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-4">
-                        </div>
-                        <div class="col-md-4">
-                        </div>
                     </div>
-                    <div class="row py-1">
-                        <div class="col-md-4">
-                        </div>
-                        <div class="col-md-4">
-                        </div>
-                        <div class="col-md-4 d-flex justify-content-end align-items-end">
-                            <button type="button" class="btn btn-dark btn-sm mx-1" onclick="filter()">
-                                <span class="fa fa-search"></span> Buscar
-                            </button>
-                        </div>
+                    <div class="col-md-4">
                     </div>
-                    <div class="table-responsive mt-2">
-                        <table class="table table-hover table-sm " id="tablaOPGAM">
-                            <thead align="center">
-                                <tr id="header">
-                                    <th class="col-xs-3">ID AdServer OP</th>
-                                    <th class="col-xs-9">Nombre OP</th>
-                                    <th class="col-xs-9">Anunciante</th>
-                                    <th class="col-xs-3">Fecha de Creación</th>
-                                    <th class="col-xs-9">Fecha Desde</th>
-                                    <th class="col-xs-9">Fecha Hasta</th>
-                                    <th class="col-xs-9">Neto</th>
-                                    <th width="1px"></th>
-                                    <th width="1px"></th>
-                                </tr>
-                            </thead>
-                            <tbody id="TableOrdenes" class="small" align="center"></tbody>
-                        </table>
+                    <div class="col-md-4">
                     </div>
-                </div>-->
+                </div>
+                <div class="row py-1">
+                    <div class="col-md-4">
+                    </div>
+                    <div class="col-md-4">
+                    </div>
+                    <div class="col-md-4 d-flex justify-content-end align-items-end">
+                        <button type="button" class="btn btn-dark btn-sm mx-1" onclick="filter()">
+                            <span class="fa fa-search"></span> Buscar
+                        </button>
+                    </div>
+                </div>
+                <div class="table-responsive mt-2">
+                    <table class="table table-hover table-sm " id="tablaOPGAM">
+                        <thead align="center">
+                            <tr id="header">
+                                <th class="col-xs-3">ID AdServer OP</th>
+                                <th class="col-xs-9">Nombre OP</th>
+                                <th class="col-xs-9">Anunciante</th>
+                                <th class="col-xs-3">Fecha de Creación</th>
+                                <th class="col-xs-9">Fecha Desde</th>
+                                <th class="col-xs-9">Fecha Hasta</th>
+                                <th class="col-xs-9">Neto</th>
+                                <th width="1px"></th>
+                                <th width="1px"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="TableOrdenes" class="small" align="center"></tbody>
+                    </table>
+                </div>
+            </div>-->
                 <!-- TAB NUEVOS-->
                 <div class="tab-pane fade" id="detalles" role="tabpanel" aria-labelledby="detalles-tab">
                     <div class="row py-1">
@@ -314,7 +425,7 @@
                             <select class="form-control" id="selAnuncianteD"></select>
                         </div>
                         <div class="col-md-4">
-                            <label>Vigencia OP</label>
+                            <label>Vigencia Línea</label>
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="input-group input-daterange">
@@ -330,12 +441,12 @@
                             <select class="form-control enterSearch" id="selRedesD"></select>
                         </div>
                     </div>
-                    <div class="row py-1">
+                    <div class="row py-3">
                         <div class="col-md-4">
                         </div>
                         <div class="col-md-4">
                         </div>
-                        <div class="col-md-4 d-flex justify-content-end align-items-end">
+                        <div class="col-md-4 d-flex justify-content-end align-items-end" style="padding-right: 11px;">
                             <button type="button" class="btn btn-dark btn-sm mx-1" onclick="filterD()">
                                 <span class="fa fa-search"></span> Buscar
                             </button>
@@ -345,7 +456,8 @@
                         <table class="table table-hover table-sm " id="tablaDetGAM">
                             <thead align="center">
                                 <tr id="header">
-                                    <th>N Orden</th>
+                                    <th class="col-xs-9">Nombre Pedido</th>
+                                    <th class="col-xs-3">ID AdServer Pedido</th>
                                     <th class="col-xs-9">Nombre Detalle</th>
                                     <th class="col-xs-3">ID AdServer Detalle</th>
                                     <th class="col-xs-9">Fecha Desde</th>
@@ -404,12 +516,12 @@
                             <select class="form-control enterSearch" id="selRedesImp"></select>
                         </div>
                     </div>
-                    <div class="row py-1">
+                    <div class="row py-3">
                         <div class="col-md-4">
                         </div>
                         <div class="col-md-4">
                         </div>
-                        <div class="col-md-4 d-flex justify-content-end align-items-end">
+                        <div class="col-md-4 d-flex justify-content-end align-items-end" style="padding-right: 11px;">
                             <button type="button" class="btn btn-dark btn-sm mx-1" onclick="filterImp()">
                                 <span class="fa fa-search"></span> Buscar
                             </button>
@@ -442,6 +554,13 @@
 
     <!--Scripts-->
     <script type="text/javascript">
+        //var global para enviar el id de la linea nueva a importa, su red y anunciante al crear nueva orden
+        var idLinea = 0;
+        var idRedLinea = 0;
+        var idAnunciante = 0;
+        var fechaD;
+        var fechaH;
+
         $("#divNavBar").load("navBar.html");
         //ONLOAD se ejecuta cuando se termina de cargar la pagina
         $(function () {
@@ -559,54 +678,298 @@
             }
         }
 
-        function onCargarTabla(tablaID, data) {
-            rowHTML = ''
+        //function onCargarTabla(tablaID, data) {
+        //    rowHTML = ''
 
-            $.each(data, function (it, ordenGAM) {
+        //    $.each(data, function (it, ordenGAM) {
 
-                rowHTML += "<tr>";
-                rowHTML += "<td class='col-xs-1'> " + ordenGAM.id_Google_Ad_Manager + "</td > ";
-                rowHTML += "<td class='col-xs-1'> " + ordenGAM.observ + "</td > ";
-                rowHTML += "<td class='col-xs-1'> " + ordenGAM.anunciante_nombre + "</td >";
-                rowHTML += "<td class='col-xs-1'> " + dateToFieldFormat(ordenGAM.fecha_alta) + "</td > ";
-                rowHTML += "<td class='col-xs-1'> " + dateToFieldFormat(ordenGAM.fecha) + "</td > ";
-                rowHTML += "<td class='col-xs-1'> " + dateToFieldFormat(ordenGAM.fecha_expiracion) + "</td > ";
-                rowHTML += "<td class='col-xs-1'>$ " + formatearMonto(ordenGAM.seg_neto) + "</td > ";
-                rowHTML += "<td class='col-xs-2' > <button type='button' id=button" + ordenGAM.id_Google_Ad_Manager + " class='btn btn-danger' style='height: 31px; width: 77.81px;font - size: inherit;' title='Importar OP' onClick='comprobarAnunciante(" + ordenGAM.id_Google_Ad_Manager + ", " + ordenGAM.id_red + ", " + ordenGAM.anunciante.idContactoDigital + ")'><span class='fa fa-cloud-download'></span></button> </td ></tr>";
-                rowHTML += "</tr>";
+        //        rowHTML += "<tr>";
+        //        rowHTML += "<td class='col-xs-1'> " + ordenGAM.id_Google_Ad_Manager + "</td > ";
+        //        rowHTML += "<td class='col-xs-1'> " + ordenGAM.observ + "</td > ";
+        //        rowHTML += "<td class='col-xs-1'> " + ordenGAM.anunciante_nombre + "</td >";
+        //        rowHTML += "<td class='col-xs-1'> " + dateToFieldFormat(ordenGAM.fecha_alta) + "</td > ";
+        //        rowHTML += "<td class='col-xs-1'> " + dateToFieldFormat(ordenGAM.fecha) + "</td > ";
+        //        rowHTML += "<td class='col-xs-1'> " + dateToFieldFormat(ordenGAM.fecha_expiracion) + "</td > ";
+        //        rowHTML += "<td class='col-xs-1'>$ " + formatearMonto(ordenGAM.seg_neto) + "</td > ";
+        //        rowHTML += "<td class='col-xs-2' > <button type='button' id=button" + ordenGAM.id_Google_Ad_Manager + " class='btn btn-danger' style='height: 31px; width: 77.81px;font - size: inherit;' title='Importar OP' onClick='comprobarAnunciante(" + ordenGAM.id_Google_Ad_Manager + ", " + ordenGAM.id_red + ", " + ordenGAM.anunciante.idContactoDigital + ")'><span class='fa fa-cloud-download'></span></button> </td ></tr>";
+        //        rowHTML += "</tr>";
 
-            });
+        //    });
 
-            $("#" + tablaID).html(rowHTML);
+        //    $("#" + tablaID).html(rowHTML);
 
-            $("#pleaseWaitDialog").modal('hide');
+        //    $("#pleaseWaitDialog").modal('hide');
+        //}
+
+        //function comprobarAnunciante(idPedido, idRed, idLin, fechaDesde, fechaHasta) {
+        //    idLinea = idLin;
+        //    idRedLinea = idRed;
+        //    fechaD = fechaDesde;
+        //    fechaH = fechaHasta;
+        //    var detalle = {};
+        //    detalle.Id_pedido_Google_Ad_Manager = idPedido;
+        //    detalle.Id_red = idRed;
+        //    //callWS("contactos", "getContactoByIdGAMyRed", JSON.stringify(data1), function (data) { importarOP(data, idOP, idRed); });
+        //    callWS("googleAdManager", "checkAnunciantePedido", JSON.stringify(detalle), function (data) { buscarOrdenes(data); });
+        //}
+        function comprobarAnunciante(detGAM) {
+            idLinea = detGAM.id_Google_Ad_Manager;
+            idRedLinea = detGAM.id_red;
+            fechaD = detGAM.fecha_desde;
+            fechaH = detGAM.fecha_hasta;
+            //var detalle = {};
+            //detalle.Id_pedido_Google_Ad_Manager = idPedido;
+            //detalle.Id_red = idRed;
+            //callWS("contactos", "getContactoByIdGAMyRed", JSON.stringify(data1), function (data) { importarOP(data, idOP, idRed); });
+            callWS("googleAdManager", "checkAnunciantePedido", JSON.stringify(detGAM), function (data) { buscarOrdenes(data); });
         }
 
-        function comprobarAnunciante(idOP, idRed, idContDig) {
-            var data1 = {};
-            data1.id_contactodigital = idContDig;
-            data1.id_red = idRed;
-            callWS("contactos", "getContactoByIdGAMyRed", JSON.stringify(data1), function (data) { importarOP(data, idOP, idRed); });
-        }
+        //function importarOP(data, idOP, idRed) {
+        //    if (data.idContactoDigital != null) {
+        //        callWS("medios", "getRedById", JSON.stringify(idRed), function (data) { Redireccion(data, idOP); });
+        //    }
+        //    else {
+        //        options = [
+        //            {
+        //                optionDesc: "Aceptar",
+        //                optionFunc: "sincAnunciante()"
+        //            },
+        //            {
+        //                optionDesc: "Cancelar",
+        //                optionFunc: ""
+        //            }
+        //        ];
+        //        var mensaje = "<div class='d-flex justify-content-center' style='text-align: center;'>El Contacto no está sincronizado con Google Ad Manager. ¿Desea sincronizarlo?</div>";
+        //        showModal(mensaje, options);
+        //        /*showMessage("El Contacto no esta sincronizado con Google Ad Manager", "error");*/
+        //    }
+        //}
 
-        function importarOP(data, idOP, idRed) {
-            if (data.idContactoDigital != null) {
-                callWS("medios", "getRedById", JSON.stringify(idRed), function (data) { Redireccion(data, idOP); });
+        function buscarOrdenes(contacto) {
+            if (contacto.Id_contacto != null) {
+                idAnunciante = contacto.Id_contacto;
+                //inicializar modal ordenes y mostrarlo
+                iniModalOrdenes();
             }
             else {
                 options = [
                     {
                         optionDesc: "Aceptar",
-                        optionFunc: "sincAnunciante()"
+                        optionFunc: "iniModalsincAnunciante(" + contacto + ")"
                     },
                     {
                         optionDesc: "Cancelar",
                         optionFunc: ""
                     }
                 ];
-                var mensaje = "<div class='d-flex justify-content-center' style='text-align: center;'>El Contacto no está sincronizado con Google Ad Manager. ¿Desea sincronizarlo?</div>";
+                var mensaje = "<div class='d-flex justify-content-center' style='text-align: center;'>El Anunciante de la Línea no está sincronizado. ¿Desea sincronizarlo ahora?</div>";
                 showModal(mensaje, options);
-                /*showMessage("El Contacto no esta sincronizado con Google Ad Manager", "error");*/
+            }
+        }
+
+        function iniModalOrdenes() {
+            var objParametro = {};
+
+            objParametro.ParameterName = "nombre";
+            objParametro.Value = "";
+
+            $.when(
+                callWS("empresas", "getall", '', function (data) { onPopulateSelectDone(data, 'selEmpresaOp', 'id_empresa', 'razon_social'); })
+            ).then(function () { mostrarModalOp() });
+        }
+
+        function mostrarModalOp() {
+            $("#ordenesModal").modal('show');
+        }
+
+        function searchOrders() {
+            error = '';
+            params = {};
+            params.anio = $('#inpOrderYear').val();
+            params.mes = $('#inpOrderMonth').val();
+            params.nro_orden = $('#inpOrderNumber').val();
+            params.bitacora = $('#inpDescripcionOp').val();
+            params.anuladas = "1";
+            params.es_facturada = "1";
+
+            //if ($('#fechaDesdeD').val() != "") {
+            //    fDesde = new Date(moment($("#fechaDesdeD").val(), 'DD/MM/YYYY', true).format());
+            //    mfDesde = moment(fDesde);
+            //    if (mfDesde.isValid()) {
+            //        params.fecha_desde = dateToSqlFormat($('#fechaDesdeD').val());
+            //    } else {
+            //        error += "Formato 'Fecha Desde' invalido";
+            //    }
+            //}
+            //if ($('#fechaHastaD').val() != "") {
+            //    fHasta = new Date(moment($("#fechaHastaD").val(), 'DD/MM/YYYY', true).format());
+            //    mfHasta = moment(fHasta);
+            //    if (mfHasta.isValid()) {
+            //        params.fecha_hasta = dateToSqlFormat($('#fechaHastaD').val());
+            //    } else {
+            //        if (error != '') { error += ' / ' }
+            //        error += "Formato 'Fecha Hasta' invalido";
+            //    }
+            //}
+
+            //if ($('#selAnuncianteD').val() > 0 && $('#selAnuncianteD').val() != null) {
+            //    params.anunciante_id = $("#selAnuncianteD").val();
+            //}
+            params.fecha_desde_d = fechaD;
+            params.fecha_hasta_d = fechaH;
+            params.anunciante_id = idAnunciante;
+
+            params.id_empresa = $('#selEmpresaOp').val(); 
+
+            for (param in params) {
+                if (params[param] == null) {
+                    params[param] = '';
+                }
+            };
+
+            var parametros = setListaParametros(params);
+            if (error == '') {
+                callWS("dg_orden_pub_aps", "filter", JSON.stringify(parametros), function (data) {
+                    if (data.length > 0) {
+                        populateTableOp(data, 'TableRenglonesOp');
+                    } else {
+                        message = 'La búsqueda no produjo ningun resultado';
+                        showMessage(message, "info");
+                    }
+                });
+            } else {
+                showMessage(error, "info");
+            }
+        }
+
+        function populateTableOp(data, idTable) {
+            orderlist = data;
+            rowHTML = ''
+            $.each(orderlist, function (it, iord) {
+                if (iord.es_anulada == 0) {
+                    if (iord.id_Google_Ad_Manager != undefined && iord.id_Google_Ad_Manager != 0) {
+                        rowHTML += "<tr id-order=\"" + iord.id_op_dg + "\" onclick='openOrder(this)' class='table-success'>"
+                    }
+                    else {
+                        rowHTML += "<tr id-order=\"" + iord.id_op_dg + "\" onclick='openOrder(this)'>"
+                    }
+                }
+                else {
+                    if (iord.id_Google_Ad_Manager != undefined && iord.id_Google_Ad_Manager != 0) {
+                        rowHTML += "<tr style='color:red' id-order=\"" + iord.id_op_dg + "\" onclick='openOrder(this)' class='table-success'>"
+                    }
+                    else {
+                        rowHTML += "<tr style='color:red' id-order=\"" + iord.id_op_dg + "\" onclick='openOrder(this)'>"
+                    }
+                }
+                //rowHTML += "<tr onclick='openOrder(this)'>"
+                if (iord.id_op_relacionada == -1 || iord.id_op_relacionada == 0 || iord.id_op_relacionada == null) {
+                    rowHTML += "<td class='col-xs-1'>" + iord.anio + "-" + iord.mes + "-" + iord.nro_orden + "</td>";
+                } else {
+                    rowHTML += "<td class='col-xs-1'>" + iord.nro_op_relacionada + ' *' + "</td>";
+                }
+                rowHTML += "<td class='col-xs-1'>" + dateToFieldFormat(iord.fecha) + ' - ' + dateToFieldFormat(iord.fecha_expiracion) + "</td>";
+                rowHTML += "<td class='col-xs-1'>" + iord.bitacora + "</td>";
+                rowHTML += "<td class='col-xs-1'>" + iord.agencia.nombre_com + "</td>";
+                rowHTML += "<td class='col-xs-1'>" + iord.anunciante.nombre_com + "</td>";
+                rowHTML += "<td class='col-xs-1'>" + iord.producto.desc_producto + "</td>";
+                rowHTML += "<td class='col-xs-1'>$ " + formatearMonto(iord.seg_neto) + "</td>";
+                if (iord.es_facturada) {
+                    rowHTML += "<td class='col-xs-1'>";
+                    rowHTML += "<span class='fa fa-check' id='brow" + iord.id_op_dg + "' title='Orden facturada''></span></td>";
+                }
+                else {
+                    rowHTML += "<td class='col-xs-1'></td>";
+                }
+                //Acciones
+                //rowHTML += "<td id='colAcciones' class='col-xs-2 d-flex justify-content-around'>"
+                //rowHTML += "<button type='button' class='btn btn-outline-dark btn-sm' onclick=\"openOrder("+iord.id_tarifa_dg+",'view')\"><span class='fa fa-eye'></span> </button>"
+                //rowHTML += "<button type='button' class='btn btn-outline-dark btn-sm' onclick=\"openOrder("+iord.id_tarifa_dg+",'edit')\"><span class='fa fa-edit'></span> </button>"
+                //rowHTML += "</td>"
+                rowHTML += '</tr>'
+            })
+            $("#" + idTable).html(rowHTML);
+        }
+
+        function openOrder(data) {
+            var idOp = 0;
+
+            if (data != undefined) {
+                var c = data;
+                var tr = $(c);
+                idOp = tr.attr("id-order");
+            }
+
+            location.href = "/orden.html?orderAdServer=" + idOp + "," + idLinea + "-" + idRedLinea + "-" + idAnunciante;
+        }
+
+        function iniModalsincAnunciante(contacto) {
+            var objParametro = {};
+
+            objParametro.ParameterName = "nombre";
+            objParametro.Value = "";
+
+            $.when(
+                callWS("googleAdManager", "getAnunciantes", JSON.stringify(objParametro), function (data) { onGetAnuncianteGAM(data); }),
+                callWS("contactos", "getAnunciantes", '', function (data1) { onPopulateSelectDone(data1, 'selAnuncianteM', 'id', 'nombre_com'); })
+            ).then(function () { mostrarModalAnun(contacto) });
+        }
+
+        function onGetAnuncianteGAM(anunciantes) {
+            var listitems = '<option value="-1">  </option>';
+            $.each(anunciantes, function (it, anun) {
+                listitems = listitems + '<option value="' + anun.idContactoDigital + '">' + anun.nombre_com + ' </option>';
+            });
+            $("#selAnunciantePedidoAS").empty();
+            $("#selAnunciantePedidoAS").append(listitems);
+        }
+
+        function mostrarModalAnun(contacto) {
+            $("#selAnunciantePedidoAS option[value=" + contacto.Id_contacto + "]").attr("selected", "selected");
+            $("#selRedesAnun option[value=" + contacto.Id_red + "]").attr("selected", "selected");
+            $("#sincAnunModal").modal('show');
+        }
+
+        function vincularAnun() {
+            var idAnunSel = $("#selAnuncianteM").val();
+            if (idAnunSel == undefined) {
+                showMessage("Seleccione un anunciante", "info");
+            } else {
+                var cont = {};
+                cont.Id = idAnunSel;
+                cont.IdContactoDigital = $("#selAnunciantePedidoAS").val();
+                cont.IdRed = $("#selRedesAnun").val();
+
+                if ($("#bVincularAnun").val() == 1) {
+                    callWS("contactos", "saveASRelation", JSON.stringify(cont), function (data) { onVincularAnun(data) });
+                }
+                else {
+                    callWS("contactos", "deleteASRelation", JSON.stringify(cont), function (data) { onVincularAnun(data) });
+                }
+            }
+
+        }
+
+        function onVincularAnun(data) {
+            if (data == true) {
+                if ($("#bVincularAnun").val() == 1) {
+                    $("#bVincularAnun").removeClass("btn-primary").addClass("btn-success");
+                    $("#bVincularAnun").css("background-color", "#c3e6cb");
+                    $("#bVincularAnun").val(2);
+                    $("#bVincularAnun").html('Desvincular');
+                    $("#selAnunciantePedidoAS").attr("disabled", true);
+                    showMessage("Anunciante vinculado", "success");
+                }
+                else {
+                    $("#bVincularAnun").removeClass("btn-success").addClass("btn-primary");
+                    $("#bVincularAnun").css("background-color", "#6c757d");
+                    $("#bVincularAnun").val(1);
+                    $("#bVincularAnun").html('Vincular');
+                    $("#selAnunciantePedidoAS").attr("disabled", false);
+                    showMessage("Anunciante desvinculado", "success");
+                }
+            } else {
+                showMessage("Ocurrio un error al vincular el Anunciante", "alert");
             }
         }
 
@@ -732,7 +1095,6 @@
             });
             str = str + "</select >";
             return str;
-
         }
 
         function vincular(idGAM, idRed) {
@@ -818,14 +1180,26 @@
             $.each(data, function (it, detGAM) {
 
                 rowHTML += "<tr>";
-                rowHTML += "<td class='col-xs-1'>" + detGAM.anio + "-" + detGAM.mes + "-" + detGAM.nro_orden + "</td>";
+                if (tablaID == 'TableDetalles') {
+                    rowHTML += "<td class='col-xs-1'> " + detGAM.nombre_pedido_Google_Ad_Manager + "</td > ";
+                }
+                if (tablaID == 'TableDetalles') {
+                    rowHTML += "<td class='col-xs-1'> " + detGAM.id_pedido_Google_Ad_Manager + "</td > ";                }
+                else {
+                    rowHTML += "<td class='col-xs-1'>" + detGAM.anio + "-" + detGAM.mes + "-" + detGAM.nro_orden + "</td>";
+                }
                 rowHTML += "<td class='col-xs-1'> " + detGAM.descripcion + "</td > ";
                 rowHTML += "<td class='col-xs-1'> " + detGAM.id_Google_Ad_Manager + "</td > ";
                 rowHTML += "<td class='col-xs-1'> " + dateToFieldFormat(detGAM.fecha_desde) + "</td > ";
                 rowHTML += "<td class='col-xs-1'> " + dateToFieldFormat(detGAM.fecha_hasta) + "</td > ";
                 rowHTML += "<td class='col-xs-1'> " + detGAM.cantidad + "</td > ";
                 rowHTML += "<td class='col-xs-1'>$ " + formatearMonto(detGAM.monto_neto) + "</td > ";
-                rowHTML += "<td class='col-xs-2' > <button type='button' id=button" + detGAM.id_Google_Ad_Manager + " class='btn btn-danger' style='height: 31px; width: 77.81px;font - size: inherit;' title='Ir a Detalle con diferencias en AdServer' onClick='RedireccionD(" + detGAM.id_op_dg + ")'> <span class='fa fa-refresh'></span></button> </td ></tr>";
+                if (tablaID == 'TableDetalles') {
+                    rowHTML += "<td class='col-xs-2' > <button type='button' id=button" + detGAM.id_Google_Ad_Manager + " class='btn btn-danger' style='height: 31px; width: 77.81px;font - size: inherit;' title='Importar Línea' onClick='comprobarAnunciante(" + JSON.stringify(detGAM) + ")'><span class='fa fa-cloud-download'></span></button> </td ></tr>";
+                }
+                else {
+                    rowHTML += "<td class='col-xs-2' > <button type='button' id=button" + detGAM.id_Google_Ad_Manager + " class='btn btn-danger' style='height: 31px; width: 77.81px;font - size: inherit;' title='Ir a Detalle con diferencias en AdServer' onClick='RedireccionD(" + detGAM.id_op_dg + ")'> <span class='fa fa-refresh'></span></button> </td ></tr>";
+                }
                 rowHTML += "</tr>";
 
             });

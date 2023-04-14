@@ -1555,16 +1555,52 @@
                 callWS("dg_orden_pub_aps", "getById", JSON.stringify(data), onGetOrder);
             }
 
-            //si la OP viene de SincronizarOP
-            //var op1 = getUrlParameter("orderAdServer")
-            //if (op1 != undefined) {
-            //    OpSinc = true;
-            //    arr = op1.split(",");
-            //    var Id_op_gam = arr[0];
-            //    var codRed = arr[1];
+            //si la OP viene de SincronizarNuevaLinea
+            var op1 = getUrlParameter("orderAdServer")
+            if (op1 != undefined) {
+                OpSinc = true;
+                arr1 = op1.split(",");
+                var Id_op = arr1[0];
+                arr2 = arr1[1].split("-");
+                var idLinea = arr2[0];
+                var idRed = arr2[1];
+                var idAnun = arr2[2];
 
-            //    $.when(CambiarRed(codRed))
-            //     .then(getOrdenGAM(Id_op_gam));
+                //var orden = {};
+                //orden.Id_op_dg = Id_op;
+                var detalle = {};
+                detalle.Id_op_dg = Id_op;
+                detalle.Id_Google_Ad_Manager = idLinea;
+                detalle.Id_red = idRed;
+                detalle.Id_anunciante = idAnun;
+
+                /*      callWS("dg_orden_pub_aps", "getById", JSON.stringify(orden), function (data) { agregarLinea(data, idLinea, idRed, idAnun); });*/
+                callWS("googleAdManager", "addLineItemToOrder", JSON.stringify(detalle), onGetOrder);
+            }
+
+            //function agregarLinea(orden, idLinea, idRed, idAnun) {
+            //    var detalle = {};
+            //    detalle.Id_Google_Ad_Manager = idLinea;
+            //    detalle.Id_red = idRed;
+            //    callWS("googleAdManager", "getLineItem", JSON.stringify(detalle), function (data) { cargarOpNuevaLinea(data, orden, idAnun); });
+            //}
+
+            //function cargarOpNuevaLinea(linea, orden, idAnun) {
+            //    if (orden.detalles == null) {
+            //        orden.detalles = [];
+            //    }
+            //    if (orden.anunciante == null) {
+            //        orden.anunciante = [];
+            //    }
+            //    var idDet = orden.detalles.length + 1;
+            //    linea.id_detalle = idDet;
+            //    orden.fecha = linea.fecha_desde
+            //    orden.fecha_expiracion = linea.fecha_hasta
+            //    orden.anunciante.id_contacto = idAnun;
+
+            //    $.when(
+            //        orden.detalles.push(linea)
+            //    ).then(onGetOrder(orden));
             //}
 
             //si la OP viene de SincronizarLinea
@@ -1587,49 +1623,49 @@
             }
         }
 
-        function getOrdenGAM(IdOpGam) {
-            callWS("googleAdManager", "getOrderById", JSON.stringify(IdOpGam), onGetOrder);
-        }
+        //function getOrdenGAM(IdOpGam) {
+        //    callWS("googleAdManager", "getOrderById", JSON.stringify(IdOpGam), onGetOrder);
+        //}
 
-        function onSelTipoD(sel) {
-            var optionsBanner = {
-                "AUDIO": "1",
-                "VIDEO": "2",
-                "MODULO PREMIUM": "3",
-                "MODULO DISPLAY": "4",
-                "SPONSOREO": "5"
-            };
+        //function onSelTipoD(sel) {
+        //    var optionsBanner = {
+        //        "AUDIO": "1",
+        //        "VIDEO": "2",
+        //        "MODULO PREMIUM": "3",
+        //        "MODULO DISPLAY": "4",
+        //        "SPONSOREO": "5"
+        //    };
 
-            var optionsPosteos = {
-                "FEED": "1",
-                "STORY": "2",
-                "SPONSOREO": "3"
-            };
-            var newOptions = optionsBanner;
+        //    var optionsPosteos = {
+        //        "FEED": "1",
+        //        "STORY": "2",
+        //        "SPONSOREO": "3"
+        //    };
+        //    var newOptions = optionsBanner;
 
 
 
-            if (sel.value < 3) {
+        //    if (sel.value < 3) {
 
-                var $el = $("#selSubTipoD");
-                $el.empty(); // remove old options
-                if (sel.value == 2) {
-                    newOptions = optionsPosteos;
-                    $("#selTipoTarifaD").hide();
-                } else {
-                    $("#selTipoTarifaD").show();
-                }
-                $.each(newOptions, function (key, value) {
-                    $el.append($("<option></option>")
-                        .attr("value", value).text(key));
-                });
-                $("#divSubType").show();
-            } else {
-                $("#selTipoTarifaD").hide();
-                $("#divSubType").hide();
-            }
+        //        var $el = $("#selSubTipoD");
+        //        $el.empty(); // remove old options
+        //        if (sel.value == 2) {
+        //            newOptions = optionsPosteos;
+        //            $("#selTipoTarifaD").hide();
+        //        } else {
+        //            $("#selTipoTarifaD").show();
+        //        }
+        //        $.each(newOptions, function (key, value) {
+        //            $el.append($("<option></option>")
+        //                .attr("value", value).text(key));
+        //        });
+        //        $("#divSubType").show();
+        //    } else {
+        //        $("#selTipoTarifaD").hide();
+        //        $("#divSubType").hide();
+        //    }
 
-        }
+        //}
 
         function onGetOrder(data) {
             //$("#divOrderMain").html(data.d);
@@ -1681,7 +1717,7 @@
             if (OpClon == false) {
                 $("#inpOrderNumber").val(data.nro_orden);
                 $("#inpOrderNumber").attr("id_op_dg", data.id_op_dg);
-                $("#selEmpresa").attr("disabled", true);
+/*                $("#selEmpresa").attr("disabled", true);*/
             }
             if (data.formasPago.length > 0) {
                 $("#selFPago option[value=" + data.formasPago[0].forma_pago.id_formapago + "]").attr("selected", "selected");
@@ -1785,14 +1821,14 @@
                 });
             }
 
-            //if (OpSinc) {
-            //    $("#bAnular").attr("disabled", true);
-            //    $("#bClonar").attr("disabled", true);
-            //}
+            if (OpSinc) {
+                $("#bAnular").attr("disabled", true);
+                $("#bClonar").attr("disabled", true);
+            }
 
-            //if (OpClon == false && OpSinc == false) {
-            //    $("#selEmpresa").attr("disabled", true);
-            //}
+            if (OpClon == false && OpSinc == false) {
+                $("#selEmpresa").attr("disabled", true);
+            }
 
             //data.Id_condpagoap = 1; //Arreglar
 
@@ -2236,7 +2272,7 @@
                 callWS("dg_orden_pub_aps", "grabarLog", JSON.stringify(params));
 
                 OpClon = false;
-                /*OpSinc = false;*/
+                OpSinc = false;
                 
                 $('#sTituloDinamico1').remove();
                 $('#sTituloDinamico2').remove();
@@ -2753,7 +2789,7 @@
         OpBloqueada = false;
         OpClon = false;
         OpAnulada = false;
-        //OpSinc = false;
+        OpSinc = false;
         DetalleClon = false;
         TipoAvisoClase = 0;
         //Parametro global para llevar el último Detalle importado

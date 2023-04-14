@@ -275,16 +275,20 @@ namespace WebApi.Entities
                         mifiltro = mifiltro + " and dg.fecha >= '" + p.Value.ToString() + "'";
                     if ((p.ParameterName == "fecha_hasta") && (p.Value.ToString() != ""))
                         mifiltro = mifiltro + " and dg.fecha_expiracion <= '" + p.Value.ToString() + "'";
+                    if ((p.ParameterName == "fecha_desde_d") && (p.Value.ToString() != ""))
+                        mifiltro = mifiltro + " and dg.fecha <= '" + p.Value.ToString() + "'";
+                    if ((p.ParameterName == "fecha_hasta_d") && (p.Value.ToString() != ""))
+                        mifiltro = mifiltro + " and dg.fecha_expiracion >= '" + p.Value.ToString() + "'";
                     if ((p.ParameterName == "agencia_nombre") && (p.Value.ToString() != ""))
                         mifiltro = mifiltro + " and ag.razon_social like '%" + p.Value + "%'";
                     if ((p.ParameterName == "anunciante_nombre") && (p.Value.ToString() != ""))
                         mifiltro = mifiltro + " and an.razon_social like '%" + p.Value + "%'";
+                    if ((p.ParameterName == "anunciante_id") && (p.Value.ToString() != ""))
+                        mifiltro = mifiltro + " and dg.id_anunciante = " + p.Value;
                     if ((p.ParameterName == "producto_nombre") && (p.Value.ToString() != ""))
                         mifiltro = mifiltro + " and p.desc_producto like '%" + p.Value + "%'";
                     if ((p.ParameterName == "anuladas") && (p.Value.ToString() == "1"))
-                    {
                         mifiltro = mifiltro + " and dg.es_anulada = 0";
-                    }
                     if (p.ParameterName == "para_facturar")
                     {
                         if(p.Value.ToString() == "1")
@@ -296,14 +300,12 @@ namespace WebApi.Entities
                             mifiltro = mifiltro + " and dg.parafacturar = 1";
                         }
                     }
-                    if ((p.ParameterName == "anuladas") && (p.Value.ToString() == "1"))
-                    {
-                        mifiltro = mifiltro + " and dg.es_anulada = 0";
-                    }
                     if ((p.ParameterName == "id_empresa") && (p.Value.ToString() != ""))
                         mifiltro = mifiltro + " and dg.id_empresa = " + p.Value;
-                    if ((p.ParameterName == "id_red") && (p.Value.ToString() != ""))
-                        mifiltro = mifiltro + " and dg.id_red = " + p.Value;
+                    //if ((p.ParameterName == "id_red") && (p.Value.ToString() != ""))
+                    //    mifiltro = mifiltro + " and dg.id_red = " + p.Value;
+                    if ((p.ParameterName == "es_facturada") && (p.Value.ToString() != ""))
+                        mifiltro = mifiltro + " and (dg.Es_facturada = 0 or dg.Es_facturada is null) ";
                 }
             }
             List<Dg_orden_pub_ap> col = new List<Dg_orden_pub_ap>();

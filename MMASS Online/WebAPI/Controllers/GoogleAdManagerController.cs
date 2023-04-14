@@ -43,12 +43,12 @@ namespace WebApi.Controllers
         //    return Ok(JsonConvert.SerializeObject(res));
         //}
 
-        [HttpPost("getOrderById")]
-        public IActionResult GetOrderById([FromBody] long idGAM)
-        {
-            var res = _GoogleAdManagerService.GetOrderById(idGAM);
-            return Ok(res);
-        }
+        //[HttpPost("getOrderById")]
+        //public IActionResult GetOrderById([FromBody] long idGAM)
+        //{
+        //    var res = _GoogleAdManagerService.GetOrderById(idGAM);
+        //    return Ok(res);
+        //}
 
         [HttpPost("getOrderListDetails2")]
         public IActionResult GetOrderDetails([FromBody] Dg_orden_pub_ap order)
@@ -233,6 +233,27 @@ namespace WebApi.Controllers
         {
             var resp = _GoogleAdManagerService.pruebaMail();
             return Ok(JsonConvert.SerializeObject(resp));
+        }
+
+        [HttpPost("checkAnunciantePedido")]
+        public IActionResult checkAnunciantePedido([FromBody] Dg_orden_pub_as det)
+        {
+            var contacto = _GoogleAdManagerService.checkAnunciantePedido(det);
+            return Ok(JsonConvert.SerializeObject(contacto));
+        }
+
+        //[HttpPost("getLineItem")]
+        //public IActionResult getLineItem([FromBody] Dg_orden_pub_as detalle)
+        //{
+        //    var res = _GoogleAdManagerService.getLineItem(detalle);
+        //    return Ok(res);
+        //}
+
+        [HttpPost("addLineItemToOrder")]
+        public IActionResult getLineItem([FromBody] Dg_orden_pub_as detalle)
+        {
+            var orden = _GoogleAdManagerService.addLineItemToOrder(detalle);
+            return Ok(orden);
         }
     }
 }

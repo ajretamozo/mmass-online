@@ -67,7 +67,8 @@ namespace WebApi.Entities
         public List<Dg_orden_pub_medidas> Medidas;
         public List<Dg_orden_pub_emplazamientos> Emplazamientos;
         public DateTime? Fecha_creacion { get; set; }
-        public string UsuarioSesion { get; set; } // Variable usada para enviar el usuario en los mails de alerta
+        public string UsuarioSesion { get; set; } // Atributo usado para enviar el usuario en los mails de alerta
+        public int Id_anunciante { get; set; } // Atributo usado para traer el anunciante al importar lineas
 
         public static Dg_orden_pub_as getDg_orden_pub_as(DataRow item)
         {

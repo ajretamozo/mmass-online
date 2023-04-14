@@ -19,6 +19,7 @@ using System.IO;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace WebApi.Services
 {
@@ -29,7 +30,7 @@ namespace WebApi.Services
         String GetOrderDetails(long idGAM);
         String GetOrderDetails2(Dg_orden_pub_ap orden);
         String printCertExcel(Dg_orden_pub_ap orden);
-        Dg_orden_pub_ap GetOrderById(long idGAM);
+        //Dg_orden_pub_ap GetOrderById(long idGAM);
         //V2
         //Parametro CreateOrder(long idOrden);
         //V3
@@ -61,6 +62,8 @@ namespace WebApi.Services
         bool saveMail(Mail mail);
         Mail getMailCta();
         String pruebaMail();
+        Contacto checkAnunciantePedido(Dg_orden_pub_as detalle);
+        Dg_orden_pub_ap addLineItemToOrder(Dg_orden_pub_as detalle);
     }
 
     public class GoogleAdManagerService : IGoogleAdManagerService
@@ -76,12 +79,12 @@ namespace WebApi.Services
             return GoogleAdManager.GetOrderDetails(idGAM);
         }
 
-        public Dg_orden_pub_ap GetOrderById(long idGAM)
-        {
-            Order ordenGam = new Order();
-            ordenGam = GoogleAdManager.GetOrderById(idGAM);
-            return OrderGamAOrdenAp(ordenGam);
-        }
+        //public Dg_orden_pub_ap GetOrderById(long idGAM)
+        //{
+        //    Order ordenGam = new Order();
+        //    ordenGam = GoogleAdManager.GetOrderById(idGAM);
+        //    return OrderGamAOrdenAp(ordenGam);
+        //}
 
         //V2
         //public Parametro CreateOrder(long idOrden)
@@ -867,127 +870,127 @@ namespace WebApi.Services
         //    return ordYdet;
         //}
 
-        private Dg_orden_pub_ap OrderGamAOrdenAp(Order ordenGam)
-        {
-            Dg_orden_pub_ap ordenNueva = new Dg_orden_pub_ap();
-            long codRed = GetRedActual();
-            Dg_red_GAM red = Dg_red_GAM.getByCodigo(codRed);
-            List<Dg_orden_pub_ejecutivos> ejecutivos = new List<Dg_orden_pub_ejecutivos>();
-            List<Dg_orden_pub_pagos> formasPago = new List<Dg_orden_pub_pagos>();
-            List<Dg_orden_pub_as> detalles = new List<Dg_orden_pub_as>();
+        //private Dg_orden_pub_ap OrderGamAOrdenAp(Order ordenGam)
+        //{
+        //    Dg_orden_pub_ap ordenNueva = new Dg_orden_pub_ap();
+        //    long codRed = GetRedActual();
+        //    Dg_red_GAM red = Dg_red_GAM.getByCodigo(codRed);
+        //    List<Dg_orden_pub_ejecutivos> ejecutivos = new List<Dg_orden_pub_ejecutivos>();
+        //    List<Dg_orden_pub_pagos> formasPago = new List<Dg_orden_pub_pagos>();
+        //    List<Dg_orden_pub_as> detalles = new List<Dg_orden_pub_as>();
 
-            ordenNueva.Id_red = red.Id_red;
-            ordenNueva.Id_Google_Ad_Manager = ordenGam.id;
-            ordenNueva.Bitacora = ordenGam.name;
-            ordenNueva.anunciante = Contacto.getContactoByIdGAMyRed(ordenGam.advertiserId.ToString(), red.Id_red);
-            ordenNueva.Seg_neto = (float)(ordenGam.totalBudget.microAmount / 1000000.0);
-            ordenNueva.FormasPago = formasPago;
-            ordenNueva.Ejecutivos = ejecutivos;
-            string start = DateTimeUtilities.ToString(ordenGam.startDateTime, "yyyy/MM/dd");
-            string end = DateTimeUtilities.ToString(ordenGam.endDateTime, "yyyy/MM/dd");
+        //    ordenNueva.Id_red = red.Id_red;
+        //    ordenNueva.Id_Google_Ad_Manager = ordenGam.id;
+        //    ordenNueva.Bitacora = ordenGam.name;
+        //    ordenNueva.anunciante = Contacto.getContactoByIdGAMyRed(ordenGam.advertiserId.ToString(), red.Id_red);
+        //    ordenNueva.Seg_neto = (float)(ordenGam.totalBudget.microAmount / 1000000.0);
+        //    ordenNueva.FormasPago = formasPago;
+        //    ordenNueva.Ejecutivos = ejecutivos;
+        //    string start = DateTimeUtilities.ToString(ordenGam.startDateTime, "yyyy/MM/dd");
+        //    string end = DateTimeUtilities.ToString(ordenGam.endDateTime, "yyyy/MM/dd");
 
-            if (start != "0")
-            {
-                ordenNueva.Fecha = System.DateTime.Parse(start);
-            }
-            if (end != "0")
-            {
-                ordenNueva.Fecha_expiracion = System.DateTime.Parse(end);
-            }
+        //    if (start != "0")
+        //    {
+        //        ordenNueva.Fecha = System.DateTime.Parse(start);
+        //    }
+        //    if (end != "0")
+        //    {
+        //        ordenNueva.Fecha_expiracion = System.DateTime.Parse(end);
+        //    }
 
-            //Se traen las Lineas de Pedido
-            List<LineItem> lineasGAM = new List<LineItem>();
-            lineasGAM = GoogleAdManager.getLineItemsByOrder(ordenGam.id);
-            int contId = 1;
+        //    //Se traen las Lineas de Pedido
+        //    List<LineItem> lineasGAM = new List<LineItem>();
+        //    lineasGAM = GoogleAdManager.getLineItemsByOrder(ordenGam.id);
+        //    int contId = 1;
 
-            foreach (LineItem linea in lineasGAM)
-            {
-                Dg_orden_pub_as detalle = new Dg_orden_pub_as();
-                List<Dg_orden_pub_emplazamientos> emplazamientos = new List<Dg_orden_pub_emplazamientos>();
-                List<Dg_orden_pub_medidas> medidas = new List<Dg_orden_pub_medidas>();
+        //    foreach (LineItem linea in lineasGAM)
+        //    {
+        //        Dg_orden_pub_as detalle = new Dg_orden_pub_as();
+        //        List<Dg_orden_pub_emplazamientos> emplazamientos = new List<Dg_orden_pub_emplazamientos>();
+        //        List<Dg_orden_pub_medidas> medidas = new List<Dg_orden_pub_medidas>();
 
-                detalle.Id_detalle = contId;
-                detalle.Id_Google_Ad_Manager = linea.id;
-                detalle.Descripcion = linea.name;
-                switch (linea.costType)
-                {
-                    case CostType.CPM:
-                        detalle.Tipo_tarifa = 0;
-                        break;
-                    case CostType.CPD:
-                        detalle.Tipo_tarifa = 1;
-                        break;
-                    case CostType.CPC:
-                        detalle.Tipo_tarifa = 3;
-                        break;
-                    case CostType.CPA:
-                        detalle.Tipo_tarifa = 4;
-                        break;
-                }
-                if (linea.targeting.inventoryTargeting.targetedPlacementIds != null)
-                {                   
-                    foreach (long idEmpla in linea.targeting.inventoryTargeting.targetedPlacementIds)
-                    {
-                        Dg_orden_pub_emplazamientos emplaza = new Dg_orden_pub_emplazamientos();
-                        emplaza.Codigo_emplazamiento = idEmpla;
-                        emplaza.Id_emplazamiento = Dg_emplazamientos.getByCodigo2(idEmpla, red.Id_red).Id_emplazamiento;
-                        emplazamientos.Add(emplaza);
-                    }
-                    detalle.Emplazamientos = emplazamientos;
-                }
-                if (linea.creativePlaceholders != null)
-                {
-                    foreach (CreativePlaceholder cph in linea.creativePlaceholders)
-                    {
-                        Dg_orden_pub_medidas medida = new Dg_orden_pub_medidas();
-                        string desc = "";
-                        if (linea.environmentType.ToString() == "VIDEO_PLAYER")
-                        {
-                            desc = cph.size.width.ToString() + "x" + cph.size.height.ToString() + "v";
-                        }
-                        else
-                        {
-                            desc = cph.size.width.ToString() + "x" + cph.size.height.ToString();
-                        }
-                        medida.Id_medidadigital = Dg_medidas.getByDescripcion(desc).Id_medidadigital;
-                        medida.Ancho = cph.size.width;
-                        medida.Alto = cph.size.height;
-                        medidas.Add(medida);
-                    }
-                    detalle.Medidas = medidas;
-                }
-                if (linea.environmentType.ToString() == "VIDEO_PLAYER")
-                {
-                    detalle.tipo_aviso_dg = Dg_tipos_avisos.getByDesc("Video");
-                }
-                else
-                {
-                    detalle.tipo_aviso_dg = Dg_tipos_avisos.getByDesc("Banner");
-                }
-                detalle.Tarifa_manual = 1;
-                detalle.Importe_unitario = (float)(linea.costPerUnit.microAmount / 1000000.0);
-                detalle.Porc_dto = (float)linea.discount;
-                detalle.Cantidad = (int)linea.primaryGoal.units;
-                detalle.Monto_neto = (float)(linea.budget.microAmount / 1000000.0);
-                string startD = DateTimeUtilities.ToString(linea.startDateTime, "yyyy/MM/dd");
-                string endD = DateTimeUtilities.ToString(linea.endDateTime, "yyyy/MM/dd");
+        //        detalle.Id_detalle = contId;
+        //        detalle.Id_Google_Ad_Manager = linea.id;
+        //        detalle.Descripcion = linea.name;
+        //        switch (linea.costType)
+        //        {
+        //            case CostType.CPM:
+        //                detalle.Tipo_tarifa = 0;
+        //                break;
+        //            case CostType.CPD:
+        //                detalle.Tipo_tarifa = 1;
+        //                break;
+        //            case CostType.CPC:
+        //                detalle.Tipo_tarifa = 3;
+        //                break;
+        //            case CostType.CPA:
+        //                detalle.Tipo_tarifa = 4;
+        //                break;
+        //        }
+        //        if (linea.targeting.inventoryTargeting.targetedPlacementIds != null)
+        //        {                   
+        //            foreach (long idEmpla in linea.targeting.inventoryTargeting.targetedPlacementIds)
+        //            {
+        //                Dg_orden_pub_emplazamientos emplaza = new Dg_orden_pub_emplazamientos();
+        //                emplaza.Codigo_emplazamiento = idEmpla;
+        //                emplaza.Id_emplazamiento = Dg_emplazamientos.getByCodigo2(idEmpla, red.Id_red).Id_emplazamiento;
+        //                emplazamientos.Add(emplaza);
+        //            }
+        //        }
+        //        detalle.Emplazamientos = emplazamientos;
+        //        if (linea.creativePlaceholders != null)
+        //        {
+        //            foreach (CreativePlaceholder cph in linea.creativePlaceholders)
+        //            {
+        //                Dg_orden_pub_medidas medida = new Dg_orden_pub_medidas();
+        //                string desc = "";
+        //                if (linea.environmentType.ToString() == "VIDEO_PLAYER")
+        //                {
+        //                    desc = cph.size.width.ToString() + "x" + cph.size.height.ToString() + "v";
+        //                }
+        //                else
+        //                {
+        //                    desc = cph.size.width.ToString() + "x" + cph.size.height.ToString();
+        //                }
+        //                medida.Id_medidadigital = Dg_medidas.getByDescripcion(desc).Id_medidadigital;
+        //                medida.Ancho = cph.size.width;
+        //                medida.Alto = cph.size.height;
+        //                medidas.Add(medida);
+        //            }
+        //        }
+        //        detalle.Medidas = medidas;
+        //        if (linea.environmentType.ToString() == "VIDEO_PLAYER")
+        //        {
+        //            detalle.tipo_aviso_dg = Dg_tipos_avisos.getByDesc("Video");
+        //        }
+        //        else
+        //        {
+        //            detalle.tipo_aviso_dg = Dg_tipos_avisos.getByDesc("Banner");
+        //        }
+        //        detalle.Tarifa_manual = 1;
+        //        detalle.Importe_unitario = (float)(linea.costPerUnit.microAmount / 1000000.0);
+        //        detalle.Porc_dto = (float)linea.discount;
+        //        detalle.Cantidad = (int)linea.primaryGoal.units;
+        //        detalle.Monto_neto = (float)(linea.budget.microAmount / 1000000.0);
+        //        string startD = DateTimeUtilities.ToString(linea.startDateTime, "yyyy/MM/dd");
+        //        string endD = DateTimeUtilities.ToString(linea.endDateTime, "yyyy/MM/dd");
 
-                if (startD != "0")
-                {
-                    detalle.Fecha_desde = System.DateTime.Parse(startD);
-                }
-                if (endD != "0")
-                {
-                    detalle.Fecha_hasta = System.DateTime.Parse(endD);
-                }
+        //        if (startD != "0")
+        //        {
+        //            detalle.Fecha_desde = System.DateTime.Parse(startD);
+        //        }
+        //        if (endD != "0")
+        //        {
+        //            detalle.Fecha_hasta = System.DateTime.Parse(endD);
+        //        }
 
-                detalles.Add(detalle);
-                contId++;
-            }
-            ordenNueva.Detalles = detalles;
+        //        detalles.Add(detalle);
+        //        contId++;
+        //    }
+        //    ordenNueva.Detalles = detalles;
 
-            return ordenNueva;
-        }
+        //    return ordenNueva;
+        //}
 
         public Parametro ImprimirEmplazas(List<Dg_orden_pub_emplazamientos> emplazaBD, long[] emplazaGam, int idRed)
         {
@@ -2122,6 +2125,134 @@ namespace WebApi.Services
                 resp = ex.Message;
             }
             return resp;
+        }
+
+        public Contacto checkAnunciantePedido(Dg_orden_pub_as detalle)
+        {
+            //apuntamos a la red adserver del detalle
+            Dg_red_GAM red = Dg_red_GAM.getById(detalle.Id_red);
+            CambiarRed(red.Codigo_red.ToString());
+
+            Contacto anunciante = new Contacto();
+            string idAnunGam = GoogleAdManager.GetOrderById(detalle.Id_pedido_Google_Ad_Manager).advertiserId.ToString();
+            anunciante = Contacto.getContactoByIdGAMyRed(idAnunGam, detalle.Id_red);
+            anunciante.IdContactoDigital = idAnunGam;
+            anunciante.IdRed = detalle.Id_red;
+            return anunciante;
+        }
+
+        public Dg_orden_pub_ap addLineItemToOrder(Dg_orden_pub_as detalle)
+        {
+            //apuntamos a la red adserver del detalle
+            Dg_red_GAM red = Dg_red_GAM.getById(detalle.Id_red);
+            CambiarRed(red.Codigo_red.ToString());
+
+            LineItem linea = GoogleAdManager.GetLineItemById(detalle.Id_Google_Ad_Manager);
+
+            List<Dg_orden_pub_emplazamientos> emplazamientos = new List<Dg_orden_pub_emplazamientos>();
+            List<Dg_orden_pub_medidas> medidas = new List<Dg_orden_pub_medidas>();
+
+            detalle.Id_Google_Ad_Manager = linea.id;
+            detalle.Descripcion = linea.name;
+            detalle.Id_pedido_Google_Ad_Manager = linea.orderId;
+            detalle.Nombre_pedido_Google_Ad_Manager = linea.orderName;
+            switch (linea.costType)
+            {
+                case CostType.CPM:
+                    detalle.Tipo_tarifa = 0;
+                    break;
+                case CostType.CPD:
+                    detalle.Tipo_tarifa = 1;
+                    break;
+                case CostType.CPC:
+                    detalle.Tipo_tarifa = 3;
+                    break;
+                case CostType.CPA:
+                    detalle.Tipo_tarifa = 4;
+                    break;
+            }
+            if (linea.targeting.inventoryTargeting.targetedPlacementIds != null)
+            {
+                foreach (long idEmpla in linea.targeting.inventoryTargeting.targetedPlacementIds)
+                {
+                    Dg_orden_pub_emplazamientos emplaza = new Dg_orden_pub_emplazamientos();
+                    emplaza.Codigo_emplazamiento = idEmpla;
+                    emplaza.Id_emplazamiento = Dg_emplazamientos.getByCodigo2(idEmpla, red.Id_red).Id_emplazamiento;
+                    emplazamientos.Add(emplaza);
+                }
+            }
+            detalle.Emplazamientos = emplazamientos;
+
+            if (linea.creativePlaceholders != null)
+            {
+                foreach (CreativePlaceholder cph in linea.creativePlaceholders)
+                {
+                    Dg_orden_pub_medidas medida = new Dg_orden_pub_medidas();
+                    string desc = "";
+                    if (linea.environmentType.ToString() == "VIDEO_PLAYER")
+                    {
+                        desc = cph.size.width.ToString() + "x" + cph.size.height.ToString() + "v";
+                    }
+                    else
+                    {
+                        desc = cph.size.width.ToString() + "x" + cph.size.height.ToString();
+                    }
+                    medida.Id_medidadigital = Dg_medidas.getByDescripcion(desc).Id_medidadigital;
+                    medida.Ancho = cph.size.width;
+                    medida.Alto = cph.size.height;
+                    medidas.Add(medida);
+                }
+            }
+            detalle.Medidas = medidas;
+            if (linea.environmentType.ToString() == "VIDEO_PLAYER")
+            {
+                detalle.tipo_aviso_dg = Dg_tipos_avisos.getByDesc("Video");
+            }
+            else
+            {
+                detalle.tipo_aviso_dg = Dg_tipos_avisos.getByDesc("Banner");
+            }
+            detalle.Tarifa_manual = 1;
+            detalle.Importe_unitario = (float)(linea.costPerUnit.microAmount / 1000000.0);
+            detalle.Porc_dto = (float)linea.discount;
+            detalle.Cantidad = (int)linea.primaryGoal.units;
+            detalle.Monto_neto = (float)(linea.budget.microAmount / 1000000.0);
+            string startD = DateTimeUtilities.ToString(linea.startDateTime, "yyyy/MM/dd");
+            string endD = DateTimeUtilities.ToString(linea.endDateTime, "yyyy/MM/dd");
+
+            if (startD != "0")
+            {
+                detalle.Fecha_desde = System.DateTime.Parse(startD);
+            }
+            if (endD != "0")
+            {
+                detalle.Fecha_hasta = System.DateTime.Parse(endD);
+            }
+
+            Dg_orden_pub_ap orden = new Dg_orden_pub_ap();
+
+            if (detalle.Id_op_dg > 0)
+            {
+                orden = Dg_orden_pub_ap.getById(detalle.Id_op_dg);
+            }
+            else
+            {
+                List<Dg_orden_pub_ejecutivos> ejecutivos = new List<Dg_orden_pub_ejecutivos>();
+                List<Dg_orden_pub_pagos> formasPago = new List<Dg_orden_pub_pagos>();
+                List<Dg_orden_pub_as> detalles = new List<Dg_orden_pub_as>();
+                Contacto anun = new Contacto();
+                orden.FormasPago = formasPago;
+                orden.Ejecutivos = ejecutivos;
+                orden.Detalles = detalles;
+                orden.anunciante = anun;
+                orden.anunciante.Id_contacto = detalle.Id_anunciante;
+                orden.Fecha = detalle.Fecha_desde;
+                orden.Fecha_expiracion = detalle.Fecha_hasta;
+            }
+            detalle.Id_detalle = orden.Detalles.Count() + 1;
+            orden.Detalles.Add(detalle);
+
+            return orden;
         }
 
     }
