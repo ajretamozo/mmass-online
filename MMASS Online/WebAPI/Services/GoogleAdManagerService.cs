@@ -1348,7 +1348,7 @@ namespace WebApi.Services
                 listaOP = GoogleAdManager.GetIdOrderByFilters(parametros);
                 if (listaOP != "")
                 {
-                    detallesGAM = GoogleAdManager.FilterLineItems(parametros, listaOP);
+                    detallesGAM = GoogleAdManager.FilterLineItems(parametros, listaOP, idRed);
                 }
             }
             else
@@ -1372,7 +1372,7 @@ namespace WebApi.Services
                     listaOP = GoogleAdManager.GetIdOrderByFilters(parametros);
                     if (listaOP != "")
                     {
-                        detallesGAM.AddRange(GoogleAdManager.FilterLineItems(parametros, listaOP));
+                        detallesGAM.AddRange(GoogleAdManager.FilterLineItems(parametros, listaOP, red.Id_red));
                     }
 
                     parametros[6].Value = idCont;
@@ -1389,7 +1389,7 @@ namespace WebApi.Services
 
                 foreach (LineItem linea in detallesGAM)
                 {
-                    if (detalle.Id_Google_Ad_Manager == linea.id)
+                    if (detalle.Id_Google_Ad_Manager == linea.id && detalle.Id_red == int.Parse(linea.externalId))
                     {
                         existeDet = true;
                             //se buscan diferencias entre la orden gam y la orden ap
@@ -1902,7 +1902,7 @@ namespace WebApi.Services
                 listaOP = GoogleAdManager.GetIdOrderByFilters(parametros);
                 if (listaOP != "")
                 {
-                    detallesGAM = GoogleAdManager.FilterLineItems(parametros, listaOP);
+                    detallesGAM = GoogleAdManager.FilterLineItems(parametros, listaOP, idRed);
                 }
             }
             else
@@ -1928,7 +1928,7 @@ namespace WebApi.Services
                     listaOP = GoogleAdManager.GetIdOrderByFilters(parametros);
                     if (listaOP != "")
                     {
-                        detallesGAM.AddRange(GoogleAdManager.FilterLineItems(parametros, listaOP));
+                        detallesGAM.AddRange(GoogleAdManager.FilterLineItems(parametros, listaOP, red.Id_red));
                     }
 
                     parametros[5].Value = idCont;
@@ -1951,7 +1951,7 @@ namespace WebApi.Services
                         foreach (Dg_orden_pub_as detExis in detallesExistentes)
                         {
                             //Si encontramos la linea dentro de los detalles, se sale del for y buscamos la próxima linea
-                            if (linea.id == detExis.Id_Google_Ad_Manager && idRed == detExis.Id_red)
+                            if (linea.id == detExis.Id_Google_Ad_Manager && int.Parse(linea.externalId) == detExis.Id_red)
                             {
                                 existeDetalle = true;
                                 break;
@@ -1986,7 +1986,7 @@ namespace WebApi.Services
                             {
                                 detalle.Fecha_creacion = System.DateTime.Parse(creatD);
                             }
-                            detalle.Id_red = idRed;
+                            detalle.Id_red = int.Parse(linea.externalId);
                             detalle.Id_pedido_Google_Ad_Manager = linea.orderId;
                             detalle.Nombre_pedido_Google_Ad_Manager = linea.orderName;
                             detalle.Id_Google_Ad_Manager = linea.id;

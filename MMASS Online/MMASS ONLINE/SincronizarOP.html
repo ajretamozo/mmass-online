@@ -262,9 +262,9 @@
                                 <div class="col-md-4">
                                     <label>Número de Orden</label>
                                     <div id="OrderNumberComplete" class="row">
-                                        <div class="col-md-4 "> <div class="input-group"> <input type="text" id="inpOrderYear" class="form-control enterSearch"></div> </div>
-                                        <div class="col-md-4 "> <div class="input-group"> <input type="text" id="inpOrderMonth" class="form-control enterSearch"> </div> </div>
-                                        <div class="col-md-4 "> <div class="input-group"> <input type="text" id="inpOrderNumber" class="form-control enterSearch"> </div> </div>
+                                        <div class="col-md-4 "> <div class="input-group"> <input type="text" id="inpOrderYearOp" class="form-control enterSearch"></div> </div>
+                                        <div class="col-md-4 "> <div class="input-group"> <input type="text" id="inpOrderMonthOp" class="form-control enterSearch"> </div> </div>
+                                        <div class="col-md-4 "> <div class="input-group"> <input type="text" id="inpOrderNumberOp" class="form-control enterSearch"> </div> </div>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
@@ -466,12 +466,14 @@
                                     <th class="col-xs-9">Neto</th>
                                     <th width="1px"></th>
                                     <th width="1px"></th>
+                                    <th width="1px"></th>
                                 </tr>
                             </thead>
                             <tbody id="TableDetalles" class="small" align="center"></tbody>
                         </table>
                     </div>
                 </div>
+
                 <!-- TAB MODS -->
                 <div class="tab-pane fade show active" id="mods" role="tabpanel" aria-labelledby="mods-tab">
                     <div class="row py-1">
@@ -539,6 +541,7 @@
                                     <th class="col-xs-9">Fecha Hasta</th>
                                     <th class="col-xs-1">Cant.</th>
                                     <th class="col-xs-9">Neto</th>
+                                    <th width="1px"></th>
                                     <th width="1px"></th>
                                     <th width="1px"></th>
                                 </tr>
@@ -769,12 +772,15 @@
 
         function iniModalOrdenes() {
             var objParametro = {};
+            var tablaVacia = {};
 
             objParametro.ParameterName = "nombre";
             objParametro.Value = "";
 
             $.when(
-                callWS("empresas", "getall", '', function (data) { onPopulateSelectDone(data, 'selEmpresaOp', 'id_empresa', 'razon_social'); })
+                callWS("empresas", "getall", '', function (data) { onPopulateSelectDone(data, 'selEmpresaOp', 'id_empresa', 'razon_social');
+                populateTableOp(tablaVacia, 'TableRenglonesOp');    
+            })
             ).then(function () { mostrarModalOp() });
         }
 
@@ -785,12 +791,12 @@
         function searchOrders() {
             error = '';
             params = {};
-            params.anio = $('#inpOrderYear').val();
-            params.mes = $('#inpOrderMonth').val();
-            params.nro_orden = $('#inpOrderNumber').val();
+            params.anio = $('#inpOrderYearOp').val();
+            params.mes = $('#inpOrderMonthOp').val();
+            params.nro_orden = $('#inpOrderNumberOp').val();
             params.bitacora = $('#inpDescripcionOp').val();
-            params.anuladas = "1";
-            params.es_facturada = "1";
+            params.anuladas = "0";
+            params.es_facturada = "0";
 
             //if ($('#fechaDesdeD').val() != "") {
             //    fDesde = new Date(moment($("#fechaDesdeD").val(), 'DD/MM/YYYY', true).format());
@@ -833,6 +839,7 @@
                     if (data.length > 0) {
                         populateTableOp(data, 'TableRenglonesOp');
                     } else {
+                        populateTableOp(data, 'TableRenglonesOp');
                         message = 'La búsqueda no produjo ningun resultado';
                         showMessage(message, "info");
                     }
@@ -848,18 +855,18 @@
             $.each(orderlist, function (it, iord) {
                 if (iord.es_anulada == 0) {
                     if (iord.id_Google_Ad_Manager != undefined && iord.id_Google_Ad_Manager != 0) {
-                        rowHTML += "<tr id-order=\"" + iord.id_op_dg + "\" onclick='openOrder(this)' class='table-success'>"
+                        rowHTML += "<tr id-order=\"" + iord.id_op_dg + "\" onclick='openOrder(this)' class='table-success' style='cursor: pointer;'>"
                     }
                     else {
-                        rowHTML += "<tr id-order=\"" + iord.id_op_dg + "\" onclick='openOrder(this)'>"
+                        rowHTML += "<tr id-order=\"" + iord.id_op_dg + "\" onclick='openOrder(this)' style='cursor: pointer;>"
                     }
                 }
                 else {
                     if (iord.id_Google_Ad_Manager != undefined && iord.id_Google_Ad_Manager != 0) {
-                        rowHTML += "<tr style='color:red' id-order=\"" + iord.id_op_dg + "\" onclick='openOrder(this)' class='table-success'>"
+                        rowHTML += "<tr style='color:red' id-order=\"" + iord.id_op_dg + "\" onclick='openOrder(this)' class='table-success' style='cursor: pointer;>"
                     }
                     else {
-                        rowHTML += "<tr style='color:red' id-order=\"" + iord.id_op_dg + "\" onclick='openOrder(this)'>"
+                        rowHTML += "<tr style='color:red' id-order=\"" + iord.id_op_dg + "\" onclick='openOrder(this)' style='cursor: pointer;>"
                     }
                 }
                 //rowHTML += "<tr onclick='openOrder(this)'>"
@@ -1123,10 +1130,11 @@
         }
 
         function filterD() {
+            error = '';
             rows = $("tr").not("#header");
             params = {};
             params.idOp = $("#idFiltroPedD").val();
-            params.descripcionP = $('#descFiltroPedD').val();
+            params.descripcionOp = $('#descFiltroPedD').val();
             if ($('#selRedesD').val() == "") {
                 params.red = "0";
             }
@@ -1136,6 +1144,13 @@
             params.idDet = $("#idFiltroLinD").val();
             params.descripcionDet = $('#descFiltroLinD').val();
             params.Id_contacto = $('#selAnuncianteD').val();
+
+            var o1 = new Date(dateToSqlFormat($('#fechaDesdeD').val()) + 'T00:00:00');
+            var o2 = new Date(dateToSqlFormat($('#fechaHastaD').val()) + 'T00:00:00');
+            if (o2 < o1) {
+                error += "La Fecha Hasta es menor que la Fecha Desde en la Vigencia de la Orden";
+            }
+
             if ($('#fechaDesdeD').val() != "") {
                 fDesde = new Date(moment($("#fechaDesdeD").val(), 'DD/MM/YYYY', true).format());
                 mfDesde = moment(fDesde);
@@ -1162,14 +1177,19 @@
                     }
                 };
 
-                var parametros = setListaParametros(params);
+                var parametros = setListaParametros(params);              
 
+                if (error == '') {
                 callWS("googleAdManager", "getDetNuevos", JSON.stringify(parametros), function (data) { onGetDetallesGAM(data); });
+            } else {
+                showMessage(error, "info");
+            }
         }
 
         function onGetDetallesGAM(data) {
             onCargarTablaD('TableDetalles', data);
             if (data.length == 0) {
+                onCargarTablaD('TableDetalles', data);
                 showMessage("No se enontraron Detalles", "info");
             }
         }
@@ -1195,10 +1215,10 @@
                 rowHTML += "<td class='col-xs-1'> " + detGAM.cantidad + "</td > ";
                 rowHTML += "<td class='col-xs-1'>$ " + formatearMonto(detGAM.monto_neto) + "</td > ";
                 if (tablaID == 'TableDetalles') {
-                    rowHTML += "<td class='col-xs-2' > <button type='button' id=button" + detGAM.id_Google_Ad_Manager + " class='btn btn-danger' style='height: 31px; width: 77.81px;font - size: inherit;' title='Importar Línea' onClick='comprobarAnunciante(" + JSON.stringify(detGAM) + ")'><span class='fa fa-cloud-download'></span></button> </td ></tr>";
+                    rowHTML += "<td class='col-xs-2' > <button type='button' id=button" + detGAM.id_Google_Ad_Manager + " class='btn btn-danger' style='height: 31px;width: 77.81px;font - size: inherit;padding-top: 4px;' title='Importar Línea' onClick='comprobarAnunciante(" + JSON.stringify(detGAM) + ")'><span class='fa fa-cloud-download'></span></button> </td ></tr>";
                 }
                 else {
-                    rowHTML += "<td class='col-xs-2' > <button type='button' id=button" + detGAM.id_Google_Ad_Manager + " class='btn btn-danger' style='height: 31px; width: 77.81px;font - size: inherit;' title='Ir a Detalle con diferencias en AdServer' onClick='RedireccionD(" + detGAM.id_op_dg + ")'> <span class='fa fa-refresh'></span></button> </td ></tr>";
+                    rowHTML += "<td class='col-xs-2' > <button type='button' id=button" + detGAM.id_Google_Ad_Manager + " class='btn btn-danger' style='height: 31px;width: 77.81px;font - size: inherit;padding-top: 4px;' title='Ir a Detalle con diferencias en AdServer' onClick='RedireccionD(" + detGAM.id_op_dg + ")'> <span class='fa fa-refresh'></span></button> </td ></tr>";
                 }
                 rowHTML += "</tr>";
 
@@ -1226,6 +1246,7 @@
             params = {};
             params.id = $("#idFiltroM").val();
             params.descripcion = $('#descFiltroM').val();
+
             if ($('#fechaDesdeM').val() != "") {
                 fDesde = new Date(moment($("#fechaDesdeM").val(), 'DD/MM/YYYY', true).format());
                 mfDesde = moment(fDesde);
@@ -1286,6 +1307,14 @@
             }
             params.id_empresa = $('#selEmpresaImp').val();
             params.Id_contacto = $('#selAnuncianteImp').val();
+            params.es_facturada = "0";
+
+            var o1 = new Date(dateToSqlFormat($('#fechaDesdeImp').val()) + 'T00:00:00');
+            var o2 = new Date(dateToSqlFormat($('#fechaHastaImp').val()) + 'T00:00:00');
+            if (o2 < o1) {
+                error += "La Fecha Hasta es menor que la Fecha Desde en la Vigencia de la Orden";
+            }
+
             if ($('#fechaDesdeImp').val() != "") {
                 fDesde = new Date(moment($("#fechaDesdeImp").val(), 'DD/MM/YYYY', true).format());
                 mfDesde = moment(fDesde);

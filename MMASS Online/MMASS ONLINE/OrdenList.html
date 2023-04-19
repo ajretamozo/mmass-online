@@ -216,13 +216,13 @@
                                 <div class="row align-items-center">
                                     <div class="col-md-12"> <div class="input-group enterSearch"> <input type="text" id="inpOrderNumberClient" class="form-control"> </div> </div>
                                 </div>
-                                <!--<label>Red AdServer</label>
-                                <div class="row align-items-center">
-                                    <div class="col-md-12"> <select class="form-control enterSearch" id="selRedes"> </select> </div>
-                                </div>-->
                                 <label>Producto</label>
                                 <div class="row align-items-center">
                                     <div class="col-md-12"> <div class="input-group enterSearch"> <input type="text" id="inpDescProducto" class="form-control"> </div> </div>
+                                </div>
+                                <label>Clasificación Orden</label>
+                                <div class="row align-items-center">
+                                    <div class="col-md-12"> <select class="form-control enterSearch" id="selClasificacion"> </select> </div>
                                 </div>
                             </div>
                             <div class="col-md-6" style="padding-left: 80px;padding-top: 32px;">
@@ -333,7 +333,7 @@
                 }
             });
             getEmpresas();
-            getRedesGAM();
+            getClasi();
             document.body.style.backgroundImage = "url(./fondoM3.png)";
         });
 
@@ -421,7 +421,7 @@
             params.nro_orden = $('#inpOrderNumber').val();
             params.bitacora = $('#inpDescripcion').val();
             if (document.getElementById("checkAnuladas").checked == false) {
-                params.anuladas = "1";
+                params.anuladas = "0";
             };
 
             if (document.getElementById("flexRadioNoListas").checked == true) {
@@ -455,7 +455,7 @@
             params.anunciante_nombre = $('#inpDescAnunciante').val();
             params.producto_nombre = $('#inpDescProducto').val();
             params.id_empresa = $('#selEmpresa').val();
-            params.id_red = $('#selRedes').val();
+            params.id_clasi = $('#selClasificacion').val();
 
             for (param in params) {
                 if (params[param] == null) {
@@ -469,6 +469,7 @@
                     if (data.length > 0) {
                         populateTable(data, 'TableRenglones');
                     } else {
+                        populateTable(data, 'TableRenglones');
                         message = 'La búsqueda no produjo ningun resultado';
                         showMessage(message, "info");
                     }
@@ -521,8 +522,8 @@
             return Number.parseFloat(x).toFixed(2);
         }
 
-        function getRedesGAM() {
-            callWS("medios", "getAllRedes", '', function (data) { onCargarSelect(data, 'selRedes', 'id_red', 'descripcion', 'codigo_red'); });
+        function getClasi() {
+            callWS("medios", "getAllClasificacion", '', function (data) { onCargarSelect(data, 'selClasificacion', 'id_clasificacion_op', 'desc_clasificacion_op'); });
         }
 
         function getEmpresas() {
@@ -533,19 +534,11 @@
             var pObj = data;
             var listitems = '';
             $.each(pObj, function (it, iObj) {
-                if (idSelect == 'selRedes') {
-                    listitems += '<option  codigo_red= ' + iObj['codigo_red'] + ' value=' + iObj['id_red'] + '>' + iObj["descripcion"] + '</option>';
-                }
-                else if (idSelect == 'selEmpresa') {
-                    listitems += '<option value=' + iObj[colId] + '>' + iObj[colDesc] + '</option>';
-                }
+                listitems += '<option value=' + iObj[colId] + '>' + iObj[colDesc] + '</option>';
             });
             $("#" + idSelect).empty();
             $("#" + idSelect).append("<option value=''>(Todas) </option>");
             $("#" + idSelect).append(listitems);
-            //if (pObj.length > 1) {
-            //$("#" + idSelect).val([]);
-            //}
         }
 
 

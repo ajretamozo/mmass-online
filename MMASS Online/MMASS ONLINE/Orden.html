@@ -2682,8 +2682,31 @@
         //(cantidad = días al seleccionar CPD Sponsor):
         function filterTarifas() {
             if (tieneTarifa == false) {
-                var day1 = new Date(dateToSqlFormat($('#fechaDesdeD').val()));
-                var day2 = new Date(dateToSqlFormat($('#fechaHastaD').val()));
+                var error = [];
+                var day1;
+                var day2;
+                if ($('#fechaDesdeD').val() != "") {
+                    fDesde = new Date(moment($("#fechaDesdeD").val(), 'DD/MM/YYYY', true).format());
+                    mfDesde = moment(fDesde);
+                    if (mfDesde.isValid()) {
+                        day1 = dateToSqlFormat($('#fechaDesdeD').val());
+                    } else {
+                        error.push("Formato 'Fecha Desde' invalido");
+                        return error;
+                    }
+                }
+                if ($('#fechaHastaD').val() != "") {
+                    fHasta = new Date(moment($("#fechaHastaD").val(), 'DD/MM/YYYY', true).format());
+                    mfHasta = moment(fHasta);
+                    if (mfHasta.isValid()) {
+                        day2 = dateToSqlFormat($('#fechaHastaD').val());
+                    } else {
+                        error.push("Formato 'Fecha Hasta' invalido");
+                        return error;
+                    }
+                }
+                //var day1 = new Date(dateToSqlFormat($('#fechaDesdeD').val()));
+                //var day2 = new Date(dateToSqlFormat($('#fechaHastaD').val()));
                 if ($('#selTipoTarifaD').val() == 1) {
                     //var difference = Math.abs(day2 - day1);
                     var cantD = (Math.abs(day2 - day1) / (1000 * 3600 * 24)) + 1;
@@ -3380,6 +3403,11 @@
 
             var idRed = rDetalle.id_red;
 
+            var tipo_ads = 0;
+            if (rDetalle.id_Google_Ad_Manager > 0) {
+                tipo_ads = tipoAviso;
+            }
+
             if (rDetalle.id_det_conv > 0) {
                 cargarSelectMultiConv($(r).attr("data-id"));
             }
@@ -3392,7 +3420,8 @@
                     callWS("medios", "getMedidas", JSON.stringify(tipoAviso), function (data) { onPopulateSelectMedidas(data, 'selMedidasD', 'id_medidadigital', 'descripcion', 'ancho', 'alto'); }),
                     callWS("medios", "getAllA", '', function (data) { onAreasGeoGetAll(data, 'selAreasGeo', 'Id_area', 'descripcion', 'Codigo_area', 'tipo'); }),
                     callWS("medios", "getAllE", JSON.stringify(idRed), function (data) { onPopulateSelectEmplaza(data, 'selEmplazaD', 'id_emplazamiento', 'descripcion', 'codigo_emplazamiento'); }),
-                    callWS("Tipos_avisos", "getAll", '', function (data) { onTipoAvisoGetAll(data, 'selTipoAvisoD', 'id_categoria', 'descripcion', 'Permite_envio_ads', 'tipo_aviso_ads'); })
+                //    callWS("Tipos_avisos", "getAll", '', function (data) { onTipoAvisoGetAll(data, 'selTipoAvisoD', 'id_categoria', 'descripcion', 'Permite_envio_ads', 'tipo_aviso_ads'); })
+                    callWS("Tipos_avisos", "getByTipoAds", JSON.stringify(tipo_ads), function (data) { onTipoAvisoGetAll(data, 'selTipoAvisoD', 'id_categoria', 'descripcion', 'Permite_envio_ads', 'tipo_aviso_ads'); })
                 ).then(function () { onCargarModificarRenglon(rDetalle) }, function (data1, data2, data3) {
                     console.log("Medios: " + data1[2].statusText + "; Formas de uso: " + data2[2].statusText + "Tipo Aviso: " + data3[2].statusText + ";");
                     showMessage("Se produjo un error al cargar los campos, intentelo nuevamente", type = "alert");

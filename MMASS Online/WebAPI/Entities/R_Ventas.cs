@@ -98,16 +98,22 @@ namespace WebApi.Entities
                     //    string formatted = fecha.ToString("dd-MM-yyyy");
                     //    mifiltro = mifiltro + " and ap.fecha <='" + formatted + "'";
                     //}
+                    
                     if ((p.ParameterName == "FechaDesde") && (p.Value.ToString() != ""))
                         mifiltro = mifiltro + " and ap.fecha >='" + p.Value + "'";
+                   
                     if ((p.ParameterName == "FechaHasta") && (p.Value.ToString() != ""))
                         mifiltro = mifiltro + " and ap.fecha <='" + p.Value + "'";
+                  
                     if ((p.ParameterName == "ListaAgencias") && (p.Value.ToString() != ""))
                         mifiltro = mifiltro + " and ap.id_agencia in (" + p.Value + ")";
+                   
                     if ((p.ParameterName == "ListaAnunciantes") && (p.Value.ToString() != ""))
                         mifiltro = mifiltro + " and ap.id_anunciante in (" + p.Value + ")";
+                   
                     if ((p.ParameterName == "ListaMedios") && (p.Value.ToString() != ""))
                         mifiltro = mifiltro + " and apm.id_medio in (" + p.Value + ")";
+                   
                     if ((p.ParameterName == "ListaProductos") && (p.Value.ToString() != ""))
                     {
                         if(tipo == "0")
@@ -118,14 +124,22 @@ namespace WebApi.Entities
                             mifiltro = mifiltro + " and det.id_producto in (" + p.Value + ")";
                         }                       
                     }
+                   
                     if ((p.ParameterName == "ListaEjecutivos") && (p.Value.ToString() != ""))
                         mifiltro = mifiltro + " and ej.id_ejecutivo in (" + p.Value + ")";
+                   
                     if ((p.ParameterName == "ListaMedios") && (p.Value.ToString() != ""))
                         mifiltro = mifiltro + " and apm.id_medio in (" + p.Value + ")";
+                  
                     if ((p.ParameterName == "listaTiposVenta") && (p.Value.ToString() != ""))
                         mifiltro = mifiltro + " and fdp.id_formapago in (" + p.Value + ")";
+                  
                     if ((p.ParameterName == "listaEmpresas") && (p.Value.ToString() != ""))
                         mifiltro = mifiltro + " and ap.id_empresa in (" + p.Value + ")";
+
+                    if ((p.ParameterName == "listaClasi") && (p.Value.ToString() != ""))
+                        mifiltro = mifiltro + " and ap.id_clasificacion_op in (" + p.Value + ")";
+
                     if ((p.ParameterName == "listaFacturacion") && (p.Value.ToString() != ""))                        
                     {
                         if (p.Value.ToString().Contains("1"))

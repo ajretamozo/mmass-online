@@ -263,12 +263,13 @@ namespace WebApi.Helpers
             return Lineas;
         }
 
-        public static List<LineItem> FilterLineItems(List<Parametro> parametros, string listaOP)
+        public static List<LineItem> FilterLineItems(List<Parametro> parametros, string listaOP, int idRed)
         {
             List<LineItem> Lineas = new List<LineItem>();
 
-            string mifiltro = "isArchived = false";
-            
+            //string mifiltro = "isArchived = false";
+            string mifiltro = "1 = 1";
+
             foreach (Parametro p in parametros)
             {
                 if (p.Value.ToString() != "")
@@ -309,6 +310,7 @@ namespace WebApi.Helpers
                         int i = page.startIndex;
                         foreach (LineItem lineItem in page.results)
                         {
+                            lineItem.externalId = idRed.ToString(); //uso este campo para guardar el idRed por practicidad
                             Lineas.Add(lineItem);
                         }
                     }
@@ -527,7 +529,14 @@ namespace WebApi.Helpers
                 catch (AdManagerApiException e)
                 {
                     ApiException innerException = e.ApiException as ApiException;
-                    msj = "Ocurrio un error al intentar guardar la Orden en Google Ad Manager: " + innerException.message;
+                    if (innerException.message.Contains("UniqueError.NOT_UNIQUE"))
+                    {
+                        msj = "Ya existe un Pedido con la misma Descripción en la Red seleccionada";
+                    }
+                    else
+                    {
+                        msj = "Ocurrio un error al intentar guardar la Orden en Google Ad Manager: " + innerException.message;
+                    }
                 }
             }
             resultado.ParameterName = msj;
@@ -1987,7 +1996,8 @@ namespace WebApi.Helpers
         {
             string result = "";
 
-            string where = "isArchived = false";
+            //string where = "isArchived = false";
+            string where = "1 = 1";
 
             foreach (Parametro p in parametros)
             {

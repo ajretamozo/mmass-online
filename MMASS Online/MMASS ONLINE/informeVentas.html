@@ -299,6 +299,12 @@
                                 <select id="selEjecutivos" class="selectpicker form-control" data-deselect-all-text="Ninguno" data-select-all-text="Todos" data-none-selected-text="Seleccionar" data-actions-box="true" data-size="10" data-live-search="true" multiple></select>
                             </div>
                         </div>
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label>Clasificación Orden</label>
+                                <select id="selClasificacion" class="selectpicker form-control" data-deselect-all-text="Ninguno" data-select-all-text="Todos" data-none-selected-text="Seleccionar" data-actions-box="true" data-size="10" data-live-search="true" multiple></select>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -410,6 +416,13 @@
             });
             listaFacturacion = listaFacturacion.slice(0, -1);
             params.listaFacturacion = listaFacturacion;
+
+            listaClasi = "";
+            $.each($("#selClasificacion").val(), function (it, clasi) {
+                listaClasi += clasi + ",";
+            });
+            listaClasi = listaClasi.slice(0, -1);
+            params.listaClasi = listaClasi;
 
             for (param in params) {
                 if (params[param] == null) {
@@ -689,6 +702,7 @@
                 callWS("medios", "getAll", '', function (data) { onPopulateSelectDone(data, 'selMedios', 'id_medio', 'desc_medio'); }),
                 callWS("forma_pagos", "getAll", '', function (data) { onPopulateSelectDone(data, 'selTiposVenta', 'id_formapago', 'desc_formapago'); }),
                 callWS("empresas", "getall", '', function (data) { onPopulateSelectDone(data, 'selEmpresas', 'id_empresa', 'razon_social'); }),
+                callWS("medios", "getAllClasificacion", '', function (data) { onPopulateSelectDone(data, 'selClasificacion', 'id_clasificacion_op', 'desc_clasificacion_op'); }),
                 onPopulateSelectFact(),
                 $('#fechaDesde').val(moment().startOf('month').format('DD/MM/YYYY')),
                 $('#fechaHasta').val(moment().endOf('month').format('DD/MM/YYYY'))

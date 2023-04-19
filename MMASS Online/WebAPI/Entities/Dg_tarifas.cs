@@ -335,7 +335,7 @@ namespace WebApi.Entities
             return true;
         }
 
-        //AGREGUE (modifique las fechas por config sql):
+
         public static List<Dg_tarifas> filter(List<Parametro> parametros)
         {
             string sqlCommand = " select id_tarifa_dg, descripcion, fecha_desde, fecha_hasta, forma_uso, precio_unitario, es_borrado, id_red " +

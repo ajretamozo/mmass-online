@@ -59,6 +59,29 @@ namespace WebApi.Entities
             return resultado;
         }
 
+        public static List<Dg_tipos_avisos> getByTipoAds(int tipoAds)
+        {
+            string sql = "";
+            if (tipoAds > 0)
+            {
+                sql = "Select id_categoria, desc_categoria, Permite_envio_ads, tipo_aviso_ads, Es_borrado FROM categorias where (tipomedio = 0 or tipomedio = 2) and (Es_borrado = 0 or Es_borrado is null) and tipo_aviso_ads = " + tipoAds.ToString();
+            }
+            else
+            {
+                sql = "Select id_categoria, desc_categoria, Permite_envio_ads, tipo_aviso_ads, Es_borrado FROM categorias where (tipomedio = 0 or tipomedio = 2) and (Es_borrado = 0 or Es_borrado is null) ";
+            }
+            List<Dg_tipos_avisos> col = new List<Dg_tipos_avisos>();
+            Dg_tipos_avisos elem;
+            DataTable t = DB.Select(sql);
+
+            foreach (DataRow item in t.Rows)
+            {
+                elem = getDg_tipos_avisos(item);
+                col.Add(elem);
+            }
+            return col;
+        }
+
         public static Dg_tipos_avisos getDg_tipos_avisos(DataRow item)
         {
             Dg_tipos_avisos mi = new Dg_tipos_avisos

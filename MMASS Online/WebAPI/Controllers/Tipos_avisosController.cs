@@ -41,8 +41,8 @@ namespace WebApi.Controllers
         [HttpPost("getById")]
         public IActionResult getById(Dg_tipos_avisos miobj)
         {
-            var tipos_avisos = _tipos_AvisosService.getById(miobj.Id_categoria);
-            return Ok(tipos_avisos);
+            var tipos_aviso = _tipos_AvisosService.getById(miobj.Id_categoria);
+            return Ok(tipos_aviso);
         }
 
         [HttpPost("filter")]
@@ -50,6 +50,13 @@ namespace WebApi.Controllers
         {
             var fu = _tipos_AvisosService.filter(descripcion);
             return Ok(fu);
+        }
+
+        [HttpPost("getByTipoAds")]
+        public IActionResult getByTipoAds([FromBody] int tipoAds)
+        {
+            var tipos_avisos = _tipos_AvisosService.getByTipoAds(tipoAds);
+            return Ok(tipos_avisos);
         }
     }
 }

@@ -737,8 +737,7 @@ namespace WebApi.Entities
                               FROM dg_orden_pub_as d 
                               JOIN dg_orden_pub_ap dg ON dg.id_op_dg=d.id_op_dg
                               JOIN dg_red_GAM r ON r.id_red = d.id_red 
-                              WHERE d.id_google_ad_manager > 0 AND dg.es_anulada = 0 
-                              AND (dg.es_facturada = 0 OR dg.es_facturada is null) 
+                              WHERE dg.es_anulada = 0  AND d.id_google_ad_manager > 0 
                               AND d.id_red is not null AND r.es_borrado = 0 ";
 
             string mifiltro = "";
@@ -748,32 +747,60 @@ namespace WebApi.Entities
                 if (p.Value.ToString() != "")
                 {
                     if ((p.ParameterName == "anio") && (p.Value.ToString() != ""))
-                    {
-                        mifiltro = mifiltro + " and ((dg.anio = " + p.Value + " and op.id_op is null)";
-                        mifiltro = mifiltro + " or op.anio = " + p.Value + ") ";
-                    }
+                        mifiltro = mifiltro + " and d.anio = " + p.Value;
+                    
                     if ((p.ParameterName == "mes") && (p.Value.ToString() != ""))
-                    {
-                        mifiltro = mifiltro + " and ((dg.mes = " + p.Value + " and op.id_op is null)";
-                        mifiltro = mifiltro + " or op.mes = " + p.Value + ") ";
-                    }
+                        mifiltro = mifiltro + " and d.mes = " + p.Value;
+                   
                     if ((p.ParameterName == "nro_orden") && (p.Value.ToString() != ""))
-                    {
-                        mifiltro = mifiltro + " and ((dg.nro_orden = " + p.Value + " and op.id_op is null)";
-                        mifiltro = mifiltro + " or op.nro_orden = " + p.Value + ") ";
-                    }
+                        mifiltro = mifiltro + " and d.nro_orden = " + p.Value;
+                  
                     if ((p.ParameterName == "bitacora") && (p.Value.ToString() != ""))
                         mifiltro = mifiltro + " and dg.bitacora like '%" + p.Value + "%'";
+                  
                     if ((p.ParameterName == "fecha_desde") && (p.Value.ToString() != ""))
                         mifiltro = mifiltro + " and dg.fecha >= '" + p.Value.ToString() + "'";
+                   
                     if ((p.ParameterName == "fecha_hasta") && (p.Value.ToString() != ""))
                         mifiltro = mifiltro + " and dg.fecha_expiracion <= '" + p.Value.ToString() + "'";
+                  
                     if ((p.ParameterName == "Id_contacto") && (p.Value.ToString() != ""))
                         mifiltro = mifiltro + " and dg.id_anunciante = " + p.Value;
+                  
                     if ((p.ParameterName == "id_empresa") && (p.Value.ToString() != ""))
                         mifiltro = mifiltro + " and dg.id_empresa = " + p.Value;
+                  
                     if ((p.ParameterName == "red") && (p.Value.ToString() != "0"))
                         mifiltro = mifiltro + " and d.id_red = " + p.Value;
+                  
+                    if (p.ParameterName == "idOp")
+                        mifiltro = mifiltro + " and d.id_pedido_google_ad_manager = " + p.Value;
+                  
+                    if (p.ParameterName == "descripcionOp")
+                        mifiltro = mifiltro + " and d.nombre_pedido_google_ad_manager like '%" + p.Value + "%'";
+                   
+                    if (p.ParameterName == "idDet")
+                    {
+                        if (long.Parse(p.Value) > 0)
+                        {
+                            mifiltro = mifiltro + " and d.id_google_ad_manager = " + p.Value;
+                        }
+                    }
+                 
+                    if (p.ParameterName == "descripcionDet")
+                        mifiltro = mifiltro + " and d.descripcion like '%" + p.Value + "%'";
+                  
+                    if (p.ParameterName == "es_facturada")
+                    {
+                        if (p.Value.ToString() == "0")
+                        {
+                            mifiltro = mifiltro + " and (dg.Es_facturada = 0 or dg.Es_facturada is null) ";
+                        }
+                        else
+                        {
+                            mifiltro = mifiltro + " and dg.Es_facturada = 1";
+                        }
+                    }
                 }
             }
 
