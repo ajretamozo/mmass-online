@@ -1850,9 +1850,10 @@
             if (Detalles.length > 0) {
                 $("#selAnunciante").attr("disabled", true);
                 $("#botLimpiar").attr("disabled", true);
-                $("#botLimpiar").attr("title", "No es posible limpiar Agencia - Anunciante si existen Detalles cargados");
-                if (data.nro_orden > 0)
-                    $("#selAgencia").attr("disabled", true);
+                $("#botLimpiar").attr("title", "No es posible limpiar Anunciante si existen Detalles cargados");
+               //$("#botLimpiar").attr("title", "No es posible limpiar Agencia - Anunciante si existen Detalles cargados");
+               //if (data.nro_orden > 0)
+               //    $("#selAgencia").attr("disabled", true);
             }
 
             Detalles.forEach(generarTablaDetalles);
