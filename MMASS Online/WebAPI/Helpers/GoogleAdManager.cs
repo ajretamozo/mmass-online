@@ -1938,7 +1938,8 @@ namespace WebApi.Helpers
             {
                 // Create a statement to get the line item.
                 StatementBuilder statementBuilder = new StatementBuilder()
-                    .Where("id = :lineItemId and isArchived = false")
+                    //.Where("id = :lineItemId and isArchived = false")
+                    .Where("id = :lineItemId")
                     .OrderBy("id ASC")
                     .Limit(1)
                     .AddValue("lineItemId", lineaId);

@@ -1998,9 +1998,12 @@ namespace WebApi.Services
                             detalle.Monto_neto = (float)(linea.budget.microAmount / 1000000.0);
                             if (linea.targeting.geoTargeting != null)
                             {
-                                Dg_areas_geo area = new Dg_areas_geo();
-                                area.Id_area = Dg_areas_geo.getByCodigo(linea.targeting.geoTargeting.targetedLocations[0].id).Id_area;
-                                detalle.areaGeo = area;
+                                if(linea.targeting.geoTargeting.targetedLocations != null)
+                                {
+                                    Dg_areas_geo area = new Dg_areas_geo();
+                                    area.Id_area = Dg_areas_geo.getByCodigo(linea.targeting.geoTargeting.targetedLocations[0].id).Id_area;
+                                    detalle.areaGeo = area;
+                                }
                             }
                             if (linea.environmentType.ToString() == "VIDEO_PLAYER")
                             {
@@ -2011,9 +2014,21 @@ namespace WebApi.Services
                                 detalle.tipo_aviso_dg = Dg_tipos_avisos.getByDesc("Banner");
                             }
                             string startD = DateTimeUtilities.ToString(linea.startDateTime, "yyyy/MM/dd");
-                            string endD = DateTimeUtilities.ToString(linea.endDateTime, "yyyy/MM/dd");
+                        string endD = "0";
+                        //if (linea.endDateTime == null)
+                        //{
+                        //    endD = "2050/12/31";
+                        //}
+                        //else
+                        //{
+                        //    endD = DateTimeUtilities.ToString(linea.endDateTime, "yyyy/MM/dd");
+                        //}
+                        if (linea.endDateTime != null)
+                        {
+                            endD = DateTimeUtilities.ToString(linea.endDateTime, "yyyy/MM/dd");
+                        }
 
-                            if (startD != "0")
+                        if (startD != "0")
                             {
                                 detalle.Fecha_desde = System.DateTime.Parse(startD);
                             }

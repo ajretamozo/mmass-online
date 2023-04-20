@@ -228,7 +228,7 @@
                 </button>
             </div>
         </div>-->
-                            <div class="col-md-2" style="align-self: self-end;">
+                            <div class="col-md-2" style="display: flex;text-align: justify;flex-direction: row;justify-content: flex-end;">
                                 <button type='button' class='btn btn-secondary' id="bVincularAnun" value='1' onclick="vincularAnun('selAnunciantePedidoAS','selAnunciantePedido','selRedesPedido','bVincularAnun', 'lblAnunNoSinc')">Vincular</button>
                             </div>
                         </div>
@@ -749,7 +749,7 @@
         //}
 
         function buscarOrdenes(contacto) {
-            if (contacto.Id_contacto != null) {
+            if (contacto.Id_contacto > 0) {
                 idAnunciante = contacto.Id_contacto;
                 //inicializar modal ordenes y mostrarlo
                 iniModalOrdenes();
@@ -758,7 +758,7 @@
                 options = [
                     {
                         optionDesc: "Aceptar",
-                        optionFunc: "iniModalsincAnunciante(" + contacto + ")"
+                        optionFunc: "iniModalsincAnunciante(" + JSON.stringify(contacto) + ")"
                     },
                     {
                         optionDesc: "Cancelar",
@@ -917,12 +917,13 @@
             objParametro.Value = "";
 
             $.when(
-                callWS("googleAdManager", "getAnunciantes", JSON.stringify(objParametro), function (data) { onGetAnuncianteGAM(data); }),
-                callWS("contactos", "getAnunciantes", '', function (data1) { onPopulateSelectDone(data1, 'selAnuncianteM', 'id', 'nombre_com'); })
-            ).then(function () { mostrarModalAnun(contacto) });
+                callWS("googleAdManager", "getAnunciantes", JSON.stringify(objParametro), function (data) { onGetAnunciantesGAM(data); }),
+                callWS("contactos", "getAnunciantes", '', function (data1) { onPopulateSelectDone(data1, 'selAnuncianteM', 'id', 'nombre_com'); }),
+                    callWS("medios", "getAllRedes", '', function (data) { onCargarSelect(data, 'selRedesAnun', 'id_red', 'descripcion', 'codigo_red'); })
+            ).then(function () { mostrarModalAnun(contacto); });
         }
 
-        function onGetAnuncianteGAM(anunciantes) {
+        function onGetAnunciantesGAM(anunciantes) {
             var listitems = '<option value="-1">  </option>';
             $.each(anunciantes, function (it, anun) {
                 listitems = listitems + '<option value="' + anun.idContactoDigital + '">' + anun.nombre_com + ' </option>';
@@ -932,8 +933,8 @@
         }
 
         function mostrarModalAnun(contacto) {
-            $("#selAnunciantePedidoAS option[value=" + contacto.Id_contacto + "]").attr("selected", "selected");
-            $("#selRedesAnun option[value=" + contacto.Id_red + "]").attr("selected", "selected");
+            $("#selAnunciantePedidoAS option[value=" + contacto.IdContactoDigital + "]").attr("selected", "selected");
+            $("#selRedesAnun option[value=" + contacto.IdRed + "]").attr("selected", "selected");
             $("#sincAnunModal").modal('show');
         }
 
