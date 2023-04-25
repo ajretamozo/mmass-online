@@ -26,7 +26,7 @@ namespace WebApi.Services
     public interface IGoogleAdManagerService
     {
         //Contacto GetAgencia(string username, string password);
-        IEnumerable<Contacto> GetAnunciantes(Parametro nombre);
+        IEnumerable<Contacto> GetAnunciantes(List<Parametro> parametros);
         String GetOrderDetails(long idGAM);
         String GetOrderDetails2(Dg_orden_pub_ap orden);
         String printCertExcel(Dg_orden_pub_ap orden);
@@ -70,9 +70,12 @@ namespace WebApi.Services
     {
         
 
-        public IEnumerable<Contacto> GetAnunciantes(Parametro nombre)
-        {            
-            return GoogleAdManager.getAnunciantes(nombre);
+        public IEnumerable<Contacto> GetAnunciantes(List<Parametro> parametros)
+        {
+            Dg_red_GAM red = Dg_red_GAM.getById(int.Parse(parametros[0].Value));
+            CambiarRed(red.Codigo_red.ToString());
+
+            return GoogleAdManager.getAnunciantes(parametros[1].Value);
         }
         public String GetOrderDetails(long idGAM )
         {
@@ -120,9 +123,13 @@ namespace WebApi.Services
         public Parametro CreateOrder(List<Parametro> parametros)
         {
             Parametro resultado = new Parametro();
+            int idRed = int.Parse(parametros[0].Value);
+
+            Dg_red_GAM red = Dg_red_GAM.getById(idRed);
+            CambiarRed(red.Codigo_red.ToString());
 
             Contacto anun = new Contacto();
-            anun = Contacto.getContactoByIdyRed(int.Parse(parametros[2].Value), int.Parse(parametros[0].Value));
+            anun = Contacto.getContactoByIdyRed(int.Parse(parametros[2].Value), idRed);
 
             resultado = GoogleAdManager.CreateOrder(parametros[1].Value, DB.DLong(anun.IdContactoDigital));
            

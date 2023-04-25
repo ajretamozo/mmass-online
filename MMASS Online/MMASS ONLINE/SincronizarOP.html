@@ -911,13 +911,14 @@
         }
 
         function iniModalsincAnunciante(contacto) {
-            var objParametro = {};
+            var paramsAnun = {};
+            paramsAnun.red = contacto.IdRed;
+            paramsAnun.nombre = "";
 
-            objParametro.ParameterName = "nombre";
-            objParametro.Value = "";
+            var parametrosAnun = setListaParametros(paramsAnun);
 
             $.when(
-                callWS("googleAdManager", "getAnunciantes", JSON.stringify(objParametro), function (data) { onGetAnunciantesGAM(data); }),
+                callWS("googleAdManager", "getAnunciantes", JSON.stringify(parametrosAnun), function (data) { onGetAnunciantesGAM(data); }),
                 callWS("contactos", "getAnunciantes", '', function (data1) { onPopulateSelectDone(data1, 'selAnuncianteM', 'id', 'nombre_com'); }),
                     callWS("medios", "getAllRedes", '', function (data) { onCargarSelect(data, 'selRedesAnun', 'id_red', 'descripcion', 'codigo_red'); })
             ).then(function () { mostrarModalAnun(contacto); });
@@ -1035,33 +1036,33 @@
             $("#sincAnunModal").modal('show');
         }
 
-        function buscarAnunGam() {
-            /*rows = $("tr").not("#header");*/
-            desc = $("#descFiltroAnun").val();
-            red = $("#selRedes").val();
+        //function buscarAnunGam() {
+        //    /*rows = $("tr").not("#header");*/
+        //    desc = $("#descFiltroAnun").val();
+        //    red = $("#selRedes").val();
 
-            if (red != 0 && red != null) {
-                var objParametro = {};
+        //    if (red != 0 && red != null) {
+        //        var objParametro = {};
 
-                objParametro.ParameterName = "nombre";
-                objParametro.Value = desc;
+        //        objParametro.ParameterName = "nombre";
+        //        objParametro.Value = desc;
 
-                callWS("googleAdManager", "getAnunciantes", JSON.stringify(objParametro), onGetAnuncianteGAM);
-            }
-            else {
-                showMessage("Seleccione una Red AdServer", "alert");
-            }
-        }
+        //        callWS("googleAdManager", "getAnunciantes", JSON.stringify(objParametro), onGetAnuncianteGAM);
+        //    }
+        //    else {
+        //        showMessage("Seleccione una Red AdServer", "alert");
+        //    }
+        //}
 
-        function onGetAnuncianteGAM(data) {
-            if (data.length != 0) {
-                getAnunciantes(data);
-            }
-            else {
-                onCargarTablaSinc(data)
-                showMessage("No se enontraron Anunciantes", "info");
-            }
-        }
+        //function onGetAnuncianteGAM(data) {
+        //    if (data.length != 0) {
+        //        getAnunciantes(data);
+        //    }
+        //    else {
+        //        onCargarTablaSinc(data)
+        //        showMessage("No se enontraron Anunciantes", "info");
+        //    }
+        //}
 
         function getAnunciantes(anunciantesGAM) {
             idRed = $('#selRedes').val();

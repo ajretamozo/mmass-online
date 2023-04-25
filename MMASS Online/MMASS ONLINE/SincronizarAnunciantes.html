@@ -277,12 +277,13 @@
             red = $("#selRedes").val();
 
             if (red != 0 && red != null) {
-                var objParametro = {};
+                var paramsAnun = {};
+                paramsAnun.red = red;
+                paramsAnun.nombre = desc;
 
-                objParametro.ParameterName = "nombre";
-                objParametro.Value = desc;
+                var parametrosAnun = setListaParametros(paramsAnun);
 
-                callWS("googleAdManager", "getAnunciantes", JSON.stringify(objParametro), onGetAnuncianteGAM);
+                callWS("googleAdManager", "getAnunciantes", JSON.stringify(parametrosAnun), onGetAnuncianteGAM);
             }
             else {
                 showMessage("Seleccione una Red AdServer", "alert");
@@ -342,6 +343,20 @@
                 onCargarTabla(data)
                 showMessage("No se enontraron Anunciantes", "info");
             }
+        }
+
+        function setListaParametros(data) {
+            var parametros = {};
+            var listaParametros = [];
+
+            Object.keys(data).forEach(function (key) {
+                var objParametro = {};
+                objParametro.ParameterName = key;
+                objParametro.Value = data[key];
+                listaParametros.push(objParametro);
+            });
+            parametros.Parametros = listaParametros;
+            return parametros;
         }
 
     </script>

@@ -2631,6 +2631,8 @@
             $("#checkTarifaManualD")[0].checked = false;
             $("#checkTarifaManualD").change();
 
+            $("#selAnunciante").attr("disabled", true);
+
             $("#selDetConvenio").attr("disabled", false);
             $('#divDetailsRows').hide(); $('#divAddRow').show();
             var $options = $("#selProducto > option").clone();
@@ -2859,7 +2861,7 @@
             else {
                 addRenglon(id);
             }
-            $("#selEmpresa").attr("disabled", true);
+            /*$("#selEmpresa").attr("disabled", true);*/
             DetalleClon = false;
         }
 
@@ -3201,6 +3203,12 @@
                 comprobarModDetalle(op);
                 obtenerProgresoLineasGam(op);
             }
+            else
+            {
+                if ($("#inpOrderNumber").attr("id_op_dg") == 0) {
+                    $("#selAnunciante").attr("disabled", false);
+                }
+            }
         }
 
         function generarTablaDetalles(det, index) {
@@ -3383,6 +3391,7 @@
                 return 0;
             }
 
+            $("#selAnunciante").attr("disabled", true);
             $('#divDetailsRows').hide(); $('#divAddRow').show();
             var $options = $("#selProducto > option").clone();
             $('#selProductoD').empty();
@@ -3617,12 +3626,13 @@
                     }
                 }
                 else {
-                    var objParametro = {};
+                    var paramsAnun = {};
+                    paramsAnun.red = $('#selRedesPedido').val();
+                    paramsAnun.nombre = "";
 
-                    objParametro.ParameterName = "nombre";
-                    objParametro.Value = "";
+                    var parametrosAnun = setListaParametros(paramsAnun);
 
-                    callWS("googleAdManager", "getAnunciantes", JSON.stringify(objParametro), function (data) { onGetAnuncianteGAM(data); });
+                    callWS("googleAdManager", "getAnunciantes", JSON.stringify(parametrosAnun), function (data) { onGetAnuncianteGAM(data); });
                 }
             });
         }
@@ -4608,6 +4618,9 @@
                 Detalles.pop();
                 detImportado = false;
             }
+            if ($("#inpOrderNumber").attr("id_op_dg") == 0) {
+                $("#selAnunciante").attr("disabled", false);
+            }
         }
 
         function nuevaOrden() {
@@ -5039,8 +5052,8 @@
                 $("#checkListaParaFact")[0].disabled = true;
             }
             else {
-                $("#checkListaParaFact")[0].checked = true;
-                $("#checkListaParaFact").change();
+                //$("#checkListaParaFact")[0].checked = true;
+                //$("#checkListaParaFact").change();
                 $("#checkListaParaFact")[0].disabled = false;
             }
         }
@@ -5324,6 +5337,7 @@
             var id_red = $("#selRedes").val();
             $("#selAnunciantePedido option[value=" + id_anunciante + "]").attr("selected", "selected");
             $("#selRedesPedido option[value=" + id_red + "]").attr("selected", "selected");
+            $("#rowSincAnun").attr("hidden", true);
 
             $("#pedidosModal").modal('show');
         } 
@@ -5345,12 +5359,13 @@
                     callWS("googleAdManager", "filtrarPedidos", JSON.stringify(parametros), function (data) { onGetOrdenesGAM(data); });
                 }
                 else {
-                    var objParametro = {};
+                    var paramsAnun = {};
+                    paramsAnun.red = $('#selRedesPedido').val();
+                    paramsAnun.nombre = "";
 
-                    objParametro.ParameterName = "nombre";
-                    objParametro.Value = "";
+                    var parametrosAnun = setListaParametros(paramsAnun);
 
-                    callWS("googleAdManager", "getAnunciantes", JSON.stringify(objParametro), function (data) { onGetAnuncianteGAM(data, "selAnunciantePedidoAS", "rowSincAnun"); });
+                    callWS("googleAdManager", "getAnunciantes", JSON.stringify(parametrosAnun), function (data) { onGetAnuncianteGAM(data, "selAnunciantePedidoAS", "rowSincAnun"); });
                 }
             });
         }
@@ -5367,20 +5382,25 @@
 
         function vincularAnun(selAnunAS, selAnun, selRedes, bAnun, lblAnun) {
             var idGAMSel = $("#" + selAnunAS).val();
-            if (idGAMSel == undefined) {
-                showMessage("Seleccione un anunciante en el dropdown", "info");
-            } else {
+            if (idGAMSel > 0) {
                 var cont = {};
                 cont.Id = $("#" + selAnun).val();
                 cont.IdContactoDigital = idGAMSel;
                 cont.IdRed = $("#" + selRedes).val();
 
-                if ($("#" + bAnun).val() == 1) {
-                    callWS("contactos", "saveASRelation", JSON.stringify(cont), function (data) { onVincularAnun(data, bAnun, lblAnun, selAnunAS) });
+                if (cont.IdRed > 0) {
+                    if ($("#" + bAnun).val() == 1) {
+                        callWS("contactos", "saveASRelation", JSON.stringify(cont), function (data) { onVincularAnun(data, bAnun, lblAnun, selAnunAS) });
+                    }
+                    else {
+                        callWS("contactos", "deleteASRelation", JSON.stringify(cont), function (data) { onVincularAnun(data, bAnun, lblAnun, selAnunAS) });
+                    }
                 }
                 else {
-                    callWS("contactos", "deleteASRelation", JSON.stringify(cont), function (data) { onVincularAnun(data, bAnun, lblAnun, selAnunAS) });
+                    showMessage("Seleccione una Red AdServer", "info");
                 }
+            } else {
+                showMessage("Seleccione un Anunciante AdServer", "info");
             }
 
         }
@@ -5507,6 +5527,7 @@
             $('#fechaDesdeImp').datetimepicker('date', $("#fechaDesde").val());
             $('#fechaHastaImp').datetimepicker('date', $("#fechaHasta").val());
             $("#selAnuncianteImp option[value=" + id_anunciante + "]").attr("selected", "selected");
+            $("#rowAnuncianteSincImp").attr("hidden", true);
 
             $("#importarModal").modal('show');
         } 
@@ -5559,12 +5580,13 @@
                         callWS("googleAdManager", "getDetNuevos", JSON.stringify(parametros), function (data) { onGetDetallesGAM(data); });
                     }
                     else {
-                        var objParametro = {};
+                        var paramsAnun = {};
+                        paramsAnun.red = $('#selRedesImp').val();
+                        paramsAnun.nombre = "";
 
-                        objParametro.ParameterName = "nombre";
-                        objParametro.Value = "";
+                        var parametrosAnun = setListaParametros(paramsAnun);
 
-                        callWS("googleAdManager", "getAnunciantes", JSON.stringify(objParametro), function (data) { onGetAnuncianteGAM(data, "selAnuncianteSincImp", "rowAnuncianteSincImp"); });
+                        callWS("googleAdManager", "getAnunciantes", JSON.stringify(parametrosAnun), function (data) { onGetAnuncianteGAM(data, "selAnuncianteSincImp", "rowAnuncianteSincImp"); });
                     }
                 });
             }

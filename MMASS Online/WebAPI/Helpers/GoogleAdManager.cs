@@ -98,19 +98,19 @@ namespace WebApi.Helpers
             return traffId;
         }
 
-        public static List<Contacto> getAnunciantes(Parametro nombre)
+        public static List<Contacto> getAnunciantes(string nombre)
         {
             List<Contacto> Anunciantes = new List<Contacto>();
             Contacto Anunciante = null;
 
             string where = "";
-            if (nombre.Value == "")
+            if (nombre == "")
             {
                 where = "type = :type";
             }
             else
             {
-                where = "type = :type and name like '%" + nombre.Value + "%'";
+                where = "type = :type and name like '%" + nombre + "%'";
             }
 
             //AdManagerUser user = new AdManagerUser();

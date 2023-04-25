@@ -23,11 +23,12 @@ namespace WebApi.Controllers
 
 
         [HttpPost("getAnunciantes")]
-        public IActionResult GetAnunciantes([FromBody] Parametro nombre)
+        public IActionResult GetAnunciantes(ListaParametro parametros)
         {
-            var contactos = _GoogleAdManagerService.GetAnunciantes(nombre);
+            var contactos = _GoogleAdManagerService.GetAnunciantes(parametros.Parametros);
             return Ok(contactos);
         }
+
 
         [HttpPost("getOrderDetails")]
         public IActionResult GetOrderDetails([FromBody] long idGAM)
