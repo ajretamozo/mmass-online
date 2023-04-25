@@ -20,6 +20,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.Runtime.CompilerServices;
 
 namespace WebApi.Services
 {
@@ -1899,10 +1900,11 @@ namespace WebApi.Services
                 CambiarRed(red.Codigo_red.ToString());
 
                 //al idContacto lo convertimos en idContactoDigital
-                if (parametros[5].Value != "")
+                string idCont = parametros[5].Value;
+                if (idCont != "")
                 {
                     Contacto anun = new Contacto();
-                    anun = Contacto.getContactoByIdyRed(int.Parse(parametros[5].Value), idRed);
+                    anun = Contacto.getContactoByIdyRed(int.Parse(idCont), idRed);
                     parametros[5].Value = anun.IdContactoDigital;
                 }
 
@@ -1911,6 +1913,8 @@ namespace WebApi.Services
                 {
                     detallesGAM = GoogleAdManager.FilterLineItems(parametros, listaOP, idRed);
                 }
+
+                parametros[5].Value = idCont;
             }
             else
             {

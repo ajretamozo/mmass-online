@@ -2997,22 +2997,28 @@
 
             rDetalle.cantidad = parseInt($('#cantidadD').val());
 
-            rDetalle.porc_dto = parseFloat($('#descuentoD').val());
-            if (rDetalle.porc_dto == "") {
+            //rDetalle.porc_dto = parseFloat($('#descuentoD').val());
+            //if (rDetalle.porc_dto == "") {
+            //    rDetalle.porc_dto = 0;
+            //}
+
+            if (parseFloat($("#descuentoD").val()) != 0 && $("#descuentoD").val() != "") {
+                rDetalle.porc_dto = parseFloat($('#descuentoD').val());
+            } else {
                 rDetalle.porc_dto = 0;
             }
 
             rDetalle.monto_neto = parseFloat($('#totalD').val());
             rDetalle.monto_bruto = rDetalle.monto_neto * 100 / (100 - rDetalle.porc_dto)
 
-            if (parseFloat($("#confNCD").val()) != 0) {
+            if (parseFloat($("#confNCD").val()) != 0 && $("#confNCD").val() != "") {
                 rDetalle.porcconfnc = parseFloat($("#confNCD").val());
                 rDetalle.impconfnc = rDetalle.monto_neto / 100 * rDetalle.porcconfnc;
             } else {
                 rDetalle.porcconfnc = 0;
                 rDetalle.impconfnc = 0;
             }
-            if (parseFloat($("#confFCD").val()) != 0) {
+            if (parseFloat($("#confFCD").val()) != 0 && $("#confFCD").val() != "") {
                 rDetalle.porcconffc = parseFloat($("#confFCD").val());
                 rDetalle.impconffc = rDetalle.monto_neto / 100 * rDetalle.porcconffc;
             } else {
