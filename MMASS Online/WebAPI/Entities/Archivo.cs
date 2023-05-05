@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 using System.Data;
 using WebApi.Helpers;
 using System.IO;

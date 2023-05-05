@@ -26,7 +26,11 @@ namespace WebApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddCors();
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            //services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+
+            services.AddMvc(options => options.EnableEndpointRouting = false);
+
+            services.AddControllers().AddNewtonsoftJson();
 
             // configure strongly typed settings objects
             var appSettingsSection = Configuration.GetSection("AppSettings");
@@ -72,12 +76,11 @@ namespace WebApi
             services.AddScoped<IDg_medios_asociadosService, Dg_medios_asociadosService>();
             services.AddScoped<IProgramaService, ProgramaService>();
 
-
             PerformCorsSetup(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             // global cors policy
             app.UseCors(x => x
@@ -100,7 +103,7 @@ namespace WebApi
             corsBuilder.AllowAnyMethod();
             corsBuilder.AllowAnyOrigin(); // For anyone access.
                                           //corsBuilder.WithOrigins("http://localhost:56573"); // for a specific url. Don't add a forward slash on the end!
-            corsBuilder.AllowCredentials();
+            //corsBuilder.AllowCredentials();
 
             services.AddCors(options =>
             {

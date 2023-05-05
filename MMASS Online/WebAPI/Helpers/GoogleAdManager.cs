@@ -4,12 +4,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using WebApi.Entities;
 using Google.Api.Ads.AdManager.Lib;
-using Google.Api.Ads.AdManager.Util.v202208;
-using Google.Api.Ads.AdManager.v202208;
+using Google.Api.Ads.AdManager.Util.v202302;
+using Google.Api.Ads.AdManager.v202302;
 using Google.Api.Ads.Common.Util.Reports;
 using System.Diagnostics;
 using System.Configuration;
-using User = Google.Api.Ads.AdManager.v202208.User;
+using User = Google.Api.Ads.AdManager.v202302.User;
 using Google.Api.Ads.Common.Util;
 using System.IO;
 using static System.Net.Mime.MediaTypeNames;
@@ -1064,8 +1064,8 @@ namespace WebApi.Helpers
                         };
                     }
 
-                    // Vigencia
-                    Google.Api.Ads.AdManager.v202208.DateTime desde = DateTimeUtilities.FromDateTime((System.DateTime)fechaDesde, "America/Argentina/Buenos_Aires");
+                    // Vigencia 
+                    Google.Api.Ads.AdManager.v202302.DateTime desde = DateTimeUtilities.FromDateTime((System.DateTime)fechaDesde, "America/Argentina/Buenos_Aires");
                     if (lineItem.startDateTime.date.day != desde.date.day || lineItem.startDateTime.date.month != desde.date.month || lineItem.startDateTime.date.year != desde.date.year)
                     {
                         if (fechaDesde <= System.DateTime.Now.Date)
@@ -1077,7 +1077,7 @@ namespace WebApi.Helpers
                             lineItem.startDateTime = DateTimeUtilities.FromDateTime((System.DateTime)fechaDesde, "America/Argentina/Buenos_Aires");
                         }
                     }
-                    Google.Api.Ads.AdManager.v202208.DateTime hasta = DateTimeUtilities.FromDateTime((System.DateTime)fechaHasta, "America/Argentina/Buenos_Aires");
+                    Google.Api.Ads.AdManager.v202302.DateTime hasta = DateTimeUtilities.FromDateTime((System.DateTime)fechaHasta, "America/Argentina/Buenos_Aires");
                     if (lineItem.endDateTime.date.day != hasta.date.day || lineItem.endDateTime.date.month != hasta.date.month || lineItem.endDateTime.date.year != hasta.date.year)
                     {
                         string fechaHStg = fechaHasta.ToString();

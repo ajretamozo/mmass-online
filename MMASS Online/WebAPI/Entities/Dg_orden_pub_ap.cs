@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Transactions;
@@ -1079,7 +1079,7 @@ namespace WebApi.Entities
         public static bool anularOrden(int idOp)
         {
             bool resultado = true;
-            string sql = "UPDATE dg_orden_pub_ap SET es_anulada = 1, fecha_anulada = GETDATE() WHERE id_op_dg = " + idOp.ToString();
+            string sql = "UPDATE dg_orden_pub_ap SET es_anulada = 1, parafacturar = 0, fecha_anulada = GETDATE() WHERE id_op_dg = " + idOp.ToString();
 
             try
             {

@@ -339,22 +339,6 @@
             }
         }
 
-        //function msjSalida() {
-        //    var mensaje = "<div class='d-flex justify-content-center' style='text-align: center;'>Está por salir de la Edición de la OP, los cambios no guardados se perderán</div>";
-
-        //    options = [
-        //        {
-        //            optionDesc: "Aceptar",
-        //            optionFunc: "desbloquearOp(); wait(200)"
-        //        },
-        //        {
-        //            optionDesc: "Cancelar",
-        //            optionFunc: ""
-        //        }
-        //    ];
-        //    showModal(mensaje, options);
-        //}
-
         let formChanged = false;
         document.addEventListener('change', () => formChanged = true);
         window.addEventListener('beforeunload', (event) => {
@@ -366,19 +350,6 @@
                 wait(200);
             }
         });
-
-        //window.addEventListener("beforeunload", function (event) {
-        //    //desbloquearOp();
-        //    event.returnValue = null;
-        //    ///*wait(5000);*/
-        //    //setTimeout(bloquearOp($("#inpOrderNumber").attr("id_op_dg")), 10000);
-        //    window.addEventListener("beforeunload", function (event) {
-        //        desbloquearOp();
-        //        //event.returnValue = null;
-        //        ///*wait(5000);*/
-        //        //setTimeout(bloquearOp($("#inpOrderNumber").attr("id_op_dg")), 10000);
-        //    });
-        //});
 
     </script>
 
@@ -1742,11 +1713,11 @@
             //    $("#bSendOrdenAdServer").attr("disabled", false);
             //    $('#inpIdOrdenAdServer').val("");
             //}
-            if (data.id_Google_Ad_Manager > 0 && OpClon == false) {
-                $("#bAnular").attr("disabled", true);
-                $("#bAnular").attr("title", "La Orden no puede ser anulada ya que tiene Detalles vinculados con AdServer");
+            //if (data.id_Google_Ad_Manager > 0 && OpClon == false) {
+            //    $("#bAnular").attr("disabled", true);
+            //    $("#bAnular").attr("title", "La Orden no puede ser anulada ya que tiene Detalles vinculados con AdServer");
                 //$("#bgetOrderASDetais").attr("disabled", false); VER QUE HACER CON ESTO
-            }
+            //}
 
             $("#bConvenios").attr("disabled", true);
 
@@ -1782,8 +1753,12 @@
                 $("#bClonar").attr("disabled", false);
             }
 
-            if (data.parafacturar == 0 && data.nro_orden > 0 && data.es_facturada == false) {
+            if (data.parafacturar == 0 && data.nro_orden > 0) {
                 $("#checkListaParaFact")[0].checked = false;
+                $("#checkListaParaFact").change();
+            }
+            else {
+                $("#checkListaParaFact")[0].checked = true;
                 $("#checkListaParaFact").change();
             }
 
@@ -1831,13 +1806,6 @@
             if (OpClon == false && OpSinc == false) {
                 $("#selEmpresa").attr("disabled", true);
             }
-
-            //data.Id_condpagoap = 1; //Arreglar
-
-            //data.idEjecutivo = "4";
-            //data.Tipo_orden = 4; // Revisar
-            //data.Facturar_a = 1;// Revisar
-            //data.idFormaPago = "1";
 
             $("#montoBruto").val(data.monto_bruto);
             $("#neto1").val(data.primer_neto);
@@ -2148,7 +2116,6 @@
                 orden.nro_orden = $("#inpOrderNumber").val();
                 orden.anio = $("#inpOrderYear").val();
                 orden.mes = $("#inpOrderMonth").val();
-                orden.id_Google_Ad_Manager = $('#inpIdOrdenAdServer').val();
                 orden.Bitacora = $("#inpDescOP").val();
                 orden.Detalles = DetallesASDelete;
                 orden.UsuarioSesion = $("#NombreUsuario").text();
@@ -2279,17 +2246,15 @@
                 
                 $('#sTituloDinamico1').remove();
                 $('#sTituloDinamico2').remove();
-                if (data.op.id_Google_Ad_Manager > 0) {
-                    $("#bAnular").attr("disabled", true);
-                    $("#bAnular").attr("title", "La Orden no puede ser anulada ya que tiene Detalles vinculados con AdServer");
-                }
-                else {
+                //if (data.op.id_Google_Ad_Manager > 0) {
+                //    $("#bAnular").attr("disabled", true);
+                //    $("#bAnular").attr("title", "La Orden no puede ser anulada ya que tiene Detalles vinculados con AdServer");
+                //}
+                //else {
                     $("#bAnular").attr("disabled", false);
                     $("#bAnular").attr("title", "Anular Orden");
-                }
+                //}
                 $("#bClonar").attr("disabled", false);
-                //$("#conf_nc").attr("disabled", true);
-                //$("#conf_fc").attr("disabled", true);
                 $('#inpOrderNumber').val(data.op.nro_orden);
                 $("#inpOrderNumber").attr("id_op_dg", data.op.id_op_dg);
                 $("#inpOrderMonth").val(data.op.mes);
@@ -2694,7 +2659,8 @@
                     fDesde = new Date(moment($("#fechaDesdeD").val(), 'DD/MM/YYYY', true).format());
                     mfDesde = moment(fDesde);
                     if (mfDesde.isValid()) {
-                        day1 = dateToSqlFormat($('#fechaDesdeD').val());
+                        //day1 = dateToSqlFormat($('#fechaDesdeD').val());
+                        day1 = new Date(dateToSqlFormat($('#fechaDesdeD').val()));
                     } else {
                         error.push("Formato 'Fecha Desde' invalido");
                         return error;
@@ -2704,14 +2670,14 @@
                     fHasta = new Date(moment($("#fechaHastaD").val(), 'DD/MM/YYYY', true).format());
                     mfHasta = moment(fHasta);
                     if (mfHasta.isValid()) {
-                        day2 = dateToSqlFormat($('#fechaHastaD').val());
+                        //day2 = dateToSqlFormat($('#fechaHastaD').val());
+                        var day2 = new Date(dateToSqlFormat($('#fechaHastaD').val()));
                     } else {
                         error.push("Formato 'Fecha Hasta' invalido");
                         return error;
                     }
                 }
-                //var day1 = new Date(dateToSqlFormat($('#fechaDesdeD').val()));
-                //var day2 = new Date(dateToSqlFormat($('#fechaHastaD').val()));
+
                 if ($('#selTipoTarifaD').val() == 1) {
                     //var difference = Math.abs(day2 - day1);
                     var cantD = (Math.abs(day2 - day1) / (1000 * 3600 * 24)) + 1;
@@ -2720,7 +2686,6 @@
                     //$("#cantidadD").attr("disabled", true);
                 }
                 else {
-                    /* if ($("#inpEsFacturada").val() == 'NO' && $("#divOrderMain").css("background-image") != 'url("./Anulada.png")') {*/
                     if ($("#inpEsFacturada").val() == 'NO' && OpAnulada == false) {
                         $("#cantidadD").attr("disabled", false);
                     }
@@ -2737,6 +2702,9 @@
 
                 var objParametro = {};
                 objParametro.ParameterName = "fecha_hasta_det";
+                if (day2 == undefined) {
+                    day2 = "";
+                }
                 objParametro.Value = day2;
                 listaParametros.push(objParametro);
 
@@ -2844,7 +2812,13 @@
             }
             var detalle = {};
             detalle.fecha_desde = dateToSqlFormat($('#fechaDesdeD').val());
-            detalle.fecha_hasta = dateToSqlFormat($('#fechaHastaD').val());
+            if ($('#fechaHastaD').val() == "") {
+                showMessage("Indique una Fecha Hasta para la Vigencia del Detalle", "info");
+                return;
+            }
+            else {
+                detalle.fecha_hasta = dateToSqlFormat($('#fechaHastaD').val());
+            }
             detalle.emplazamientos = selectToJson('selEmplazaD', 'id_emplazamiento');
             detalle.emplazamientos.forEach(emplaza => {
                 $('#selEmplazaD option:selected').each(function () {
@@ -3222,7 +3196,12 @@
 
             var str = "<tr  id='row" + id + "' data-id='row" + id + "' descripcion= '" + det.descripcion + "' IdAdMgr='0' idAnunciante='" + $("#selAnunciante").val() + "'>";
             str = str + "<td class='col-xs-3' > " + det.descripcion + "</td > ";
-            str = str + "<td  class='col-xs-2' dataid='" + id + "'>" + dateToFieldFormat(det.fecha_desde) + " - " + dateToFieldFormat(det.fecha_hasta) + "</td>";
+            if (det.fecha_hasta == null) {
+                str = str + "<td  class='col-xs-2' dataid='" + id + "'>" + dateToFieldFormat(det.fecha_desde) + " - Por definir </td>";
+            }
+            else {
+                str = str + "<td  class='col-xs-2' dataid='" + id + "'>" + dateToFieldFormat(det.fecha_desde) + " - " + dateToFieldFormat(det.fecha_hasta) + "</td>";
+            }
             if (det.tipo_aviso_dg == "" || det.tipo_aviso_dg == undefined || det.tipo_aviso_dg == null) {
                 str = str + "<td class='col-xs-1'> Por definir </td>";
             }
@@ -3241,7 +3220,12 @@
                 }
             }
 
-            str = str + "<td class='col-xs-1'>" + det.cantidad + "</td>";
+            if (det.cantidad == -1) {
+                str = str + "<td class='col-xs-1'> Por definir </td>";
+            }
+            else {
+                str = str + "<td class='col-xs-1'>" + det.cantidad + "</td>";
+            }
             str = str + "<td class='col-xs-1'>" + det.monto_neto + "</td>"; //Revisar esto
             str = str + "<td class='col-xs-2 pr-0 actions d-flex justify-content-center align-content-start'>";
             $('.disableOnEdit').attr("disabled", false);
@@ -3463,7 +3447,14 @@
             }
 
             $('#fechaDesdeD').datetimepicker('date', moment(dateToFieldFormat(rDetalle.fecha_desde), 'DD/MM/YYYY'));
-            $('#fechaHastaD').datetimepicker('date', moment(dateToFieldFormat(rDetalle.fecha_hasta), 'DD/MM/YYYY'));
+
+            if (rDetalle.fecha_hasta == null) {
+                $('#fechaHastaD').datetimepicker('date', null);
+            }
+            else {
+                $('#fechaHastaD').datetimepicker('date', moment(dateToFieldFormat(rDetalle.fecha_hasta), 'DD/MM/YYYY'));
+            }
+
             //CARGA Medios
             var medios = rDetalle.medios;
             var viewListMedios = "<ul class=\"list-group\">"
@@ -3581,7 +3572,12 @@
             $("#inpPedido").val(rDetalle.nombre_pedido_Google_Ad_Manager);
             $('#descripcionD').val(rDetalle.descripcion);
             $('#precioUnitarioD').val(rDetalle.importe_unitario);
-            $('#cantidadD').val(rDetalle.cantidad);
+            if (rDetalle.cantidad == -1) {
+                $('#cantidadD').val(0);
+            }
+            else {
+                $('#cantidadD').val(rDetalle.cantidad);
+            }
             $('#descuentoD').val(rDetalle.porc_dto);
             $('#totalD').val(rDetalle.monto_neto);
             $("#confNCD").val(rDetalle.porcconfnc);
@@ -3746,6 +3742,9 @@
                 $("#selEmpresa").attr("disabled", false);
             }
             calculateTotals();
+
+            $("#bAnular").attr("disabled", true);
+            $("#bAnular").attr("title", "Guarde la Orden para poder anularla");
         }
 
         function selectToJson(idSelect, idCol) {
@@ -3831,8 +3830,6 @@
             ag = data.id_agencia
             an = data.id_anunciante
             $("#selProducto").attr("disabled", false);
-            //$("#selAgencia option[value=" + data.id_agencia + "]").attr("selected", "selected");
-            //$("#selAnunciante option[value=" + data.id_anunciante + "]").attr("selected", "selected");
             callWS("contactos", "getContactoById", JSON.stringify(ag), function (agencia) { onPopulateSelecectContactoConv(agencia, 'selAgencia', 'id', 'nombre_com'); })
             callWS("contactos", "getContactoById", JSON.stringify(an), function (anunciante) { onPopulateSelecectContactoConv(anunciante, 'selAnunciante', 'id', 'nombre_com'); })
             $("#selAgencia option[value=" + data.id_agencia + "]").attr("selected", "selected");
@@ -3845,7 +3842,6 @@
             }
             else {
                 callWS("productos", "getProductosPorAnunciante", JSON.stringify(an), function (productos) { onPopulateSelectDone(productos, 'selProducto', 'id_producto', 'desc_producto'); });
-                /*      $("#selAnunciante").change(); *///para que cargue los productos
             }
             if (data.empresas.length == 1) {
                 $("#selEmpresa option[value=" + data.empresas[0].id_empresa + "]").attr("selected", "selected");
@@ -3855,34 +3851,15 @@
                 onPopulateSelectDone(data.empresas, 'selEmpresa', 'id_empresa', 'razon_social');
             }
 
-            //an = data.id_anunciante;
-
-            //Para que me setee el selOrdenRelacionada = ""
-            //data1 = {};
-            //ag = $('#selAgencia').val();
-            //data1.agencia = {};
-            //data1.anunciante = {};
-            //data1.anunciante.id = an;
-            //data1.agencia.id = ag;
-            //callWS("dg_orden_pub_aps", "getOrdenesRadio", JSON.stringify(data1), function (data1) { onPopulateSelectDone(data1, 'selOrdenRelacionada', 'id', 'descripcion'); });
-            //hasta acá
-
-            //callWS("productos", "getProductosPorAnunciante", JSON.stringify(an), function (data) { onPopulateSelectDone(data, 'selProducto', 'id_producto', 'desc_producto'); });
-            $('#fechaDesde').datetimepicker('date', moment(dateToFieldFormat(data.fecha_desde), 'DD/MM/YYYY'));
-            $('#fechaHasta').datetimepicker('date', moment(dateToFieldFormat(data.fecha_hasta), 'DD/MM/YYYY'));
             fechaDConv = data.fecha_desde;
             fechaHConv = data.fecha_hasta;
+            $('#fechaDesde').datetimepicker('date', moment(dateToFieldFormat(data.fecha_desde), 'DD/MM/YYYY'));
+            $('#fechaHasta').datetimepicker('date', moment(dateToFieldFormat(data.fecha_hasta), 'DD/MM/YYYY'));
+
             $("#selFacturar option[value=" + data.facturar_a + "]").attr("selected", "selected");
             $("#selFPago option[value=" + data.id_formapago + "]").attr("selected", "selected");
             $('#inpDescConvenio').val(data.desc_convenio);
-            //if (data.porc_conf_nc != null && data.porc_conf_nc != 0) {
-            //    $('#conf_nc').val(data.porc_conf_nc);
-            //    $("#conf_nc").attr("disabled", true);
-            //}
-            //if (data.porc_conf_fc != null && data.porc_conf_fc != 0) {
-            //    $('#conf_fc').val(data.porc_conf_fc);
-            //    $("#conf_fc").attr("disabled", true);
-            //}
+
             if (data.id_condpago_facturar != null && data.id_condpago_facturar != 0) {
                 $("#selPlazoP option[value=" + data.id_condpago_facturar + "]").attr("selected", "selected");
                 $("#selPlazoP").attr("disabled", true);
@@ -4011,7 +3988,6 @@
                 TipoAvisoClase = tiposAviso[0].id_categoria;
             }
             else {
-                /*onTipoAvisoGetAll(tiposAviso, 'selTipoAvisoD', 'Id_tipo_aviso_dg', 'descripcion', 'Permite_envio_ads')*/
                 $("#selTipoAvisoD").attr("disabled", false);
             }
 
@@ -4028,9 +4004,7 @@
                 $("#porcRon").html(porcHTML);
                 enableRon();
             }
-            //else {
-            //    viewListMedios += "<li class=\"list-group-item\">(Todos)</li>";
-            //};
+
             viewListMedios += "</ul>"
             $("#selMediosD").after(viewListMedios);
             cMultiSelect.bootstrapDualListbox('refresh');
@@ -4041,12 +4015,8 @@
             if (medidas.length > 0) {
                 medidas.forEach(function (medida) {
                     $("#selMedidasD option[value=" + medida.id_medidadigital + "]").attr("selected", "selected");
-                    //$("#selMedidasD").val(medida.id_medidadigital);
                 });
             }
-            //else {
-            //    $("#selMedidasD").val(0);
-            //}
             viewListMedidas += "</ul>"
             $("#selMedidasD").after(viewListMedidas);
             cMultiSelect.bootstrapDualListbox('refresh');
@@ -4065,25 +4035,13 @@
             $("#selEmplazaD").after(viewListEmplazamientos);
             cMultiSelect.bootstrapDualListbox('refresh');
 
-            //if (data.fecha_desde != "") {
-            $('#fechaDesdeD').datetimepicker('date', moment(dateToFieldFormat(data.fecha_desde), 'DD/MM/YYYY'));
-            //    $("#fechaDesdeD").attr("disabled", true);
-            //}
-            //if (data.fecha_hasta != "") {
-            $('#fechaHastaD').datetimepicker('date', moment(dateToFieldFormat(data.fecha_hasta), 'DD/MM/YYYY'));
-            //    $("#fechaHastaD").attr("disabled", true);
-            //}
+            //Carga Fechas
             fechaDConvD = data.fecha_desde;
             fechaHConvD = data.fecha_hasta;
 
-            //$("#fechaDesdeD").attr("disabled", true);
-            //$("#fechaHastaD").attr("disabled", true);
-            //$("#selTipoAvisoD").attr("disabled", true);
-            //$("#selTipoTarifaD").attr("disabled", true);
-            //$("#selAreasGeo").attr("disabled", true);
-            //$("#precioUnitarioD").attr("disabled", true);
-            //$(".bootstrap-duallistbox-container").find("*").prop("disabled", true);
-            //$("#selPrograma").attr("disabled", true);
+            $('#fechaDesdeD').datetimepicker('date', moment(dateToFieldFormat(data.fecha_desde), 'DD/MM/YYYY'));
+            $('#fechaHastaD').datetimepicker('date', moment(dateToFieldFormat(data.fecha_hasta), 'DD/MM/YYYY'));
+
             $("#selProductoD").attr("disabled", true);
 
             //Carga Tarifas
@@ -4091,15 +4049,10 @@
                 var tarifa = {};
                 tarifa.Id_tarifa_dg = data.tarifa_dg.id_tarifa_dg;
                 callWS("tarifas", "getById", JSON.stringify(tarifa), function (data2) { onTarifasGetAllConv(data2, 'selTarifaD', 'id_tarifa_dg', 'descripcion'); })
-                /*$("#selTarifaD").attr("disabled", true);*/
                 tieneTarifa = true;
                 $("#checkTarifaManualD")[0].checked = false;
-                /*$("#checkTarifaManualD")[0].disabled = true;*/
             }
             else {
-                //$("#selTarifaD").attr("disabled", false);
-                //$("#checkTarifaManualD")[0].disabled = false;
-                //filterTarifas();
                 $("#selTarifaD option[value='']").attr("selected", "selected");
                 tieneTarifa = false;
                 $("#checkTarifaManualD")[0].checked = true;
@@ -4136,7 +4089,6 @@
             }
         }
 
-        //AGREGUE:
         function getOrderDetails() {
             var idOrden = $('#inpIdOrdenAdServer').val();
             callWS("googleAdManager", "GetOrderDetails", JSON.stringify(idOrden), function (data) { onGetOrderDetails(data); });
@@ -4316,7 +4268,7 @@
                 jsPDF: { orientation: 'portrait', unit: 'in', format: 'a3', compressPDF: false }
             }).save();
 
-            document.body.removeChild(downloadLink);
+            //document.body.removeChild(downloadLink);
         }
 
         function certificarWord(id_div) {
@@ -4810,7 +4762,12 @@
                     showMessage("Vigencia Desde actualizada", "info");
                     break;
                 case 'VigenciaHastaD':
-                    $('#fechaHastaD').datetimepicker('date', moment(dateToFieldFormat(valNuevo), 'DD/MM/YYYY'));
+                    if (valNuevo == 'Sin establecer') {
+                        $('#fechaHastaD').datetimepicker('date', null);
+                    }
+                    else {
+                        $('#fechaHastaD').datetimepicker('date', moment(dateToFieldFormat(valNuevo), 'DD/MM/YYYY'));
+                    }
                     $("#btnApl" + paramName).addClass('btn-blue');
                     showMessage("Vigencia Hasta actualizada", "info");
                     break;
@@ -4985,20 +4942,9 @@
             $("#selEjecutivo").attr("disabled", true);
             $("#bCargarNuevoRenglon").attr("disabled", true);
             $("#bImportarNuevoRenglon").attr("disabled", true);
-            //$("#conf_nc").attr("disabled", true);
-            //$("#conf_fc").attr("disabled", true);
             $("#bAnular").attr("disabled", true);
             $("#checkListaParaFact")[0].disabled = true;
         }
-
-        //function prevAnularOrden() {
-        //    if ($('#inpIdOrdenAdServer').val() == "") {
-        //        checkAnularOrden();
-        //    }
-        //    else {
-        //        showMessage("La Orden no puede ser anulada porque ya ha sido enviada al AdServer", "info")
-        //    }
-        //}
 
         function checkAnularOrden() {
             options = [
@@ -5011,7 +4957,7 @@
                     optionFunc: ""
                 }
             ];
-            var mensaje = "<div class='d-flex justify-content-center'>¿Está seguro de anular la Orden?</div>";
+            var mensaje = "<div class='d-flex justify-content-center'>¿Está seguro de anular la Orden? El proceso será irreversible.</div>";
             showModal(mensaje, options);
         }
 
@@ -5019,6 +4965,24 @@
             var id_op_dg = $("#inpOrderNumber").attr("id_op_dg");
 
             callWS("dg_orden_pub_aps", "anularOrden", JSON.stringify(id_op_dg), function (data) { onAnularOrden(data); });
+
+            Detalles.forEach(function (item, index) {
+                if (item.id_op_dg > 0 && item.id_Google_Ad_Manager > 0) {
+                    //sumo el detalle a la lista para archivar las lineas de pedidos en GAM
+                    DetallesASDelete.push(item);
+                }
+            });
+
+            if (DetallesASDelete.length > 0) {
+                var orden = {};
+                orden.nro_orden = $("#inpOrderNumber").val();
+                orden.anio = $("#inpOrderYear").val();
+                orden.mes = $("#inpOrderMonth").val();
+                orden.Bitacora = $("#inpDescOP").val();
+                orden.Detalles = DetallesASDelete;
+                orden.UsuarioSesion = $("#NombreUsuario").text();
+                callWS("googleAdManager", "archivarLineItems", JSON.stringify(orden));
+            }
         }
 
         function onAnularOrden(data) {
@@ -5030,6 +4994,9 @@
                 $("#bGuardarOrden").attr("disabled", true);
                 $("#bGuardarOrden").attr("title", "No se pueden guardar ordenes que estén anuladas");
                 $("#bClonar").attr("disabled", true);
+                $("#checkListaParaFact")[0].checked = false;
+                $("#checkListaParaFact").change();
+
                 recargarRenglones();
                 showMessage("Orden anulada con éxito", "info");
 
@@ -5128,14 +5095,6 @@
             location.href = "/orden.html?orderClon=" + idOp;
         }
 
-        //function prevClonarD(idDet) {
-        //    DetalleClon = true;
-
-        //    $('#chDetalle').text('NUEVO DETALLE - ')
-        //    $('#chDetalle').append('<span id="sTituloDinamicoD" style="color: #007bff;">CLONACION</span>');           
-        //    clonarD(idDet);
-        //}
-
         function clonarD(IdDet) {
             DetalleClon = true;
             cargarModificarRenglon(IdDet);
@@ -5147,7 +5106,7 @@
                 var c2 = new Date(fechaHConv);
 
                 if (fecha == 'fechaD') {
-                    var o1 = new Date(dateToSqlFormat($('#fechaDesde').val()));
+                    var o1 = new Date(moment($("#fechaDesde").val(), 'DD/MM/YYYY', true).format());
 
                     if (o1 < c1 || o1 > c2) {
                         showMessage("La Vigencia de la OP debe estar dentro de la Vigencia del Convenio", "error");
@@ -5155,7 +5114,7 @@
                     }
                 }
                 else {
-                    var o2 = new Date(dateToSqlFormat($('#fechaHasta').val()));
+                    var o2 = new Date(moment($("#fechaHasta").val(), 'DD/MM/YYYY', true).format());
 
                     if (o2 < c1 || o2 > c2) {
                         showMessage("La Vigencia de la OP debe estar dentro de la Vigencia del Convenio", "error");
@@ -5171,19 +5130,19 @@
                 var c2 = new Date(fechaHConvD);
 
                 if (fecha == 'fechaDD') {
-                    var o1 = new Date(dateToSqlFormat($('#fechaDesdeD').val()));
+                    var o1 = new Date(moment($("#fechaDesdeD").val(), 'DD/MM/YYYY', true).format());
 
                     if (o1 < c1 || o1 > c2) {
                         showMessage("La Vigencia del Detalle de OP debe estar dentro de la Vigencia del Detalle de Convenio", "error");
-                        $('#fechaDesdeD').datetimepicker('date', moment(dateToFieldFormat(fechaDConv), 'DD/MM/YYYY'));
+                        $('#fechaDesdeD').datetimepicker('date', moment(dateToFieldFormat(fechaDConvD), 'DD/MM/YYYY'));
                     }
                 }
                 else {
-                    var o2 = new Date(dateToSqlFormat($('#fechaHastaD').val()));
+                    var o2 = new Date(moment($("#fechaHastaD").val(), 'DD/MM/YYYY', true).format());
 
                     if (o2 < c1 || o2 > c2) {
                         showMessage("La Vigencia del Detalle de OP debe estar dentro de la Vigencia del Detalle de Convenio", "error");
-                        $('#fechaHastaD').datetimepicker('date', moment(dateToFieldFormat(fechaHConv), 'DD/MM/YYYY'));
+                        $('#fechaHastaD').datetimepicker('date', moment(dateToFieldFormat(fechaHConvD), 'DD/MM/YYYY'));
                     }
                 }
             }
@@ -5235,35 +5194,6 @@
             callWS("googleAdManager", "cambiarRed", codRed);
         }
 
-        //function comprobarNuevosDetalles() {
-        //    var data = {};
-        //    data.id_op_dg = $("#inpOrderNumber").attr("id_op_dg");
-        //    data.id_Google_Ad_Manager = $('#inpIdOrdenAdServer').val();
-        //    data.id_red = $('#selRedes').val();
-
-        //    callWS("googleAdManager", "comprobarNuevosDetalles", JSON.stringify(data), function (data) { onComprobarNuevosDetalles(data); });
-        //}
-
-        //function onComprobarNuevosDetalles(detalles) {
-        //    if (detalles.length > 0) {
-        //        showMessage("Se encontraron " + detalles.length + " nuevos Detalles", "info")
-        //        //Se recorrren los nuevos detalles y se les asigna un 'id_detalle'
-        //        var contDet = Detalles.length + 1;
-        //        $.each(detalles, function (it, detalle) {
-        //            detalle.id_detalle = contDet;
-        //            contDet++;
-        //            Detalles.push(detalle);
-        //        });
-        //        recargarRenglones();
-        //        //Detalles.forEach(generarTablaDetalles);
-        //        //calculateTotals();
-        //    }
-        //}
-
-        //$("#inpDescOP").on("change keyup paste", function () {
-        //    $("#bSendOrdenAdServer").attr("disabled", true);
-        //})
-
         function onTipoAvisoSelected() {
             var tipoAviso = $('#selTipoAvisoD option:selected').attr("tipo_aviso_ads");
             if (TipoAvisoClase != tipoAviso) {
@@ -5302,24 +5232,6 @@
 
             return error;
         }
-
-        //function distribuirDesc() {
-        //    var desc = parseFloat($('#porc_desc').val());
-        //    if (desc < -100 || desc > 100) {
-        //        showMessage("El descuento no puede ser superior a 100");
-        //        $("#porc_desc").val(0);
-        //        desc = 0;
-        //    }
-        //    if (Detalles.length > 0) {
-        //        Detalles.forEach(function (detalle, index) {
-        //            detalle.porc_dto = desc;
-        //            detalle.monto_neto = detalle.monto_neto - (detalle.monto_neto * (detalle.porc_dto / 100));
-        //            detalle.monto_bruto = detalle.monto_neto * 100 / (100 - detalle.porc_dto)
-        //        });
-        //        recargarRenglones()
-        //    }
-        //    calculateTotals()
-        //}
 
         function actDesactExcel() {
             var tipo = $('input[type=radio]:checked').val();
@@ -5620,8 +5532,18 @@
                 rowHTML += "<td class='col-xs-1'> " + detGAM.descripcion + "</td > ";
                 rowHTML += "<td class='col-xs-1'> " + dateToFieldFormat(detGAM.fecha_creacion) + "</td > ";
                 rowHTML += "<td class='col-xs-1'> " + dateToFieldFormat(detGAM.fecha_desde) + "</td > ";
-                rowHTML += "<td class='col-xs-1'> " + dateToFieldFormat(detGAM.fecha_hasta) + "</td > ";
-                rowHTML += "<td class='col-xs-1'> " + detGAM.cantidad + "</td > ";
+                if (detGAM.fecha_hasta == null) {
+                    rowHTML += "<td class='col-xs-1'> - </td > ";
+                }
+                else {
+                    rowHTML += "<td class='col-xs-1'> " + dateToFieldFormat(detGAM.fecha_hasta) + "</td > ";
+                }
+                if (detGAM.cantidad == 0) {
+                    rowHTML += "<td class='col-xs-1'> - </td > ";
+                }
+                else {
+                    rowHTML += "<td class='col-xs-1'> " + detGAM.cantidad + "</td > ";
+                }
                 rowHTML += "<td class='col-xs-1'>$ " + formatearMonto(detGAM.monto_neto) + "</td > ";
                 rowHTML += "<td class='col-xs-2' > <button type='button' id=bSelLinea" + detGAM.id_Google_Ad_Manager + " class='btn btn-dark' style='height: 31px; width: 77.81px; font-size: inherit;' title='Importar Detalle' onClick='selLinea(" + JSON.stringify(detGAM) + ")'> <span class='fa fa-cloud-download'></span></button> </td ></tr>";
                 rowHTML += "</tr>";
@@ -5634,13 +5556,23 @@
         }
 
         function selLinea(linea) {
-            detImportado = true;
-            var idDet = Detalles.length + 1;
-            linea.id_detalle = idDet;
-            $.when(
-                Detalles.push(linea),
-                $('#bSelLinea' + linea.id_Google_Ad_Manager).attr('data-id', idDet)
-            ).then(function () { var boton = $('#bSelLinea' + linea.id_Google_Ad_Manager); cargarModificarRenglon(boton); $("#importarModal").modal('hide'); });
+            if (idConvenio > 0) {
+                comprobarLineaConvenio(linea);
+            }
+            else {
+                detImportado = true;
+                var idDet = Detalles.length + 1;
+                linea.id_detalle = idDet;
+                $.when(
+                    Detalles.push(linea),
+                    $('#bSelLinea' + linea.id_Google_Ad_Manager).attr('data-id', idDet)
+                ).then(function () { var boton = $('#bSelLinea' + linea.id_Google_Ad_Manager); cargarModificarRenglon(boton); $("#importarModal").modal('hide'); });
+            }
+        }
+
+        function comprobarLineaConvenio(linea) {
+            //podemos crear un atributo "id_convenio" en orden_pub_as para cargarle aca el idConvenio y mandarlo para comparar
+           //hacer metodo en mediosService mandando la linea y el idConevnio para compararla con los detalles digitales que tenga el convenio
         }
 
     </script>

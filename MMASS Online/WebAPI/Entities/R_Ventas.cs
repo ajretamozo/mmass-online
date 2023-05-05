@@ -4,8 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Data;
 using WebApi.Helpers;
-using System.Data.SqlClient;
-using Microsoft.IdentityModel.Protocols;
+using Microsoft.Data.SqlClient;
+//using Microsoft.IdentityModel.Protocols;
 
 namespace WebApi.Entities
 {
@@ -132,7 +132,7 @@ namespace WebApi.Entities
                         mifiltro = mifiltro + " and apm.id_medio in (" + p.Value + ")";
                   
                     if ((p.ParameterName == "listaTiposVenta") && (p.Value.ToString() != ""))
-                        mifiltro = mifiltro + " and fdp.id_formapago in (" + p.Value + ")";
+                        mifiltro = mifiltro + " and fp.id_formapago in (" + p.Value + ")";
                   
                     if ((p.ParameterName == "listaEmpresas") && (p.Value.ToString() != ""))
                         mifiltro = mifiltro + " and ap.id_empresa in (" + p.Value + ")";

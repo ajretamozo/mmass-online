@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using WebApi.Entities;
@@ -339,18 +339,11 @@ namespace WebApi.Entities
                 sql = "insert into dg_orden_pub_medios (id_op_dg, id_detalle, id_medio, porcentaje)" +
                       " values (@id_op_dg, @id_detalle, @id_medio, @porcentaje)";
                 int count = Medios.Count();
-                int i = 0;
                 float porc = ((float)100.00 / (float)count);
                 porc = (float)Math.Round(porc,2);
-                //float porcSum=0;
+
                 foreach (Dg_orden_pub_medios elem in Medios)
-                {
-                    
-                    //elem.Porcentaje = porc;
-                    //if (++i == count) {
-                    //    elem.Porcentaje = 100- porcSum;
-                    //}
-                    //porcSum = porcSum + porc;
+                {                   
                     List<SqlParameter> parametrosd = new List<SqlParameter>()
                     {
                         new SqlParameter()
@@ -368,7 +361,7 @@ namespace WebApi.Entities
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                throw (ex);
+                throw;
             }
 
             //AGREGUE:
@@ -405,7 +398,7 @@ namespace WebApi.Entities
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                throw (ex);
+                throw;
             }
 
             //AGREGUE:
@@ -440,7 +433,7 @@ namespace WebApi.Entities
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                throw (ex);
+                throw;
             }
 
             return true;

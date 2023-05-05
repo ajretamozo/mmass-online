@@ -1213,8 +1213,18 @@
                 rowHTML += "<td class='col-xs-1'> " + detGAM.descripcion + "</td > ";
                 rowHTML += "<td class='col-xs-1'> " + detGAM.id_Google_Ad_Manager + "</td > ";
                 rowHTML += "<td class='col-xs-1'> " + dateToFieldFormat(detGAM.fecha_desde) + "</td > ";
-                rowHTML += "<td class='col-xs-1'> " + dateToFieldFormat(detGAM.fecha_hasta) + "</td > ";
-                rowHTML += "<td class='col-xs-1'> " + detGAM.cantidad + "</td > ";
+                if (detGAM.fecha_hasta == null) {
+                    rowHTML += "<td class='col-xs-1'> - </td > ";
+                }
+                else {
+                    rowHTML += "<td class='col-xs-1'> " + dateToFieldFormat(detGAM.fecha_hasta) + "</td > ";
+                }
+                if (detGAM.cantidad == 0) {
+                    rowHTML += "<td class='col-xs-1'> - </td > ";
+                }
+                else {
+                    rowHTML += "<td class='col-xs-1'> " + detGAM.cantidad + "</td > ";
+                }
                 rowHTML += "<td class='col-xs-1'>$ " + formatearMonto(detGAM.monto_neto) + "</td > ";
                 if (tablaID == 'TableDetalles') {
                     rowHTML += "<td class='col-xs-2' > <button type='button' id=button" + detGAM.id_Google_Ad_Manager + " class='btn btn-danger' style='height: 31px;width: 77.81px;font - size: inherit;padding-top: 4px;' title='Importar Línea' onClick='comprobarAnunciante(" + JSON.stringify(detGAM) + ")'><span class='fa fa-cloud-download'></span></button> </td ></tr>";

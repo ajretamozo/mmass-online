@@ -50,7 +50,8 @@ namespace WebApi.Services
             byte[] plainTextBytes = Encoding.UTF8.GetBytes(plainText);
             PasswordDeriveBytes password = new PasswordDeriveBytes(passPhrase, null);
             byte[] keyBytes = password.GetBytes(keysize / 8);
-            RijndaelManaged symmetricKey = new RijndaelManaged();
+            //RijndaelManaged symmetricKey = new RijndaelManaged();
+            using var symmetricKey = Aes.Create();
             symmetricKey.Mode = CipherMode.CBC;
             ICryptoTransform encryptor = symmetricKey.CreateEncryptor(keyBytes, initVectorBytes);
             MemoryStream memoryStream = new MemoryStream();
@@ -71,7 +72,8 @@ namespace WebApi.Services
             byte[] cipherTextBytes = Convert.FromBase64String(cipherText);
             PasswordDeriveBytes password = new PasswordDeriveBytes(passPhrase, null);
             byte[] keyBytes = password.GetBytes(keysize / 8);
-            RijndaelManaged symmetricKey = new RijndaelManaged();
+            //RijndaelManaged symmetricKey = new RijndaelManaged();
+            using var symmetricKey = Aes.Create();
             symmetricKey.Mode = CipherMode.CBC;
             ICryptoTransform decryptor = symmetricKey.CreateDecryptor(keyBytes, initVectorBytes);
             MemoryStream memoryStream = new MemoryStream(cipherTextBytes);

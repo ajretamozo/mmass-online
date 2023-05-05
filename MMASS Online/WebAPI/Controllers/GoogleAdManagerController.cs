@@ -158,13 +158,6 @@ namespace WebApi.Controllers
             var cod = _GoogleAdManagerService.GetRedActual();
             return Ok(cod);
         }
-
-        [HttpPost("getOpNuevas")]
-        public IActionResult getOpNuevas(ListaParametro parametros)
-        {
-            var ordenes = _GoogleAdManagerService.GetOpNuevas(parametros.Parametros);
-            return Ok(ordenes);
-        }
         
         [HttpPost("filtrarPedidos")]
         public IActionResult filtrarPedidos(ListaParametro parametros)
@@ -172,13 +165,6 @@ namespace WebApi.Controllers
             var ordenes = _GoogleAdManagerService.FiltrarPedidos(parametros.Parametros);
             return Ok(ordenes);
         }
-
-        //[HttpPost("comprobarModificaciones")]
-        //public IActionResult ComprobarModificaciones([FromBody] Dg_orden_pub_ap order)
-        //{
-        //    var res = _GoogleAdManagerService.ComprobarModificaciones(order);
-        //    return Ok(res);
-        //}
 
         [HttpPost("comprobarModificacionesD")]
         public IActionResult ComprobarModificacionesD([FromBody] Dg_orden_pub_ap order)
@@ -198,13 +184,6 @@ namespace WebApi.Controllers
         public IActionResult obtenerProgresoLineasGam([FromBody] Dg_orden_pub_ap order)
         {
             var res = _GoogleAdManagerService.obtenerProgresoLineasGam(order);
-            return Ok(res);
-        }
-
-        [HttpPost("comprobarNuevosDetalles")]
-        public IActionResult comprobarNuevosDetalles([FromBody] Dg_orden_pub_ap order)
-        {
-            var res = _GoogleAdManagerService.comprobarNuevosDetalles(order);
             return Ok(res);
         }
 
@@ -242,13 +221,6 @@ namespace WebApi.Controllers
             var contacto = _GoogleAdManagerService.checkAnunciantePedido(det);
             return Ok(JsonConvert.SerializeObject(contacto));
         }
-
-        //[HttpPost("getLineItem")]
-        //public IActionResult getLineItem([FromBody] Dg_orden_pub_as detalle)
-        //{
-        //    var res = _GoogleAdManagerService.getLineItem(detalle);
-        //    return Ok(res);
-        //}
 
         [HttpPost("addLineItemToOrder")]
         public IActionResult getLineItem([FromBody] Dg_orden_pub_as detalle)

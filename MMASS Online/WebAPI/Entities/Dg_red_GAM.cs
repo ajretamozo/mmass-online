@@ -4,8 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Data;
 using WebApi.Helpers;
-using System.Data.SqlClient;
-using Microsoft.IdentityModel.Protocols;
+using Microsoft.Data.SqlClient;
+//using Microsoft.IdentityModel.Protocols;
 using System.Security.Cryptography;
 using System.Transactions;
 

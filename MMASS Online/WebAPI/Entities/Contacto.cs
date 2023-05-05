@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using WebApi.Helpers;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 using System.Configuration;
 
 namespace WebApi.Entities
