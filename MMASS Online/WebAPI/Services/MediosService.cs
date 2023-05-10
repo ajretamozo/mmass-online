@@ -8,6 +8,7 @@ using System.Net.Mail;
 using System.Net;
 using System.Security.Cryptography.X509Certificates;
 using System.Net.Security;
+using System.Drawing.Drawing2D;
 
 
 namespace WebApi.Services
@@ -43,6 +44,7 @@ namespace WebApi.Services
         IEnumerable<Plazos_Pagos> GetAllPlazos();
         bool cambiarParam(Dg_parametro param);
         Dg_parametro getParamById(int id);
+        List<Conv_dg_detalle> checkLinConv(Dg_orden_pub_ap op);
     }
 
     public class MedioService : IMedioService
@@ -199,6 +201,118 @@ namespace WebApi.Services
         public Dg_parametro getParamById(int id)
         {
             return Dg_parametro.getById(id);
+        }
+
+        public List<Conv_dg_detalle> checkLinConv(Dg_orden_pub_ap op)
+        {
+            List<Conv_dg_detalle> detallesConvValidos = new List<Conv_dg_detalle>();
+            Conv_dg_detalle detConv = new Conv_dg_detalle();
+            detConv.Id_convenio = op.Id_convenio;
+            detConv.Id_empresa = op.empresa.Id_empresa;
+            List<Conv_dg_detalle> detallesConv = detConv.getByIdConv();
+            Dg_orden_pub_as detalle = op.Detalles[0];
+            //si la linea viene con area null, le creamos una para poder compararla
+            if (detalle.areaGeo == null)
+            {
+                Dg_areas_geo area = new Dg_areas_geo();
+                area.Id_area = 0;
+                detalle.areaGeo = area;
+            }
+
+            foreach (Conv_dg_detalle detConvenio in detallesConv)
+            {
+                //se chequea si los datos de la linea concuerdan con algun det convenio
+
+                if (detalle.Tipo_tarifa != detConvenio.Forma_uso.Id)
+                {
+                    continue;
+                }
+
+                //Se comparan emplazamientos
+                if (detConvenio.Emplazamientos.Count < detalle.Emplazamientos.Count)
+                {
+                    continue;
+                }
+
+                else
+                {
+                    foreach (Dg_orden_pub_emplazamientos emp in detalle.Emplazamientos)
+                    {
+                        bool existeEmp = false;
+                        foreach (Dg_emplazamientos empConv in detConvenio.Emplazamientos)
+                        {
+                            if (empConv.Codigo_emplazamiento == emp.Codigo_emplazamiento)
+                            {
+                                existeEmp = true;
+                                break;
+                            }
+                        }
+                        if (existeEmp == false)
+                        {
+                            continue;
+                        }
+                    }
+                }
+
+                //Se comparan medidas
+                if (detConvenio.Medidas.Count < detalle.Medidas.Count)
+                {
+                    continue;
+                }
+
+                else
+                {
+                    foreach (Dg_orden_pub_medidas med in detalle.Medidas)
+                    {
+                        bool existe = false;
+                        foreach (Dg_medidas medConv in detConvenio.Medidas)
+                        {
+                            if (medConv.Id_medidadigital == med.Id_medidadigital)
+                            {
+                                existe = true;
+                                break;
+                            }
+                        }
+                        if (existe == false)
+                        {
+                            continue;
+                        }
+                    }
+                }
+
+                if (detConvenio.Precio_unitario != detalle.Importe_unitario)
+                {
+                    continue;
+                }
+
+                if (detConvenio.Porc_desc != detalle.Porc_dto)
+                {
+                    continue;
+                }
+
+                if (detalle.Fecha_desde < detConvenio.Fecha_desde)
+                {
+                    continue;
+                }
+
+                if (detalle.Fecha_hasta > detConvenio.Fecha_hasta)
+                {
+                    continue;
+                }
+
+                if (detalle.tipo_aviso_dg.Tipo_aviso_ads != detConvenio.Tipos_aviso[0].Tipo_aviso_ads)
+                {
+                    continue;
+                }
+
+                if (detalle.areaGeo.Id_area != detConvenio.Id_area)
+                {
+                    continue;
+                }
+
+                detallesConvValidos.Add(detConvenio);
+            }
+            return detallesConvValidos;
         }
 
     }

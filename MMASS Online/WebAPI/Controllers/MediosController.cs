@@ -214,5 +214,12 @@ namespace WebApi.Controllers
             var param = _medioService.getParamById(id);
             return Ok(param);
         }
+
+        [HttpPost("checkLinConv")]
+        public IActionResult save(Dg_orden_pub_ap op)
+        {
+            var result = _medioService.checkLinConv(op);
+            return Ok(result);
+        }
     }
 }

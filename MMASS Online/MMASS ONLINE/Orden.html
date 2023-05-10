@@ -2796,6 +2796,8 @@
         var DiferenciasDetLin = [];
         //Parametro global para llevar los detalles
         Detalles = [];
+        //Parametro global para llevar la linea al importar detalle dentro de convenio
+        LineaImpConv = [];
 
         //Modifica o agrega un renglon segun el id
         function prevAddRenglon(id) {
@@ -3043,6 +3045,7 @@
                     rDetalle.id_detalle = id;
                     Detalles.push(rDetalle);
                     detImportado = false;
+                    LineaImpConv.length = 0;
                 }
                 //Vuelvo el boton al estado inicial
                 $("#GuardarRenglon").attr("onclick", "prevAddRenglon(-1)");
@@ -3112,6 +3115,11 @@
             }
             if (rDetalle.porc_dto > 100) {
                 error.push("Descuento (tope 100%)");
+            }
+            if (detImportado == true) {
+                if (rDetalle.id_det_conv == 0) {
+                    error.push("Detalle Convenio");
+                }
             }
 
             return error;
@@ -3931,8 +3939,6 @@
         }
 
         function LimpiarSelectMultiples() {
-            //idRed = $('#selRedes').val();
-            //idEmpresa = $('#selEmpresa').val();
             callWS("medios", "getMedidas", JSON.stringify("0"), function (data) { onPopulateSelectMedidas(data, 'selMedidasD', 'id_medidadigital', 'descripcion', 'ancho', 'alto'); });
             callWS("medios", "getAllE", JSON.stringify(0), function (data) { onPopulateSelectEmplaza(data, 'selEmplazaD', 'id_emplazamiento', 'descripcion', 'codigo_emplazamiento'); });
             callWS("medios", "getAll", '', function (data) { onPopulateSelectDone(data, 'selMediosD', 'id_medio', 'desc_medio'); });
@@ -3942,15 +3948,10 @@
         function prevSeleccionarDetConvenio() {
             desbloquearCamposDetalle();
             detConv = {}
-            //detConv.Id_convenio = idConvenio;
-            ////nuev
-            //detConv.Id_detalle = $('#selDetConvenio>option:selected').attr("id_detalle");
+
             detConv.id_det_conv = $('#selDetConvenio').val()
             idDetConvenio = $('#selDetConvenio').val()
 
-            //$.when(cargarSelectMultiples()).then(function () {
-            //    callWS("medios", "GetDetConvenioById", JSON.stringify(detConv), function (data) { seleccionarDetConvenio(data); });
-            //}, function data() { });
             callWS("medios", "GetDetConvenioById", JSON.stringify(detConv), function (data) { seleccionarDetConvenio(data); });
         }
 
@@ -3967,8 +3968,7 @@
 
         function onSeleccionarDetConvenio(data) {
 
-            $("#cantidadD").val('');
-            $("#totalD").val('');
+            //Carga Forma de uso
             $("#selTipoTarifaD").val(data.forma_uso.id);
             $("#selTipoTarifaD").attr("disabled", true);
 
@@ -4004,13 +4004,32 @@
                 $("#porcRon").html(porcHTML);
                 enableRon();
             }
-
             viewListMedios += "</ul>"
             $("#selMediosD").after(viewListMedios);
             cMultiSelect.bootstrapDualListbox('refresh');
 
+            var medidas = [];
+            var emplazamientos = [];
+            var fechaDesde;
+            var fechaHasta;
+
+            if (detImportado == true) {
+                medidas = LineaImpConv.medidas;
+                emplazamientos = LineaImpConv.emplazamientos;
+                fechaDesde = LineaImpConv.fecha_desde;
+                fechaHasta = LineaImpConv.fecha_hasta;
+                $("#precioUnitarioD").attr("disabled", true);
+            }
+            else {
+                medidas = data.medidas;
+                emplazamientos = data.emplazamientos;
+                fechaDesde = data.fecha_desde;
+                fechaHasta = data.fecha_hasta;
+                $("#cantidadD").val('');
+                $("#totalD").val('');
+            }
+
             //Carga Medidas
-            var medidas = data.medidas;
             var viewListMedidas = "<ul class=\"list-group\">"
             if (medidas.length > 0) {
                 medidas.forEach(function (medida) {
@@ -4022,7 +4041,6 @@
             cMultiSelect.bootstrapDualListbox('refresh');
 
             //Carga Emplazamientos
-            var emplazamientos = data.emplazamientos;
             var viewListEmplazamientos = "<ul class=\"list-group\">"
             if (emplazamientos.length > 0) {
                 emplazamientos.forEach(function (emplaza) {
@@ -4039,8 +4057,8 @@
             fechaDConvD = data.fecha_desde;
             fechaHConvD = data.fecha_hasta;
 
-            $('#fechaDesdeD').datetimepicker('date', moment(dateToFieldFormat(data.fecha_desde), 'DD/MM/YYYY'));
-            $('#fechaHastaD').datetimepicker('date', moment(dateToFieldFormat(data.fecha_hasta), 'DD/MM/YYYY'));
+            $('#fechaDesdeD').datetimepicker('date', moment(dateToFieldFormat(fechaDesde), 'DD/MM/YYYY'));
+            $('#fechaHastaD').datetimepicker('date', moment(dateToFieldFormat(fechaHasta), 'DD/MM/YYYY'));
 
             $("#selProductoD").attr("disabled", true);
 
@@ -4065,12 +4083,12 @@
 
             //Carga Descuento
             $('#descuentoD').val(data.porc_desc);
-            if (data.porc_desc > 0) {
+            //if (data.porc_desc > 0) {
                 $("#descuentoD").attr("disabled", true);
-            }
-            else {
-                $("#descuentoD").attr("disabled", false);
-            }
+            //}
+            //else {
+            //    $("#descuentoD").attr("disabled", false);
+            //}
 
             //Carga conf NC y FC
             $('#confNCD').val(data.porc_conf_nc);
@@ -4575,6 +4593,7 @@
             if (detImportado == true) {
                 Detalles.pop();
                 detImportado = false;
+                LineaImpConv.length = 0;
             }
             if ($("#inpOrderNumber").attr("id_op_dg") == 0) {
                 $("#selAnunciante").attr("disabled", false);
@@ -5157,15 +5176,27 @@
             detConv.id_empresa = $('#selEmpresa').val();
             rId++;
 
-            $.when(
-                callWS("medios", "getAllA", '', function (data) { onAreasGeoGetAll(data, 'selAreasGeo', 'Id_area', 'descripcion', 'Codigo_area', 'tipo'); }),
-                callWS("medios", "GetDetConveniosByIdConv", JSON.stringify(detConv), function (data) { onPopulateSelectDetConv(data, 'selDetConvenio', 'id_det_conv', 'descripcion', 'id_detalle'); }),
-                callWS("medios", "GetDetConvenioById", JSON.stringify(detConv), function (data) { cargarSelectMultiples(data); }),
-                callWS("tarifas", "getFormasUsoAll", '', function (data) { onPopulateSelectDone(data, 'selTipoTarifaD', 'id', 'descripcion'); })
-            ).then(function () { onCargarModificarRenglon(rDetalle) }, function (data1, data2, data3) {
-                console.log("Medios: " + data1[2].statusText + "; Formas de uso: " + data2[2].statusText + "Tipo Aviso: " + data3[2].statusText + ";");
-                showMessage("Se produjo un error al cargar los campos, intentelo nuevamente", type = "alert");
-            });
+            if (detImportado == true) {
+                $.when(
+                    callWS("medios", "getAllA", '', function (data) { onAreasGeoGetAll(data, 'selAreasGeo', 'Id_area', 'descripcion', 'Codigo_area', 'tipo'); }),
+                    callWS("medios", "GetDetConvenioById", JSON.stringify(detConv), function (data) { cargarSelectMultiples(data); }),
+                    callWS("tarifas", "getFormasUsoAll", '', function (data) { onPopulateSelectDone(data, 'selTipoTarifaD', 'id', 'descripcion'); })
+                ).then(function () { onCargarModificarRenglon(rDetalle) }, function (data1, data2, data3) {
+                    console.log("Medios: " + data1[2].statusText + "; Formas de uso: " + data2[2].statusText + "Tipo Aviso: " + data3[2].statusText + ";");
+                    showMessage("Se produjo un error al cargar los campos, intentelo nuevamente", type = "alert");
+                });
+            }
+            else {
+                $.when(
+                    callWS("medios", "getAllA", '', function (data) { onAreasGeoGetAll(data, 'selAreasGeo', 'Id_area', 'descripcion', 'Codigo_area', 'tipo'); }),
+                    callWS("medios", "GetDetConveniosByIdConv", JSON.stringify(detConv), function (data) { onPopulateSelectDetConv(data, 'selDetConvenio', 'id_det_conv', 'descripcion', 'id_detalle'); }),
+                    callWS("medios", "GetDetConvenioById", JSON.stringify(detConv), function (data) { cargarSelectMultiples(data); }),
+                    callWS("tarifas", "getFormasUsoAll", '', function (data) { onPopulateSelectDone(data, 'selTipoTarifaD', 'id', 'descripcion'); })
+                ).then(function () { onCargarModificarRenglon(rDetalle) }, function (data1, data2, data3) {
+                    console.log("Medios: " + data1[2].statusText + "; Formas de uso: " + data2[2].statusText + "Tipo Aviso: " + data3[2].statusText + ";");
+                    showMessage("Se produjo un error al cargar los campos, intentelo nuevamente", type = "alert");
+                });
+            }
         }
 
         function obtenerProgresoLineasGam(op) {
@@ -5571,8 +5602,32 @@
         }
 
         function comprobarLineaConvenio(linea) {
-            //podemos crear un atributo "id_convenio" en orden_pub_as para cargarle aca el idConvenio y mandarlo para comparar
-           //hacer metodo en mediosService mandando la linea y el idConevnio para compararla con los detalles digitales que tenga el convenio
+            LineaImpConv = linea;
+            var op = {};
+            op.id_convenio = idConvenio;
+            op.empresa = {};
+            op.empresa.Id_empresa = $("#selEmpresa").val();
+            var detalles = [];
+            detalles.push(linea);
+            op.Detalles = detalles;
+
+            callWS("medios", "checkLinConv", JSON.stringify(op), function (detallesConv) { onComprobarLineaConvenio(detallesConv); }); 
+        }
+
+        function onComprobarLineaConvenio(detallesConv) {
+            if (detallesConv.length == 0) {
+                showMessage("La Línea seleccionada no es compatible con ningún Detalle del Convenio", "info");
+            }
+            else {
+                detImportado = true;
+                onPopulateSelectDetConv(detallesConv, 'selDetConvenio', 'id_det_conv', 'descripcion', 'id_detalle');
+                var idDet = Detalles.length + 1;
+                LineaImpConv.id_detalle = idDet;
+                $.when(
+                    Detalles.push(LineaImpConv),
+                    $('#bSelLinea' + LineaImpConv.id_Google_Ad_Manager).attr('data-id', idDet)
+                ).then(function () { var boton = $('#bSelLinea' + LineaImpConv.id_Google_Ad_Manager); cargarModificarRenglon(boton); $("#importarModal").modal('hide'); });
+            }
         }
 
     </script>
