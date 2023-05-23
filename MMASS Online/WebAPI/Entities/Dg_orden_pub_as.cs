@@ -26,11 +26,11 @@ namespace WebApi.Entities
         public Dg_tipos_avisos tipo_aviso_dg { get; set; }
         public int Tipo_tarifa { get; set; }
         public float Imp_tarifa { get; set; }
-        public float Importe_unitario { get; set; }
+        public double Importe_unitario { get; set; }
         public int Cantidad { get; set; }
-        public float Monto_bruto { get; set; }
+        public double Monto_bruto { get; set; }
         public float Porc_dto { get; set; }
-        public float Monto_neto { get; set; }
+        public double Monto_neto { get; set; }
         public float Netomanual { get; set; }
         public float Porcconfnc { get; set; }
         public float Porcconffc { get; set; }
@@ -95,11 +95,11 @@ namespace WebApi.Entities
             mi.tipo_aviso_dg = Dg_tipos_avisos.getById(DB.DInt(item["id_categoria"].ToString()));
             mi.Tipo_tarifa = DB.DInt(item["tipo_tarifa"].ToString());
             mi.Imp_tarifa = DB.DFloat(item["Imp_tarifa"].ToString());
-            mi.Importe_unitario = DB.DFloat(item["Importe_unitario"].ToString());
+            mi.Importe_unitario = double.Parse(item["Importe_unitario"].ToString());
             mi.Cantidad = DB.DInt(item["Cantidad"].ToString());
-            mi.Monto_bruto = DB.DFloat(item["Monto_bruto"].ToString());
+            mi.Monto_bruto = double.Parse(item["Monto_bruto"].ToString());
             mi.Porc_dto = DB.DFloat(item["Porc_dto"].ToString());
-            mi.Monto_neto = DB.DFloat(item["Monto_neto"].ToString());
+            mi.Monto_neto = double.Parse(item["Monto_neto"].ToString());
             mi.Netomanual = DB.DFloat(item["Netomanual"].ToString());
             mi.Porcconfnc = DB.DFloat(item["Porcconfnc"].ToString());
             mi.Porcconffc = DB.DFloat(item["Porcconffc"].ToString());

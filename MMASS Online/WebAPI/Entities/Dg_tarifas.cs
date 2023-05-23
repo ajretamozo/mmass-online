@@ -81,7 +81,7 @@ namespace WebApi.Entities
         public DateTime Fecha_desde { get; set; }
         public DateTime Fecha_hasta { get; set; }
         public Dg_tarifa_forma_uso Forma_uso { get; set; }
-        public float Precio_unitario { get; set; }
+        public double Precio_unitario { get; set; }
         public bool Es_borrado { get; set; }
         public int Id_red { get; set; }
 
@@ -107,7 +107,7 @@ namespace WebApi.Entities
                 resultado.Fecha_desde = DateTime.Parse(t.Rows[0]["fecha_desde"].ToString());
                 resultado.Fecha_hasta = DateTime.Parse(t.Rows[0]["fecha_hasta"].ToString());
                 resultado.Forma_uso =  Dg_tarifa_forma_uso.getFormaUso(DB.DInt(t.Rows[0]["forma_uso"].ToString()));
-                resultado.Precio_unitario = float.Parse(t.Rows[0]["precio_unitario"].ToString());
+                resultado.Precio_unitario = double.Parse(t.Rows[0]["precio_unitario"].ToString());
                 resultado.Es_borrado = (t.Rows[0]["Es_borrado"].ToString()=="1");
                 resultado.Id_red = int.Parse(t.Rows[0]["id_red"].ToString());
                 // Medios
@@ -290,7 +290,7 @@ namespace WebApi.Entities
                     Fecha_desde = DateTime.Parse(item["fecha_desde"].ToString()),
                     Fecha_hasta = DateTime.Parse(item["fecha_hasta"].ToString()),
                     Forma_uso = Dg_tarifa_forma_uso.getFormaUso(DB.DInt(item["forma_uso"].ToString())),
-                    Precio_unitario = float.Parse(item["precio_unitario"].ToString()),
+                    Precio_unitario = double.Parse(item["precio_unitario"].ToString()),
                     Es_borrado = (item["Es_borrado"].ToString()=="1"),
                     Id_red = int.Parse(t.Rows[0]["id_red"].ToString())
                 };
@@ -417,7 +417,7 @@ namespace WebApi.Entities
                     Fecha_desde = DateTime.Parse(item["fecha_desde"].ToString()),
                     Fecha_hasta = DateTime.Parse(item["fecha_hasta"].ToString()),
                     Forma_uso = Dg_tarifa_forma_uso.getFormaUso(DB.DInt(item["forma_uso"].ToString())),
-                    Precio_unitario = float.Parse(item["precio_unitario"].ToString()),
+                    Precio_unitario = double.Parse(item["precio_unitario"].ToString()),
                     Es_borrado = (item["Es_borrado"].ToString() == "1"),
                     Id_red = int.Parse(item["id_red"].ToString())
             };

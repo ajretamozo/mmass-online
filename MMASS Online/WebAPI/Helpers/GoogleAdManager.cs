@@ -608,7 +608,7 @@ namespace WebApi.Helpers
             return resultado;
         }
 
-        public static Parametro CreateLineItems(int tipoAviso, String name, long orderId, float cost, long units, double discount, System.DateTime? fechaDesde, System.DateTime? fechaHasta, List<Dg_orden_pub_medidas> medidas, Dg_areas_geo areaGeo, List<Dg_orden_pub_emplazamientos> emplazamientos, int tipoTarifa)
+        public static Parametro CreateLineItems(int tipoAviso, String name, long orderId, double cost, long units, double discount, System.DateTime? fechaDesde, System.DateTime? fechaHasta, List<Dg_orden_pub_medidas> medidas, Dg_areas_geo areaGeo, List<Dg_orden_pub_emplazamientos> emplazamientos, int tipoTarifa)
         {
             Parametro resultado = new Parametro();
             long result = -1;
@@ -920,7 +920,7 @@ namespace WebApi.Helpers
             return resultado;
         }
 
-        public static Dg_orden_pub_as UpdateLineItem(string tipoAviso, String name, float cost, long units, double discount, System.DateTime? fechaDesde, System.DateTime? fechaHasta, List<Dg_orden_pub_medidas> medidas, Dg_areas_geo areaGeo, List<Dg_orden_pub_emplazamientos> emplazamientos, int tipoTarifa, long Id, int paramSinc)
+        public static Dg_orden_pub_as UpdateLineItem(string tipoAviso, String name, double cost, long units, double discount, System.DateTime? fechaDesde, System.DateTime? fechaHasta, List<Dg_orden_pub_medidas> medidas, Dg_areas_geo areaGeo, List<Dg_orden_pub_emplazamientos> emplazamientos, int tipoTarifa, long Id, int paramSinc)
         {
             Dg_orden_pub_as resultado = new Dg_orden_pub_as();
             string rootId = "";
@@ -1109,7 +1109,7 @@ namespace WebApi.Helpers
                     lineItem.discountType = LineItemDiscountType.PERCENTAGE;
                     lineItem.discount = discount;
 
-                    float brutoD = cost * (units / divD);
+                    double brutoD = cost * (units / divD);
                     double total = brutoD - (brutoD * discount / 100);
                     lineItem.budget.microAmount = (long)(total * 1000000);
 

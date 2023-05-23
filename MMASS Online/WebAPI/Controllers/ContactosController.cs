@@ -32,6 +32,7 @@ namespace WebApi.Controllers
             var contactos = _contactoService.GetAnunciantes();
             return Ok(contactos);
         }
+
         [HttpPost("getEjecutivos")]
         public IActionResult GetEjecutivos()
         {
@@ -93,6 +94,13 @@ namespace WebApi.Controllers
         {
             var contacto = _contactoService.getContactoByIdyRed(anun.Id_contacto, anun.Id_red);
             return Ok(contacto);
+        }
+
+        [HttpPost("getAnunSincro")]
+        public IActionResult GetAnunSincro([FromBody] int idRed)
+        {
+            var contactos = _contactoService.GetAnunSincro(idRed);
+            return Ok(contactos);
         }
     }
 }

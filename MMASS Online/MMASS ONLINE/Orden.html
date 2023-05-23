@@ -665,7 +665,7 @@
                                 <select class="form-control" id="selAnunciantePedidoAS"></select>
                             </div>
                             <div class="col-md-3" style="align-self: self-end;">
-                                <button type='button' class='btn btn-secondary' id="bVincularAnun" value='1' onclick="vincularAnun('selAnunciantePedidoAS','selAnunciantePedido','selRedesPedido','bVincularAnun', 'lblAnunNoSinc')">Vincular</button>
+                                <button type='button' class='btn btn-secondary' id="bVincularAnun" value='1' onclick="vincularAnun('selAnunciantePedidoAS','selAnunciantePedido','selRedesPedido','bVincularAnun', 'lblAnunNoSinc', 'tablePedidos')">Vincular</button>
                             </div>
                         </div>
                         <div class="row py-1">
@@ -802,7 +802,7 @@
                                 <select class="form-control" id="selAnuncianteSincImp"></select>
                             </div>
                             <div class="col-md-3" style="align-self: self-end;">
-                                <button type='button' class='btn btn-secondary' id="bVincularAnunImp" value='1' onclick="vincularAnun('selAnuncianteSincImp','selAnuncianteImp','selRedesImp','bVincularAnunImp', 'lblAnunNoSincImp')">Vincular</button>
+                                <button type='button' class='btn btn-secondary' id="bVincularAnunImp" value='1' onclick="vincularAnun('selAnuncianteSincImp','selAnuncianteImp','selRedesImp','bVincularAnunImp', 'lblAnunNoSincImp', 'TableLineas')">Vincular</button>
                             </div>
                         </div>
                         <div class="row py-1">
@@ -3044,9 +3044,9 @@
                     id = Detalles.length + 1;
                     rDetalle.id_detalle = id;
                     Detalles.push(rDetalle);
-                    detImportado = false;
-                    LineaImpConv.length = 0;
                 }
+                detImportado = false;
+                LineaImpConv.length = 0;
                 //Vuelvo el boton al estado inicial
                 $("#GuardarRenglon").attr("onclick", "prevAddRenglon(-1)");
                 recargarRenglones();
@@ -3116,7 +3116,7 @@
             if (rDetalle.porc_dto > 100) {
                 error.push("Descuento (tope 100%)");
             }
-            if (detImportado == true) {
+            if (LineaImpConv.id_detalle > 0) {
                 if (rDetalle.id_det_conv == 0) {
                     error.push("Detalle Convenio");
                 }
@@ -3549,7 +3549,7 @@
 
             //Carga datos ad server
             $("#selRedes option[value=" + rDetalle.id_red + "]").attr("selected", "selected");
-            if (rDetalle.id_Google_Ad_Manager != 0 && rDetalle.id_Google_Ad_Manager != null && OpClon == false && DetalleClon == false) {
+            if ((rDetalle.id_Google_Ad_Manager > 0 && rDetalle.id_Google_Ad_Manager != null && OpClon == false && DetalleClon == false) || LineaImpConv.id_detalle > 0) {
                 $("#selRedes").attr("disabled", true);
                 $("#inpIdLinea").val(rDetalle.id_Google_Ad_Manager);
                 $('#inpIdLinea').css("background-color", "#c3e6cb");
@@ -3602,9 +3602,9 @@
                 $("#confFCD").attr("disabled", true);
                 $("#checkTarifaManualD").attr("disabled", true);
             }
-            if (OpClon) {
-                $("#selDetConvenio").attr("disabled", true);
-            }
+            //if (OpClon) {
+            //    $("#selDetConvenio").attr("disabled", true);
+            //}
         }
 
         function enviarOrdenAdServer() {
@@ -5176,27 +5176,28 @@
             detConv.id_empresa = $('#selEmpresa').val();
             rId++;
 
-            if (detImportado == true) {
-                $.when(
-                    callWS("medios", "getAllA", '', function (data) { onAreasGeoGetAll(data, 'selAreasGeo', 'Id_area', 'descripcion', 'Codigo_area', 'tipo'); }),
-                    callWS("medios", "GetDetConvenioById", JSON.stringify(detConv), function (data) { cargarSelectMultiples(data); }),
-                    callWS("tarifas", "getFormasUsoAll", '', function (data) { onPopulateSelectDone(data, 'selTipoTarifaD', 'id', 'descripcion'); })
+            //if (detImportado == true) {
+            //    $.when(
+            //        callWS("medios", "getAllA", '', function (data) { onAreasGeoGetAll(data, 'selAreasGeo', 'Id_area', 'descripcion', 'Codigo_area', 'tipo'); }),
+            //        callWS("medios", "GetDetConvenioById", JSON.stringify(detConv), function (data) { cargarSelectMultiples(data); }),
+            //        callWS("tarifas", "getFormasUsoAll", '', function (data) { onPopulateSelectDone(data, 'selTipoTarifaD', 'id', 'descripcion'); })
+            //    ).then(function () { onCargarModificarRenglon(rDetalle) }, function (data1, data2, data3) {
+            //        console.log("Medios: " + data1[2].statusText + "; Formas de uso: " + data2[2].statusText + "Tipo Aviso: " + data3[2].statusText + ";");
+            //        showMessage("Se produjo un error al cargar los campos, intentelo nuevamente", type = "alert");
+            //    });
+            //}
+            //else {
+            $.when(
+                callWS("medios", "getAllRedes", '', function (data) { onCargarSelect(data, 'selRedes', 'id_red', 'descripcion', 'codigo_red'); }),
+                callWS("medios", "getAllA", '', function (data) { onAreasGeoGetAll(data, 'selAreasGeo', 'Id_area', 'descripcion', 'Codigo_area', 'tipo'); }),
+                callWS("medios", "GetDetConveniosByIdConv", JSON.stringify(detConv), function (data) { onPopulateSelectDetConv(data, 'selDetConvenio', 'id_det_conv', 'descripcion', 'id_detalle'); }),
+                callWS("medios", "GetDetConvenioById", JSON.stringify(detConv), function (data) { cargarSelectMultiples(data); }),
+                callWS("tarifas", "getFormasUsoAll", '', function (data) { onPopulateSelectDone(data, 'selTipoTarifaD', 'id', 'descripcion'); })
                 ).then(function () { onCargarModificarRenglon(rDetalle) }, function (data1, data2, data3) {
                     console.log("Medios: " + data1[2].statusText + "; Formas de uso: " + data2[2].statusText + "Tipo Aviso: " + data3[2].statusText + ";");
                     showMessage("Se produjo un error al cargar los campos, intentelo nuevamente", type = "alert");
                 });
-            }
-            else {
-                $.when(
-                    callWS("medios", "getAllA", '', function (data) { onAreasGeoGetAll(data, 'selAreasGeo', 'Id_area', 'descripcion', 'Codigo_area', 'tipo'); }),
-                    callWS("medios", "GetDetConveniosByIdConv", JSON.stringify(detConv), function (data) { onPopulateSelectDetConv(data, 'selDetConvenio', 'id_det_conv', 'descripcion', 'id_detalle'); }),
-                    callWS("medios", "GetDetConvenioById", JSON.stringify(detConv), function (data) { cargarSelectMultiples(data); }),
-                    callWS("tarifas", "getFormasUsoAll", '', function (data) { onPopulateSelectDone(data, 'selTipoTarifaD', 'id', 'descripcion'); })
-                ).then(function () { onCargarModificarRenglon(rDetalle) }, function (data1, data2, data3) {
-                    console.log("Medios: " + data1[2].statusText + "; Formas de uso: " + data2[2].statusText + "Tipo Aviso: " + data3[2].statusText + ";");
-                    showMessage("Se produjo un error al cargar los campos, intentelo nuevamente", type = "alert");
-                });
-            }
+            //}
         }
 
         function obtenerProgresoLineasGam(op) {
@@ -5322,14 +5323,21 @@
         function onGetAnuncianteGAM(anunciantes, selAnunAS, rowAnun) {
             var listitems = '<option value="-1">  </option>';
             $.each(anunciantes, function (it, anun) {
-                listitems = listitems + '<option value="' + anun.idContactoDigital + '">' + anun.nombre_com + ' </option>';
+
+                if (anun.id_contacto > 0) {
+                    listitems = listitems + '<option value="' + anun.idContactoDigital + '" disabled="disabled">' + anun.nombre_com + ' </option>';
+                }
+                else {
+                    listitems = listitems + '<option value="' + anun.idContactoDigital + '">' + anun.nombre_com + ' </option>';
+                }
+
             });
             $("#" + selAnunAS).empty();
             $("#" + selAnunAS).append(listitems);
             $("#" + rowAnun).attr("hidden", false);
         }
 
-        function vincularAnun(selAnunAS, selAnun, selRedes, bAnun, lblAnun) {
+        function vincularAnun(selAnunAS, selAnun, selRedes, bAnun, lblAnun, tabla) {
             var idGAMSel = $("#" + selAnunAS).val();
             if (idGAMSel > 0) {
                 var cont = {};
@@ -5343,6 +5351,7 @@
                     }
                     else {
                         callWS("contactos", "deleteASRelation", JSON.stringify(cont), function (data) { onVincularAnun(data, bAnun, lblAnun, selAnunAS) });
+                        onCargarTablaDGam(tabla, '');
                     }
                 }
                 else {
@@ -5623,6 +5632,7 @@
                 onPopulateSelectDetConv(detallesConv, 'selDetConvenio', 'id_det_conv', 'descripcion', 'id_detalle');
                 var idDet = Detalles.length + 1;
                 LineaImpConv.id_detalle = idDet;
+                //LineaImpConv.id_det_conv = detallesConv[0];
                 $.when(
                     Detalles.push(LineaImpConv),
                     $('#bSelLinea' + LineaImpConv.id_Google_Ad_Manager).attr('data-id', idDet)

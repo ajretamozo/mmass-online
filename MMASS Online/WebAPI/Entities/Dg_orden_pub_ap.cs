@@ -30,10 +30,10 @@ namespace WebApi.Entities
         public int Facturar_a { get; set; }
         public int Tipo_orden { get; set; }
         public string Observ { get; set; }
-        public float Monto_bruto { get; set; }
+        public double Monto_bruto { get; set; }
         public float Monto_bonif { get; set; }
         public float Monto_dto { get; set; }
-        public float Primer_neto { get; set; }
+        public double Primer_neto { get; set; }
         public bool Es_anulada { get; set; }
         public DateTime? Fecha_anulada { get; set; }
         public float Monto_desc_ag { get; set; }
@@ -45,12 +45,12 @@ namespace WebApi.Entities
         public string Nro_orden_imp { get; set; }
         public float Porc_dto { get; set; }
         public float Porc_conf { get; set; }
-        public float Seg_neto { get; set; }
+        public double Seg_neto { get; set; }
         public DateTime? Fecha_alta { get; set; }
         public int Id_concepto_negocio { get; set; }
         public Usuario usuario { get; set; }
         public float Porcvol_ag { get; set; }
-        public float Tercer_neto { get; set; }
+        public double Tercer_neto { get; set; }
         public int Localnacional { get; set; }
         public float Imp_conf_nc { get; set; }
         public float Imp_conf_fc { get; set; }
@@ -129,10 +129,10 @@ namespace WebApi.Entities
             mi.Facturar_a = DB.DInt(item["Facturar_a"].ToString());
             mi.Tipo_orden = DB.DInt(item["Tipo_orden"].ToString());
             mi.Observ = item["Observ"].ToString();
-            mi.Monto_bruto = DB.DFloat(item["Monto_bruto"].ToString());
+            mi.Monto_bruto = double.Parse(item["Monto_bruto"].ToString());
             mi.Monto_bonif = DB.DFloat(item["Monto_bonif"].ToString());
             mi.Monto_dto = DB.DFloat(item["Monto_dto"].ToString());
-            mi.Primer_neto = DB.DFloat(item["Primer_neto"].ToString());
+            mi.Primer_neto = double.Parse(item["Primer_neto"].ToString());
             mi.Es_anulada = (item["Es_anulada"].ToString() == "1");
             mi.Fecha_anulada = DB.DFecha(item["Fecha_anulada"].ToString());
             mi.Monto_desc_ag = DB.DFloat(item["Monto_desc_ag"].ToString());
@@ -144,7 +144,7 @@ namespace WebApi.Entities
             mi.Nro_orden_imp = item["Nro_orden_imp"].ToString();
             mi.Porc_dto = DB.DFloat(item["Porc_dto"].ToString());
             mi.Porc_conf = DB.DFloat(item["Porc_conf"].ToString());
-            mi.Seg_neto = DB.DFloat(item["Seg_neto"].ToString());
+            mi.Seg_neto = double.Parse(item["Seg_neto"].ToString());
             mi.Fecha_alta = DB.DFecha(item["Fecha_alta"].ToString());
             mi.Id_concepto_negocio = DB.DInt(item["Id_concepto_negocio"].ToString());
             mi.Id_clasificacion_op = DB.DInt(item["Id_clasificacion_op"].ToString());
@@ -153,7 +153,7 @@ namespace WebApi.Entities
                 mi.usuario = Usuario.getById(DB.DInt(item["id_usuario"].ToString()));
             }
             mi.Porcvol_ag = DB.DFloat(item["Porcvol_ag"].ToString());
-            mi.Tercer_neto = DB.DFloat(item["Tercer_neto"].ToString());
+            mi.Tercer_neto = double.Parse(item["Tercer_neto"].ToString());
             mi.Localnacional = DB.DInt(item["Localnacional"].ToString());
             mi.Imp_conf_nc = DB.DFloat(item["Imp_conf_nc"].ToString());
             mi.Imp_conf_fc = DB.DFloat(item["Imp_conf_fc"].ToString());

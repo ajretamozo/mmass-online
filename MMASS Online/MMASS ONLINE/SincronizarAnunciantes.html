@@ -204,16 +204,19 @@
         function getAnunciantes(anunciantesGAM) {
             idRed = $('#selRedes').val();
             $("#pleaseWaitDialog").modal();
-            //beginWait();
-            callWS("contactos", "getAnunciantes", '', function (data) { onCargarTabla(data, anunciantesGAM, idRed); });
+            callWS("contactos", "getAnunSincro", JSON.stringify(idRed), function (data) { onCargarTabla(data, anunciantesGAM, idRed); });
         }
 
         function llenarStrOption(anunciantes) {
             var str = '<option value="-1">  </option>';
             $.each(anunciantes, function (it, anun) {
 
-                str = str + '<option idContacto="' + anun.id + '" value="' + anun.idContactoDigital + '">' + anun.nombre_com + ' </option>';
-
+                if (anun.idContactoDigital > 0) {
+                    str = str + '<option idContacto="' + anun.id + '" value="' + anun.idContactoDigital + '" disabled="disabled">' + anun.nombre_com + ' </option>';
+                }
+                else {
+                    str = str + '<option idContacto="' + anun.id + '" value="' + anun.idContactoDigital + '">' + anun.nombre_com + ' </option>';
+                }
 
             });
             str = str + "</select >";
@@ -224,7 +227,7 @@
             var idGAMSel = "#sel" + idGAM;
             idGAMSel = idGAMSel + ">option:selected";
             if ($(idGAMSel).attr("idContacto") == undefined) {
-                showMessage("Seleccione un anunciante en el dropdown", "info");
+                showMessage("Seleccione un anunciante de la lista", "info");
             } else {
                 var cont = {};
                 cont.Id = $(idGAMSel).attr("idContacto");
@@ -312,7 +315,8 @@
                 var idAGam = "#sel" + anuncianteGAM.idContactoDigital;
                 var idButton = "#button" + anuncianteGAM.idContactoDigital;
                 $(idAGam).val(anuncianteGAM.idContactoDigital);
-                if ($(idAGam).val() != undefined) {
+                /*if ($(idAGam).val() != undefined) {*/
+                if ($(idAGam + " :selected").text() != "") {
                     $(idButton).removeClass("btn-primary").addClass("btn-success");
                     $(idButton).css("background-color", "#c3e6cb");
                     $(idButton).val(2);

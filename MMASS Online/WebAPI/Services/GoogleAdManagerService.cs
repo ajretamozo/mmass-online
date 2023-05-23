@@ -62,7 +62,22 @@ namespace WebApi.Services
             Dg_red_GAM red = Dg_red_GAM.getById(int.Parse(parametros[0].Value));
             CambiarRed(red.Codigo_red.ToString());
 
-            return GoogleAdManager.getAnunciantes(parametros[1].Value);
+            List<Dg_contacto_red_GAM> anunciantesMMASS = Dg_contacto_red_GAM.getAll();
+            List<Contacto> anunciantesGAM = GoogleAdManager.getAnunciantes(parametros[1].Value);
+
+            foreach(Contacto anunGAM in anunciantesGAM)
+            {
+                foreach(Dg_contacto_red_GAM anunMMASS in anunciantesMMASS)
+                {
+                    if(anunGAM.IdContactoDigital == anunMMASS.id_contactodigital && int.Parse(parametros[0].Value) == anunMMASS.Id_red)
+                    {
+                        anunGAM.Id_contacto = anunMMASS.Id_contacto;
+                        continue;
+                    }
+                }
+            }
+
+            return anunciantesGAM;
         }
         public String GetOrderDetails(long idGAM )
         {

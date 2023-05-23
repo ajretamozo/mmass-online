@@ -410,6 +410,12 @@
                             <label for="descFiltroPedD">Nombre Pedido</label>
                             <div class="input-group enterSearch"> <input type="text" id="descFiltroPedD" class="form-control"></div>
                         </div>
+                        <div class="col-md-6">
+                            <label>Anunciante</label>
+                            <select class="form-control" id="selAnuncianteD"></select>
+                        </div>
+                    </div>
+                    <div class="row py-1">
                         <div class="col-md-2">
                             <label for="idFiltroLinD">ID Línea</label>
                             <div class="input-group enterSearch"> <input type="number" id="idFiltroLinD" class="form-control"></div>
@@ -417,12 +423,6 @@
                         <div class="col-md-4">
                             <label for="descFiltroLinD">Nombre Línea</label>
                             <div class="input-group enterSearch"> <input type="text" id="descFiltroLinD" class="form-control"></div>
-                        </div>
-                    </div>
-                    <div class="row py-1">
-                        <div class="col-md-4">
-                            <label>Anunciante</label>
-                            <select class="form-control" id="selAnuncianteD"></select>
                         </div>
                         <div class="col-md-4">
                             <label>Vigencia Línea</label>
@@ -436,7 +436,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-2">
                             <label for="selRedesD">Red AdServer</label>
                             <select class="form-control enterSearch" id="selRedesD"></select>
                         </div>
@@ -631,55 +631,55 @@
             }
         }
 
-        function filter() {
-            rows = $("tr").not("#header");
-            params = {};
-            params.id = $("#idFiltro").val();
-            params.descripcion = $('#descFiltro').val();
-            if ($('#fechaDesde').val() != "") {
-                fDesde = new Date(moment($("#fechaDesde").val(), 'DD/MM/YYYY', true).format());
-                mfDesde = moment(fDesde);
-                if (mfDesde.isValid()) {
-                    params.fecha_desde = dateToSqlFormat($('#fechaDesde').val());
-                } else {
-                    error += "Formato 'Fecha Desde' invalido";
-                }
-            }
-            if ($('#fechaHasta').val() != "") {
-                fHasta = new Date(moment($("#fechaHasta").val(), 'DD/MM/YYYY', true).format());
-                mfHasta = moment(fHasta);
-                if (mfHasta.isValid()) {
-                    params.fecha_hasta = dateToSqlFormat($('#fechaHasta').val());
-                } else {
-                    if (error != '') { error += ' / ' }
-                    error += "Formato 'Fecha Hasta' invalido";
-                }
-            }
-            params.red = $('#selRedes').val();
+        //function filter() {
+        //    rows = $("tr").not("#header");
+        //    params = {};
+        //    params.id = $("#idFiltro").val();
+        //    params.descripcion = $('#descFiltro').val();
+        //    if ($('#fechaDesde').val() != "") {
+        //        fDesde = new Date(moment($("#fechaDesde").val(), 'DD/MM/YYYY', true).format());
+        //        mfDesde = moment(fDesde);
+        //        if (mfDesde.isValid()) {
+        //            params.fecha_desde = dateToSqlFormat($('#fechaDesde').val());
+        //        } else {
+        //            error += "Formato 'Fecha Desde' invalido";
+        //        }
+        //    }
+        //    if ($('#fechaHasta').val() != "") {
+        //        fHasta = new Date(moment($("#fechaHasta").val(), 'DD/MM/YYYY', true).format());
+        //        mfHasta = moment(fHasta);
+        //        if (mfHasta.isValid()) {
+        //            params.fecha_hasta = dateToSqlFormat($('#fechaHasta').val());
+        //        } else {
+        //            if (error != '') { error += ' / ' }
+        //            error += "Formato 'Fecha Hasta' invalido";
+        //        }
+        //    }
+        //    params.red = $('#selRedes').val();
 
-            if (params.red != 0 && params.red != null) {
+        //    if (params.red != 0 && params.red != null) {
 
-                for (param in params) {
-                    if (params[param] == null) {
-                        params[param] = '';
-                    }
-                };
+        //        for (param in params) {
+        //            if (params[param] == null) {
+        //                params[param] = '';
+        //            }
+        //        };
 
-                var parametros = setListaParametros(params);
+        //        var parametros = setListaParametros(params);
 
-                callWS("googleAdManager", "getOpNuevas", JSON.stringify(parametros), function (data) { onGetOrdenesGAM(data); });
-            }
-            else {
-                showMessage("Seleccione una Red AdServer", "alert");
-            }
-        }
+        //        callWS("googleAdManager", "getOpNuevas", JSON.stringify(parametros), function (data) { onGetOrdenesGAM(data); });
+        //    }
+        //    else {
+        //        showMessage("Seleccione una Red AdServer", "alert");
+        //    }
+        //}
 
-        function onGetOrdenesGAM(data) {
-            onCargarTabla('TableOrdenes', data);
-            if (data.length == 0) {
-                showMessage("No se enontraron Ordenes", "info");
-            }
-        }
+        //function onGetOrdenesGAM(data) {
+        //    onCargarTabla('TableOrdenes', data);
+        //    if (data.length == 0) {
+        //        showMessage("No se enontraron Ordenes", "info");
+        //    }
+        //}
 
         //function onCargarTabla(tablaID, data) {
         //    rowHTML = ''
@@ -715,6 +715,7 @@
         //    //callWS("contactos", "getContactoByIdGAMyRed", JSON.stringify(data1), function (data) { importarOP(data, idOP, idRed); });
         //    callWS("googleAdManager", "checkAnunciantePedido", JSON.stringify(detalle), function (data) { buscarOrdenes(data); });
         //}
+
         function comprobarAnunciante(detGAM) {
             idLinea = detGAM.id_Google_Ad_Manager;
             idRedLinea = detGAM.id_red;
@@ -917,11 +918,34 @@
 
             var parametrosAnun = setListaParametros(paramsAnun);
 
+            idRed = $('#selRedesD').val();
+
+            $("#pleaseWaitDialog").modal();          
+
             $.when(
                 callWS("googleAdManager", "getAnunciantes", JSON.stringify(parametrosAnun), function (data) { onGetAnunciantesGAM(data); }),
-                callWS("contactos", "getAnunciantes", '', function (data1) { onPopulateSelectDone(data1, 'selAnuncianteM', 'id', 'nombre_com'); }),
+                callWS("contactos", "getAnunSincro", JSON.stringify(idRed), function (data1) { llenarSelAnunSinc(data1); }),
+                /*callWS("contactos", "getAnunciantes", '', function (data1) { onPopulateSelectDone(data1, 'selAnuncianteM', 'id', 'nombre_com'); }),*/
                     callWS("medios", "getAllRedes", '', function (data) { onCargarSelect(data, 'selRedesAnun', 'id_red', 'descripcion', 'codigo_red'); })
             ).then(function () { mostrarModalAnun(contacto); });
+        }
+
+        function llenarSelAnunSinc(anunciantes) {
+            var str = '<option value="-1">  </option>';
+            $.each(anunciantes, function (it, anun) {
+
+                if (anun.idContactoDigital > 0) {
+                    str = str + '<option idContacto="' + anun.id + '" value="' + anun.id_contacto + '" disabled="disabled">' + anun.nombre_com + ' </option>';
+                }
+                else {
+                    str = str + '<option idContacto="' + anun.id + '" value="' + anun.id_contacto + '">' + anun.nombre_com + ' </option>';
+                }
+
+            });
+            str = str + "</select >";
+
+            $("#selAnuncianteM").empty();
+            $("#selAnuncianteM").append(str);
         }
 
         function onGetAnunciantesGAM(anunciantes) {
@@ -941,8 +965,8 @@
 
         function vincularAnun() {
             var idAnunSel = $("#selAnuncianteM").val();
-            if (idAnunSel == undefined) {
-                showMessage("Seleccione un anunciante", "info");
+            if (idAnunSel < 0) {
+                showMessage("Seleccione un anunciante MMASS", "info");
             } else {
                 var cont = {};
                 cont.Id = idAnunSel;
@@ -956,7 +980,6 @@
                     callWS("contactos", "deleteASRelation", JSON.stringify(cont), function (data) { onVincularAnun(data) });
                 }
             }
-
         }
 
         function onVincularAnun(data) {

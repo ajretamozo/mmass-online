@@ -193,17 +193,25 @@ namespace WebApi.Entities
             int BD = int.Parse(ConfigurationManager.AppSettings["Base"]);
             if (BD == 1)
             {
-                sqlCommand = @"Select c.id_contacto, razon_social, nombre_com, g.id_contactodigital from contactos c
+                //sqlCommand = @"Select c.id_contacto, razon_social, nombre_com, g.id_contactodigital from contactos c
+                //                    inner join roles r on r.id_contacto = c.id_contacto
+                //                    left join  dg_contacto_red_GAM g on g.id_contacto = c.id_contacto
+                //                    where r.id_contacto = c.id_contacto
+                //                    and es_borrado = 0 and r.tipo_rol = " + tipo + " order by razon_social";
+                sqlCommand = @"Select c.id_contacto, razon_social, nombre_com from contactos c
                                     inner join roles r on r.id_contacto = c.id_contacto
-                                    left join  dg_contacto_red_GAM g on g.id_contacto = c.id_contacto
                                     where r.id_contacto = c.id_contacto
                                     and es_borrado = 0 and r.tipo_rol = " + tipo + " order by razon_social";
             }
             else if (BD == 2)
             {
-                sqlCommand = @"Select c.id_contacto, razon_social, nombre_com, g.id_contactodigital from contactos c
+                //sqlCommand = @"Select c.id_contacto, razon_social, nombre_com, g.id_contactodigital from contactos c
+                //                    inner join roles r on r.id_contacto = c.id_contacto
+                //                    left join  dg_contacto_red_GAM g on g.id_contacto = c.id_contacto
+                //                    where r.id_contacto = c.id_contacto
+                //                    and es_borrado = 0 and r.id_tipo_rol = " + tipo + " order by razon_social";
+                sqlCommand = @"Select c.id_contacto, razon_social, nombre_com from contactos c
                                     inner join roles r on r.id_contacto = c.id_contacto
-                                    left join  dg_contacto_red_GAM g on g.id_contacto = c.id_contacto
                                     where r.id_contacto = c.id_contacto
                                     and es_borrado = 0 and r.id_tipo_rol = " + tipo + " order by razon_social";
             }
@@ -219,8 +227,8 @@ namespace WebApi.Entities
                     Id = int.Parse(item["id_contacto"].ToString()),
                     RazonSocial = item["razon_social"].ToString(),
                     Nombre_com = item["nombre_com"].ToString(),
-                    Id_contacto = int.Parse(item["id_contacto"].ToString()),
-                    IdContactoDigital = item["id_contactodigital"].ToString()
+                    Id_contacto = int.Parse(item["id_contacto"].ToString())
+                    //IdContactoDigital = item["id_contactodigital"].ToString()
                 };
                 col.Add(contact);
             }
@@ -310,6 +318,46 @@ namespace WebApi.Entities
                 return true;
             }
             else return false;
+        }
+
+        public static List<Contacto> GetAnunSincro(int idRed)
+        {
+            string sqlCommand = "";
+            int BD = int.Parse(ConfigurationManager.AppSettings["Base"]);
+            if (BD == 1)
+            {
+                sqlCommand = @"Select c.id_contacto, razon_social, nombre_com, g.id_contactodigital, g.id_red
+                                from contactos c
+                                inner join roles r on r.id_contacto = c.id_contacto
+                                left join  dg_contacto_red_GAM g on g.id_contacto = c.id_contacto 
+                                and g.id_red = " + idRed.ToString() + "where r.id_contacto = c.id_contacto and es_borrado = 0 and r.tipo_rol = 1 order by razon_social";
+            }
+            else if (BD == 2)
+            {
+                sqlCommand = @"Select c.id_contacto, razon_social, nombre_com, g.id_contactodigital, g.id_red
+                                from contactos c
+                                inner join roles r on r.id_contacto = c.id_contacto
+                                left join  dg_contacto_red_GAM g on g.id_contacto = c.id_contacto 
+                                and g.id_red = " + idRed.ToString() + "where r.id_contacto = c.id_contacto and es_borrado = 0 and r.id_tipo_rol = 1 order by razon_social";
+            }
+
+            List<Contacto> col = new List<Contacto>();
+            Contacto contact;
+            DataTable t = DB.Select(sqlCommand);
+
+            foreach (DataRow item in t.Rows)
+            {
+                contact = new Contacto
+                {
+                    Id = int.Parse(item["id_contacto"].ToString()),
+                    RazonSocial = item["razon_social"].ToString(),
+                    Nombre_com = item["nombre_com"].ToString(),
+                    Id_contacto = int.Parse(item["id_contacto"].ToString()),
+                    IdContactoDigital = item["id_contactodigital"].ToString()
+                };
+                col.Add(contact);
+            }
+            return col;
         }
 
     }
