@@ -14,6 +14,7 @@ namespace WebApi.Services
     public interface IMonedaService
     {
         Moneda getMonedaBase();
+        List<Moneda> getAllMonedas();
     }
 
     public class MonedaService : IMonedaService
@@ -22,6 +23,11 @@ namespace WebApi.Services
         public Moneda getMonedaBase()
         {
             return Moneda.getMonedaBase();
+        }
+
+        public List<Moneda> getAllMonedas()
+        {
+            return Moneda.getAll();
         }
 
     }

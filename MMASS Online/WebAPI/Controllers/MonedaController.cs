@@ -23,5 +23,12 @@ namespace WebApi.Controllers
             var moneda = _monedaService.getMonedaBase();
             return Ok(moneda);
         }
+
+        [HttpPost("getAllMonedas")]
+        public IActionResult getAllMonedas()
+        {
+            var monedas = _monedaService.getAllMonedas();
+            return Ok(monedas);
+        }
     }
 }

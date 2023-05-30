@@ -874,38 +874,6 @@
                                     </div>
                                 </div>
                                 <div class="col-lg-4">
-                                    <!--<div class="row">
-                                    <div class="col-lg-6">
-                                        <div class="row">
-                                            <div class="col-lg-10" style="padding-right: 12px;">
-                                                <label for="inpIdOrdenAdServer">ID AdServer</label>
-                                                <input type="number" class="form-control" id="inpIdOrdenAdServer" disabled="disabled">
-                                            </div>
-                                            <div class="col-lg-2 pt-1" style="padding-left: 0px;">
-                                                <label for="bcomprobarModificaciones" class="invisible">ModiGAM</label>
-                                                <button type="button" data-id="bcomprobarModificaciones" id="bcomprobarModificaciones" disabled="disabled" class="btn actions btn-outline-dark btn-sm mr-1" onclick="comprobarModificacionesButton()" title="No hay modificaciones en AdServer">
-                                                    <span class="fa fa-cloud-download" id="spanCompAct"></span>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6" style="padding-right: 42px;">
-                                        <div class="row">
-                                            <div class="col-lg-10" style="padding-right: 0px;">
-                                                <label for="selRedes">Red AdServer</label>
-                                                <select class="form-control" id="selRedes" onchange="onRedSelected()"></select>
-                                            </div>
-                                            <div class="col-lg-2 pt-1" style="padding-left: 10px;">
-                                                <label for="bgetOrderASDetais" class="invisible">InfoGAM</label>
-                                                <button type="button" data-id="getOrderASDetails" id="bgetOrderASDetais" disabled="disabled" class="btn actions btn-outline-dark btn-sm mr-1" onclick="getOrderDetails()" title="Ver detalles OrdenAS">
-                                                    <span class="fa fa-info-circle" id="brow"></span>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>-->
-                                </div>
-                                <div class="col-lg-4">
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <label>Es facturada</label>
@@ -916,6 +884,28 @@
                                             <div class="input-group"> <input type="text" disabled id="inpFechaAlta" class="form-control  col text-center" value=""> </div>
                                         </div>
                                     </div>
+                                </div>
+                                <!--<div class="col-lg-2">-->
+                                    <!--<div class="row">
+            <div class="col-lg-6">
+                <div class="row">
+                    <div class="col-lg-10" style="padding-right: 12px;">
+                        <label for="inpIdOrdenAdServer">ID AdServer</label>
+                        <input type="number" class="form-control" id="inpIdOrdenAdServer" disabled="disabled">
+                    </div>
+                    <div class="col-lg-2 pt-1" style="padding-left: 0px;">
+                        <label for="bcomprobarModificaciones" class="invisible">ModiGAM</label>
+                        <button type="button" data-id="bcomprobarModificaciones" id="bcomprobarModificaciones" disabled="disabled" class="btn actions btn-outline-dark btn-sm mr-1" onclick="comprobarModificacionesButton()" title="No hay modificaciones en AdServer">
+                            <span class="fa fa-cloud-download" id="spanCompAct"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>-->
+                                <!--</div>-->
+                                <div class="col-lg-4">
+                                    <label>Moneda</label>
+                                    <select class="form-control" id="selMoneda"></select>
                                 </div>
                             </div>
                             <!-- FILA 2 -->
@@ -4187,7 +4177,7 @@
                 callWS("contactos", "getEjecutivos", '', function (data) { onPopulateSelectDone(data, 'selEjecutivo', 'id', 'razonSocial'); }),
                 callWS("forma_pagos", "getAll", '', function (data) { onPopulateSelectDone(data, 'selFPago', 'id_formapago', 'desc_formapago'); }),
                 callWS("medios", "getAllPlazos", '', function (data) { onPopulateSelectDone(data, 'selPlazoP', 'id_condpagoap', 'desc_condpagoap'); }),
-                /*callWS("medios", "getAllRedes", '', function (data) { onCargarSelect(data, 'selRedes', 'id_red', 'descripcion', 'codigo_red'); }),*/
+                callWS("moneda", "", '', function (data) { onPopulateSelectDone(data, 'selAgencia', 'id', 'nombre_com'); }),
                 callWS("medios", "getAllConceptos", '', function (data) { onPopulateSelectDone(data, 'selConceptoN', 'id_concepto_negocio', 'desc_concepto_negocio'); }),
                 callWS("medios", "getAllClasificacion", '', function (data) { onPopulateSelectDone(data, 'selClasificacion', 'id_clasificacion_op', 'desc_clasificacion_op'); })
             ).then(function () { checkParameters(); }, function (data1, data2, data3, data4, data5, data6) {
