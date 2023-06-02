@@ -45,6 +45,8 @@ namespace WebApi.Services
         bool cambiarParam(Dg_parametro param);
         Dg_parametro getParamById(int id);
         List<Conv_dg_detalle> checkLinConv(Dg_orden_pub_ap op);
+        List<Moneda> getAllMonedas();
+        double getCambioActual(List<Parametro> parametros);
     }
 
     public class MedioService : IMedioService
@@ -315,5 +317,14 @@ namespace WebApi.Services
             return detallesConvValidos;
         }
 
+        public List<Moneda> getAllMonedas()
+        {
+            return Moneda.getAll();
+        }
+
+        public double getCambioActual(List<Parametro> parametros)
+        {
+            return Moneda.getCambioActual(int.Parse(parametros[0].Value), int.Parse(parametros[1].Value));
+        }
     }
 }

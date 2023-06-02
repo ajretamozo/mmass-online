@@ -130,5 +130,18 @@ namespace WebApi.Entities
             }
             return col;
         }
+
+        public static double getCambioActual(int idMonedaO, int idMonedaD)
+        {
+            string sqlCommand = "select dbo.getcambioMoneda(" + idMonedaO.ToString() + "," + idMonedaD.ToString() + ",GETDATE()) as cambio";
+            double cambio = 0;
+            DataTable t = DB.Select(sqlCommand);
+            
+            if (t.Rows.Count == 1)
+            {
+                cambio = DB.DFloat(t.Rows[0]["cambio"].ToString());
+            }
+            return cambio;
+        }
     }
 }

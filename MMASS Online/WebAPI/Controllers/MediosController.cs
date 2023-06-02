@@ -221,5 +221,19 @@ namespace WebApi.Controllers
             var result = _medioService.checkLinConv(op);
             return Ok(result);
         }
+
+        [HttpPost("getAllMonedas")]
+        public IActionResult getAllMonedas()
+        {
+            var monedas = _medioService.getAllMonedas();
+            return Ok(monedas);
+        }
+
+        [HttpPost("getCambioActual")]
+        public IActionResult getCambioActual(ListaParametro parametros)
+        {
+            var cambio = _medioService.getCambioActual(parametros.Parametros);
+            return Ok(cambio);
+        }
     }
 }

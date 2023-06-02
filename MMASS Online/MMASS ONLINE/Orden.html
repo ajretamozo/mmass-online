@@ -876,12 +876,12 @@
                                 <div class="col-lg-4">
                                     <div class="row">
                                         <div class="col-lg-6">
-                                            <label>Es facturada</label>
-                                            <div class="input-group"> <input type="text" disabled id="inpEsFacturada" class="form-control col text-center" value="NO"> </div>
-                                        </div>
-                                        <div class="col-lg-6">
                                             <label>Fecha Alta</label>
                                             <div class="input-group"> <input type="text" disabled id="inpFechaAlta" class="form-control  col text-center" value=""> </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <label>Es facturada</label>
+                                            <div class="input-group"> <input type="text" disabled id="inpEsFacturada" class="form-control col text-center" value="NO"> </div>
                                         </div>
                                     </div>
                                 </div>
@@ -904,8 +904,18 @@
         </div>-->
                                 <!--</div>-->
                                 <div class="col-lg-4">
-                                    <label>Moneda</label>
-                                    <select class="form-control" id="selMoneda"></select>
+                                    <div class="row">
+                                        <div class="col-lg-9" style="padding-right: 0px;">
+                                            <label>Moneda</label>
+                                            <select class="form-control" id="selMoneda" onfocus="this.oldvalue = this.value" onchange="prevMonedaSelected(this); this.oldvalue = this.value;"></select>
+                                        </div>
+                                        <div class="col-lg-3" style="padding-right: 20px;padding-left: 20px;padding-top: 4px;">
+                                            <label for="bCambioMoneda" class="invisible">Cambios</label>
+                                            <button type="button" data-id="cambioMoneda" id="bCambioMoneda" class="btn actions btn-outline-dark btn-sm mr-1" onclick="getCambioMoneda()" style="width: 33px;" title="Ver cambio moneda">
+                                                <span class="fa fa-handshake-o" id="brow"></span>
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <!-- FILA 2 -->
@@ -2397,7 +2407,6 @@
             //$("#" + idSelect).change();
         }
 
-        //AGREGUE:
         function onAreasGeoGetAll(data, idSelect) {
             var pObj = data;
             var listitems = '';
@@ -2445,9 +2454,11 @@
             if ($("#" + idSelect).attr('multiple') == 'multiple') {
                 cMultiSelect.bootstrapDualListbox('refresh');
             }
+
             if (idSelect == 'selMediosD') {
                 enableRon();
             }
+
             if (idSelect == 'selDetConvenio') {
                 $("#selDetConvenio option[value='']").attr("selected", "selected");
             }
@@ -2525,6 +2536,21 @@
             }
 
             $("#" + idSelect).val('');
+        }
+
+        function onPopulateSelectMoneda(data, idSelect) {
+            var pObj = data;
+            var listitems = '';
+            $.each(pObj, function (it, iObj) {
+                if (iObj.base == true) {
+                    listitems += '<option value=' + iObj['id_moneda'] + ' selected>' + iObj["nombre"] + " (" + iObj["simbolo"] + ')</option>';
+                }
+                else {
+                    listitems += '<option value=' + iObj['id_moneda'] + '>' + iObj["nombre"] + " (" + iObj["simbolo"] + ')</option>';
+                }
+            });
+            $("#" + idSelect).empty();
+            $("#" + idSelect).append(listitems);
         }
 
         function limpiaVinculados() {
@@ -2924,14 +2950,9 @@
             idDetConvenio = $('#selDetConvenio').val();
 
             rDetalle.medidas = selectToJson('selMedidasD', 'id_medidadigital');
-            //REVISAR ACA COMO OBTENER EL ALTO EN MEDIDAS DE VIDEO (SACAR LA "V")
             rDetalle.medidas.forEach(medida => {
                 $('#selMedidasD option:selected').each(function () {
                     if ($(this).val() == medida.id_medidadigital) {
-                        /*var element = $(this).text().split(' ');*/
-                        //var med = element[0].split('x');
-                        //medida.ancho = med[0];
-                        //medida.alto = med[1];
                         medida.ancho = $(this).attr("ancho");
                         medida.alto = $(this).attr("alto");
                     }
@@ -2939,7 +2960,6 @@
             });
 
             rDetalle.emplazamientos = selectToJson('selEmplazaD', 'id_emplazamiento');
-
             rDetalle.emplazamientos.forEach(emplaza => {
                 $('#selEmplazaD option:selected').each(function () {
                     if ($(this).val() == emplaza.id_emplazamiento) {
@@ -3604,7 +3624,7 @@
             params.Id_red = $('#selRedesPedido').val();
             params.Id_contacto = $('#selAnunciantePedido').val();
             var parametros = setListaParametros(params);
-
+        
             var anun = {};
             anun.Id_contacto = $('#selAnunciantePedido').val();
             anun.id_red = $('#selRedesPedido').val();
@@ -4177,7 +4197,7 @@
                 callWS("contactos", "getEjecutivos", '', function (data) { onPopulateSelectDone(data, 'selEjecutivo', 'id', 'razonSocial'); }),
                 callWS("forma_pagos", "getAll", '', function (data) { onPopulateSelectDone(data, 'selFPago', 'id_formapago', 'desc_formapago'); }),
                 callWS("medios", "getAllPlazos", '', function (data) { onPopulateSelectDone(data, 'selPlazoP', 'id_condpagoap', 'desc_condpagoap'); }),
-                callWS("moneda", "", '', function (data) { onPopulateSelectDone(data, 'selAgencia', 'id', 'nombre_com'); }),
+                callWS("medios", "getAllMonedas", '', function (data) { onPopulateSelectMoneda(data, 'selMoneda'); }),
                 callWS("medios", "getAllConceptos", '', function (data) { onPopulateSelectDone(data, 'selConceptoN', 'id_concepto_negocio', 'desc_concepto_negocio'); }),
                 callWS("medios", "getAllClasificacion", '', function (data) { onPopulateSelectDone(data, 'selClasificacion', 'id_clasificacion_op', 'desc_clasificacion_op'); })
             ).then(function () { checkParameters(); }, function (data1, data2, data3, data4, data5, data6) {
@@ -5628,6 +5648,32 @@
                     $('#bSelLinea' + LineaImpConv.id_Google_Ad_Manager).attr('data-id', idDet)
                 ).then(function () { var boton = $('#bSelLinea' + LineaImpConv.id_Google_Ad_Manager); cargarModificarRenglon(boton); $("#importarModal").modal('hide'); });
             }
+        }
+
+        function prevMonedaSelected(selMoneda) {
+            //buscar el cambio 
+            var paramsCambio = {};
+            paramsCambio.idMonedaO = selMoneda.oldvalue;
+            paramsCambio.idMonedaD = selMoneda.value;
+
+            var parametrosCambio = setListaParametros(paramsCambio);
+
+            callWS("medios", "getCambioActual", JSON.stringify(parametrosCambio), function (data) { onMonedaSelected(data); });
+        }
+
+        function onMonedaSelected(cambio) {    
+            $.when(
+                Detalles.forEach(function (detalle) {
+                    detalle.importe_unitario = detalle.importe_unitario / cambio;
+                    detalle.monto_neto = detalle.monto_neto / cambio;
+                    detalle.monto_bruto = detalle.monto_bruto / cambio;
+                    detalle.impconfnc = detalle.impconfnc / cambio;
+                    detalle.impconffc = detalle.impconffc / cambio;
+                    if (detalle.tarifa_manual == 0) {
+                        detalle.imp_tarifa = detalle.imp_tarifa / cambio;
+                    }
+                })
+            ).then(function () { calculateTotals(); recargarRenglones(); });
         }
 
     </script>

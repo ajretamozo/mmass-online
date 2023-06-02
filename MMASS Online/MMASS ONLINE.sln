@@ -30,6 +30,8 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "MMASS ONLINE", "MMASS ONLIN
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApi", "WebAPI\WebApi.csproj", "{B767C19F-283E-4057-B828-AE11D61173A3}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Elementos de la solución", "Elementos de la solución", "{46164666-B5BB-4B72-B01E-ED9B8EA07980}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

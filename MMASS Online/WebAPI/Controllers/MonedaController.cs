@@ -2,10 +2,11 @@
 using Microsoft.AspNetCore.Authorization;
 using WebApi.Services;
 using WebApi.Entities;
+using Newtonsoft.Json;
 
 namespace WebApi.Controllers
 {
-    [Authorize]
+  [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class MonedaController : ControllerBase
