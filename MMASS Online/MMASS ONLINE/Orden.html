@@ -1671,9 +1671,11 @@
                 $("#selEmpresa option[value=" + data.empresa.id_empresa + "]").attr("selected", "selected");
             }
 
-            //if (data.facturar_a != null) {
-            //    $("#selFacturar option[value=" + data.facturar_a + "]").attr("selected", "selected");
-            //}
+
+            if (data.id_moneda != null) {
+                $("#selMoneda option[value=" + data.id_moneda + "]").attr("selected", "selected");
+            }
+
             $("#selFacturar option[value=" + data.facturar_a + "]").attr("selected", "selected");
 
             if (data.agencia != null) {
@@ -2158,6 +2160,9 @@
             data.Detalles = Detalles;
             data.desc_fact = "Orden Digital " + data.fInicio + " - " + data.fFin;
 
+            data.Id_moneda = $("#selMoneda").val();
+            data.Cambio = $('#selMoneda>option:selected').attr("cambio");
+
             callWS("dg_orden_pub_aps", "save", JSON.stringify(data), function (resultado) { onSaveOrder(resultado, data); }); 
 
             $("#bConvenios").attr("disabled", true);
@@ -2543,10 +2548,10 @@
             var listitems = '';
             $.each(pObj, function (it, iObj) {
                 if (iObj.base == true) {
-                    listitems += '<option value=' + iObj['id_moneda'] + ' selected>' + iObj["nombre"] + " (" + iObj["simbolo"] + ')</option>';
+                    listitems += '<option cambio=' + iObj['cambioVenta'] + ' value=' + iObj['id_moneda'] + ' selected>' + iObj["nombre"] + " (" + iObj["simbolo"] + ')</option>';
                 }
                 else {
-                    listitems += '<option value=' + iObj['id_moneda'] + '>' + iObj["nombre"] + " (" + iObj["simbolo"] + ')</option>';
+                    listitems += '<option cambio=' + iObj['cambioVenta'] + ' value=' + iObj['id_moneda'] + '>' + iObj["nombre"] + " (" + iObj["simbolo"] + ')</option>';
                 }
             });
             $("#" + idSelect).empty();
@@ -2765,6 +2770,20 @@
                     objParametro = {};
                     objParametro.ParameterName = "id_areaGeo";
                     objParametro.Value = $('#selAreasGeo').val();
+                    listaParametros.push(objParametro);
+                }
+
+                if ($('#selRedes').val() != null) {
+                    objParametro = {};
+                    objParametro.ParameterName = "id_red";
+                    objParametro.Value = $("#selRedes").val();
+                    listaParametros.push(objParametro);
+                }
+
+                if ($('#selMoneda').val() != null) {
+                    objParametro = {};
+                    objParametro.ParameterName = "id_moneda";
+                    objParametro.Value = $("#selMoneda").val();
                     listaParametros.push(objParametro);
                 }
 
@@ -4969,6 +4988,7 @@
             $("#selFPago").attr("disabled", true);
             $("#selPlazoP").attr("disabled", true);
             $("#selEjecutivo").attr("disabled", true);
+            $("#selMoneda").attr("disabled", true);
             $("#bCargarNuevoRenglon").attr("disabled", true);
             $("#bImportarNuevoRenglon").attr("disabled", true);
             $("#bAnular").attr("disabled", true);
@@ -5642,7 +5662,6 @@
                 onPopulateSelectDetConv(detallesConv, 'selDetConvenio', 'id_det_conv', 'descripcion', 'id_detalle');
                 var idDet = Detalles.length + 1;
                 LineaImpConv.id_detalle = idDet;
-                //LineaImpConv.id_det_conv = detallesConv[0];
                 $.when(
                     Detalles.push(LineaImpConv),
                     $('#bSelLinea' + LineaImpConv.id_Google_Ad_Manager).attr('data-id', idDet)
@@ -5651,10 +5670,29 @@
         }
 
         function prevMonedaSelected(selMoneda) {
+            options = [
+                {
+                    optionDesc: "Continuar",
+                    optionFunc: "cambiarMoneda(" + selMoneda.oldvalue + "," + selMoneda.value  + ")"
+                },
+                {
+                    optionDesc: "Cancelar",
+                    optionFunc: "volverMonedaAnterior(" + selMoneda.oldvalue + ")"
+                }
+            ];
+            var mensaje = "<div class='d-flex justify-content-center'>Las Tarifas de todos los Detalles serán reseteadas</div>";
+            showModal(mensaje, options);
+        }
+
+        function volverMonedaAnterior(valorAnterior) {
+            $('#selMoneda').val(valorAnterior);
+        }
+
+        function cambiarMoneda(valorAnterior, valorNuevo) {
             //buscar el cambio 
             var paramsCambio = {};
-            paramsCambio.idMonedaO = selMoneda.oldvalue;
-            paramsCambio.idMonedaD = selMoneda.value;
+            paramsCambio.idMonedaO = valorAnterior;
+            paramsCambio.idMonedaD = valorNuevo;
 
             var parametrosCambio = setListaParametros(paramsCambio);
 
@@ -5662,8 +5700,12 @@
         }
 
         function onMonedaSelected(cambio) {    
+            $('#precioUnitarioD').val($('#precioUnitarioD').val() / cambio);
+            $('#totalD').val($('#totalD').val() / cambio);
             $.when(
                 Detalles.forEach(function (detalle) {
+                    detalle.tarifa_dg.id_tarifa_dg = 0;
+                    detalle.tarifa_dg.descripcion = "Custom";
                     detalle.importe_unitario = detalle.importe_unitario / cambio;
                     detalle.monto_neto = detalle.monto_neto / cambio;
                     detalle.monto_bruto = detalle.monto_bruto / cambio;
@@ -5673,7 +5715,7 @@
                         detalle.imp_tarifa = detalle.imp_tarifa / cambio;
                     }
                 })
-            ).then(function () { calculateTotals(); recargarRenglones(); });
+            ).then(function () { filterTarifas(); calculateTotals(); recargarRenglones(); });
         }
 
     </script>

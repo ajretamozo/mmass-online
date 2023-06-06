@@ -87,6 +87,7 @@ namespace WebApi.Entities
         public List<Dg_orden_pub_ejecutivos> Ejecutivos;
         public List<Dg_orden_pub_pagos> FormasPago;
         public string UsuarioSesion { get; set; } // Variable usada para enviar el usuario en los mails de alerta
+        public string SimboloMoneda { get; set; }
 
         public static Dg_orden_pub_ap getDg_orden_pub_ap(DataRow item)
         {
@@ -200,6 +201,10 @@ namespace WebApi.Entities
             {
                 mi.Producto_nombre = item["producto_nombre"].ToString();
             }
+            if (item.Table.Columns["simbolo"] != null)
+            {
+                mi.SimboloMoneda = item["simbolo"].ToString();
+            }
             return mi;
         }
 
@@ -224,7 +229,7 @@ namespace WebApi.Entities
                                 " dg.id_usuario, dg.porcvol_ag, dg.tercer_neto, dg.localnacional, dg.imp_conf_nc, dg.imp_conf_fc, dg.porcvol_an, dg.id_op_relacionada, " +
                                 " dg.Desc2, dg.Desc3, dg.Desc4, dg.desc5, dg.id_cond_iva, dg.id_moneda, dg.cambio, dg.bonificado, dg.id_convenio, " +
                                 " dg.transferido, dg.bitacora, dg.Id_facturar, dg.Total_Avisos, dg.Total_Impresiones, " +
-                                " dg.Es_facturada, dg.Id_factura_ap, opb.bloqueado, " +
+                                " dg.Es_facturada, dg.Id_factura_ap, opb.bloqueado, m.simbolo, " +
                                 " ag.razon_social as agencia_nombre, an.razon_social as anunciante_nombre, p.desc_producto as producto_nombre, dg.id_google_ad_manager, dg.id_red, dg.parafacturar, " +
                                 " dg.id_clasificacion_op, cast(op.anio as varchar(4)) + '-' + cast(op.mes as varchar(2)) + '-' + cast(op.nro_orden as varchar(5)) as nro_orden_rel " +
                                 " from Dg_orden_pub_ap dg " +
@@ -233,6 +238,7 @@ namespace WebApi.Entities
                                 " left outer join productos p on p.id_producto = dg.id_producto " +
                                 " left outer join orden_pub_ap op on dg.id_op_relacionada = op.id_op " +
                                 " left outer join dg_orden_pub_bloqueo opb on dg.id_op_dg = opb.id_op_dg " +
+                                " left outer join moneda m on dg.id_moneda = m.id_moneda " +
                                 " where 1 = 1 ";
             string mifiltro = "";
 
@@ -466,7 +472,7 @@ namespace WebApi.Entities
                                 " dg.id_usuario, dg.porcvol_ag, dg.tercer_neto, dg.localnacional, dg.imp_conf_nc, dg.imp_conf_fc, dg.porcvol_an, dg.id_op_relacionada, " +
                                 " dg.Desc2, dg.Desc3, dg.Desc4, dg.desc5, dg.id_cond_iva, dg.id_moneda, dg.cambio, dg.bonificado, dg.id_convenio, " +
                                 " dg.transferido, dg.bitacora, dg.Id_facturar, dg.Total_Avisos, dg.Total_Impresiones, " +
-                                " dg.Es_facturada, dg.Id_factura_ap, opb.bloqueado, " +
+                                " dg.Es_facturada, dg.Id_factura_ap, opb.bloqueado, m.simbolo, " +
                                 " ag.razon_social as agencia_nombre, an.razon_social as anunciante_nombre, p.desc_producto as producto_nombre, dg.id_google_ad_manager, dg.id_red, dg.parafacturar, " +
                                 " dg.id_clasificacion_op, cast(op.anio as varchar(4)) + '-' + cast(op.mes as varchar(2)) + '-' + cast(op.nro_orden as varchar(5)) as nro_orden_rel " +
                                 " from Dg_orden_pub_ap dg " +
@@ -475,6 +481,7 @@ namespace WebApi.Entities
                                 " left outer join productos p on p.id_producto = dg.id_producto " +
                                 " left outer join orden_pub_ap op on dg.id_op_relacionada = op.id_op " +
                                 " left outer join dg_orden_pub_bloqueo opb on dg.id_op_dg = opb.id_op_dg " +
+                                " left outer join moneda m on dg.id_moneda = m.id_moneda " +
                                 " where dg.es_anulada = 0 order by dg.id_op_dg desc";
             List<Dg_orden_pub_ap> col = new List<Dg_orden_pub_ap>();
             Dg_orden_pub_ap elem;
@@ -629,8 +636,8 @@ namespace WebApi.Entities
             {
                 string sql = "";
                 Anio = Fecha.Value.Year ;
-                Mes = Fecha.Value.Month ;                
-                Id_moneda = 1;
+                Mes = Fecha.Value.Month ;
+                //Id_moneda = 1;
                 /*Id_concepto_negocio = 2;*///Orden Digitales
                 Id_cond_iva = getCondicionIva();
 

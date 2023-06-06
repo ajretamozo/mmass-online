@@ -395,7 +395,7 @@
                 rowHTML += "<td class='col-xs-1'>" + iord.agencia.nombre_com + "</td>";
                 rowHTML += "<td class='col-xs-1'>" + iord.anunciante.nombre_com + "</td>";
                 rowHTML += "<td class='col-xs-1'>" + iord.producto.desc_producto + "</td>";
-                rowHTML += "<td class='col-xs-1'>$ " + formatearMonto(iord.seg_neto) + "</td>";
+                rowHTML += "<td class='col-xs-1'>" + iord.simboloMoneda + " " + formatearMonto(iord.seg_neto) + "</td>";
                 if (iord.es_facturada) {
                     rowHTML += "<td class='col-xs-1'>";
                     rowHTML += "<span class='fa fa-check' id='brow" + iord.id_op_dg + "' title='Orden facturada''></span></td>";
