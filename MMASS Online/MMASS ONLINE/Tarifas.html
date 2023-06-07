@@ -132,34 +132,8 @@
                         </div>
                     </div>
                     <div class="col-lg-3">
-                        <label for="selAreasGeo">Area Geográfica</label>
-                        <div class="input-group">
-                            <select class="form-control enableOnEdit" id="selAreasGeo"></select>
-                        </div>
-                    </div>
-                    <div class="col-lg-3">
-                        <label for="selRedes">Red AdServer</label>
-                        <select class="form-control enableOnEdit" id="selRedes" onchange="onRedSelected()"></select>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-lg-4">
-                        <label> Vigencia</label>
-                        <div class="input-group input-daterange">
-                            <input type="text" class="form-control readonlyOnView" id="fechaDesde" data-toggle="datetimepicker" data-target="#fechaDesde" />
-                            <span class="input-group-addon">hasta</span>
-                            <input type="text" class="form-control readonlyOnView" id="fechaHasta" data-toggle="datetimepicker" data-target="#fechaHasta" />
-                        </div>
-                    </div>
-                    <div class="col-lg-2">
-                        <label for="selFormaUso">Forma de Uso</label>
-                        <div class="input-group">
-                            <select class="form-control enableOnEdit" id="selFormaUso"></select>
-                        </div>
-                    </div>
-                    <div class="col-lg-3">
-                        <label for="selTipoPublicidad"> Tipo de Aviso</label>
-                        <select id="selTipoPublicidad" class="form-control enableOnEdit" onchange="onTipoAvisoSelected()"></select>
+                        <label>Moneda</label>
+                        <select class="form-control enableOnEdit" id="selMoneda"></select>
                     </div>
                     <div class="col-lg-3">
                         <label for="inpImporte">Importe</label>
@@ -171,25 +145,66 @@
                         </div>
                     </div>
                 </div>
-                <!--MULTI SELECTS-->
-                <div class="row" style="margin-bottom: 20px;">
+                <div class="row">
                     <div class="col-lg-6">
-                        <label for="selMedidas"> Tamaños</label>
-                        <select id="selMedidas" class="custom-select" name="dlcTamaños" style="display:none" multiple></select>
+                        <label> Vigencia</label>
+                        <div class="input-group input-daterange">
+                            <input type="text" class="form-control readonlyOnView" id="fechaDesde" data-toggle="datetimepicker" data-target="#fechaDesde" />
+                            <span class="input-group-addon">hasta</span>
+                            <input type="text" class="form-control readonlyOnView" id="fechaHasta" data-toggle="datetimepicker" data-target="#fechaHasta" />
+                        </div>
+                    </div>
+                    <!--<div class="col-lg-2">
+                        <label for="selFormaUso">Forma de Uso</label>
+                        <div class="input-group">
+                            <select class="form-control enableOnEdit" id="selFormaUso"></select>
+                        </div>
+                    </div>-->
+                    <!--<div class="col-lg-3">
+                        <label for="selAreasGeo">Area Geográfica</label>
+                        <div class="input-group">
+                            <select class="form-control enableOnEdit" id="selAreasGeo"></select>
+                        </div>
+                    </div>-->
+                    <div class="col-lg-6">
+                        <label for="selRedes">Red AdServer</label>
+                        <select class="form-control enableOnEdit" id="selRedes" onchange="onRedSelected()"></select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="row" style="padding-left: 15px;padding-right: 15px;">
+                            <label for="selAreasGeo">Area Geográfica</label>
+                            <div class="input-group">
+                                <select class="form-control enableOnEdit" id="selAreasGeo"></select>
+                            </div>
+                        </div>
+                        <div class="row" style="margin-bottom: 20px;padding-left: 15px; padding-right: 15px;">
+                            <label for="selTipoPublicidad"> Tipo de Aviso</label>
+                            <select id="selTipoPublicidad" class="form-control enableOnEdit" onchange="onTipoAvisoSelected()"></select>
+                        </div>
+                        <div class="row" style="padding-left: 15px;padding-right: 15px;">
+                            <label for="selFormaUso">Forma de Uso</label>
+                            <div class="input-group">
+                                <select class="form-control enableOnEdit" id="selFormaUso"></select>
+                            </div>
+                        </div>
                     </div>
                     <div class="col-lg-6">
-                        <label for="selEmplaza"> Emplazamientos</label>
-                        <select id="selEmplaza" class="custom-select" name="dlcEmplaza" style="display:none" multiple></select>
+                        <label for="selMedidas" style="margin-bottom: 24px;"> Tamaños</label>
+                        <select id="selMedidas" class="custom-select" name="dlcTamaños" style="display:none" multiple></select>
                         <!--multi-->
                         <!--<select id="selTipoPublicidad" class="custom-select" name="dlcTipos" style="display:none" multiple></select>-->
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-lg-6">
-                        <label for="selMedios"> Medios</label>
-                        <select id="selMedios" class="custom-select" name="dlcMedios" style="display:none" multiple></select>
+                        <label for="selEmplaza"> Emplazamientos</label>
+                        <select id="selEmplaza" class="custom-select" name="dlcEmplaza" style="display:none" multiple></select>
                     </div>
                     <div class="col-lg-6">
+                        <label for="selMedios"> Medios</label>
+                        <select id="selMedios" class="custom-select" name="dlcMedios" style="display:none" multiple></select>
                     </div>
                 </div>
             </div>
@@ -408,6 +423,7 @@
 
             $("#selAreasGeo option[value=" + data.area_geo.id_area + "]").attr("selected", "selected");
             $("#selRedes option[value=" + data.id_red + "]").attr("selected", "selected");
+            $("#selMoneda option[value=" + data.id_moneda + "]").attr("selected", "selected");
         }
 
         function populateFields() {
@@ -417,7 +433,8 @@
                 callWS("medios", "getAllE", JSON.stringify(0), function (data) { onPopulateSelectEmplaza(data, 'selEmplaza', 'id_emplazamiento', 'descripcion', 'codigo_emplazamiento'); }),
                 callWS("medios", "getMedidas", JSON.stringify("0"), function (data) { onPopulateSelectMedidas(data, 'selMedidas', 'id_medidadigital', 'descripcion', 'ancho', 'alto'); }),
                 callWS("medios", "getAllA", '', function (data) { onPopulateSelectDone(data, 'selAreasGeo', 'id_area', 'descripcion'); }),
-                callWS("tarifas", "getFormasUsoAll", '', function (data) { onPopulateSelectDone(data, 'selFormaUso', 'id', 'descripcion'); })
+                callWS("tarifas", "getFormasUsoAll", '', function (data) { onPopulateSelectDone(data, 'selFormaUso', 'id', 'descripcion'); }),
+                callWS("medios", "getAllMonedas", '', function (data) { onPopulateSelectMoneda(data, 'selMoneda'); })
             ).then(function () { checkParameters() }, function (data1, data2, data3) {
                 console.log("Medios: " + data1[2].statusText + "; Tipos de aviso: " + data2[2].statusText + "Formas de uso: " + data3[2].statusText + ";");
                 showMessage("Se produjo un error al cargar los campos, intentelo nuevamente", type = "alert");
@@ -638,6 +655,8 @@
                 data.Area_geo = {};
                 data.Area_geo.Id_area = $('#selAreasGeo').val();
                 data.id_red = $('#selRedes').val();
+                data.Id_moneda = $("#selMoneda").val();
+                data.Cambio = $('#selMoneda>option:selected').attr("cambio");
 
                 callWS("Tarifas", "save", JSON.stringify(data), function (resp) {
                     if (resp == 0) {
@@ -706,6 +725,21 @@
             var tipoAviso = $('#selTipoPublicidad option:selected').attr("tipo_aviso_ads");
             //recargar medidas
             callWS("medios", "getMedidas", JSON.stringify(tipoAviso), function (data) { onPopulateSelectMedidas(data, 'selMedidas', 'id_medidadigital', 'descripcion', 'ancho', 'alto'); });     
+        }
+
+        function onPopulateSelectMoneda(data, idSelect) {
+            var pObj = data;
+            var listitems = '';
+            $.each(pObj, function (it, iObj) {
+                if (iObj.base == true) {
+                    listitems += '<option cambio=' + iObj['cambioVenta'] + ' value=' + iObj['id_moneda'] + ' selected>' + iObj["nombre"] + " (" + iObj["simbolo"] + ')</option>';
+                }
+                else {
+                    listitems += '<option cambio=' + iObj['cambioVenta'] + ' value=' + iObj['id_moneda'] + '>' + iObj["nombre"] + " (" + iObj["simbolo"] + ')</option>';
+                }
+            });
+            $("#" + idSelect).empty();
+            $("#" + idSelect).append(listitems);
         }
 
     </script>

@@ -86,6 +86,7 @@ namespace WebApi.Entities
         public int Id_red { get; set; }
         public int Id_moneda { get; set; }
         public float Cambio { get; set; }
+        public string SimboloMoneda { get; set; }
 
         public List<Medio> Medios;
         public List<Dg_tipos_avisos> Tipos_Avisos;
@@ -348,8 +349,10 @@ namespace WebApi.Entities
 
         public static List<Dg_tarifas> filter(List<Parametro> parametros)
         {
-            string sqlCommand = " select id_tarifa_dg, descripcion, fecha_desde, fecha_hasta, forma_uso, precio_unitario, es_borrado, id_red, id_moneda, cambio " +
-                                " from dg_tarifas where es_borrado = 0 ";
+            string sqlCommand = " select id_tarifa_dg, descripcion, fecha_desde, fecha_hasta, forma_uso, precio_unitario, es_borrado, id_red, dg_tarifas.id_moneda, cambio, m.simbolo " +
+                                " from dg_tarifas " +
+                                " left outer join moneda m on dg_tarifas.id_moneda = m.id_moneda " +
+                                " where es_borrado = 0 ";
             string mifiltro = "";
 
             string idMedidas = "";
@@ -433,7 +436,8 @@ namespace WebApi.Entities
                     Es_borrado = (item["Es_borrado"].ToString() == "1"),
                     Id_red = int.Parse(item["id_red"].ToString()),
                     Id_moneda = DB.DInt(t.Rows[0]["id_moneda"].ToString()),
-                    Cambio = DB.DFloat(t.Rows[0]["cambio"].ToString())
+                    Cambio = DB.DFloat(t.Rows[0]["cambio"].ToString()),
+                    SimboloMoneda = item["simbolo"].ToString()
                 };
                 col.Add(elem);
             }
