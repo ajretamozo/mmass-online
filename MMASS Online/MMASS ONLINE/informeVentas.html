@@ -511,8 +511,8 @@
                     //filas detalle
                     $.each(groupAn, function (it, iord) {
                         if (iord.primer_neto != 0) {
-                            var porcNC = (iord.imp_conf_nc / iord.primer_neto * 100);
-                            var porcFC = (iord.imp_conf_fc / iord.primer_neto * 100);
+                            var porcNC = (iord.imp_conf_nc / iord.primer_neto * iord.cambio * 100);
+                            var porcFC = (iord.imp_conf_fc / iord.primer_neto * iord.cambio * 100);
                         } else {
                             porcNC = 0;
                             porcFC = 0;
@@ -523,9 +523,9 @@
                         }
                         else
                             if (tipo == 1) {
-                                subtotal = iord.monto_neto_det;
+                                subtotal = iord.monto_neto_det * iord.cambio;
                             } else {
-                                subtotal = iord.primer_neto;
+                                subtotal = iord.primer_neto * iord.cambio;
                             }
 
                         var subtotal1 = (subtotal - (subtotal * porcNC / 100));
@@ -560,7 +560,7 @@
                         rowHTML += "<td class='monto col-xs-1' style='text-align: center;'>" + round(porcNC, 2) + "%</td>";
                         rowHTML += "<td class='monto col-xs-1' style='text-align: center;'>$" + round(subtotal1, 2) + "</td>";
                         rowHTML += "<td class='monto col-xs-1' style='text-align: center;'>" + round(porcFC, 2) + "%</td>";
-                        rowHTML += "<td class='monto col-xs-1' style='text-align: center;'>$" + round(total, 2) + "</td>";
+                        rowHTML += "<td class='monto col-xs-1' style='text-align: center;'>$" + round(total * iord.cambio, 2) + "</td>";
                         rowHTML += '</tr>'
 
                         //incremento totales anunciante
@@ -624,7 +624,7 @@
             if (tipo == 2) {
                 rowHTML += "<td></td><td></td>";
             }
-
+            //falta adaptar esto al cambio
             rowHTML += "<td class='monto' style='text-align: center;'>$" + round(sumSubtotalGral, 2) + "</td><td></td>";
             rowHTML += "<td class='monto' style='text-align: center;'>$" + round(sumSubtotal1Gral, 2) + "</td><td></td>";
             rowHTML += "<td class='monto' style='text-align: center;'>$" + round(sumTotalGral, 2) + "</td>";

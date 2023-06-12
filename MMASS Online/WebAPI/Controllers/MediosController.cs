@@ -235,5 +235,12 @@ namespace WebApi.Controllers
             var cambio = _medioService.getCambioActual(parametros.Parametros);
             return Ok(cambio);
         }
+
+        [HttpPost("getCotizaciones")]
+        public IActionResult getCotizaciones()
+        {
+            var cotizaciones = _medioService.getCotizaciones();
+            return Ok(cotizaciones);
+        }
     }
 }

@@ -36,7 +36,8 @@ namespace WebApi.Entities
         public int Id_medio { get; set; }
         public string Medio { get; set; }
         public float Porc_ron { get; set; }
-
+        public int Id_moneda { get; set; }
+        public float Cambio { get; set; }
 
         public static List<R_Ventas> filterBy(List<Parametro> parametros)
         {
@@ -49,7 +50,7 @@ namespace WebApi.Entities
                 }
             }
             string sqlCommand = @"select ap.id_op_dg, ap.id_agencia, ag.razon_social as agencia,
-                            ap.id_anunciante, an.razon_social as anunciante, 
+                            ap.id_anunciante, an.razon_social as anunciante, ap.id_moneda, ap.cambio,  
                             cast(ap.anio as varchar(4)) + '-' + cast(ap.mes as varchar(2)) + '-' + cast(ap.nro_orden as varchar(5)) as nro_orden,
                             ap.nro_orden_ag, ap.primer_neto, ap.imp_conf_nc, ap.imp_conf_fc, ap.seg_neto,
                             p.desc_producto as producto, cast(op.anio as varchar(4)) + '-' + cast(op.mes as varchar(2)) + '-' + cast(op.nro_orden as varchar(5)) as nro_orden_rel, 
@@ -78,7 +79,7 @@ namespace WebApi.Entities
             string groupby = "";
             if (tipo == "0")
             {
-                groupby += " group by ap.id_op_dg, ap.id_agencia, ag.razon_social, ap.id_anunciante, an.razon_social, cast(ap.anio as varchar(4)) + '-' + cast(ap.mes as varchar(2)) + '-' + cast(ap.nro_orden as varchar(5)), ap.nro_orden_ag, ap.primer_neto, ap.imp_conf_nc, ap.imp_conf_fc, ap.seg_neto, ap.id_producto, p.desc_producto, cast(op.anio as varchar(4)) + '-' + cast(op.mes as varchar(2)) + '-' + cast(op.nro_orden as varchar(5)), c.razon_social, fp.desc_formapago, em.nombre, ap.es_facturada ";
+                groupby += " group by ap.id_op_dg, ap.id_agencia, ag.razon_social, ap.id_anunciante, an.razon_social, cast(ap.anio as varchar(4)) + '-' + cast(ap.mes as varchar(2)) + '-' + cast(ap.nro_orden as varchar(5)), ap.nro_orden_ag, ap.primer_neto, ap.imp_conf_nc, ap.imp_conf_fc, ap.seg_neto, ap.id_producto, p.desc_producto, cast(op.anio as varchar(4)) + '-' + cast(op.mes as varchar(2)) + '-' + cast(op.nro_orden as varchar(5)), c.razon_social, fp.desc_formapago, em.nombre, ap.es_facturada, ap.id_moneda, ap.cambio ";
             }
             
             string mifiltro = "";
@@ -179,7 +180,9 @@ namespace WebApi.Entities
                     Segundo_neto = float.Parse(item["seg_neto"].ToString()),
                     Id_producto = int.Parse(item["id_producto"].ToString()),
                     Producto = item["producto"].ToString(),
-                    Cantidad_impresiones = int.Parse(item["cantidad"].ToString()),                    
+                    Cantidad_impresiones = int.Parse(item["cantidad"].ToString()),
+                    Id_moneda = DB.DInt(item["id_moneda"].ToString()),
+                    Cambio = DB.DFloat(item["cambio"].ToString())
                 };
                 if (item["nro_orden_rel"].ToString() != "")
                 {

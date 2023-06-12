@@ -19,6 +19,7 @@ namespace WebApi.Entities
         public float CambioVenta { get; set; }
         public bool Base { get; set; }
         public bool Borrado { get; set; }
+        public DateTime? Fecha { get; set; }
 
         private static Moneda getMoneda(DataRow item)
         {
@@ -142,6 +143,36 @@ namespace WebApi.Entities
                 cambio = DB.DFloat(t.Rows[0]["cambio"].ToString());
             }
             return cambio;
+        }
+
+        public static List<Moneda> getCotizaciones()
+        {
+            string sqlCommand = @"select m.nombre, m.simbolo, c.compra, c.venta, c.fecha 
+                                  from (
+                                    select id_moneda, venta, compra, fecha,
+                                        row_number() over (partition by id_moneda order by fecha desc) as _rn
+                                    from cotizacion where es_borrado = 0 
+                                  ) c
+                                  inner join moneda m on m.id_moneda = c.id_moneda
+                                  where c._rn = 1 and m.borrado = 0";
+
+            List<Moneda> col = new List<Moneda>();
+            Moneda elem;
+            DataTable t = DB.Select(sqlCommand);
+
+            foreach (DataRow item in t.Rows)
+            {
+                elem = new Moneda();
+
+                elem.Nombre = item["Nombre"].ToString();
+                elem.Simbolo = item["Simbolo"].ToString();
+                elem.CambioCompra = DB.DFloat(item["Compra"].ToString());
+                elem.CambioVenta = DB.DFloat(item["Venta"].ToString());
+                elem.Fecha = DB.DFecha(item["Fecha"].ToString());
+
+                col.Add(elem);
+            }
+            return col;
         }
     }
 }

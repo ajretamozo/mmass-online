@@ -411,7 +411,7 @@ namespace WebApi.Entities
                     if ((p.ParameterName == "fecha_hasta_det") && (p.Value.ToString() != ""))
                         mifiltro = mifiltro + " and fecha_hasta >= '" + p.Value.ToString() + "'";
                     if ((p.ParameterName == "id_moneda") && (p.Value.ToString() != ""))
-                        mifiltro = mifiltro + " and id_moneda = " + p.Value.ToString();
+                        mifiltro = mifiltro + " and dg_tarifas.id_moneda = " + p.Value.ToString();
                 }
             }
             if (idMedidas != "")
