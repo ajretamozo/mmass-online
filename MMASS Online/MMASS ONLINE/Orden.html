@@ -3803,13 +3803,16 @@
            
             var indexOfObject;
        
-                for (let index = 0; index < Detalles.length; index++) {
-                    if (Detalles[index].id_detalle == rId) {
-                        indexOfObject = index;
-                    }
-                }           
+            for (let index = 0; index < Detalles.length; index++) {
+                if (Detalles[index].id_detalle == rId) {
+                    indexOfObject = index;
+                }
+            }           
 
-            Detalles.splice(indexOfObject, 1);
+            //eliminamos el detalle de Detalles y reordenamos los id_detalle de todos los Detalles
+            $.when(
+                Detalles.splice(indexOfObject, 1)
+            ).then(function () { reordenarRenglon(); });
 
             if (Detalles.length == 0) {
                 $("#selAgencia").attr("disabled", false);
@@ -3818,10 +3821,21 @@
                 $("#botLimpiar").attr("title", "Limpiar Agencia - Anunciante");
                 $("#selEmpresa").attr("disabled", false);
             }
-            calculateTotals();
+            //calculateTotals();
 
             $("#bAnular").attr("disabled", true);
             $("#bAnular").attr("title", "Guarde la Orden para poder anularla");
+        }
+
+        function reordenarRenglon() {
+            var contador = 1;
+
+            $.when(
+                Detalles.forEach(function (detalle) {
+                    detalle.id_detalle = contador;
+                    contador++;
+                })
+            ).then(function () { calculateTotals(); recargarRenglones(); });
         }
 
         function selectToJson(idSelect, idCol) {
