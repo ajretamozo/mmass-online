@@ -781,17 +781,6 @@
                                 </div>
                             </div>
                         </div>
-                        <!--<div class="row py-1">
-                        <div class="col-md-4">
-                        </div>
-                        <div class="col-md-4">
-                        </div>
-                        <div class="col-md-4 d-flex justify-content-end align-items-end">
-                            <button type="button" class="btn btn-dark btn-sm mx-1" onclick="filterImp()">
-                                <span class="fa fa-search"></span> Buscar
-                            </button>
-                        </div>
-                    </div>-->
                         <!--Sinc Anunciante-->
                         <div class="row py-1" id="rowAnuncianteSincImp" hidden="hidden">
                             <div class="col-md-6" style="align-self: self-end;text-align: end;">
@@ -900,7 +889,6 @@
                     <!--ORDER DATA-->
                     <div id="divOrderData">
                         <!-- GRUPO 1 -->
-                        <!-- FILA 1 -->
                         <div id="grupo1">
                             <div class="row">
                                 <div class="col-lg-4">
@@ -925,40 +913,45 @@
                                 </div>
                                 <!--<div class="col-lg-2">-->
                                 <!--<div class="row">
-                                <div class="col-lg-6">
-                                    <div class="row">
-                                        <div class="col-lg-10" style="padding-right: 12px;">
-                                            <label for="inpIdOrdenAdServer">ID AdServer</label>
-                                            <input type="number" class="form-control" id="inpIdOrdenAdServer" disabled="disabled">
-                                        </div>
-                                        <div class="col-lg-2 pt-1" style="padding-left: 0px;">
-                                            <label for="bcomprobarModificaciones" class="invisible">ModiGAM</label>
-                                            <button type="button" data-id="bcomprobarModificaciones" id="bcomprobarModificaciones" disabled="disabled" class="btn actions btn-outline-dark btn-sm mr-1" onclick="comprobarModificacionesButton()" title="No hay modificaciones en AdServer">
-                                                <span class="fa fa-cloud-download" id="spanCompAct"></span>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>-->
+        <div class="col-lg-6">
+            <div class="row">
+                <div class="col-lg-10" style="padding-right: 12px;">
+                    <label for="inpIdOrdenAdServer">ID AdServer</label>
+                    <input type="number" class="form-control" id="inpIdOrdenAdServer" disabled="disabled">
+                </div>
+                <div class="col-lg-2 pt-1" style="padding-left: 0px;">
+                    <label for="bcomprobarModificaciones" class="invisible">ModiGAM</label>
+                    <button type="button" data-id="bcomprobarModificaciones" id="bcomprobarModificaciones" disabled="disabled" class="btn actions btn-outline-dark btn-sm mr-1" onclick="comprobarModificacionesButton()" title="No hay modificaciones en AdServer">
+                        <span class="fa fa-cloud-download" id="spanCompAct"></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>-->
                                 <!--</div>-->
-                                <div class="col-lg-4">
-                                    <div class="row">
-                                        <div class="col-lg-9" style="padding-right: 0px;">
-                                            <label>Moneda</label>
-                                            <select class="form-control" id="selMoneda" onfocus="this.oldvalue = this.value" onchange="prevMonedaSelected(this); this.oldvalue = this.value;"></select>
-                                        </div>
-                                        <div class="col-lg-3" style="padding-right: 20px;padding-left: 20px;padding-top: 4px;">
-                                            <label for="bCambioMoneda" class="invisible">Cambios</label>
-                                            <button type="button" data-id="cambioMoneda" id="bCambioMoneda" class="btn actions btn-outline-dark btn-sm mr-1" onclick="getCotizaciones()" style="width: 75px;" title="Ver cotizaciones de monedas">
-                                                    <span class="fa fa-usd"></span>
-                                                    <span class="fa fa-exchange"></span>
-                                                    <span class="fa fa-eur"></span>
-                                            </button>
-                                        </div>
-                                    </div>
+
+                                <div class="col-lg-2" style="padding-right: 0px;">
+                                    <label>Moneda</label>
+                                    <select class="form-control" id="selMoneda" onfocus="this.oldvalue = this.value" onchange="prevMonedaSelected(this); this.oldvalue = this.value;"></select>
+                                </div>
+                                <div class="col-lg-1" style="padding-top: 4px;">
+                                    <label for="bCambioMoneda" class="invisible">Cambios</label>
+                                    <button type="button" data-id="cambioMoneda" id="bCambioMoneda" class="btn actions btn-outline-dark btn-sm mr-1" onclick="getCotizaciones()" style="width: 67px;" title="Ver cotizaciones de monedas">
+                                        <span class="fa fa-usd"></span>
+                                        <span class="fa fa-exchange"></span>
+                                        <span class="fa fa-eur"></span>
+                                    </button>
+                                </div>
+                                <div class="col-lg-1" style="padding-top: 4px;">
+                                    <label for="bCambioMoneda" class="invisible">Cambios</label>
+                                    <button type="button" data-id="getOrderASDetails" id="bgetOrderASDetais" disabled="disabled" class="btn btn-dark btn-sm mx-1" onclick="getOrderDetails()" style="width: 67px;" title="Ver progreso de la Orden">
+                                        <span class="fa fa-line-chart"></span>
+                                    </button>
                                 </div>
                             </div>
-                            <!-- FILA 2 -->
+                            <hr>
+                            <!-- GRUPO 2 -->
+                            <!-- FILA 1 -->
                             <div class="row justify-content-around" style="padding-top: 15px;">
                                 <div class="col-lg-4">
                                     <label>Número de Orden Cliente</label>
@@ -966,32 +959,26 @@
                                 </div>
                                 <div class="col-lg-4">
                                     <!--<label>Orden Relacionada</label>
-                                <select class="form-control" id="selOrdenRelacionada" onchange="enableConf()" disabled="disabled"></select>-->
+        <select class="form-control" id="selOrdenRelacionada" onchange="enableConf()" disabled="disabled"></select>-->
                                     <label>Descripción</label>
                                     <div class="input-group"> <input type="text" id="inpDescOP" class="form-control"> </div>
                                 </div>
-                                <div class="col-lg-4">
-                                    <div class="row">
-                                        <div class="col-lg-9" style="padding-right: 0px;">
-                                            <label for="inpDescConvenio">Convenio</label>
-                                            <input type="text" class="form-control" id="inpDescConvenio" disabled="disabled">
-                                        </div>
-                                        <div class="col-lg-1" style="padding-right: 20px;padding-left: 20px;padding-top: 4px;">
-                                            <label for="bConvenios" class="invisible">Convenios</label>
-                                            <button type="button" data-id="convenios" id="bConvenios" class="btn actions btn-outline-dark btn-sm mr-1" onclick="getConvenios()" style="width: 33px;" title="Buscar Convenios">
-                                                <span class="fa fa-handshake-o" id="brow"></span>
-                                            </button>
-                                        </div>
-                                        <div class="col-lg-1" style="padding-right: 15px;padding-left: 23px;padding-top: 4px;">
-                                            <label for="bBorrConvenios" class="invisible">Convenios</label>
-                                            <button type="button" data-id="borrConvenios" id="bBorrConvenios" class="btn actions btn-outline-dark btn-sm mr-1" disabled="disabled" onclick="nuevaOrden()" style="width: 33px;" title="Quitar Convenio">
-                                                <span class="fa fa-eraser" id="brow"></span>
-                                            </button>
-                                        </div>
-                                    </div>
+                                <div class="col-lg-3" style="padding-right: 0px;">
+                                    <label for="inpDescConvenio">Convenio</label>
+                                    <input type="text" class="form-control" id="inpDescConvenio" disabled="disabled">
+                                </div>
+                                <div class="col-lg-1" style="padding-top: 4px; padding-right: 0px; padding-left: 10px;">
+                                    <label for="bConvenios" class="invisible">Convenios</label>
+                                    <button type="button" data-id="convenios" id="bConvenios" class="btn actions btn-outline-dark btn-sm mr-1" onclick="getConvenios()" style="width: 33px;" title="Buscar Convenios">
+                                        <span class="fa fa-handshake-o" id="brow"></span>
+                                    </button>
+
+                                    <button type="button" data-id="borrConvenios" id="bBorrConvenios" class="btn actions btn-outline-dark btn-sm mr-1" disabled="disabled" onclick="nuevaOrden()" style="width: 33px;" title="Quitar Convenio">
+                                        <span class="fa fa-eraser" id="brow"></span>
+                                    </button>
                                 </div>
                             </div>
-                            <!-- FILA 3 -->
+                            <!-- FILA 2 -->
                             <div class="row" style="padding-top: 15px;">
                                 <div class="col-lg-4">
                                     <label>Vigencia Orden</label>
@@ -1032,7 +1019,7 @@
                             </div>
                             <div class="row mt-2">
                                 <div class="col-lg-2 offset-lg-10 d-flex justify-content-end">
-                                    <button id="botLimpiar" title="Limpiar Agencia - Anunciante" type="button" class="btn btn-dark btn-sm mx-1" onclick="limpiaVinculados();">
+                                    <button id="botLimpiar" title="Limpiar Agencia - Anunciante" type="button" class="btn actions btn-outline-dark btn-sm mr-1" onclick="limpiaVinculados();">
                                         <span class="fa fa-eraser"></span> Limpiar
                                     </button>
                                 </div>
@@ -1040,6 +1027,7 @@
                         </div>
                         <hr>
                         <!-- GRUPO 3 -->
+                        <!-- FILA 1 -->
                         <div class="row">
                             <div class="col-lg-4">
                                 <label>Facturar a</label>
@@ -1058,9 +1046,8 @@
                                 <select class="form-control" id="selPlazoP"></select>
                             </div>
                         </div>
-                        <hr>
-                        <!-- GRUPO 4 -->
-                        <div class="row">
+                        <!-- FILA 2 -->
+                        <div class="row" style="padding-top: 15px;">
                             <div class="col-lg-4">
                                 <label>Orden de Compra Cliente</label>
                                 <div class="input-group"> <input type="text" id="OrdenCompraCliente" class="form-control" maxlength="50"> </div>
@@ -1370,8 +1357,8 @@
                                 <div class="col-lg-4"></div>
                                 <div class="col-lg-4 d-flex justify-content-end">
                                     <!--<button type="button" data-id="sendOrderAS" id="bSendOrdenAdServer" class="btn actions btn-outline-dark btn-sm mr-1" disabled="disabled" onclick="enviarOrdenAdServer()" title="Exportar OP a AdServer">
-                                    <span class="fa fa-cloud-upload" id="brow"></span>
-                                </button>-->
+                    <span class="fa fa-cloud-upload" id="brow"></span>
+                </button>-->
                                     <button type="button" id="bGuardarOrden" class="btn actions btn-dark btn-sm mx-1" onclick="prevSaveOrder()">
                                         <span class="fa fa-save"></span> Guardar
                                     </button>
@@ -1755,11 +1742,11 @@
             //    $("#bSendOrdenAdServer").attr("disabled", false);
             //    $('#inpIdOrdenAdServer').val("");
             //}
-            //if (data.id_Google_Ad_Manager > 0 && OpClon == false) {
-            //    $("#bAnular").attr("disabled", true);
-            //    $("#bAnular").attr("title", "La Orden no puede ser anulada ya que tiene Detalles vinculados con AdServer");
-                //$("#bgetOrderASDetais").attr("disabled", false); VER QUE HACER CON ESTO
-            //}
+            if (data.id_Google_Ad_Manager > 0 && OpClon == false) {
+                $("#bAnular").attr("disabled", true);
+                $("#bAnular").attr("title", "La Orden no puede ser anulada ya que tiene Detalles vinculados con AdServer");
+                $("#bgetOrderASDetais").attr("disabled", false);
+            }
 
             $("#bConvenios").attr("disabled", true);
 
@@ -4191,18 +4178,14 @@
         }
 
         function getOrderDetails() {
-            var idOrden = $('#inpIdOrdenAdServer').val();
+            var idOrden = $("#inpOrderNumber").attr("id_op_dg");
             callWS("googleAdManager", "GetOrderDetails", JSON.stringify(idOrden), function (data) { onGetOrderDetails(data); });
         }
 
         function onGetOrderDetails(data) {
             var anunciante = $('#selAnunciante option:selected')[0].innerText;
-            var strTitle = "Datos Orden Google Ad Manager";
-            var strBody = "<div class='d-flex justify-content-center'> <img src='./BannerCertif.png' height='150' alt='Orden'> </div>";
-            var str = data;
-            //alert(data.d + "·" +rId+"- :"+str);
-            //str = str.slice(1, -1);
-            strBody = strBody + str;
+            var strTitle = "Progreso de la Orden";
+            var strBody = data;
             showLargeModal(strBody, strTitle);
             $('.headerObjetivo').text('Objetivo')
             $('.certTableHeader').attr('style', 'font-weight: bold;background-color:#f7f7f7;');
@@ -4211,9 +4194,7 @@
             $('.colspan2').attr('colspan', '2');
             $('.ctr.pautado').hide();
             $('#txtAnunciante').text(anunciante);
-/*            $('.detalledias').hide();*/
         }
-
 
         function test() {
             //var column = "table .actions";

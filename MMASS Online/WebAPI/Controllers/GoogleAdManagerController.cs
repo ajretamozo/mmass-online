@@ -31,9 +31,9 @@ namespace WebApi.Controllers
 
 
         [HttpPost("getOrderDetails")]
-        public IActionResult GetOrderDetails([FromBody] long idGAM)
+        public IActionResult GetOrderDetails([FromBody] int idOrden)
         {
-            var res = _GoogleAdManagerService.GetOrderDetails(idGAM);
+            var res = _GoogleAdManagerService.GetOrderDetails(idOrden);
             return Ok(JsonConvert.SerializeObject(res));
         }
 

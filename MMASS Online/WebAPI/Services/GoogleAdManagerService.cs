@@ -20,13 +20,14 @@ using Microsoft.AspNetCore.Mvc;
 //using Microsoft.CodeAnalysis.CSharp.Syntax;
 //using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Runtime.CompilerServices;
+using System.Drawing;
 
 namespace WebApi.Services
 {
     public interface IGoogleAdManagerService
     {
         IEnumerable<Contacto> GetAnunciantes(List<Parametro> parametros);
-        String GetOrderDetails(long idGAM);
+        String GetOrderDetails(int idOrden);
         String GetOrderDetails2(Dg_orden_pub_ap orden);
         String printCertExcel(Dg_orden_pub_ap orden);
         Parametro CreateOrder(List<Parametro> parametros);
@@ -79,9 +80,122 @@ namespace WebApi.Services
 
             return anunciantesGAM;
         }
-        public String GetOrderDetails(long idGAM )
+        //public String GetOrderDetails(long idGAM )
+        //{
+        //    return GoogleAdManager.GetOrderDetails(idGAM);
+        //}
+
+        //PASAR COMO PARAMETRO ID_ORDEN Y BUSCARLA
+        public String GetOrderDetails(int idOrden)
         {
-            return GoogleAdManager.GetOrderDetails(idGAM);
+            Dg_orden_pub_ap orden = Dg_orden_pub_ap.getById(idOrden);
+            //Datos generales de la Cabecera
+            string result = @"<div class='breakBefore'><div class='divImgCert add-mb-6'></div>
+                              <p style='font-family: Roboto'><span style='font-weight: bold;'>Orden Publicitaria: </span>" + orden.Bitacora + "</p>" +
+                            @"<p style='font-family: Roboto'><span style='font-weight: bold;'>Anunciante: </span ><span id='txtAnunciante'>" + orden.Anunciante_nombre + "</span></p>";
+
+            //Tabla de Detalles
+            result = result + "<table id='detailsTable' class='table add-mb-6' style='font-family: Roboto; text-align: center;'>";
+            result = result + " <thead><tr><th class='certTableHeader'> Detalle </th> <th class='sitio certTableHeader'> Sitio </th> <th class='fecha certTableHeader'> Fecha </th> <th class='pautado certTableHeader headerObjetivo'> Objetivo </th><th class='impreso certTableHeader'> Impresiones </th><th class='certTableHeader'> Clicks </th> <th class='ctr impreso certTableHeader'> CTR </th><th class='certTableHeader' width='1px'></th>";
+            result = result + "</tr></thead><tbody>";
+
+            float totalImpresionesEmitidas = 0;
+            float totalClicks = 0;
+            float totalCTRImpreso = 0;
+
+            foreach (Dg_orden_pub_as det in orden.Detalles)
+            {
+                //Datos generales del Detalle
+                result += "<tr>";
+                result += "<td>" + det.Descripcion + "</td>";
+                if (det.Medios.Count() > 1)
+                {
+                    result += "<td class='sitio' id='txtSitio'>RON</td>";
+                }
+                else
+                {
+                    string med = Medio.getById(det.Medios[0].Id_medio).Desc_medio;
+                    result += "<td class='sitio' id='txtSitio'>" + med + "</td>";
+                }
+
+                result += "<td class='fecha'>" + FormatFecha(det.Fecha_desde.ToString()) + " - " + FormatFecha(det.Fecha_hasta.ToString()) + "</td>";
+    
+                if (det.Tipo_tarifa == 0)
+                {
+                    result += "<td class='pautado'>" + det.Cantidad + "</td>";
+
+                }
+                else
+                {
+                    result += "<td class='pautado'> - </td>";
+                }
+
+                if (det.Id_Google_Ad_Manager > 0)
+                {
+                    //apuntamos a la red adserver del detalle
+                    Dg_red_GAM red = Dg_red_GAM.getById(det.Id_red);
+                    CambiarRed(red.Codigo_red.ToString());
+
+                    //buascamos los datos del detalle en GAM
+                    LineItem lineItem = GoogleAdManager.GetLineItemById(det.Id_Google_Ad_Manager);
+
+                    if (lineItem.stats != null)
+                    {
+                        if (lineItem.lineItemType != LineItemType.SPONSORSHIP)
+                        {
+                            totalImpresionesEmitidas += lineItem.stats.impressionsDelivered;
+                            totalClicks += lineItem.stats.clicksDelivered;
+                        }
+
+                        result += "<td class='impreso'>" + lineItem.stats.impressionsDelivered.ToString() + "</td>";
+                        result += "<td>" + lineItem.stats.clicksDelivered.ToString() + "</td>";
+
+                        if (lineItem.stats.impressionsDelivered != 0)
+                        {
+                            float ctr = (float.Parse(lineItem.stats.clicksDelivered.ToString()) / float.Parse(lineItem.stats.impressionsDelivered.ToString())) * 100;
+                            result += "<td class='ctr impreso'>" + Math.Round(ctr, 2) + "%</td>";
+                        }
+                        else
+                        {
+                            result += "<td class='ctr impreso'>" + "0" + "%</td>";
+                        }
+                    }
+                    else
+                    {
+                        result += "<td class='impreso'>" + "0" + "</td>";
+                        result += "<td>" + "0" + "</td>";
+                        result += "<td class='ctr impreso'>" + "0" + "%</td>";
+                    }
+                    result += "<td></td></tr>";
+                }
+                else
+                {
+                    result += "<td class='impreso'>" + "0" + "</td>";
+                    result += "<td>" + "0" + "</td>";
+                    result += "<td class='ctr impreso'>" + "0" + "%</td>";
+                }
+                result += "<td></td></tr>";
+            }
+
+            if (totalImpresionesEmitidas != 0)
+            {
+                totalCTRImpreso = (totalClicks / totalImpresionesEmitidas) * 100;
+            }
+
+            //Totales OP
+            result += "<tr>";
+            result += "<td style='font-weight: bold;background-color:#f79191a6;' colspan='2'> Totales OP </td>";
+            result += "<td style='font-weight: bold;background-color:#f79191a6;' class='pautado'>" + orden.Total_Impresiones.ToString() + "</td>";
+            result += "<td style='font-weight: bold;background-color:#f79191a6;' class='impreso'>" + totalImpresionesEmitidas.ToString() + "</td>";
+            result += "<td style='font-weight: bold;background-color:#f79191a6;' class='clicks'>" + totalClicks.ToString() + "</td>";
+            result += "<td style='font-weight: bold;background-color:#f79191a6;' class='ctr impreso'>" + Math.Round(totalCTRImpreso, 2).ToString() + "%</td>";
+            result += "<td style='background-color:#f79191a6;></td>";
+            result += "<td style='background-color:#f79191a6;></td></tr>";
+            result = result + "</tbody></table></div>";
+
+            result.Replace("\r", string.Empty).Replace("\n", string.Empty);
+
+            return result;
         }
 
         public Parametro CreateOrder(List<Parametro> parametros)
