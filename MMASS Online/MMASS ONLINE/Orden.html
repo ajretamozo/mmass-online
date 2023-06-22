@@ -3334,7 +3334,7 @@
             str = str + "<td id='tdMod" + id + "' style='padding-top: 16px;'><span class='fa fa-refresh fa-pulse invisible' id='spanCompActD" + id + "' title='Hay modificaciones en AdServer'></span></td></td></tr>";
             $("#TableRenglones").append(str);
             //  Colorear verde renglon enviado a AdServer
-            if (det.id_Google_Ad_Manager != undefined && det.id_Google_Ad_Manager != 0 && OpClon == false) {
+            if (det.id_Google_Ad_Manager != undefined && det.id_Google_Ad_Manager != 0) {
                 $("#row" + id).addClass("table-success");
             }
 
@@ -3510,6 +3510,7 @@
                 $("#GuardarRenglon").attr("onclick", "prevAddRenglon(" + rDetalle.id_detalle + ")");
             }
 
+            //Carga Fechas
             $('#fechaDesdeD').datetimepicker('date', moment(dateToFieldFormat(rDetalle.fecha_desde), 'DD/MM/YYYY'));
 
             if (rDetalle.fecha_hasta == null) {
@@ -3605,7 +3606,7 @@
 
             //Carga datos ad server
             $("#selRedes option[value=" + rDetalle.id_red + "]").attr("selected", "selected");
-            if ((rDetalle.id_Google_Ad_Manager > 0 && rDetalle.id_Google_Ad_Manager != null && OpClon == false && DetalleClon == false) || LineaImpConv.id_detalle > 0) {
+            if ((rDetalle.id_Google_Ad_Manager > 0 && rDetalle.id_Google_Ad_Manager != null && DetalleClon == false) || LineaImpConv.id_detalle > 0) {
                 $("#selRedes").attr("disabled", true);
                 $("#inpIdLinea").val(rDetalle.id_Google_Ad_Manager);
                 $('#inpIdLinea').css("background-color", "#c3e6cb");
@@ -3618,22 +3619,25 @@
                         $("#bcomprobarModificacionesD").attr("disabled", true);
                     }
                 /*}*/
+                if (rDetalle.id_pedido_Google_Ad_Manager == 0) {
+                    $("#inpIdPedido").val('');
+                }
+                else {
+                    $("#inpIdPedido").val(rDetalle.id_pedido_Google_Ad_Manager);
+                }
+                $("#inpPedido").val(rDetalle.nombre_pedido_Google_Ad_Manager);
             }
             else {
                 $("#selRedes").attr("disabled", false);
                 $('#inpIdLinea').css("background-color", "#e9ecef");
                 $("#inpIdLinea").val("");
                 $("#bcomprobarModificacionesD").attr("disabled", true);
-                $("#bBuscarPedido").attr("disabled", false);  
+                $("#bBuscarPedido").attr("disabled", false);
+                $("#inpIdPedido").val('');
+                $("#inpPedido").val('');
             }
 
-            if (rDetalle.id_pedido_Google_Ad_Manager == 0) {
-                $("#inpIdPedido").val('');
-            }
-            else {
-                $("#inpIdPedido").val(rDetalle.id_pedido_Google_Ad_Manager);
-            }
-            $("#inpPedido").val(rDetalle.nombre_pedido_Google_Ad_Manager);
+            //Carga otros datos
             $('#descripcionD').val(rDetalle.descripcion);
             $('#precioUnitarioD').val(rDetalle.importe_unitario);
             if (rDetalle.cantidad == -1) {
@@ -3658,9 +3662,6 @@
                 $("#confFCD").attr("disabled", true);
                 $("#checkTarifaManualD").attr("disabled", true);
             }
-            //if (OpClon) {
-            //    $("#selDetConvenio").attr("disabled", true);
-            //}
         }
 
         function enviarOrdenAdServer() {
@@ -4405,25 +4406,24 @@
 
         function loadCert(formato) {
             var tipo = $('input[type=radio]:checked').val();
-            op = $('#inpOrderNumber').attr('id_op_dg');
-            var op_obj = {};
-            op_obj.Id_op_dg = op;
+            //op = $('#inpOrderNumber').attr('id_op_dg');
+            //var op_obj = {};
+            //op_obj.Id_op_dg = op;
+            var idOrden = $("#inpOrderNumber").attr('id_op_dg');
 
-            if (op != undefined && op != '0') {
-                callWS("dg_orden_pub_aps", "getById", JSON.stringify(op_obj), function (data) {
-                    var opRes = {};
-                    opRes = data;
-                    /*if (opRes.id_Google_Ad_Manager > 0) {*/
+            if (idOrden != undefined && idOrden != '0') {
+                //callWS("dg_orden_pub_aps", "getById", JSON.stringify(op_obj), function (data) {
+                //    var opRes = {};
+                //    opRes = data;
+
                         if (formato == 3) {
                             callWS("googleAdManager", "printCertExcel", JSON.stringify(opRes), function (link) {
                                 linkDesc = link;
-                               /* location.href = linkDesc;*/
                                 window.open(linkDesc, '_blank');
                             });
                         }
                         else {
-                            callWS("googleAdManager", "GetOrderListDetails2", JSON.stringify(opRes), function (data) {
-                                //if (data != "") {
+                            callWS("googleAdManager", "GetOrderListDetails2", JSON.stringify(idOrden), function (data) {
                                 $("#divCert").html(data);
                                 $('.add-mb-6').addClass('mb-6');
                                 $("#divCert").attr('style', 'font-size:1rem;display:none;');
@@ -4463,14 +4463,9 @@
                                 else {
                                     certificarWord('divCert');
                                 }
-                                //}
                             });
                         }                       
-                    //}
-                    //else {
-                    //    showMessage('No hay Detalles enviados para certificar', 'info');
-                    //}
-                });
+                //});
             }
             else {
                 showMessage('No hay Detalles enviados para certificar', 'info')

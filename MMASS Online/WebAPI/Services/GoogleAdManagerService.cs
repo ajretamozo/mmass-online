@@ -28,7 +28,7 @@ namespace WebApi.Services
     {
         IEnumerable<Contacto> GetAnunciantes(List<Parametro> parametros);
         String GetOrderDetails(int idOrden);
-        String GetOrderDetails2(Dg_orden_pub_ap orden);
+        String GetOrderDetails2(int idOrden);
         String printCertExcel(Dg_orden_pub_ap orden);
         Parametro CreateOrder(List<Parametro> parametros);
         Parametro CreateLineItems(Dg_orden_pub_as det);
@@ -184,13 +184,12 @@ namespace WebApi.Services
 
             //Totales OP
             result += "<tr>";
-            result += "<td style='font-weight: bold;background-color:#f79191a6;' colspan='2'> Totales OP </td>";
-            result += "<td style='font-weight: bold;background-color:#f79191a6;' class='pautado'>" + orden.Total_Impresiones.ToString() + "</td>";
-            result += "<td style='font-weight: bold;background-color:#f79191a6;' class='impreso'>" + totalImpresionesEmitidas.ToString() + "</td>";
-            result += "<td style='font-weight: bold;background-color:#f79191a6;' class='clicks'>" + totalClicks.ToString() + "</td>";
-            result += "<td style='font-weight: bold;background-color:#f79191a6;' class='ctr impreso'>" + Math.Round(totalCTRImpreso, 2).ToString() + "%</td>";
-            result += "<td style='background-color:#f79191a6;></td>";
-            result += "<td style='background-color:#f79191a6;></td></tr>";
+            result += "<td style='font-weight: bold;background-color:#f7f7f7;' colspan='3' class='totales colspan2'> Totales </td>";
+            result += "<td style='font-weight: bold;background-color:#f7f7f7;' class='totales pautado'>" + orden.Total_Impresiones.ToString() + "</td>";
+            result += "<td style='font-weight: bold;background-color:#f7f7f7;' class='totales impreso'>" + totalImpresionesEmitidas.ToString() + "</td>";
+            result += "<td style='font-weight: bold;background-color:#f7f7f7;' class='totales' >" + totalClicks.ToString() + "</td>";
+            result += "<td style='font-weight: bold;background-color:#f7f7f7;' class='ctr impreso totales'>" + Math.Round(totalCTRImpreso, 2).ToString() + "%</td>";
+            result += "<td class='totales'></td></tr>";
             result = result + "</tbody></table></div>";
 
             result.Replace("\r", string.Empty).Replace("\n", string.Empty);
@@ -352,8 +351,10 @@ namespace WebApi.Services
             return GoogleAdManager.printCertExcel(orden.Id_Google_Ad_Manager, orden.Fecha, orden.Fecha_expiracion);
         }
 
-        public String GetOrderDetails2(Dg_orden_pub_ap orden)
+        public String GetOrderDetails2(int idOrden)
         {
+            Dg_orden_pub_ap orden = Dg_orden_pub_ap.getById(idOrden);
+
             //Datos generales de la Cabecera
             string result = @"<div class='breakBefore'><div class='divImgCert add-mb-6'></div>
                               <p style='font-family: Roboto'><span style='font-weight: bold;'>Orden Publicitaria: </span>" + orden.Bitacora + "</p>" +
