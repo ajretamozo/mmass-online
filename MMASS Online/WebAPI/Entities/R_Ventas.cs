@@ -50,7 +50,7 @@ namespace WebApi.Entities
                 }
             }
             string sqlCommand = @"select ap.id_op_dg, ap.id_agencia, ag.razon_social as agencia,
-                            ap.id_anunciante, an.razon_social as anunciante, ap.id_moneda, ap.cambio,  
+                            ap.id_anunciante, an.razon_social as anunciante, ap.id_moneda, dbo.getcambioMoneda(ap.id_moneda, (select id_moneda from moneda where base=1),GETDATE()) as cambio,  
                             cast(ap.anio as varchar(4)) + '-' + cast(ap.mes as varchar(2)) + '-' + cast(ap.nro_orden as varchar(5)) as nro_orden,
                             ap.nro_orden_ag, ap.primer_neto, ap.imp_conf_nc, ap.imp_conf_fc, ap.seg_neto,
                             p.desc_producto as producto, cast(op.anio as varchar(4)) + '-' + cast(op.mes as varchar(2)) + '-' + cast(op.nro_orden as varchar(5)) as nro_orden_rel, 
@@ -70,10 +70,10 @@ namespace WebApi.Entities
             }
             sqlCommand += " from dg_orden_pub_ap ap inner join dg_orden_pub_as det on det.id_op_dg = ap.id_op_dg inner join contactos ag on ag.id_contacto = ap.id_agencia inner join contactos an on an.id_contacto = ap.id_anunciante inner join productos p on p.id_producto = ap.id_producto left outer join orden_pub_ap op on ap.id_op_relacionada = op.id_op inner join dg_orden_pub_ejecutivos ej on ej.id_op_dg=ap.id_op_dg inner join contactos c on c.id_contacto=ej.id_ejecutivo  inner join Dg_orden_pub_pagos ofp on ofp.id_op_dg = ap.id_op_dg inner join formas_pago fp on fp.id_formapago=ofp.id_formapago inner join empresa em on em.id_empresa=ap.id_empresa";
 
-            //if (tipo == "2")
-            //{
+            if (tipo == "2")
+            {
                 sqlCommand += " inner join dg_orden_pub_medios apm on apm.id_op_dg = ap.id_op_dg and apm.id_op_dg = det.id_op_dg and apm.id_detalle = det.id_detalle inner join medios m on m.id_medio = apm.id_medio";
-            //}
+            }
             sqlCommand += " where (ap.es_anulada = 0 or ap.es_anulada is null)";
 
             string groupby = "";
@@ -86,20 +86,7 @@ namespace WebApi.Entities
             foreach (Parametro p in parametros)
             {
                 if (p.Value.ToString() != "")
-                {
-                    //if ((p.ParameterName == "FechaDesde") && (p.Value.ToString() != ""))
-                    //{
-                    //    DateTime fecha = DateTime.Parse(p.Value);
-                    //    string formatted = fecha.ToString("dd-MM-yyyy");
-                    //    mifiltro = mifiltro + " and ap.fecha >='" + formatted + "'";
-                    //}
-                    //if ((p.ParameterName == "FechaHasta") && (p.Value.ToString() != ""))
-                    //{
-                    //    DateTime fecha = DateTime.Parse(p.Value);
-                    //    string formatted = fecha.ToString("dd-MM-yyyy");
-                    //    mifiltro = mifiltro + " and ap.fecha <='" + formatted + "'";
-                    //}
-                    
+                {                   
                     if ((p.ParameterName == "FechaDesde") && (p.Value.ToString() != ""))
                         mifiltro = mifiltro + " and ap.fecha >='" + p.Value + "'";
                    
@@ -156,11 +143,13 @@ namespace WebApi.Entities
                     if ((p.ParameterName == "listaMedios") && (p.Value.ToString() != ""))
                         mifiltro = mifiltro + " and apm.id_medio in (" + p.Value + ")";
                 }
-            }   
+            }
+
+            string exist = " and EXISTS (SELECT id_op_dg FROM dg_orden_pub_medios) ";
 
             List<R_Ventas> col = new List<R_Ventas>();
             R_Ventas elem;
-            DataTable t = DB.Select(sqlCommand + mifiltro + groupby);
+            DataTable t = DB.Select(sqlCommand + mifiltro + exist + groupby);
             int i = 0;
             foreach (DataRow item in t.Rows)
             {

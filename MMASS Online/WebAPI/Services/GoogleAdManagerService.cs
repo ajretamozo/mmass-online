@@ -170,9 +170,9 @@ namespace WebApi.Services
                 }
                 else
                 {
-                    result += "<td class='impreso'>" + "0" + "</td>";
-                    result += "<td>" + "0" + "</td>";
-                    result += "<td class='ctr impreso'>" + "0" + "%</td>";
+                    result += "<td class='impreso'>" + "-" + "</td>";
+                    result += "<td>" + "-" + "</td>";
+                    result += "<td class='ctr impreso'>" + "-" + "%</td>";
                 }
                 result += "<td></td></tr>";
             }

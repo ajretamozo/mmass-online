@@ -511,21 +511,21 @@
                     //filas detalle
                     $.each(groupAn, function (it, iord) {
                         if (iord.primer_neto != 0) {
-                            var porcNC = (iord.imp_conf_nc / iord.primer_neto * iord.cambio * 100);
-                            var porcFC = (iord.imp_conf_fc / iord.primer_neto * iord.cambio * 100);
+                            var porcNC = (iord.imp_conf_nc / iord.primer_neto) * 100;
+                            var porcFC = (iord.imp_conf_fc / iord.primer_neto) * 100;
                         } else {
                             porcNC = 0;
                             porcFC = 0;
                         }
                         if (tipo == 2) {
                             var impXmedio = iord.cantidad_impresiones * iord.porc_ron / 100;
-                            var subtotal = (iord.monto_neto_det * iord.porc_ron / 100);
+                            var subtotal = (iord.monto_neto_det * iord.porc_ron / 100) / iord.cambio;
                         }
                         else
                             if (tipo == 1) {
-                                subtotal = iord.monto_neto_det * iord.cambio;
+                                subtotal = iord.monto_neto_det / iord.cambio;
                             } else {
-                                subtotal = iord.primer_neto * iord.cambio;
+                                subtotal = iord.primer_neto / iord.cambio;
                             }
 
                         var subtotal1 = (subtotal - (subtotal * porcNC / 100));
@@ -560,7 +560,7 @@
                         rowHTML += "<td class='monto col-xs-1' style='text-align: center;'>" + round(porcNC, 2) + "%</td>";
                         rowHTML += "<td class='monto col-xs-1' style='text-align: center;'>$" + round(subtotal1, 2) + "</td>";
                         rowHTML += "<td class='monto col-xs-1' style='text-align: center;'>" + round(porcFC, 2) + "%</td>";
-                        rowHTML += "<td class='monto col-xs-1' style='text-align: center;'>$" + round(total * iord.cambio, 2) + "</td>";
+                        rowHTML += "<td class='monto col-xs-1' style='text-align: center;'>$" + round(total, 2) + "</td>";
                         rowHTML += '</tr>'
 
                         //incremento totales anunciante
