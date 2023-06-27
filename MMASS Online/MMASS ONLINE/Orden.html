@@ -3877,7 +3877,7 @@
                     rowHTML += "<td class='col-xs-1' style='text-align: center;'> No Facturar </td >";
                 }
                 rowHTML += "<td class='col-xs-1' style='text-align: center;'> " + convenio.formapago_nombre + "</td >";
-                rowHTML += "<td class='col-xs-1' style='text-align: center;'> " + convenio.importe_total + "</td >";
+                rowHTML += "<td class='col-xs-1' style='text-align: center;'> " + convenio.simboloMoneda + " " + convenio.importe_total + "</td >";
                 rowHTML += "<td class='col-xs-1' style='text-align: center;'> <button type='button' data-id='bSelecConv' class='btn actions btn-outline-dark btn-sm mr-1' style='width: 50px; height: 50px;' onclick='seleccionarConvenio(" + convenio.id_convenio + ")'> <span class='fa fa-check-square-o fa-lg' title='Seleccionar convenio'></span></button></td >";
                 rowHTML += "</tr>";
 
@@ -3943,6 +3943,10 @@
                 $("#selPlazoP option[value=" + data.id_condpago_facturar + "]").attr("selected", "selected");
                 $("#selPlazoP").attr("disabled", true);
             }
+            if (data.id_moneda != null && data.id_moneda != 0) {
+                $('#selMoneda').val(data.id_moneda);
+                $("#selMoneda").attr("disabled", true);
+            }
             $("#selAgencia").attr("disabled", true);
             $("#selAnunciante").attr("disabled", true);
             $("#botLimpiar").attr("disabled", true);
@@ -3954,6 +3958,7 @@
                 $("#checkListaParaFact").change();
                 $("#checkListaParaFact")[0].disabled = true;
             }
+
 
             idConvenio = data.id_convenio;
 

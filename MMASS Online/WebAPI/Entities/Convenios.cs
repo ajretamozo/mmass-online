@@ -31,7 +31,10 @@ namespace WebApi.Entities
         public float Porc_conf_nc { get; set; }
         public float Porc_conf_fc { get; set; }
         public int Id_condpago_facturar { get; set; }
-        public int Tipo_Facturacion { get; set; }     
+        public int Tipo_Facturacion { get; set; }
+        public int Id_moneda { get; set; }
+        //public float Cambio { get; set; }
+        public string SimboloMoneda { get; set; }
 
 
         public static Convenios getByIdC9(int id_convenio)
@@ -102,15 +105,18 @@ namespace WebApi.Entities
 
         public static Convenios getByIdC5N(int id_convenio)
         {
-            string sqlCommand = @"select top 1 c.id_convenio, c.desc_convenio, cpa.id_formapago, c.id_agencia, c.id_anunciante, cp.id_producto, c.importe_total,
-                                    c.fecha_desde, c.fecha_hasta, c.estado, c.observaciones, c.facturar_a, c.porc_conf_nc, c.porc_conf_fc, 
-                                    ag.razon_social as agencia_nombre, an.razon_social as anunciante_nombre, fp.desc_formapago as formapago_nombre, c.id_condpago_facturar, c.tipo_facturacion   
+            string sqlCommand = @"select top 1 c.id_convenio, c.desc_convenio, cpa.id_formapago, c.id_agencia, c.id_anunciante, 
+                                    cp.id_producto, c.importe_total, c.fecha_desde, c.fecha_hasta, c.estado, c.observaciones,
+                                    c.facturar_a, c.porc_conf_nc, c.porc_conf_fc, ag.razon_social as agencia_nombre, 
+                                    an.razon_social as anunciante_nombre, fp.desc_formapago as formapago_nombre, 
+                                    c.id_condpago_facturar, c.tipo_facturacion, m.simbolo, c.id_moneda   
                                     from convenio_anual_precios c
                                     left outer join contactos ag on ag.id_contacto = c.id_agencia
                                     left outer join contactos an on an.id_contacto = c.id_anunciante
 									left outer join convenios_pagos cpa on cpa.id_convenio = c.id_convenio
 									left outer join formas_pago fp on fp.id_formapago = cpa.id_formapago
                                     left outer join dg_conv_dg_detalle_productos cp on cp.id_convenio = c.id_convenio
+                                    left outer join moneda m on c.id_moneda = m.id_moneda 
                                     where c.id_convenio = " + id_convenio.ToString() + " and c.es_borrado = 0";
 
             Convenios resultado = new Convenios();
@@ -167,6 +173,14 @@ namespace WebApi.Entities
                     resultado.Id_condpago_facturar = int.Parse(t.Rows[0]["id_condpago_facturar"].ToString());
                 }
                 resultado.Tipo_Facturacion = int.Parse(t.Rows[0]["tipo_facturacion"].ToString());
+                if (t.Rows[0]["simbolo"] != null)
+                {
+                    resultado.SimboloMoneda = t.Rows[0]["simbolo"].ToString();
+                }
+                if (t.Rows[0]["id_moneda"].ToString() != "")
+                {
+                    resultado.Id_moneda = int.Parse(t.Rows[0]["id_moneda"].ToString());
+                }
             }
             return resultado;
         }
@@ -174,14 +188,16 @@ namespace WebApi.Entities
         public static List<Convenios> getAll()
         {
             string sqlCommand = @"declare @fechaActual date = getdate()
-                                    select c.id_convenio, c.desc_convenio, cpa.id_formapago, c.id_agencia, c.id_anunciante, c.importe_total,
-                                    c.fecha_desde, c.fecha_hasta, c.estado, c.observaciones, c.facturar_a, c.id_empresa,
-                                    ag.razon_social as agencia_nombre, an.razon_social as anunciante_nombre, fp.desc_formapago as formapago_nombre, c.tipo_facturacion 
+                                    select c.id_convenio, c.desc_convenio, cpa.id_formapago, c.id_agencia, c.id_anunciante,
+                                    c.importe_total, c.fecha_desde, c.fecha_hasta, c.estado, c.observaciones, c.facturar_a,
+                                    c.id_empresa, ag.razon_social as agencia_nombre, an.razon_social as anunciante_nombre, 
+                                    fp.desc_formapago as formapago_nombre, c.tipo_facturacion, m.simbolo  
                                     from convenio_anual_precios c
                                     left outer join contactos ag on ag.id_contacto = c.id_agencia
                                     left outer join contactos an on an.id_contacto = c.id_anunciante
 									left outer join convenios_pagos cpa on cpa.id_convenio = c.id_convenio
 									left outer join formas_pago fp on fp.id_formapago = cpa.id_formapago
+                                    left outer join moneda m on c.id_moneda = m.id_moneda 
                                     where c.es_borrado = 0 and c.estado = 3 and (@fechaActual >= c.fecha_desde and @fechaActual <= c.fecha_hasta)
 									and exists (select id_convenio from conv_dg_detalle where id_convenio=c.id_convenio)";
 
@@ -222,7 +238,11 @@ namespace WebApi.Entities
                 {
                     elem.Formapago_nombre = item["formapago_nombre"].ToString();
                 }
-                elem.Tipo_Facturacion = int.Parse(t.Rows[0]["tipo_facturacion"].ToString());
+                elem.Tipo_Facturacion = int.Parse(item["tipo_facturacion"].ToString());
+                if (item.Table.Columns["simbolo"] != null)
+                {
+                    elem.SimboloMoneda = item["simbolo"].ToString();
+                }
 
                 col.Add(elem);
             }
@@ -232,14 +252,16 @@ namespace WebApi.Entities
         public static List<Convenios> filter(List<Parametro> parametros)
         {
             string sqlCommand = @"declare @fechaActual date = getdate()
-                                    select c.id_convenio, c.desc_convenio, cpa.id_formapago, c.id_agencia, c.id_anunciante, c.importe_total,
-                                    c.fecha_desde, c.fecha_hasta, c.estado, c.observaciones, c.facturar_a, c.id_empresa,
-                                    ag.razon_social as agencia_nombre, an.razon_social as anunciante_nombre, fp.desc_formapago as formapago_nombre, c.tipo_facturacion 
+                                    select c.id_convenio, c.desc_convenio, cpa.id_formapago, c.id_agencia, c.id_anunciante, 
+                                    c.importe_total, c.fecha_desde, c.fecha_hasta, c.estado, c.observaciones, c.facturar_a,
+                                    c.id_empresa, ag.razon_social as agencia_nombre, an.razon_social as anunciante_nombre, 
+                                    fp.desc_formapago as formapago_nombre, c.tipo_facturacion, m.simbolo  
                                     from convenio_anual_precios c
                                     left outer join contactos ag on ag.id_contacto = c.id_agencia
                                     left outer join contactos an on an.id_contacto = c.id_anunciante
 									left outer join convenios_pagos cpa on cpa.id_convenio = c.id_convenio
 									left outer join formas_pago fp on fp.id_formapago = cpa.id_formapago
+                                    left outer join moneda m on c.id_moneda = m.id_moneda 
                                     where c.es_borrado = 0 and c.estado = 3 and (@fechaActual >= c.fecha_desde and @fechaActual <= c.fecha_hasta)
 									and exists (select id_convenio from conv_dg_detalle where id_convenio=c.id_convenio) ";
             string mifiltro = "";
@@ -313,6 +335,10 @@ namespace WebApi.Entities
                     elem.Formapago_nombre = item["formapago_nombre"].ToString();
                 }
                 elem.Tipo_Facturacion = int.Parse(t.Rows[0]["tipo_facturacion"].ToString());
+                if (item.Table.Columns["simbolo"] != null)
+                {
+                    elem.SimboloMoneda = item["simbolo"].ToString();
+                }
 
                 col.Add(elem);
             }
