@@ -2823,10 +2823,7 @@
 
                 return callWS("tarifas", "filter", JSON.stringify(parametros), function (data) { onTarifasGetAll(data, 'selTarifaD', 'id_tarifa_dg', 'descripcion'); })
             }
-
         }
-
-
 
         function setListaParametros(data) {
             var parametros = {};
@@ -3585,25 +3582,6 @@
 
             $("#selProductoD option[value=" + rDetalle.id_producto + "]").attr("selected", "selected");
 
-            //Carga Tarifa
-            if (rDetalle.tarifa_dg != null) {
-                $.when(filterTarifas()).then(function () {
-                    $("#selTarifaD option[value=" + rDetalle.tarifa_dg.id_tarifa_dg + "]").attr("selected", "selected");
-                    //if (rDetalle.tarifa_manual) {
-                    //    $("#checkTarifaManualD")[0].checked = true;
-                    //    $("#checkTarifaManualD").change();
-                    //    $("#precioUnitarioD").val(rDetalle.importe_unitario);
-                    //    $("#precioUnitarioD").change();
-                    //}
-                }/*, function data() { }*/);
-            }
-            if (rDetalle.tarifa_manual) {
-                $("#checkTarifaManualD")[0].checked = true;
-                $("#checkTarifaManualD").change();
-                $("#precioUnitarioD").val(rDetalle.importe_unitario);
-                $("#precioUnitarioD").change();
-            }
-
             //Carga datos ad server
             $("#selRedes option[value=" + rDetalle.id_red + "]").attr("selected", "selected");
             if ((rDetalle.id_Google_Ad_Manager > 0 && rDetalle.id_Google_Ad_Manager != null && DetalleClon == false) || LineaImpConv.id_detalle > 0) {
@@ -3650,6 +3628,20 @@
             $('#totalD').val(rDetalle.monto_neto);
             $("#confNCD").val(rDetalle.porcconfnc);
             $("#confFCD").val(rDetalle.porcconffc);
+
+            //Carga Tarifa
+            $.when(filterTarifas()).then(function () {
+                if (rDetalle.tarifa_dg != null) {
+                    $("#selTarifaD option[value=" + rDetalle.tarifa_dg.id_tarifa_dg + "]").attr("selected", "selected");
+                }
+            });
+
+            if (rDetalle.tarifa_manual) {
+                $("#checkTarifaManualD")[0].checked = true;
+                $("#checkTarifaManualD").change();
+                $("#precioUnitarioD").val(rDetalle.importe_unitario);
+                $("#precioUnitarioD").change();
+            }
 
             if (rDetalle.id_det_conv > 0) {
                 $("#selDetConvenio option[value=" + rDetalle.id_det_conv + "]").attr("selected", "selected");
@@ -5672,7 +5664,16 @@
                     Detalles.push(linea),
                     $('#bSelLinea' + linea.id_Google_Ad_Manager).attr('data-id', idDet)
                 ).then(function () { var boton = $('#bSelLinea' + linea.id_Google_Ad_Manager); cargarModificarRenglon(boton); $("#importarModal").modal('hide'); });
+                //    then(function () { var boton = $('#bSelLinea' + linea.id_Google_Ad_Manager); cargarModificarRenglon(boton); }
+                //).then(function () { filterTarifas(); $("#importarModal").modal('hide'); });
             }
+        }
+
+        function onSelLinea(linea) {
+            var boton = $('#bSelLinea' + linea.id_Google_Ad_Manager)
+            $.when(
+              cargarModificarRenglon(boton)
+            ).then(function () { filterTarifas(); $("#importarModal").modal('hide'); });
         }
 
         function comprobarLineaConvenio(linea) {
@@ -5700,7 +5701,8 @@
                 $.when(
                     Detalles.push(LineaImpConv),
                     $('#bSelLinea' + LineaImpConv.id_Google_Ad_Manager).attr('data-id', idDet)
-                ).then(function () { var boton = $('#bSelLinea' + LineaImpConv.id_Google_Ad_Manager); cargarModificarRenglon(boton); $("#importarModal").modal('hide'); });
+                ).then(function () { var boton = $('#bSelLinea' + LineaImpConv.id_Google_Ad_Manager); cargarModificarRenglon(boton); }
+                ).then(function () { filterTarifas(); $("#importarModal").modal('hide'); });
             }
         }
 

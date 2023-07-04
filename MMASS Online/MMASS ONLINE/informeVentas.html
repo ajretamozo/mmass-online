@@ -197,8 +197,9 @@
                                     <th>Agencia</th>
                                     <th>Anunciante</th>
                                     <th>Producto</th>
-                                    <th>NroOrd</th>
-                                    <th>OrdAg</th>
+                                    <th>N Orden</th>
+                                    <th>N Orden Cli</th>
+                                    <th>Vigencia Orden</th>
                                     <th>Empresa</th>
                                     <th>Tipo de Venta</th>
                                     <th>Facturada</th>
@@ -224,8 +225,9 @@
                                     <th>Agencia</th>
                                     <th>Anunciante</th>
                                     <th>Producto</th>
-                                    <th>NroOrd</th>
-                                    <th>OrdAg</th>
+                                    <th>N Orden</th>
+                                    <th>N Orden Cli</th>
+                                    <th>Vigencia Orden</th>
                                     <th>Empresa</th>
                                     <th>Tipo de Venta</th>
                                     <th>Facturada</th>
@@ -490,9 +492,9 @@
                 sumTotalAg = 0;
                 rowHTML += "<tr class='tableexport-ignore table-secondary agGroup' agencia='" + itAg + "'>"
                 if (tipo == 2) {
-                    rowHTML += "<td colspan='17' style='text-align: initial;'> AGENCIA: " + itAg + "</td>";
+                    rowHTML += "<td colspan='18' style='text-align: initial;'> AGENCIA: " + itAg + "</td>";
                 } else {
-                    rowHTML += "<td colspan='15' style='text-align: initial;'> AGENCIA: " + itAg + "</td>";
+                    rowHTML += "<td colspan='16' style='text-align: initial;'> AGENCIA: " + itAg + "</td>";
                 }
                 rowHTML += "</tr>"
                 //grupo anunciante
@@ -503,9 +505,9 @@
                     sumTotalAn = 0;
                     rowHTML += "<tr class='tableexport-ignore table-secondary anGroup' anunciante='" + itAn + "'>"
                     if (tipo == 2) {
-                        rowHTML += "<td></td><td colspan='16' style='text-align: initial;'>         ANUNCIANTE: " + itAn + "</td>";
+                        rowHTML += "<td></td><td colspan='17' style='text-align: initial;'>         ANUNCIANTE: " + itAn + "</td>";
                     } else {
-                        rowHTML += "<td></td><td colspan='14' style='text-align: initial;'>         ANUNCIANTE: " + itAn + "</td>";
+                        rowHTML += "<td></td><td colspan='15' style='text-align: initial;'>         ANUNCIANTE: " + itAn + "</td>";
                     }
                     rowHTML += "</tr>"
                     //filas detalle
@@ -537,6 +539,7 @@
                         rowHTML += "<td class='col-xs-1'>" + iord.producto + "</td>";
                         rowHTML += "<td style='mso-number-format:\"\@\";' class='col-xs-1'>" + iord.nro_orden + "</td>";
                         rowHTML += "<td class='col-xs-1'>" + iord.nro_orden_agencia + "</td>";
+                        rowHTML += "<td class='col-xs-1'>" + dateToFieldFormat(iord.fecha) + ' - ' + dateToFieldFormat(iord.fecha_expiracion) + "</td>";
                         rowHTML += "<td class='col-xs-1'>" + iord.empresa + "</td>";
                         rowHTML += "<td class='col-xs-1'>" + iord.tipoVenta + "</td>";
                         if (iord.esFacturado == 1) {
@@ -577,7 +580,7 @@
                     })
                     //totales anunciante
                     rowHTML += "<tr class='tableexport-ignore table-secondary anGroup' anunciante='" + itAn + "'>"
-                    rowHTML += "<td></td><td colspan='8' style='text-align: initial;'> TOTALES ANUNCIANTE: " + itAn + "</td>";
+                    rowHTML += "<td></td><td colspan='9' style='text-align: initial;'> TOTALES ANUNCIANTE: " + itAn + "</td>";
                     rowHTML += "<td class='align-center'>" + roundSinFormato(sumImpresionesAn, 2) + "</td>";
 
                     if (tipo == 2) {
@@ -598,7 +601,7 @@
                 })
                 //totales agencia
                 rowHTML += "<tr class='tableexport-ignore table-secondary agGroup' agencia='" + itAg + "'>"
-                rowHTML += "<td colspan='9' style='text-align: initial;'> TOTALES AGENCIA: " + itAg + "</td>";
+                rowHTML += "<td colspan='10' style='text-align: initial;'> TOTALES AGENCIA: " + itAg + "</td>";
                 rowHTML += "<td class='align-center'>" + sumImpresionesAg + "</td>";
 
                 if (tipo == 2) {
@@ -618,13 +621,12 @@
             })
             //totales
             rowHTML += "<tr class='tableexport-ignore table-secondary'>"
-            rowHTML += "<td colspan='9' style='text-align: initial;'> TOTALES: </td>";
+            rowHTML += "<td colspan='10' style='text-align: initial;'> TOTALES: </td>";
             rowHTML += "<td class='align-center'>" + sumImpresionesGral + "</td>";
 
             if (tipo == 2) {
                 rowHTML += "<td></td><td></td>";
             }
-            //falta adaptar esto al cambio
             rowHTML += "<td class='monto' style='text-align: center;'>$" + round(sumSubtotalGral, 2) + "</td><td></td>";
             rowHTML += "<td class='monto' style='text-align: center;'>$" + round(sumSubtotal1Gral, 2) + "</td><td></td>";
             rowHTML += "<td class='monto' style='text-align: center;'>$" + round(sumTotalGral, 2) + "</td>";
