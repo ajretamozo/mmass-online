@@ -153,7 +153,21 @@
                     <tbody id="TableRenglones" align="center"></tbody>
                 </table>
             </div>
-
+            <div id="divPaginacion" style="text-align: end;" hidden="hidden">
+                <a href="javascript:firstPage()" id="btn_first" style="visibility: visible;margin-right: 10px;">
+                    <span class="fa fa-step-backward"></span>
+                </a>
+                <a href="javascript:prevPage()" id="btn_prev" style="visibility: visible;margin-right: 10px;">
+                    <span class="fa fa-chevron-left"></span>
+                </a>
+                <a href="javascript:nextPage()" id="btn_next" style="visibility: visible;margin-right: 10px;">
+                    <span class="fa fa-chevron-right"></span>
+                </a>
+                <a href="javascript:lastPage()" id="btn_last" style="visibility: visible;margin-right: 10px;">
+                    <span class="fa fa-step-forward"></span>
+                </a>
+                pág: <span id="page"></span>
+            </div>
         </div>
     </main>
 
@@ -169,7 +183,7 @@
         //ONLOAD se ejecuta cuando se termina de cargar la pagina
         $(function () {
             $("#divMessage").on("click", function () { $("#divMessage").hide(); });
-            getRedesGAM()
+            getRedesGAM();
 
             $(".enterSearch").on("keydown", function (e) {
                 if (event.which == 13) {
@@ -179,6 +193,107 @@
             document.body.style.backgroundImage = "url(./fondoM3.png)";
         });
 
+        var anunciantesMMASSoption = "";
+        var current_page = 1;
+        var records_per_page = 50;
+        var anunciantesGAM = [];
+
+        function firstPage() {
+            current_page = 1;
+            changePage(1);
+        }
+
+        function prevPage() {
+            if (current_page > 1) {
+                current_page--;
+                changePage(current_page);
+            }
+        }
+
+        function nextPage() {
+            if (current_page < numPages()) {
+                current_page++;
+                changePage(current_page);
+            }
+        }
+
+        function lastPage() {
+            var ultimaPag = numPages()
+            current_page = ultimaPag;
+            changePage(ultimaPag);
+        }
+
+        function changePage(page) {
+            idRed = $('#selRedes').val();
+            var btn_next = document.getElementById("btn_next");
+            var btn_prev = document.getElementById("btn_prev");
+            var page_span = document.getElementById("page");
+
+            var totalPags = numPages();
+
+            // Validate page
+            if (page < 1) page = 1;
+            if (page > totalPags) page = totalPags;
+
+            //Construyo la tabla
+            $("#TableRenglones tr").remove()
+            var strCabeceraOption = ' <select class="form-control" style="width: 426px;" ';
+
+            page_span.innerHTML = page + " de " + totalPags;
+
+            if (page == 1) {
+                btn_prev.style.visibility = "hidden";
+                btn_first.style.visibility = "hidden";
+            } else {
+                btn_prev.style.visibility = "visible";
+                btn_first.style.visibility = "visible";
+            }
+
+            if (page == totalPags) {
+                btn_next.style.visibility = "hidden";
+                btn_last.style.visibility = "hidden";
+            } else {
+                btn_next.style.visibility = "visible";
+                btn_last.style.visibility = "visible";
+            }
+
+            for (var i = (page - 1) * records_per_page; i < (page * records_per_page); i++) {    
+                var str = '';
+                str = "<tr>";
+                str = str + "<td class='col-xs-2' > " + anunciantesGAM[i].idContactoDigital + "</td > ";
+                str = str + "<td class='col-xs-4' > " + anunciantesGAM[i].nombre_com + "</td >";
+                str = str + '<td class="col-xs-4" >' + strCabeceraOption + " id='sel" + anunciantesGAM[i].idContactoDigital + "' >" + anunciantesMMASSoption + '</td >';
+                str = str + "<td class='col-xs-2' > <button type='button' id=button" + anunciantesGAM[i].idContactoDigital + " class='btn btn-secondary' value='1' onClick='vincular(" + anunciantesGAM[i].idContactoDigital + ", " + idRed + ")'>Vincular</button> </td >";
+                str = str + "</tr>";
+
+                $("#TableRenglones").append(str);
+
+                $("#sel" + anunciantesGAM[i].idContactoDigital + " option[value=" + anunciantesGAM[i].idContactoDigital + "]").attr('selected', 'selected');
+
+                var idAGam = "#sel" + anunciantesGAM[i].idContactoDigital;
+                var idButton = "#button" + anunciantesGAM[i].idContactoDigital;
+                $(idAGam).val(anunciantesGAM[i].idContactoDigital);
+
+                if ($(idAGam + " :selected").text() != "") {
+                    $(idButton).removeClass("btn-primary").addClass("btn-success");
+                    $(idButton).css("background-color", "#c3e6cb");
+                    $(idButton).val(2);
+                    $(idButton).html('Desvincular');
+                    $("#sel" + anunciantesGAM[i].idContactoDigital).attr("disabled", true);
+                }
+            }
+
+            $("#pleaseWaitDialog").modal('hide');
+        }
+
+        function numPages() {
+            if (anunciantesGAM.length < 50) {
+                return 1;
+            }
+            else {
+                return Math.ceil(anunciantesGAM.length / records_per_page);
+            }
+        }
 
         function getRedesGAM() {
             callWS("medios", "getAllRedes", '', function (data) { onCargarSelect(data, 'selRedes', 'id_red', 'descripcion', 'codigo_red'); });
@@ -196,18 +311,12 @@
         }
 
         function onRedSelected() {
-            idRed = $('#selRedes').val();
-            codRed = $('#selRedes>option:selected').attr("codigo_red");
-            callWS("googleAdManager", "cambiarRed", codRed);
-        }
-
-        function getAnunciantes(anunciantesGAM) {
-            idRed = $('#selRedes').val();
-            $("#pleaseWaitDialog").modal();
-            callWS("contactos", "getAnunSincro", JSON.stringify(idRed), function (data) { onCargarTabla(data, anunciantesGAM, idRed); });
+            $("#TableRenglones tr").remove()
+            $("#divPaginacion").attr("hidden", true);
         }
 
         function llenarStrOption(anunciantes) {
+            $("#pleaseWaitDialog").modal();
             var str = '<option value="-1">  </option>';
             $.each(anunciantes, function (it, anun) {
 
@@ -220,7 +329,8 @@
 
             });
             str = str + "</select >";
-            return str;
+
+            anunciantesMMASSoption = str;
         }
 
         function vincular(idGAM, idRed) {
@@ -270,10 +380,6 @@
 
         }
 
-        function descFilter(str, target) {
-            return target.toLowerCase().includes(str.toLowerCase());
-        }
-
         function filter() {
             rows = $("tr").not("#header");
             desc = $("#descFiltro").val();
@@ -286,6 +392,9 @@
 
                 var parametrosAnun = setListaParametros(paramsAnun);
 
+                //$("#pleaseWaitDialog").modal('show');
+
+                callWS("contactos", "getAnunSincro", JSON.stringify(red), function (data) { llenarStrOption(data); });
                 callWS("googleAdManager", "getAnunciantes", JSON.stringify(parametrosAnun), onGetAnuncianteGAM);
             }
             else {
@@ -293,58 +402,17 @@
             }
         }
 
-        function onCargarTabla(data, anunciantesGAM, idRed) {
-            $("#TableRenglones tr").remove()
-            var strCabeceraOption = ' <select class="form-control" style="width: 426px;" ';
-            var strOption = llenarStrOption(data);
-            //showPleaseWait();
-
-            $.each(anunciantesGAM, function (it, anuncianteGAM) {
-                var str = '';
-                str = "<tr>";
-                str = str + "<td class='col-xs-2' > " + anuncianteGAM.idContactoDigital + "</td > ";
-                str = str + "<td class='col-xs-4' > " + anuncianteGAM.nombre_com + "</td >";
-                str = str + '<td class="col-xs-4" >' + strCabeceraOption + " id='sel" + anuncianteGAM.idContactoDigital + "' >" + strOption + '</td >';
-                str = str + "<td class='col-xs-2' > <button type='button' id=button" + anuncianteGAM.idContactoDigital + " class='btn btn-secondary' value='1' onClick='vincular(" + anuncianteGAM.idContactoDigital + ", " + idRed + ")'>Vincular</button> </td >";
-                str = str + "</tr>";
-
-                $("#TableRenglones").append(str);
-
-                $("#sel" + anuncianteGAM.idContactoDigital + " option[value=" + anuncianteGAM.idContactoDigital + "]").attr('selected', 'selected');
-
-                var idAGam = "#sel" + anuncianteGAM.idContactoDigital;
-                var idButton = "#button" + anuncianteGAM.idContactoDigital;
-                $(idAGam).val(anuncianteGAM.idContactoDigital);
-                /*if ($(idAGam).val() != undefined) {*/
-                if ($(idAGam + " :selected").text() != "") {
-                    $(idButton).removeClass("btn-primary").addClass("btn-success");
-                    $(idButton).css("background-color", "#c3e6cb");
-                    $(idButton).val(2);
-                    $(idButton).html('Desvincular');
-                    $("#sel" + anuncianteGAM.idContactoDigital).attr("disabled", true);
-                }
-            });
-            //hidePleaseWait();
-            $("#pleaseWaitDialog").modal('hide');
-        }
-
-        function test() {
-
-        }
-
-        function GetData() {
-            getAnunciantesGAM();
-        }
-
         function onGetAnuncianteGAM(data) {
-
             //Cuando me trae los anunciantes con los codigos de Google Ad Manager cargo los anunciantes de MMASS
+            anunciantesGAM = data;
 
             if (data.length != 0) {
-                getAnunciantes(data);
+                //$("#pleaseWaitDialog").modal();
+                $("#divPaginacion").attr("hidden", false);
+                changePage(1)
             }
             else {
-                onCargarTabla(data)
+                $("#TableRenglones").append("");
                 showMessage("No se enontraron Anunciantes", "info");
             }
         }

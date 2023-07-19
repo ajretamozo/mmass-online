@@ -80,12 +80,7 @@ namespace WebApi.Services
 
             return anunciantesGAM;
         }
-        //public String GetOrderDetails(long idGAM )
-        //{
-        //    return GoogleAdManager.GetOrderDetails(idGAM);
-        //}
 
-        //PASAR COMO PARAMETRO ID_ORDEN Y BUSCARLA
         public String GetOrderDetails(int idOrden)
         {
             Dg_orden_pub_ap orden = Dg_orden_pub_ap.getById(idOrden);

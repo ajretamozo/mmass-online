@@ -182,7 +182,6 @@ namespace WebApi.Helpers
                 //} while (statementBuilder.GetOffset() < totalResultSetSize);
 
             }
-
     
             return Anunciantes;
         }

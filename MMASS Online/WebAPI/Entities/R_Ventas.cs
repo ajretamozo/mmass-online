@@ -143,7 +143,6 @@ namespace WebApi.Entities
                     }
 
                     if ((p.ParameterName == "listaMedios") && (p.Value.ToString() != ""))
-                        //mifiltro = mifiltro + " and apm.id_medio in (" + p.Value + ")";
                         mifiltro = mifiltro + " and ap.id_op_dg in (SELECT id_op_dg FROM dg_orden_pub_medios WHERE id_medio IN (" + p.Value + "))";                    
                 }
             }
@@ -177,7 +176,7 @@ namespace WebApi.Entities
                     Cambio = DB.DFloat(item["cambio"].ToString()),
                     Fecha = DB.DFecha(item["Fecha"].ToString()),
                     Fecha_expiracion = DB.DFecha(item["Fecha_expiracion"].ToString())
-            };
+                };
                 if (item["nro_orden_rel"].ToString() != "")
                 {
                     elem.Nro_orden = item["nro_orden_rel"].ToString();
