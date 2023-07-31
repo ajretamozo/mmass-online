@@ -1083,10 +1083,19 @@ namespace WebApi.Entities
         //    return existe;
         //}
 
-        public static bool anularOrden(int idOp)
+        public bool anularOrden()
         {
+            //primero elimino la relación de los detalles sincronizados
+            foreach (Dg_orden_pub_as det in Detalles)
+            {
+                if (det.Id_Google_Ad_Manager > 0)
+                {
+                    Dg_orden_pub_as.deleteId_Google_Ad_Manager(det.Id_op_dg, det.Id_detalle);
+                }
+            }
+
             bool resultado = true;
-            string sql = "UPDATE dg_orden_pub_ap SET es_anulada = 1, parafacturar = 0, fecha_anulada = GETDATE() WHERE id_op_dg = " + idOp.ToString();
+            string sql = "UPDATE dg_orden_pub_ap SET es_anulada = 1, parafacturar = 0, fecha_anulada = GETDATE(), id_red = 0 WHERE id_op_dg = " + Id_op_dg.ToString();
 
             try
             {

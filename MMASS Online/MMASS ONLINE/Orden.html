@@ -1743,8 +1743,8 @@
             //    $('#inpIdOrdenAdServer').val("");
             //}
             if (data.id_Google_Ad_Manager > 0 && OpClon == false) {
-                $("#bAnular").attr("disabled", true);
-                $("#bAnular").attr("title", "La Orden no puede ser anulada ya que tiene Detalles vinculados con AdServer");
+                //$("#bAnular").attr("disabled", true);
+                //$("#bAnular").attr("title", "La Orden no puede ser anulada ya que tiene Detalles vinculados con AdServer");
                 $("#bgetOrderASDetais").attr("disabled", false);
             }
 
@@ -3606,13 +3606,19 @@
                 $("#inpPedido").val(rDetalle.nombre_pedido_Google_Ad_Manager);
             }
             else {
-                $("#selRedes").attr("disabled", false);
-                $('#inpIdLinea').css("background-color", "#e9ecef");
-                $("#inpIdLinea").val("");
-                $("#bcomprobarModificacionesD").attr("disabled", true);
-                $("#bBuscarPedido").attr("disabled", false);
-                $("#inpIdPedido").val('');
-                $("#inpPedido").val('');
+                if (OpAnulada) {
+                    $("#selRedes").attr("disabled", true);
+                    $("#bBuscarPedido").attr("disabled", true);
+                }
+                else {
+                    $("#selRedes").attr("disabled", false);
+                    $('#inpIdLinea').css("background-color", "#e9ecef");
+                    $("#inpIdLinea").val("");
+                    $("#bcomprobarModificacionesD").attr("disabled", true);
+                    $("#bBuscarPedido").attr("disabled", false);
+                    $("#inpIdPedido").val('');
+                    $("#inpPedido").val('');
+                }
             }
 
             //Carga otros datos
@@ -4975,7 +4981,8 @@
             $("#confNCD").attr("disabled", true);
             $("#confFCD").attr("disabled", true);
             $(".bootstrap-duallistbox-container").find("*").prop("disabled", true);
-            $("#GuardarRenglon").attr("disabled", true);
+            $("#GuardarRenglon").attr("disabled", true); 
+            $("#selDetConvenio").attr("disabled", true);
         }
 
         function desbloquearCamposDetalle() {
@@ -4998,6 +5005,7 @@
             $("#confFCD").attr("disabled", false);
             $(".bootstrap-duallistbox-container").find("*").prop("disabled", false);
             $("#GuardarRenglon").attr("disabled", false);
+            $("#selDetConvenio").attr("disabled", false);
         }
 
         function bloquearCamposCabecera() {
@@ -5038,9 +5046,13 @@
         }
 
         function anularOrden() {
-            var id_op_dg = $("#inpOrderNumber").attr("id_op_dg");
+            var op = {};
+            op.id_op_dg = $("#inpOrderNumber").attr("id_op_dg");
+            op.Detalles = Detalles;
 
-            callWS("dg_orden_pub_aps", "anularOrden", JSON.stringify(id_op_dg), function (data) { onAnularOrden(data); });
+            //var id_op_dg = $("#inpOrderNumber").attr("id_op_dg");
+
+            callWS("dg_orden_pub_aps", "anularOrden", JSON.stringify(op), function (data) { onAnularOrden(data); });
 
             Detalles.forEach(function (item, index) {
                 if (item.id_op_dg > 0 && item.id_Google_Ad_Manager > 0) {
@@ -5063,18 +5075,18 @@
 
         function onAnularOrden(data) {
             if (data == true) {
-                OpAnulada = true;
-                $('#pTitulo').append('<span id="sTituloDinamico"> - </span>');
-                $('#pTitulo').append('<span id="sTituloDinamico" style="color: red;">ANULADA</span>');
-                bloquearCamposCabecera();
-                $("#bGuardarOrden").attr("disabled", true);
-                $("#bGuardarOrden").attr("title", "No se pueden guardar ordenes que estén anuladas");
-                $("#bClonar").attr("disabled", true);
-                $("#checkListaParaFact")[0].checked = false;
-                $("#checkListaParaFact").change();
+                //OpAnulada = true;
+                //$('#pTitulo').append('<span id="sTituloDinamico"> - </span>');
+                //$('#pTitulo').append('<span id="sTituloDinamico" style="color: red;">ANULADA</span>');
+                //bloquearCamposCabecera();
+                //$("#bGuardarOrden").attr("disabled", true);
+                //$("#bGuardarOrden").attr("title", "No se pueden guardar ordenes que estén anuladas");
+                //$("#bClonar").attr("disabled", true);
+                //$("#checkListaParaFact")[0].checked = false;
+                //$("#checkListaParaFact").change();
 
-                recargarRenglones();
-                showMessage("Orden anulada con éxito", "info");
+                //recargarRenglones();
+                //showMessage("Orden anulada con éxito", "info");
 
                 //Parametros para el Log
                 var parametros = {};
@@ -5088,6 +5100,8 @@
                 parametros.descripcion = 'Se anuló la OP Digital: ' + anio + '-' + mes + '-' + nroOp;
                 var params = setListaParametros(parametros);
                 callWS("dg_orden_pub_aps", "grabarLog", JSON.stringify(params));
+
+                location.reload();
             }
             else {
                 showMessage("Ocurrió un error al intentar anular la Orden", "error");

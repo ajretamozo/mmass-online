@@ -518,7 +518,6 @@ namespace WebApi.Entities
         //    return resultado;
         //}
 
-        //AGREGUE:
         public static void saveId_Google_Ad_Manager(int idOp, int idDet, long idGam)
         {
             string sql = "";
@@ -545,7 +544,6 @@ namespace WebApi.Entities
             }
         }
 
-        //AGREGUE:
         public static List<Dg_orden_pub_as> getSponsorsPorFecha(Dg_orden_pub_as det)
         {
             List<Dg_orden_pub_as> col = new List<Dg_orden_pub_as>();
@@ -802,22 +800,34 @@ namespace WebApi.Entities
             {
                 Dg_orden_pub_as det = getDg_orden_pub_as(r);
 
-                //Dg_orden_pub_as det = new Dg_orden_pub_as();
-
-                //det.Anio = int.Parse(r["Anio"].ToString());
-                //det.Mes = int.Parse(r["Mes"].ToString());
-                //det.Nro_orden = int.Parse(r["Nro_orden"].ToString());
-                //det.Descripcion = r["Descripcion"].ToString();
-                //det.Id_Google_Ad_Manager = DB.DLong(r["id_google_ad_manager"].ToString());
-                //det.Fecha_desde = DB.DFecha(r["Fecha_desde"].ToString());
-                //det.Fecha_hasta = DB.DFecha(r["Fecha_hasta"].ToString());
-                //det.Cantidad = DB.DInt(r["Cantidad"].ToString());
-                //det.Monto_neto = DB.DFloat(r["Monto_neto"].ToString());
-
                 detalles.Add(det);
             }
 
             return detalles;
+        }
+
+        public static void deleteId_Google_Ad_Manager(int idOp, int idDet)
+        {
+            string sql = "";
+
+            sql = "UPDATE dg_orden_pub_as SET id_google_ad_manager = 0, id_pedido_google_ad_manager = 0, id_red = 0 WHERE id_op_dg = @id_op_dg AND id_detalle = @id_det";
+
+
+            List<SqlParameter> parametrost = new List<SqlParameter>()
+                        {
+                                new SqlParameter()
+                                { ParameterName="@id_op_dg",SqlDbType = SqlDbType.Int, Value = idOp },
+                                 new SqlParameter()
+                                { ParameterName="@id_det",SqlDbType = SqlDbType.Int, Value = idDet }
+                        };
+            try
+            {
+                DB.Execute(sql, parametrost);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
     }
 }

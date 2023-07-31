@@ -33,7 +33,7 @@ namespace WebApi.Services
         bool desbloquearOP(Dg_orden_pub_bloqueo opb);
         bool desbloquearTodas(int id);
         IEnumerable<Dg_orden_pub_as> getSponsorsPorFecha(Dg_orden_pub_as det);
-        bool anularOrden(int id);
+        bool anularOrden(Dg_orden_pub_ap op);
         bool existeOpNombre(int id, string nom);
         void grabarLog(List<Parametro> datosLog);
         IEnumerable<Dg_orden_pub_as> filterDet(List<Parametro> parametros);
@@ -129,9 +129,9 @@ namespace WebApi.Services
             return Dg_orden_pub_as.getSponsorsPorFecha(det);
         }
 
-        public bool anularOrden(int id)
+        public bool anularOrden(Dg_orden_pub_ap op)
         {
-            return Dg_orden_pub_ap.anularOrden(id);
+            return op.anularOrden();
         }
 
         public bool bloquearOP(Dg_orden_pub_bloqueo opb)

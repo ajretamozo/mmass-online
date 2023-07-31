@@ -69,9 +69,9 @@ namespace WebApi.Controllers
         }
 
         [HttpPost("anularOrden")]
-        public IActionResult anularOrden([FromBody] int id)
+        public IActionResult anularOrden(Dg_orden_pub_ap op)
         {
-            var result = _Dg_orden_pub_apService.anularOrden(id);
+            var result = _Dg_orden_pub_apService.anularOrden(op);
             return Ok(result);
         }
 
