@@ -1095,7 +1095,7 @@ namespace WebApi.Entities
             }
 
             bool resultado = true;
-            string sql = "UPDATE dg_orden_pub_ap SET es_anulada = 1, parafacturar = 0, fecha_anulada = GETDATE(), id_red = 0 WHERE id_op_dg = " + Id_op_dg.ToString();
+            string sql = "UPDATE dg_orden_pub_ap SET es_anulada = 1, parafacturar = 0, fecha_anulada = GETDATE(), id_red = 0, id_google_ad_manager = 0 WHERE id_op_dg = " + Id_op_dg.ToString();
 
             try
             {

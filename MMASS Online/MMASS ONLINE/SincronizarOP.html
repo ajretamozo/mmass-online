@@ -1204,17 +1204,42 @@
 
                 var parametros = setListaParametros(params);              
 
-                if (error == '') {
-                callWS("googleAdManager", "getDetNuevos", JSON.stringify(parametros), function (data) { onGetDetallesGAM(data); });
-            } else {
+            if (error == '') {
+                if (params.Id_contacto != '') {
+                    var anun = {};
+                    anun.Id_contacto = $('#selAnuncianteD').val();
+                    if ($('#selRedesD').val() == "") {
+                        anun.id_red = 0;
+                    }
+                    else {
+                        anun.id_red = $('#selRedesD').val();
+                    }
+
+                    callWS("contactos", "chequearSincroContacto", JSON.stringify(anun), function (data) { onChequearSincroContacto(data, parametros); });
+                }
+                else {
+                    callWS("googleAdManager", "getDetNuevos", JSON.stringify(parametros), function (data) { onGetDetallesGAM(data); });
+                }
+            }
+            else {
                 showMessage(error, "info");
+            }
+        }
+
+        function onChequearSincroContacto(data, parametros) {
+            if (data == true) {
+                callWS("googleAdManager", "getDetNuevos", JSON.stringify(parametros), function (data) { onGetDetallesGAM(data); });
+            }
+            else {
+                onCargarTablaD('TableDetalles', '');
+                showMessage("El Anunciante no está sincronizado con ningún Anunciante del AdServer", "info");
             }
         }
 
         function onGetDetallesGAM(data) {
             onCargarTablaD('TableDetalles', data);
             if (data.length == 0) {
-                onCargarTablaD('TableDetalles', data);
+                //onCargarTablaD('TableDetalles', data);
                 showMessage("No se enontraron Detalles", "info");
             }
         }
@@ -1378,17 +1403,46 @@
 
             var parametros = setListaParametros(params);
             if (error == '') {
+                if (params.Id_contacto != '') {
+                    var anun = {};
+                    anun.Id_contacto = $('#selAnuncianteImp').val();
+                    if ($('#selRedesImp').val() == "") {
+                        anun.id_red = 0;
+                    }
+                    else {
+                        anun.id_red = $('#selRedesImp').val();
+                    }
+
+                    callWS("contactos", "chequearSincroContacto", JSON.stringify(anun), function (data) { onChequearSincroContactoMod(data, parametros); });
+                }
+                else {
+                    callWS("googleAdManager", "ComprobarModificacionesDSincro", JSON.stringify(parametros), function (data) {
+                        onCargarTablaD('TableRenglonesMod', data);
+                        if (data.length == 0) {
+                            message = 'La búsqueda no produjo ningun resultado';
+                            showMessage(message, "info");
+                        }
+                    });
+                }
+
+            } else {
+                showMessage(error, "info");
+            }
+        }
+
+        function onChequearSincroContactoMod(data, parametros) {
+            if (data == true) {
                 callWS("googleAdManager", "ComprobarModificacionesDSincro", JSON.stringify(parametros), function (data) {
-                    if (data.length > 0) {
-                        onCargarTablaD('TableRenglonesMod', data);
-                    } else {
-                        onCargarTablaD('TableRenglonesMod', data);
+                    onCargarTablaD('TableRenglonesMod', data);
+                    if (data.length == 0) {
                         message = 'La búsqueda no produjo ningun resultado';
                         showMessage(message, "info");
                     }
                 });
-            } else {
-                showMessage(error, "info");
+            }
+            else {
+                onCargarTablaD('TableDetalles', '');
+                showMessage("El Anunciante no está sincronizado con ningún Anunciante del AdServer", "info");
             }
         }
 

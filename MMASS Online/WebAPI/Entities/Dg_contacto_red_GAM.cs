@@ -35,5 +35,29 @@ namespace WebApi.Entities
             }
             return col;
         }
+
+        public static bool chequearSincroContacto(int idContacto, int idRed)
+        {
+            bool resultado = false;
+            string sqlCommand = "";
+
+            if (idRed > 0)
+            {
+                sqlCommand = "Select id_contacto from dg_contacto_red_GAM where id_contacto = '" + idContacto.ToString() + "' and id_red = " + idRed.ToString();
+            }
+            else
+            {
+                sqlCommand = "Select id_contacto from dg_contacto_red_GAM where id_contacto = '" + idContacto.ToString() + "'";
+            }
+
+            DataTable t = DB.Select(sqlCommand);
+
+            if(t.Rows.Count > 0)
+            {
+                resultado = true;
+            }
+
+            return resultado;
+        }
     }
 }

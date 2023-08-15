@@ -756,7 +756,7 @@
                             </div>
                             <div class="col-md-3">
                                 <label for="selRedesImp">Red AdServer</label>
-                                <select class="form-control enterSearch" id="selRedesImp"></select>
+                                <select class="form-control enterSearch" id="selRedesImp" onchange="onRedSelectedImp()"></select>
                             </div>
                         </div>
                         <div class="row py-1">
@@ -1077,7 +1077,7 @@
                                         <button type="button" class="btn  actions btn-outline-dark btn-sm" id="bCargarNuevoRenglon" onclick="cargarNuevoRenglon()" title="Nuevo Detalle" style="padding-top: 2px; padding-bottom: 2px; margin-right: 10px; padding-right: 10px; padding-left: 10px;">
                                             <span class="fa fa-plus"></span>
                                         </button>
-                                        <button type="button" class="btn  actions btn-outline-dark btn-sm" id="bImportarNuevoRenglon" onclick="importarNuevoRenglon()" title="Importar Detalle AdServer" style="padding-top: 2px;padding-bottom: 2px;">
+                                        <button type="button" class="btn  actions btn-outline-dark btn-sm" id="bImportarNuevoRenglon" onclick="importarNuevoRenglon()" title="Importar Línean de Pedido" style="padding-top: 2px;padding-bottom: 2px;">
                                             <span class="fa fa-cloud-download"></span>
                                         </button>
                                     </div>
@@ -5560,6 +5560,10 @@
 
             $("#importarModal").modal('show');
         } 
+
+        function onRedSelectedImp() {
+            $("#rowAnuncianteSincImp").attr("hidden", true);
+        }
 
         function filterImp() {
             rows = $("tr").not("#header");

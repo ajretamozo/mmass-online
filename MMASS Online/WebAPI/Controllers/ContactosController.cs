@@ -102,5 +102,12 @@ namespace WebApi.Controllers
             var contactos = _contactoService.GetAnunSincro(idRed);
             return Ok(contactos);
         }
+        //hacer este moetdo
+        [HttpPost("chequearSincroContacto")]
+        public IActionResult chequearSincroContacto(Dg_contacto_red_GAM anun)
+        {
+            var result = _contactoService.chequearSincroContacto(anun.Id_contacto, anun.Id_red);
+            return Ok(result);
+        }
     }
 }

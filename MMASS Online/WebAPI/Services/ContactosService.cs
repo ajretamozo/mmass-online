@@ -26,6 +26,7 @@ namespace WebApi.Services
         Contacto getContactoById(int id);
         Contacto getContactoByIdyRed(int id, int idRed);
         IEnumerable<Contacto> GetAnunSincro(int idRed);
+        bool chequearSincroContacto(int idContacto, int idRed);
     }
 
     public class ContactoService : IContactoService
@@ -89,6 +90,11 @@ namespace WebApi.Services
         public IEnumerable<Contacto> GetAnunSincro(int idRed)
         {
             return Contacto.GetAnunSincro(idRed);
+        }
+
+        public bool chequearSincroContacto(int idContacto, int idRed)
+        {
+            return Dg_contacto_red_GAM.chequearSincroContacto(idContacto, idRed);
         }
     }
 }
