@@ -62,6 +62,7 @@ namespace WebApi.Entities
         public string Nombre_pedido_Google_Ad_Manager { get; set; }
         public int Id_det_conv { get; set; }
         public int Id_red { get; set; }
+        public string Nombre_red { get; set; }
         public Dg_areas_geo areaGeo { get; set; }
         public List<Dg_orden_pub_medios> Medios;
         public List<Dg_orden_pub_medidas> Medidas;
@@ -724,7 +725,7 @@ namespace WebApi.Entities
         {
             List<Dg_orden_pub_as> detalles = new List<Dg_orden_pub_as>();
 
-            string strSql = @"SELECT d.* 
+            string strSql = @"SELECT d.*, r.descripcion as Nombre_red
                               FROM dg_orden_pub_as d 
                               JOIN dg_orden_pub_ap dg ON dg.id_op_dg=d.id_op_dg
                               JOIN dg_red_GAM r ON r.id_red = d.id_red 
@@ -799,6 +800,7 @@ namespace WebApi.Entities
             foreach (DataRow r in td.Rows)
             {
                 Dg_orden_pub_as det = getDg_orden_pub_as(r);
+                det.Nombre_red = r["Nombre_red"].ToString();
 
                 detalles.Add(det);
             }

@@ -1387,6 +1387,7 @@ namespace WebApi.Services
                             detalle.Fecha_creacion = System.DateTime.Parse(creatD);
                         }
                         detalle.Id_red = int.Parse(linea.externalId);
+                        detalle.Nombre_red = Dg_red_GAM.getById(int.Parse(linea.externalId)).Descripcion;
                         detalle.Id_pedido_Google_Ad_Manager = linea.orderId;
                         detalle.Nombre_pedido_Google_Ad_Manager = linea.orderName;
                         detalle.Id_Google_Ad_Manager = linea.id;

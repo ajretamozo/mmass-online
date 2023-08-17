@@ -456,6 +456,7 @@
                         <table class="table table-hover table-sm " id="tablaDetGAM">
                             <thead align="center">
                                 <tr id="header">
+                                    <th class="col-xs-3">Red AdServer</th>
                                     <th class="col-xs-9">Nombre Pedido</th>
                                     <th class="col-xs-3">ID AdServer Pedido</th>
                                     <th class="col-xs-9">Nombre Línea</th>
@@ -537,6 +538,7 @@
                                     <th>N Orden</th>
                                     <th class="col-xs-9">Nombre Detalle</th>
                                     <th class="col-xs-3">ID AdServer Detalle</th>
+                                    <th class="col-xs-3">Red AdServer</th>
                                     <th class="col-xs-9">Fecha Desde</th>
                                     <th class="col-xs-9">Fecha Hasta</th>
                                     <th class="col-xs-1">Cant.</th>
@@ -1251,6 +1253,7 @@
 
                 rowHTML += "<tr>";
                 if (tablaID == 'TableDetalles') {
+                    rowHTML += "<td class='col-xs-1'> " + detGAM.nombre_red + "</td > ";
                     rowHTML += "<td class='col-xs-1'> " + detGAM.nombre_pedido_Google_Ad_Manager + "</td > ";
                 }
                 if (tablaID == 'TableDetalles') {
@@ -1260,6 +1263,9 @@
                 }
                 rowHTML += "<td class='col-xs-1'> " + detGAM.descripcion + "</td > ";
                 rowHTML += "<td class='col-xs-1'> " + detGAM.id_Google_Ad_Manager + "</td > ";
+                if (tablaID == 'TableRenglonesMod') {
+                    rowHTML += "<td class='col-xs-1'> " + detGAM.nombre_red + "</td > ";
+                }
                 rowHTML += "<td class='col-xs-1'> " + dateToFieldFormat(detGAM.fecha_desde) + "</td > ";
                 if (detGAM.fecha_hasta == null) {
                     rowHTML += "<td class='col-xs-1'> - </td > ";
