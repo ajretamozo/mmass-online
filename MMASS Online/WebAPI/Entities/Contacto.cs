@@ -132,7 +132,7 @@ namespace WebApi.Entities
         public static List<Contacto> GetContactosPorAgencia(int idAgencia)
         {
             string sqlCommand = "";
-            int BD = int.Parse(ConfigurationManager.AppSettings["Base"]);
+            int BD = int.Parse(Dg_parametro.getById(1).Valor);
             if (BD == 1)
             {
                 sqlCommand = @"Select c.id_contacto, c.razon_social, c.nombre_com from contactos c , roles r, vinculos v where r.id_contacto = c.id_contacto  and es_borrado = 0 
@@ -190,7 +190,7 @@ namespace WebApi.Entities
         public static List<Contacto> GetContactosPorTipo(string tipo)
         {
             string sqlCommand = "";
-            int BD = int.Parse(ConfigurationManager.AppSettings["Base"]);
+            int BD = int.Parse(Dg_parametro.getById(1).Valor);
             if (BD == 1)
             {
                 //sqlCommand = @"Select c.id_contacto, razon_social, nombre_com, g.id_contactodigital from contactos c
@@ -323,7 +323,7 @@ namespace WebApi.Entities
         public static List<Contacto> GetAnunSincro(int idRed)
         {
             string sqlCommand = "";
-            int BD = int.Parse(ConfigurationManager.AppSettings["Base"]);
+            int BD = int.Parse(Dg_parametro.getById(1).Valor);
             if (BD == 1)
             {
                 sqlCommand = @"Select c.id_contacto, razon_social, nombre_com, g.id_contactodigital, g.id_red

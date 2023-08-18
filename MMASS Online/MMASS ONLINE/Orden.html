@@ -2278,14 +2278,14 @@
                 
                 $('#sTituloDinamico1').remove();
                 $('#sTituloDinamico2').remove();
-                //if (data.op.id_Google_Ad_Manager > 0) {
-                //    $("#bAnular").attr("disabled", true);
-                //    $("#bAnular").attr("title", "La Orden no puede ser anulada ya que tiene Detalles vinculados con AdServer");
-                //}
-                //else {
-                    $("#bAnular").attr("disabled", false);
-                    $("#bAnular").attr("title", "Anular Orden");
-                //}
+
+                if (data.op.id_Google_Ad_Manager > 0) {
+                    $("#bgetOrderASDetais").attr("disabled", false);
+                }
+
+                $("#bAnular").attr("disabled", false);
+                $("#bAnular").attr("title", "Anular Orden");
+
                 $("#bClonar").attr("disabled", false);
                 $('#inpOrderNumber').val(data.op.nro_orden);
                 $("#inpOrderNumber").attr("id_op_dg", data.op.id_op_dg);

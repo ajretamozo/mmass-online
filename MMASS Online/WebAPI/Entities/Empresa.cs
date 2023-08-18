@@ -52,7 +52,7 @@ namespace WebApi.Entities
         public static Empresa getById(int Id)
         {
             string sqlCommand = "";
-            int BD = int.Parse(ConfigurationManager.AppSettings["Base"]);
+            int BD = int.Parse(Dg_parametro.getById(1).Valor);
             if (BD == 1)
             {
                 sqlCommand = @"select codigo,nombre,razon,cuit,dgr,inicio,domicilio,localidad,provincia,pais,telefono,fax,email,web,
@@ -128,7 +128,7 @@ namespace WebApi.Entities
                 resultado.Id_localidad = DB.DInt(t.Rows[0]["id_localidad"].ToString());
                 resultado.Id_cond_ib = DB.DInt(t.Rows[0]["Id_cond_ib"].ToString());
                 resultado.Logo_url = t.Rows[0]["logo"].ToString();
-                if (BD == 1)
+                if (BD == 2)
                 {
                     resultado.Usa_certif = (t.Rows[0]["usa_certif"].ToString() == "1");
                 }
@@ -288,7 +288,6 @@ namespace WebApi.Entities
                 Id_localidad = DB.DInt(item["id_localidad"].ToString()),
                 Id_cond_ib = DB.DInt(item["Id_cond_ib"].ToString()),
                 Logo_url = item["logo"].ToString(),
-                Usa_certif = (item["usa_certif"].ToString() == "1")
             };
             return miEmpresa;
         }
@@ -329,8 +328,8 @@ namespace WebApi.Entities
                 Id_cond_iva = DB.DInt(item["id_cond_iva"].ToString()),
                 Id_localidad = DB.DInt(item["id_localidad"].ToString()),
                 Id_cond_ib = DB.DInt(item["Id_cond_ib"].ToString()),
-                Logo_url = item["logo_url"].ToString()
-                //Usa_certif = (item["usa_certif"].ToString() == "1")
+                Logo_url = item["logo_url"].ToString(),
+                Usa_certif = (item["usa_certif"].ToString() == "1")
             };
             return miEmpresa;
         }
@@ -338,19 +337,19 @@ namespace WebApi.Entities
         public static List<Empresa> getAll()
         {
             string sqlCommand = "";
-            int BD = int.Parse(ConfigurationManager.AppSettings["Base"]);
+            int BD = int.Parse(Dg_parametro.getById(1).Valor);
             if (BD == 1)
             {
                 sqlCommand = @"select codigo,nombre,razon,cuit,dgr,inicio,domicilio,localidad,provincia,pais,telefono,fax,email,web,
                              ingreso,cliente,ciemail,citel,cifax,ciweb,version,denom,minutos_hora,es_borrado,kla,installdate,lastaccessdate,
-	                         cod_sociedad_sap,direc_exten,cond_iva,id_localidad,Id_cond_ib,logo,usa_certif from empresa
+	                         cod_sociedad_sap,direc_exten,cond_iva,id_localidad,Id_cond_ib,logo from empresa
 							 where es_borrado=0 and (select COUNT(*) from MEDIOS m where m.ID_EMPRESA = codigo and m.tipo_medio=2) > 0";
             }
             else if (BD == 2)
             {
                 sqlCommand = @" select e.id_empresa,nombre,razon_social,cuit,dgr,inicio,domicilio,localidad,provincia,pais,telefono,fax,email,web,
                              ingreso,cliente,ciemail,citel,cifax,ciweb,version,denom,minutos_hora,e.es_borrado,kla,installdate,lastaccessdate,
-                             cod_sociedad_sap,direc_exten,id_cond_iva,e.id_localidad,Id_cond_ib,logo_url
+                             cod_sociedad_sap,direc_exten,id_cond_iva,e.id_localidad,Id_cond_ib,logo_url,usa_certif 
                              from empresa e
                              where e.es_borrado = 0 and(select COUNT(*) from MEDIOS m where m.ID_EMPRESA = e.id_empresa and m.tipo_medio = 2) > 0";
             }

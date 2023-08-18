@@ -177,7 +177,7 @@ namespace WebApi.Services
 
         public int getBD()
         {
-            return int.Parse(ConfigurationManager.AppSettings["Base"]);
+            return int.Parse(Dg_parametro.getById(1).Valor);
         }
 
         public String getConString()

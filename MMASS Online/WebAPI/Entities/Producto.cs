@@ -49,15 +49,15 @@ namespace WebApi.Entities
                 Alias_producto = item["alias_producto"].ToString(),
                 No_vinculable = DB.DInt(item["No_vinculable"].ToString()),
                 Email = item["email"].ToString(),
-                //Fecha_modificacion = DB.DFecha(item["fecha_modificacion"].ToString()),
-                //Transferido = item["transferido"].ToString()
+                Fecha_modificacion = DB.DFecha(item["fecha_modificacion"].ToString()),
+                Transferido = item["transferido"].ToString()
             };
             return mi;
         }
 
         public static Producto getById(int Id)
         {
-            int BD = int.Parse(ConfigurationManager.AppSettings["Base"]);
+            int BD = int.Parse(Dg_parametro.getById(1).Valor);
             string sqlCommand = "select * from productos where id_producto = " + Id.ToString();
             Producto resultado;
             resultado = new Producto();
@@ -79,7 +79,7 @@ namespace WebApi.Entities
 
         public static List<Producto> GetAll()
         {
-            int BD = int.Parse(ConfigurationManager.AppSettings["Base"]);
+            int BD = int.Parse(Dg_parametro.getById(1).Valor);
             string sqlCommand = "select * from productos p " +
                                 " where p.es_borrado = 0 ";
             List<Producto> col = new List<Producto>();
@@ -109,7 +109,7 @@ namespace WebApi.Entities
         public static List<Producto> GetProductosPorAnunciante(int IdAnunciante)
         {
             string sqlCommand = "";
-            int BD = int.Parse(ConfigurationManager.AppSettings["Base"]);
+            int BD = int.Parse(Dg_parametro.getById(1).Valor);
             if (BD == 1)
             {
                 sqlCommand = "select p.id_producto, desc_producto, p.es_borrado, p.alias_producto, p.no_vinculable, p.email, p.Fecha_modificacion, " +

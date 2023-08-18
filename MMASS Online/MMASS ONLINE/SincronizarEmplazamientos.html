@@ -247,7 +247,7 @@
 
             $("#" + tablaID).html(rowHTML);
 
-            if (tablaID == 'TableGAM') {
+            if (tablaID == 'TableGAM' && data != '') {
                 getEmplazamientosMMASS();
                 data.forEach(emplaza => {
                     emplaza.id_red = idRed;
@@ -261,6 +261,8 @@
 
         function onRedSelected() {
             $("#bSincronizar").attr("disabled", true);
+            onCargarTabla('TableGAM', '');
+            onCargarTabla('TableMMASS', '');
         }
 
     </script>
