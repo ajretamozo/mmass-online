@@ -285,13 +285,26 @@
                         </button>
                     </div>
                 </div>
+                <div id="divMultimoneda">
+                    <div class="row py-1">
+                        <div class="col-md-6">
+                            <label>Multimoneda</label>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="switch">
+                                <input type="checkbox" id="checkMulti" onclick="checkParam(5, 'checkMulti')">
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
                 <div class="row py-1">
                     <div class="col-md-6">
                         <label>OP lista para facturar por defecto</label>
                     </div>
                     <div class="col-md-6">
                         <label class="switch">
-                            <input type="checkbox" id="checkListaParaFac" onclick="listaParaFac()">
+                            <input type="checkbox" id="checkListaParaFac" onclick="checkParam(4, 'checkListaParaFac')">
                             <span class="slider round"></span>
                         </label>
                     </div>
@@ -399,12 +412,20 @@
             $("#divNavBar").load("navBar.html");
             document.body.style.backgroundImage = "url(./fondoM3.png)";
             //Se buscan los valores para inicializar los parámetros en BD
-            callWS("medios", "getParamById", JSON.stringify(4), function (parLista) { iniListaParaFac(parLista, "checkListaParaFac"); });
+            callWS("medios", "getParamById", JSON.stringify(5), function (parMulti) { iniCheckParametros(parMulti, "checkMulti"); });
+            callWS("medios", "getParamById", JSON.stringify(4), function (parLista) { iniCheckParametros(parLista, "checkListaParaFac"); });
             callWS("medios", "getParamById", JSON.stringify(2), function (parSinc) { iniPermitirSinc(parSinc, "checkPermitirSinc"); });
             callWS("medios", "getParamById", JSON.stringify(3), function (parMail) { iniActMail(parMail, "checkActivarMail"); });
+            //si es admin
+            if (getUserRol() == 1) {
+                $("#divMultimoneda").show();
+            }
+            else {
+                $("#divMultimoneda").hide();
+            }
         });
 
-        function iniListaParaFac(param, check) {
+        function iniCheckParametros(param, check) {
             if (param.valor == 1) {
                 $("#" + check)[0].checked = true;
                 $("#" + check).change();
@@ -416,14 +437,6 @@
         }
 
         function iniPermitirSinc(param, check) {
-            //if (param.valor == 1) {
-            //    $("#" + check)[0].checked = true;
-            //    $("#" + check).change();
-            //}
-            //else {
-            //    $("#" + check)[0].checked = false;
-            //    $("#" + check).change();
-            //}
             var valor = param.valor;
             switch (valor) {
                 case '0':
@@ -627,6 +640,57 @@
             }
         }
 
+        function checkParam(idParam, checkParam) {
+            param = {};
+            param.id_parametro = idParam;
+            param.valor = 0;
+            if (document.getElementById(checkParam).checked == true) {
+                param.valor = 1;
+            }
+            callWS("medios", "cambiarParam", JSON.stringify(param), function (data) { onCheckParam(data, param); });
+        }
+
+        function onCheckParam(resultado, param) {
+            //OP Lista para facturar por defecto
+            if (param.id_parametro == 4) {
+                if (resultado == true) {
+                    if (param.valor == 0) {
+                        showMessage("OP Lista para facturar por defecto Desactivada", "info");
+                    }
+                    else {
+                        showMessage("OP Lista para facturar por defecto Activada", "info");
+                    }
+                }
+                else {
+                    if (param.valor == 0) {
+                        showMessage("Ocurrió un error al intentar desactivar la OP Lista para facturar por defecto", "error");
+                    }
+                    else {
+                        showMessage("Ocurrió un error al intentar activar la OP Lista para facturar por defecto", "error");
+                    }
+                }
+            }
+            //Multimoneda
+            else if (param.id_parametro == 5) {
+                if (resultado == true) {
+                    if (param.valor == 0) {
+                        showMessage("Multimoneda Desactivado", "info");
+                    }
+                    else {
+                        showMessage("Multimoneda Activado", "info");
+                    }
+                }
+                else {
+                    if (param.valor == 0) {
+                        showMessage("Ocurrió un error al intentar desactivar Multimoneda", "error");
+                    }
+                    else {
+                        showMessage("Ocurrió un error al intentar activar Multimoneda", "error");
+                    }
+                }
+            }           
+        }
+
         function listaParaFac() {
             param = {};
             param.id_parametro = 4;
@@ -657,13 +721,6 @@
         }
 
         function permitirSinc() {
-            //param = {};
-            //param.id_parametro = 2;
-            //param.valor = 0;
-            //if (document.getElementById("checkPermitirSinc").checked == true) {
-            //    param.valor = 1;
-            //}
-            //callWS("medios", "cambiarParam", JSON.stringify(param), function (data) { onPermitirSinc(data, param); });
             param = {};
             param.id_parametro = 2;
             param.valor = 0;

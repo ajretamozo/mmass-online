@@ -108,15 +108,7 @@ function hidePleaseWait() {
     $("#pleaseWaitDialog").modal('hide');
 }
 function reportError(msg, url, line) {
-    /*  var data = { Origen: 'web', Detalle: url, Mensaje: msg.replace("'", "") };
-      $.ajax({
-          method: "POST",
-          url: "<?php echo $urlBase; ?>backend/common/error_log.php?op=create",
-          data: { error: data },
-          dataType: "json"
-      }).done(function (res) { }).fail(function (a) { console.log(a.responseText.replace("'", "")); });*/
     console.log(msg + " " + url + " " + line);
-
 }
 function showMessage(message, type = "success") {
     $("#divMessage").removeClass("alert alert-danger").removeClass("alert alert-success").removeClass("alert alert-info");
@@ -140,9 +132,8 @@ function showLargeModal(message, title = "") {
     $("#largeModalTitle").html(title);
     $("#largeModal").modal('show');
 }
-//AGREGUE (comenté title y agregué # al modalcenterbody):
+
 function showModal(message, options) {
-            //$("#modalCenterTitle").text(title);
             $("#modalCenterBody").html(message);
             strHTML = '';
             options.forEach(function (option) {
