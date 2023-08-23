@@ -43,6 +43,30 @@ namespace WebApi.Entities
 
         public static List<R_Ventas> filterBy(List<Parametro> parametros)
         {
+            //chequeamos base de datos (cliente)
+            string queryEmpresa = "";
+            //c9
+            if (int.Parse(Dg_parametro.getById(1).Valor) == 1)
+            {
+                queryEmpresa = "em.codigo";
+            }
+            //c5n
+            else
+            {
+                queryEmpresa = "em.id_empresa";
+            }
+
+            //chequeamos multimoneda
+            string queryMulti = "";
+            if (int.Parse(Dg_parametro.getById(5).Valor) == 1)
+            {
+                queryMulti = "dbo.getcambioMoneda(ap.id_moneda, (select id_moneda from moneda where base=1),GETDATE())";
+            }
+            else
+            {
+                queryMulti = "1";
+            }
+
             string tipo = "0";
             foreach (Parametro p in parametros)
             {
@@ -52,11 +76,11 @@ namespace WebApi.Entities
                 }
             }
             string sqlCommand = @"select ap.id_op_dg, ap.id_agencia, ag.razon_social as agencia,
-                            ap.id_anunciante, an.razon_social as anunciante, ap.id_moneda, dbo.getcambioMoneda(ap.id_moneda, (select id_moneda from moneda where base=1),GETDATE()) as cambio,  
-                            cast(ap.anio as varchar(4)) + '-' + cast(ap.mes as varchar(2)) + '-' + cast(ap.nro_orden as varchar(5)) as nro_orden,
-                            ap.nro_orden_ag, ap.primer_neto, ap.imp_conf_nc, ap.imp_conf_fc, ap.seg_neto, ap.fecha, ap.fecha_expiracion, 
-                            p.desc_producto as producto, cast(op.anio as varchar(4)) + '-' + cast(op.mes as varchar(2)) + '-' + cast(op.nro_orden as varchar(5)) as nro_orden_rel, 
-                            c.razon_social as ejecutivo, fp.desc_formapago, em.nombre as empresa, ap.es_facturada, ";
+                            ap.id_anunciante, an.razon_social as anunciante, ap.id_moneda, " + queryMulti + " as cambio, " +
+                            "cast(ap.anio as varchar(4)) + '-' + cast(ap.mes as varchar(2)) + '-' + cast(ap.nro_orden as varchar(5)) as nro_orden, " +
+                            "ap.nro_orden_ag, ap.primer_neto, ap.imp_conf_nc, ap.imp_conf_fc, ap.seg_neto, ap.fecha, ap.fecha_expiracion, " +
+                            "p.desc_producto as producto, cast(op.anio as varchar(4)) + '-' + cast(op.mes as varchar(2)) + '-' + cast(op.nro_orden as varchar(5)) as nro_orden_rel, " +
+                            "c.razon_social as ejecutivo, fp.desc_formapago, em.nombre as empresa, ap.es_facturada, ";
                             
             if (tipo != "0")
             {
@@ -70,7 +94,7 @@ namespace WebApi.Entities
             {
                 sqlCommand += ",apm.id_medio, m.desc_medio as medio, apm.porcentaje";
             }
-            sqlCommand += " from dg_orden_pub_ap ap inner join dg_orden_pub_as det on det.id_op_dg = ap.id_op_dg inner join contactos ag on ag.id_contacto = ap.id_agencia inner join contactos an on an.id_contacto = ap.id_anunciante inner join productos p on p.id_producto = ap.id_producto left outer join orden_pub_ap op on ap.id_op_relacionada = op.id_op inner join dg_orden_pub_ejecutivos ej on ej.id_op_dg=ap.id_op_dg inner join contactos c on c.id_contacto=ej.id_ejecutivo  inner join Dg_orden_pub_pagos ofp on ofp.id_op_dg = ap.id_op_dg inner join formas_pago fp on fp.id_formapago=ofp.id_formapago inner join empresa em on em.id_empresa=ap.id_empresa";
+            sqlCommand += " from dg_orden_pub_ap ap inner join dg_orden_pub_as det on det.id_op_dg = ap.id_op_dg inner join contactos ag on ag.id_contacto = ap.id_agencia inner join contactos an on an.id_contacto = ap.id_anunciante inner join productos p on p.id_producto = ap.id_producto left outer join orden_pub_ap op on ap.id_op_relacionada = op.id_op inner join dg_orden_pub_ejecutivos ej on ej.id_op_dg=ap.id_op_dg inner join contactos c on c.id_contacto=ej.id_ejecutivo  inner join Dg_orden_pub_pagos ofp on ofp.id_op_dg = ap.id_op_dg inner join formas_pago fp on fp.id_formapago=ofp.id_formapago inner join empresa em on " + queryEmpresa + "=ap.id_empresa";
 
             if (tipo == "2")
             {

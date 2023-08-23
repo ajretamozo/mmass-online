@@ -911,25 +911,6 @@
                                         </div>
                                     </div>
                                 </div>
-                                <!--<div class="col-lg-2">-->
-                                <!--<div class="row">
-        <div class="col-lg-6">
-            <div class="row">
-                <div class="col-lg-10" style="padding-right: 12px;">
-                    <label for="inpIdOrdenAdServer">ID AdServer</label>
-                    <input type="number" class="form-control" id="inpIdOrdenAdServer" disabled="disabled">
-                </div>
-                <div class="col-lg-2 pt-1" style="padding-left: 0px;">
-                    <label for="bcomprobarModificaciones" class="invisible">ModiGAM</label>
-                    <button type="button" data-id="bcomprobarModificaciones" id="bcomprobarModificaciones" disabled="disabled" class="btn actions btn-outline-dark btn-sm mr-1" onclick="comprobarModificacionesButton()" title="No hay modificaciones en AdServer">
-                        <span class="fa fa-cloud-download" id="spanCompAct"></span>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>-->
-                                <!--</div>-->
-
                                 <div class="col-lg-2" style="padding-right: 0px;">
                                     <label>Moneda</label>
                                     <select class="form-control" id="selMoneda" onfocus="this.oldvalue = this.value" onchange="prevMonedaSelected(this); this.oldvalue = this.value;"></select>
@@ -1436,15 +1417,8 @@
 
     <!--Scripts-->
     <script type="text/javascript">
-        //import { backendDir } from '/js/params.js';
-        $("#divNavBar").load("navBar.html");
 
-        //window.addEventListener("beforeunload", function (event) {
-        //    console.log("UNLOAD:1");
-        //    //event.preventDefault();
-        //    event.returnValue = null; //"Any text"; //true; //false;
-        //    //return null; //"Any text"; //true; //false;
-        //});
+        $("#divNavBar").load("navBar.html");
 
         var cMultiSelect = $('.custom-select').bootstrapDualListbox({
             filterPlaceHolder: 'Filtrar',
@@ -1452,7 +1426,6 @@
         });
         $(".moveall").hide();
         $(".removeall").hide();
-        //$(".filter").hide();
         $(".btn-group").hide();
 
         var body = document.getElementById("output");
@@ -1566,42 +1539,14 @@
                 var idRed = arr2[1];
                 var idAnun = arr2[2];
 
-                //var orden = {};
-                //orden.Id_op_dg = Id_op;
                 var detalle = {};
                 detalle.Id_op_dg = Id_op;
                 detalle.Id_Google_Ad_Manager = idLinea;
                 detalle.Id_red = idRed;
                 detalle.Id_anunciante = idAnun;
 
-                /*      callWS("dg_orden_pub_aps", "getById", JSON.stringify(orden), function (data) { agregarLinea(data, idLinea, idRed, idAnun); });*/
                 callWS("googleAdManager", "addLineItemToOrder", JSON.stringify(detalle), onGetOrder);
             }
-
-            //function agregarLinea(orden, idLinea, idRed, idAnun) {
-            //    var detalle = {};
-            //    detalle.Id_Google_Ad_Manager = idLinea;
-            //    detalle.Id_red = idRed;
-            //    callWS("googleAdManager", "getLineItem", JSON.stringify(detalle), function (data) { cargarOpNuevaLinea(data, orden, idAnun); });
-            //}
-
-            //function cargarOpNuevaLinea(linea, orden, idAnun) {
-            //    if (orden.detalles == null) {
-            //        orden.detalles = [];
-            //    }
-            //    if (orden.anunciante == null) {
-            //        orden.anunciante = [];
-            //    }
-            //    var idDet = orden.detalles.length + 1;
-            //    linea.id_detalle = idDet;
-            //    orden.fecha = linea.fecha_desde
-            //    orden.fecha_expiracion = linea.fecha_hasta
-            //    orden.anunciante.id_contacto = idAnun;
-
-            //    $.when(
-            //        orden.detalles.push(linea)
-            //    ).then(onGetOrder(orden));
-            //}
 
             //si la OP viene de SincronizarLinea
             var op3 = getUrlParameter("orderIdSinc")
@@ -1623,54 +1568,7 @@
             }
         }
 
-        //function getOrdenGAM(IdOpGam) {
-        //    callWS("googleAdManager", "getOrderById", JSON.stringify(IdOpGam), onGetOrder);
-        //}
-
-        //function onSelTipoD(sel) {
-        //    var optionsBanner = {
-        //        "AUDIO": "1",
-        //        "VIDEO": "2",
-        //        "MODULO PREMIUM": "3",
-        //        "MODULO DISPLAY": "4",
-        //        "SPONSOREO": "5"
-        //    };
-
-        //    var optionsPosteos = {
-        //        "FEED": "1",
-        //        "STORY": "2",
-        //        "SPONSOREO": "3"
-        //    };
-        //    var newOptions = optionsBanner;
-
-
-
-        //    if (sel.value < 3) {
-
-        //        var $el = $("#selSubTipoD");
-        //        $el.empty(); // remove old options
-        //        if (sel.value == 2) {
-        //            newOptions = optionsPosteos;
-        //            $("#selTipoTarifaD").hide();
-        //        } else {
-        //            $("#selTipoTarifaD").show();
-        //        }
-        //        $.each(newOptions, function (key, value) {
-        //            $el.append($("<option></option>")
-        //                .attr("value", value).text(key));
-        //        });
-        //        $("#divSubType").show();
-        //    } else {
-        //        $("#selTipoTarifaD").hide();
-        //        $("#divSubType").hide();
-        //    }
-
-        //}
-
         function onGetOrder(data) {
-            //$("#divOrderMain").html(data.d);
-            //$('#fechaDesde').datetimepicker({ format: 'L', locale: 'es' });
-            //$('#fechaHasta').datetimepicker({ format: 'L', locale: 'es' });
             $('#fechaDesde').datetimepicker('date', moment(dateToFieldFormat(data.fecha), 'DD/MM/YYYY'));
             $('#fechaHasta').datetimepicker('date', moment(dateToFieldFormat(data.fecha_expiracion), 'DD/MM/YYYY'));
             $("#bAnular").attr("disabled", false);
@@ -2583,6 +2481,15 @@
             });
             $("#" + idSelect).empty();
             $("#" + idSelect).append(listitems);
+
+            callWS("medios", "getParamById", JSON.stringify(5), function (parMulti) { onCheckMultimoneda(parMulti); });
+        }
+
+        function onCheckMultimoneda(param) {
+            if (param.valor == 0) {
+                $("#selMoneda").attr("disabled", true); 
+                $("#bCambioMoneda").attr("disabled", true); 
+            }
         }
 
         function limpiaVinculados() {

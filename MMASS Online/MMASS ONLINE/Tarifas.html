@@ -329,12 +329,21 @@
                 console.log("invalid mode:" + mode);
                 location.href = "/tarifaslist.html"
             }
+
+            //chequeamos parámetro multimoneda
+            callWS("medios", "getParamById", JSON.stringify(5), function (parMulti) { onCheckMultimoneda(parMulti); });
+        }
+
+        function onCheckMultimoneda(param) {
+            if (param.valor == 0) {
+                $("#selMoneda").attr("disabled", true);
+            }
         }
 
         function checkParameters() {
             var id = getUrlParameter("idTarifa");
             var mode = getUrlParameter("mode");
-            //setMode(mode);
+
             if (id != undefined) {
                 var data = {};
                 data.id_tarifa_dg = id;
