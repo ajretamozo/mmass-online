@@ -135,13 +135,13 @@ namespace WebApi.Entities
             int BD = int.Parse(Dg_parametro.getById(1).Valor);
             if (BD == 1)
             {
-                sqlCommand = @"Select c.id_contacto, c.razon_social, c.nombre_com from contactos c , roles r, vinculos v where r.id_contacto = c.id_contacto  and es_borrado = 0 
+                sqlCommand = @"Select c.id_contacto, c.razon_social, c.nombre_com from contactos c , roles r, vinculos v where r.id_contacto = c.id_contacto  and es_borrado = 0 and es_bloqueado = 0  
                                       and r.tipo_rol = 1 and c.id_contacto = v.id_contacto and v.tipo_rol_padre= 0 
                                       and v.id_contacto_padre=" + idAgencia.ToString() + " order by razon_social ";
             }
             else if (BD == 2)
             {
-                sqlCommand = @"Select c.id_contacto, c.razon_social, c.nombre_com from contactos c , roles r, vinculos v where r.id_contacto = c.id_contacto  and es_borrado = 0 
+                sqlCommand = @"Select c.id_contacto, c.razon_social, c.nombre_com from contactos c , roles r, vinculos v where r.id_contacto = c.id_contacto  and es_borrado = 0 and es_bloqueado = 0  
                                       and r.id_tipo_rol = 1 and c.id_contacto = v.id_contacto and v.id_tipo_rol_padre= 0 
                                       and v.id_contacto_padre=" + idAgencia.ToString() + " order by razon_social ";
             }
@@ -201,7 +201,7 @@ namespace WebApi.Entities
                 sqlCommand = @"Select c.id_contacto, razon_social, nombre_com from contactos c
                                     inner join roles r on r.id_contacto = c.id_contacto
                                     where r.id_contacto = c.id_contacto
-                                    and es_borrado = 0 and r.tipo_rol = " + tipo + " order by razon_social";
+                                    and es_borrado = 0 and es_bloqueado = 0 and r.tipo_rol = " + tipo + " order by razon_social";
             }
             else if (BD == 2)
             {
@@ -213,7 +213,7 @@ namespace WebApi.Entities
                 sqlCommand = @"Select c.id_contacto, razon_social, nombre_com from contactos c
                                     inner join roles r on r.id_contacto = c.id_contacto
                                     where r.id_contacto = c.id_contacto
-                                    and es_borrado = 0 and r.id_tipo_rol = " + tipo + " order by razon_social";
+                                    and es_borrado = 0 and es_bloqueado = 0 and r.id_tipo_rol = " + tipo + " order by razon_social";
             }
 
             List<Contacto> col = new List<Contacto>();
@@ -330,7 +330,7 @@ namespace WebApi.Entities
                                 from contactos c
                                 inner join roles r on r.id_contacto = c.id_contacto
                                 left join  dg_contacto_red_GAM g on g.id_contacto = c.id_contacto 
-                                and g.id_red = " + idRed.ToString() + "where r.id_contacto = c.id_contacto and es_borrado = 0 and r.tipo_rol = 1 order by razon_social";
+                                and g.id_red = " + idRed.ToString() + "where r.id_contacto = c.id_contacto and es_borrado = 0 and es_bloqueado = 0 and r.tipo_rol = 1 order by razon_social";
             }
             else if (BD == 2)
             {
@@ -338,7 +338,7 @@ namespace WebApi.Entities
                                 from contactos c
                                 inner join roles r on r.id_contacto = c.id_contacto
                                 left join  dg_contacto_red_GAM g on g.id_contacto = c.id_contacto 
-                                and g.id_red = " + idRed.ToString() + "where r.id_contacto = c.id_contacto and es_borrado = 0 and r.id_tipo_rol = 1 order by razon_social";
+                                and g.id_red = " + idRed.ToString() + "where r.id_contacto = c.id_contacto and es_borrado = 0 and es_bloqueado = 0 and r.id_tipo_rol = 1 order by razon_social";
             }
 
             List<Contacto> col = new List<Contacto>();

@@ -175,33 +175,6 @@
 
                     <!-- Modal body -->
                     <div class="modal-body" id="sincAnunModalBody">
-                        <!--<div class="row">
-        <div class="col-md-4">
-            <label for="descFiltroAnun">Anunciante AdServer: </label>
-            <div class="input-group enterSearch"> <input type="text" id="descFiltroAnun" class="form-control"></div>
-        </div>
-        <div class="col-md-4 d-flex align-items-end">
-            <button type="button" class="btn btn-dark btn-sm mx-1" onclick="buscarAnunGam()">
-                <span class="fa fa-search"></span> Buscar
-            </button>
-        </div>
-    </div>
-    <div class="row" style="padding-left: 20px; padding-right: 20px;">-->
-                        <!--Tabla Sincronizar Anunciantes-->
-                        <!--<div class="table-responsive mt-2 tableFixHead">
-            <table class="table table-fixed table-striped" id="tModifCabecera">
-                <thead class="thead-dark">
-                    <tr id="header" align="center">
-                        <th class="col-xs-2">ID</th>
-                        <th class="col-xs-4">Anunciante Ad Server</th>
-                        <th class="col-xs-4">Contacto MMASS</th>
-                        <th class="col-xs-2"></th>
-                    </tr>
-                </thead>
-                <tbody id="TableSincAnun" align="center"></tbody>
-            </table>
-        </div>
-    </div>-->
                         <div class="row justify-content-around">
                             <div class="col-md-4">
                                 <label>Anunciante AdServer</label>
@@ -217,17 +190,6 @@
                             </div>
                         </div>
                         <div class="row justify-content-end py-3">
-                            <!--<div class="col-md-4">
-        </div>
-        <div class="col-md-4">
-        </div>
-        <div class="col-md-4" style="left: 78px;">
-            <div class="col-md-10 px-0 d-flex justify-content-end">
-                <button type="button" class="btn btn-dark btn-sm mx-1" onclick=" $('#divDetailsRows').show();$('#divAddRow').hide(); searchOrders();">
-                    <span class="fa fa-search"></span> Buscar
-                </button>
-            </div>
-        </div>-->
                             <div class="col-md-2" style="display: flex;text-align: justify;flex-direction: row;justify-content: flex-end;">
                                 <button type='button' class='btn btn-secondary' id="bVincularAnun" value='1' onclick="vincularAnun('selAnunciantePedidoAS','selAnunciantePedido','selRedesPedido','bVincularAnun', 'lblAnunNoSinc')">Vincular</button>
                             </div>
@@ -287,7 +249,7 @@
                                 </div>
                                 <div class="col-md-4" style="text-align: end;padding-right: 11px;">
                                     <button type="button" class="btn btn-dark btn-sm mx-1" onclick="openOrder()">
-                                        <span class="fa fa-file"></span> Nueva Orden
+                                        <span class="fa fa-plus"></span> Nueva Orden
                                     </button>
                                     <button type="button" class="btn btn-dark btn-sm mx-1" onclick=" searchOrders();">
                                         <span class="fa fa-search"></span> Buscar
@@ -473,6 +435,21 @@
                             <tbody id="TableDetalles" class="small" align="center"></tbody>
                         </table>
                     </div>
+                    <div id="divPaginacionD" style="text-align: end;" hidden="hidden">
+                        <a href="javascript:firstPageD()" id="btn_firstD" style="visibility: visible;margin-right: 10px;">
+                            <span class="fa fa-step-backward"></span>
+                        </a>
+                        <a href="javascript:prevPageD()" id="btn_prevD" style="visibility: visible;margin-right: 10px;">
+                            <span class="fa fa-chevron-left"></span>
+                        </a>
+                        <a href="javascript:nextPageD()" id="btn_nextD" style="visibility: visible;margin-right: 10px;">
+                            <span class="fa fa-chevron-right"></span>
+                        </a>
+                        <a href="javascript:lastPageD()" id="btn_lastD" style="visibility: visible;margin-right: 10px;">
+                            <span class="fa fa-step-forward"></span>
+                        </a>
+                        pág: <span id="pageD"></span>
+                    </div>
                 </div>
 
                 <!-- TAB MODS -->
@@ -551,6 +528,21 @@
                             <tbody id="TableRenglonesMod" class="small" align="center"></tbody>
                         </table>
                     </div>
+                    <div id="divPaginacion" style="text-align: end;" hidden="hidden">
+                        <a href="javascript:firstPage()" id="btn_first" style="visibility: visible;margin-right: 10px;">
+                            <span class="fa fa-step-backward"></span>
+                        </a>
+                        <a href="javascript:prevPage()" id="btn_prev" style="visibility: visible;margin-right: 10px;">
+                            <span class="fa fa-chevron-left"></span>
+                        </a>
+                        <a href="javascript:nextPage()" id="btn_next" style="visibility: visible;margin-right: 10px;">
+                            <span class="fa fa-chevron-right"></span>
+                        </a>
+                        <a href="javascript:lastPage()" id="btn_last" style="visibility: visible;margin-right: 10px;">
+                            <span class="fa fa-step-forward"></span>
+                        </a>
+                        pág: <span id="page"></span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -574,6 +566,217 @@
             document.body.style.backgroundImage = "url(./fondoM3.png)";
         });
 
+        //Paginación detalles modificados
+        var current_page = 1;
+        var records_per_page = 50;
+        var detallesOP = [];
+
+        function firstPage() {
+            current_page = 1;
+            changePage(1);
+        }
+
+        function prevPage() {
+            if (current_page > 1) {
+                current_page--;
+                changePage(current_page);
+            }
+        }
+
+        function nextPage() {
+            if (current_page < numPages()) {
+                current_page++;
+                changePage(current_page);
+            }
+        }
+
+        function lastPage() {
+            var ultimaPag = numPages()
+            current_page = ultimaPag;
+            changePage(ultimaPag);
+        }
+
+        function changePage(page) {
+            idRed = $('#selRedes').val();
+            var btn_next = document.getElementById("btn_next");
+            var btn_prev = document.getElementById("btn_prev");
+            var page_span = document.getElementById("page");
+
+            var totalPags = numPages();
+
+            // Validate page
+            if (page < 1) page = 1;
+            if (page > totalPags) page = totalPags;
+
+            //Construyo la tabla
+            $("#TableRenglonesMod tr").remove();
+            rowHTML = ''
+
+            page_span.innerHTML = page + " de " + totalPags;
+
+            if (page == 1) {
+                btn_prev.style.visibility = "hidden";
+                btn_first.style.visibility = "hidden";
+            } else {
+                btn_prev.style.visibility = "visible";
+                btn_first.style.visibility = "visible";
+            }
+
+            if (page == totalPags) {
+                btn_next.style.visibility = "hidden";
+                btn_last.style.visibility = "hidden";
+            } else {
+                btn_next.style.visibility = "visible";
+                btn_last.style.visibility = "visible";
+            }
+
+            for (var i = (page - 1) * records_per_page; i < (page * records_per_page); i++) {
+                if (detallesOP[i] == undefined) { break; }
+
+                rowHTML += "<tr>";
+
+                rowHTML += "<td class='col-xs-1'>" + detallesOP[i].anio + "-" + detallesOP[i].mes + "-" + detallesOP[i].nro_orden + "</td>";                
+                rowHTML += "<td class='col-xs-1'> " + detallesOP[i].descripcion + "</td > ";
+                rowHTML += "<td class='col-xs-1'> " + detallesOP[i].id_Google_Ad_Manager + "</td > ";
+                rowHTML += "<td class='col-xs-1'> " + detallesOP[i].nombre_red + "</td > ";
+                rowHTML += "<td class='col-xs-1'> " + dateToFieldFormat(detallesOP[i].fecha_desde) + "</td > ";
+                if (detallesOP[i].fecha_hasta == null) {
+                    rowHTML += "<td class='col-xs-1'> - </td > ";
+                }
+                else {
+                    rowHTML += "<td class='col-xs-1'> " + dateToFieldFormat(detallesOP[i].fecha_hasta) + "</td > ";
+                }
+                if (detallesOP[i].cantidad == 0) {
+                    rowHTML += "<td class='col-xs-1'> - </td > ";
+                }
+                else {
+                    rowHTML += "<td class='col-xs-1'> " + detallesOP[i].cantidad + "</td > ";
+                }
+                rowHTML += "<td class='col-xs-1'>$ " + formatearMonto(detallesOP[i].monto_neto) + "</td > ";
+                rowHTML += "<td class='col-xs-2' > <button type='button' id=button" + detallesOP[i].id_Google_Ad_Manager + " class='btn btn-danger' style='height: 31px;width: 77.81px;font - size: inherit;padding-top: 4px;' title='Ir a Detalle con diferencias en AdServer' onClick='RedireccionD(" + detallesOP[i].id_op_dg + ")'> <span class='fa fa-refresh'></span></button> </td ></tr>";
+
+                rowHTML += "</tr>";
+            }
+
+            $("#TableRenglonesMod").html(rowHTML);
+
+            $("#pleaseWaitDialog").modal('hide');
+        }
+
+        function numPages() {
+            if (detallesOP.length < 50) {
+                return 1;
+            }
+            else {
+                return Math.ceil(detallesOP.length / records_per_page);
+            }
+        }
+
+        //paginación detalles nuevos
+        var current_pageD = 1;
+        var records_per_pageD = 50;
+        var detallesOPD = [];
+
+        function firstPageD() {
+            current_pageD = 1;
+            changePageD(1);
+        }
+
+        function prevPageD() {
+            if (current_pageD > 1) {
+                current_pageD--;
+                changePageD(current_pageD);
+            }
+        }
+
+        function nextPageD() {
+            if (current_pageD < numPagesD()) {
+                current_pageD++;
+                changePageD(current_pageD);
+            }
+        }
+
+        function lastPageD() {
+            var ultimaPagD = numPagesD()
+            current_pageD = ultimaPagD;
+            changePageD(ultimaPagD);
+        }
+
+        function changePageD(page) {
+            idRed = $('#selRedesD').val();
+            var btn_next = document.getElementById("btn_nextD");
+            var btn_prev = document.getElementById("btn_prevD");
+            var page_span = document.getElementById("pageD");
+
+            var totalPags = numPagesD();
+
+            // Validate page
+            if (page < 1) page = 1;
+            if (page > totalPags) page = totalPags;
+
+            //Construyo la tabla
+            $("#TableDetalles tr").remove();
+            rowHTML = ''
+
+            page_span.innerHTML = page + " de " + totalPags;
+
+            if (page == 1) {
+                btn_prev.style.visibility = "hidden";
+                btn_firstD.style.visibility = "hidden";
+            } else {
+                btn_prev.style.visibility = "visible";
+                btn_firstD.style.visibility = "visible";
+            }
+
+            if (page == totalPags) {
+                btn_next.style.visibility = "hidden";
+                btn_lastD.style.visibility = "hidden";
+            } else {
+                btn_next.style.visibility = "visible";
+                btn_lastD.style.visibility = "visible";
+            }
+
+            for (var i = (page - 1) * records_per_page; i < (page * records_per_page); i++) {
+                if (detallesOPD[i] == undefined) { break; }
+
+                rowHTML += "<tr>";
+
+                rowHTML += "<td class='col-xs-1'> " + detallesOPD[i].nombre_red + "</td > ";
+                rowHTML += "<td class='col-xs-1'> " + detallesOPD[i].nombre_pedido_Google_Ad_Manager + "</td > ";
+                rowHTML += "<td class='col-xs-1'> " + detallesOPD[i].id_pedido_Google_Ad_Manager + "</td > ";
+                rowHTML += "<td class='col-xs-1'> " + detallesOPD[i].descripcion + "</td > ";
+                rowHTML += "<td class='col-xs-1'> " + detallesOPD[i].id_Google_Ad_Manager + "</td > ";
+                rowHTML += "<td class='col-xs-1'> " + dateToFieldFormat(detallesOPD[i].fecha_desde) + "</td > ";
+                if (detallesOPD[i].fecha_hasta == null) {
+                    rowHTML += "<td class='col-xs-1'> - </td > ";
+                }
+                else {
+                    rowHTML += "<td class='col-xs-1'> " + dateToFieldFormat(detallesOPD[i].fecha_hasta) + "</td > ";
+                }
+                if (detallesOPD[i].cantidad == 0) {
+                    rowHTML += "<td class='col-xs-1'> - </td > ";
+                }
+                else {
+                    rowHTML += "<td class='col-xs-1'> " + detallesOPD[i].cantidad + "</td > ";
+                }
+                rowHTML += "<td class='col-xs-1'>$ " + formatearMonto(detallesOPD[i].monto_neto) + "</td > ";
+                rowHTML += "<td class='col-xs-2' > <button type='button' id=button" + detallesOPD[i].id_Google_Ad_Manager + " class='btn btn-danger' style='height: 31px;width: 77.81px;font - size: inherit;padding-top: 4px;' title='Importar Línea' onClick='comprobarAnunciante(" + JSON.stringify(detallesOPD[i]) + ")'><span class='fa fa-cloud-download'></span></button> </td ></tr>";
+                rowHTML += "</tr>";
+            }
+
+            $("#TableDetalles").html(rowHTML);
+
+            $("#pleaseWaitDialog").modal('hide');
+        }
+
+        function numPagesD() {
+            if (detallesOPD.length < 50) {
+                return 1;
+            }
+            else {
+                return Math.ceil(detallesOPD.length / records_per_pageD);
+            }
+        }
 
         function inicializar() {
             $('#fechaDesdeImp').datetimepicker({ format: 'L', locale: 'es' });
@@ -617,14 +820,6 @@
             }
         }
 
-        //function onRedSelectedD() {
-        //    idRed = $('#selRedesD').val();
-        //    codRed = $('#selRedesD>option:selected').attr("codigo_red");
-        //    if (idRed != null) {
-        //        callWS("googleAdManager", "cambiarRed", codRed);
-        //    }
-        //}
-
         function onRedSelectedM() {
             idRed = $('#selRedesM').val();
             codRed = $('#selRedesM>option:selected').attr("codigo_red");
@@ -633,123 +828,14 @@
             }
         }
 
-        //function filter() {
-        //    rows = $("tr").not("#header");
-        //    params = {};
-        //    params.id = $("#idFiltro").val();
-        //    params.descripcion = $('#descFiltro').val();
-        //    if ($('#fechaDesde').val() != "") {
-        //        fDesde = new Date(moment($("#fechaDesde").val(), 'DD/MM/YYYY', true).format());
-        //        mfDesde = moment(fDesde);
-        //        if (mfDesde.isValid()) {
-        //            params.fecha_desde = dateToSqlFormat($('#fechaDesde').val());
-        //        } else {
-        //            error += "Formato 'Fecha Desde' invalido";
-        //        }
-        //    }
-        //    if ($('#fechaHasta').val() != "") {
-        //        fHasta = new Date(moment($("#fechaHasta").val(), 'DD/MM/YYYY', true).format());
-        //        mfHasta = moment(fHasta);
-        //        if (mfHasta.isValid()) {
-        //            params.fecha_hasta = dateToSqlFormat($('#fechaHasta').val());
-        //        } else {
-        //            if (error != '') { error += ' / ' }
-        //            error += "Formato 'Fecha Hasta' invalido";
-        //        }
-        //    }
-        //    params.red = $('#selRedes').val();
-
-        //    if (params.red != 0 && params.red != null) {
-
-        //        for (param in params) {
-        //            if (params[param] == null) {
-        //                params[param] = '';
-        //            }
-        //        };
-
-        //        var parametros = setListaParametros(params);
-
-        //        callWS("googleAdManager", "getOpNuevas", JSON.stringify(parametros), function (data) { onGetOrdenesGAM(data); });
-        //    }
-        //    else {
-        //        showMessage("Seleccione una Red AdServer", "alert");
-        //    }
-        //}
-
-        //function onGetOrdenesGAM(data) {
-        //    onCargarTabla('TableOrdenes', data);
-        //    if (data.length == 0) {
-        //        showMessage("No se enontraron Ordenes", "info");
-        //    }
-        //}
-
-        //function onCargarTabla(tablaID, data) {
-        //    rowHTML = ''
-
-        //    $.each(data, function (it, ordenGAM) {
-
-        //        rowHTML += "<tr>";
-        //        rowHTML += "<td class='col-xs-1'> " + ordenGAM.id_Google_Ad_Manager + "</td > ";
-        //        rowHTML += "<td class='col-xs-1'> " + ordenGAM.observ + "</td > ";
-        //        rowHTML += "<td class='col-xs-1'> " + ordenGAM.anunciante_nombre + "</td >";
-        //        rowHTML += "<td class='col-xs-1'> " + dateToFieldFormat(ordenGAM.fecha_alta) + "</td > ";
-        //        rowHTML += "<td class='col-xs-1'> " + dateToFieldFormat(ordenGAM.fecha) + "</td > ";
-        //        rowHTML += "<td class='col-xs-1'> " + dateToFieldFormat(ordenGAM.fecha_expiracion) + "</td > ";
-        //        rowHTML += "<td class='col-xs-1'>$ " + formatearMonto(ordenGAM.seg_neto) + "</td > ";
-        //        rowHTML += "<td class='col-xs-2' > <button type='button' id=button" + ordenGAM.id_Google_Ad_Manager + " class='btn btn-danger' style='height: 31px; width: 77.81px;font - size: inherit;' title='Importar OP' onClick='comprobarAnunciante(" + ordenGAM.id_Google_Ad_Manager + ", " + ordenGAM.id_red + ", " + ordenGAM.anunciante.idContactoDigital + ")'><span class='fa fa-cloud-download'></span></button> </td ></tr>";
-        //        rowHTML += "</tr>";
-
-        //    });
-
-        //    $("#" + tablaID).html(rowHTML);
-
-        //    $("#pleaseWaitDialog").modal('hide');
-        //}
-
-        //function comprobarAnunciante(idPedido, idRed, idLin, fechaDesde, fechaHasta) {
-        //    idLinea = idLin;
-        //    idRedLinea = idRed;
-        //    fechaD = fechaDesde;
-        //    fechaH = fechaHasta;
-        //    var detalle = {};
-        //    detalle.Id_pedido_Google_Ad_Manager = idPedido;
-        //    detalle.Id_red = idRed;
-        //    //callWS("contactos", "getContactoByIdGAMyRed", JSON.stringify(data1), function (data) { importarOP(data, idOP, idRed); });
-        //    callWS("googleAdManager", "checkAnunciantePedido", JSON.stringify(detalle), function (data) { buscarOrdenes(data); });
-        //}
-
         function comprobarAnunciante(detGAM) {
             idLinea = detGAM.id_Google_Ad_Manager;
             idRedLinea = detGAM.id_red;
             fechaD = detGAM.fecha_desde;
             fechaH = detGAM.fecha_hasta;
-            //var detalle = {};
-            //detalle.Id_pedido_Google_Ad_Manager = idPedido;
-            //detalle.Id_red = idRed;
-            //callWS("contactos", "getContactoByIdGAMyRed", JSON.stringify(data1), function (data) { importarOP(data, idOP, idRed); });
+
             callWS("googleAdManager", "checkAnunciantePedido", JSON.stringify(detGAM), function (data) { buscarOrdenes(data); });
         }
-
-        //function importarOP(data, idOP, idRed) {
-        //    if (data.idContactoDigital != null) {
-        //        callWS("medios", "getRedById", JSON.stringify(idRed), function (data) { Redireccion(data, idOP); });
-        //    }
-        //    else {
-        //        options = [
-        //            {
-        //                optionDesc: "Aceptar",
-        //                optionFunc: "sincAnunciante()"
-        //            },
-        //            {
-        //                optionDesc: "Cancelar",
-        //                optionFunc: ""
-        //            }
-        //        ];
-        //        var mensaje = "<div class='d-flex justify-content-center' style='text-align: center;'>El Contacto no está sincronizado con Google Ad Manager. ¿Desea sincronizarlo?</div>";
-        //        showModal(mensaje, options);
-        //        /*showMessage("El Contacto no esta sincronizado con Google Ad Manager", "error");*/
-        //    }
-        //}
 
         function buscarOrdenes(contacto) {
             if (contacto.Id_contacto > 0) {
@@ -800,30 +886,6 @@
             params.bitacora = $('#inpDescripcionOp').val();
             params.anuladas = "0";
             params.es_facturada = "0";
-
-            //if ($('#fechaDesdeD').val() != "") {
-            //    fDesde = new Date(moment($("#fechaDesdeD").val(), 'DD/MM/YYYY', true).format());
-            //    mfDesde = moment(fDesde);
-            //    if (mfDesde.isValid()) {
-            //        params.fecha_desde = dateToSqlFormat($('#fechaDesdeD').val());
-            //    } else {
-            //        error += "Formato 'Fecha Desde' invalido";
-            //    }
-            //}
-            //if ($('#fechaHastaD').val() != "") {
-            //    fHasta = new Date(moment($("#fechaHastaD").val(), 'DD/MM/YYYY', true).format());
-            //    mfHasta = moment(fHasta);
-            //    if (mfHasta.isValid()) {
-            //        params.fecha_hasta = dateToSqlFormat($('#fechaHastaD').val());
-            //    } else {
-            //        if (error != '') { error += ' / ' }
-            //        error += "Formato 'Fecha Hasta' invalido";
-            //    }
-            //}
-
-            //if ($('#selAnuncianteD').val() > 0 && $('#selAnuncianteD').val() != null) {
-            //    params.anunciante_id = $("#selAnuncianteD").val();
-            //}
             params.fecha_desde_d = fechaD;
             params.fecha_hasta_d = fechaH;
             params.anunciante_id = idAnunciante;
@@ -872,7 +934,7 @@
                         rowHTML += "<tr style='color:red' id-order=\"" + iord.id_op_dg + "\" onclick='openOrder(this)' style='cursor: pointer;>"
                     }
                 }
-                //rowHTML += "<tr onclick='openOrder(this)'>"
+
                 if (iord.id_op_relacionada == -1 || iord.id_op_relacionada == 0 || iord.id_op_relacionada == null) {
                     rowHTML += "<td class='col-xs-1'>" + iord.anio + "-" + iord.mes + "-" + iord.nro_orden + "</td>";
                 } else {
@@ -891,11 +953,6 @@
                 else {
                     rowHTML += "<td class='col-xs-1'></td>";
                 }
-                //Acciones
-                //rowHTML += "<td id='colAcciones' class='col-xs-2 d-flex justify-content-around'>"
-                //rowHTML += "<button type='button' class='btn btn-outline-dark btn-sm' onclick=\"openOrder("+iord.id_tarifa_dg+",'view')\"><span class='fa fa-eye'></span> </button>"
-                //rowHTML += "<button type='button' class='btn btn-outline-dark btn-sm' onclick=\"openOrder("+iord.id_tarifa_dg+",'edit')\"><span class='fa fa-edit'></span> </button>"
-                //rowHTML += "</td>"
                 rowHTML += '</tr>'
             })
             $("#" + idTable).html(rowHTML);
@@ -1048,46 +1105,14 @@
         }
 
         function sincAnunciante() {
-
             $.when($("#modalCenter").modal('hide')).then(function () {
                 sincAnunciante2();
             });
-
-            //$("#modalCenter").modal('hide'); 
-            //$("#sincAnunModal").modal('show'); 
         }
 
         function sincAnunciante2() {
             $("#sincAnunModal").modal('show');
         }
-
-        //function buscarAnunGam() {
-        //    /*rows = $("tr").not("#header");*/
-        //    desc = $("#descFiltroAnun").val();
-        //    red = $("#selRedes").val();
-
-        //    if (red != 0 && red != null) {
-        //        var objParametro = {};
-
-        //        objParametro.ParameterName = "nombre";
-        //        objParametro.Value = desc;
-
-        //        callWS("googleAdManager", "getAnunciantes", JSON.stringify(objParametro), onGetAnuncianteGAM);
-        //    }
-        //    else {
-        //        showMessage("Seleccione una Red AdServer", "alert");
-        //    }
-        //}
-
-        //function onGetAnuncianteGAM(data) {
-        //    if (data.length != 0) {
-        //        getAnunciantes(data);
-        //    }
-        //    else {
-        //        onCargarTablaSinc(data)
-        //        showMessage("No se enontraron Anunciantes", "info");
-        //    }
-        //}
 
         function getAnunciantes(anunciantesGAM) {
             idRed = $('#selRedes').val();
@@ -1233,66 +1258,22 @@
                 callWS("googleAdManager", "getDetNuevos", JSON.stringify(parametros), function (data) { onGetDetallesGAM(data); });
             }
             else {
-                onCargarTablaD('TableDetalles', '');
+                $("#TableDetalles").append("");
                 showMessage("El Anunciante no está sincronizado con ningún Anunciante del AdServer", "info");
             }
         }
 
         function onGetDetallesGAM(data) {
-            onCargarTablaD('TableDetalles', data);
-            if (data.length == 0) {
-                //onCargarTablaD('TableDetalles', data);
-                showMessage("No se enontraron Detalles", "info");
+            detallesOPD = data;
+
+            if (data.length != 0) {
+                $("#divPaginacionD").attr("hidden", false);
+                changePageD(1)
             }
-        }
-
-        function onCargarTablaD(tablaID, data) {
-            rowHTML = ''
-
-            $.each(data, function (it, detGAM) {
-
-                rowHTML += "<tr>";
-                if (tablaID == 'TableDetalles') {
-                    rowHTML += "<td class='col-xs-1'> " + detGAM.nombre_red + "</td > ";
-                    rowHTML += "<td class='col-xs-1'> " + detGAM.nombre_pedido_Google_Ad_Manager + "</td > ";
-                }
-                if (tablaID == 'TableDetalles') {
-                    rowHTML += "<td class='col-xs-1'> " + detGAM.id_pedido_Google_Ad_Manager + "</td > ";                }
-                else {
-                    rowHTML += "<td class='col-xs-1'>" + detGAM.anio + "-" + detGAM.mes + "-" + detGAM.nro_orden + "</td>";
-                }
-                rowHTML += "<td class='col-xs-1'> " + detGAM.descripcion + "</td > ";
-                rowHTML += "<td class='col-xs-1'> " + detGAM.id_Google_Ad_Manager + "</td > ";
-                if (tablaID == 'TableRenglonesMod') {
-                    rowHTML += "<td class='col-xs-1'> " + detGAM.nombre_red + "</td > ";
-                }
-                rowHTML += "<td class='col-xs-1'> " + dateToFieldFormat(detGAM.fecha_desde) + "</td > ";
-                if (detGAM.fecha_hasta == null) {
-                    rowHTML += "<td class='col-xs-1'> - </td > ";
-                }
-                else {
-                    rowHTML += "<td class='col-xs-1'> " + dateToFieldFormat(detGAM.fecha_hasta) + "</td > ";
-                }
-                if (detGAM.cantidad == 0) {
-                    rowHTML += "<td class='col-xs-1'> - </td > ";
-                }
-                else {
-                    rowHTML += "<td class='col-xs-1'> " + detGAM.cantidad + "</td > ";
-                }
-                rowHTML += "<td class='col-xs-1'>$ " + formatearMonto(detGAM.monto_neto) + "</td > ";
-                if (tablaID == 'TableDetalles') {
-                    rowHTML += "<td class='col-xs-2' > <button type='button' id=button" + detGAM.id_Google_Ad_Manager + " class='btn btn-danger' style='height: 31px;width: 77.81px;font - size: inherit;padding-top: 4px;' title='Importar Línea' onClick='comprobarAnunciante(" + JSON.stringify(detGAM) + ")'><span class='fa fa-cloud-download'></span></button> </td ></tr>";
-                }
-                else {
-                    rowHTML += "<td class='col-xs-2' > <button type='button' id=button" + detGAM.id_Google_Ad_Manager + " class='btn btn-danger' style='height: 31px;width: 77.81px;font - size: inherit;padding-top: 4px;' title='Ir a Detalle con diferencias en AdServer' onClick='RedireccionD(" + detGAM.id_op_dg + ")'> <span class='fa fa-refresh'></span></button> </td ></tr>";
-                }
-                rowHTML += "</tr>";
-
-            });
-
-            $("#" + tablaID).html(rowHTML);
-
-            $("#pleaseWaitDialog").modal('hide');
+            else {
+                $("#TableDetalles").append("");
+                showMessage("La búsqueda no produjo ningun resultado", "info");
+            }
         }
 
         function RedireccionD(data) {
@@ -1305,57 +1286,6 @@
             sqlFormatDate = '';
             sqlFormatDate = arr[2] + '-' + arr[1] + '-' + arr[0];
             return sqlFormatDate;
-        }
-
-        function filterM() {
-            rows = $("tr").not("#header");
-            params = {};
-            params.id = $("#idFiltroM").val();
-            params.descripcion = $('#descFiltroM').val();
-
-            if ($('#fechaDesdeM').val() != "") {
-                fDesde = new Date(moment($("#fechaDesdeM").val(), 'DD/MM/YYYY', true).format());
-                mfDesde = moment(fDesde);
-                if (mfDesde.isValid()) {
-                    params.fecha_desde = dateToSqlFormat($('#fechaDesdeM').val());
-                } else {
-                    error += "Formato 'Fecha Desde' invalido";
-                }
-            }
-            if ($('#fechaHastaM').val() != "") {
-                fHasta = new Date(moment($("#fechaHastaM").val(), 'DD/MM/YYYY', true).format());
-                mfHasta = moment(fHasta);
-                if (mfHasta.isValid()) {
-                    params.fecha_hasta = dateToSqlFormat($('#fechaHastaM').val());
-                } else {
-                    if (error != '') { error += ' / ' }
-                    error += "Formato 'Fecha Hasta' invalido";
-                }
-            }
-            params.red = $('#selRedesM').val();
-
-            if (params.red != 0 && params.red != null) {
-
-                for (param in params) {
-                    if (params[param] == null) {
-                        params[param] = '';
-                    }
-                };
-
-                var parametros = setListaParametros(params);
-
-                callWS("googleAdManager", "getOpNuevas", JSON.stringify(parametros), function (data) { onGetOrdenesMGAM(data); });
-            }
-            else {
-                showMessage("Seleccione una Red AdServer", "alert");
-            }
-        }
-
-        function onGetOrdenesMGAM(data) {
-            onCargarTabla('TableOrdenes', data);
-            if (data.length == 0) {
-                showMessage("No se enontraron Ordenes", "info");
-            }
         }
 
         function filterImp() {
@@ -1423,11 +1353,18 @@
                 }
                 else {
                     callWS("googleAdManager", "ComprobarModificacionesDSincro", JSON.stringify(parametros), function (data) {
-                        onCargarTablaD('TableRenglonesMod', data);
-                        if (data.length == 0) {
-                            message = 'La búsqueda no produjo ningun resultado';
-                            showMessage(message, "info");
+
+                        detallesOP = data;
+
+                        if (data.length != 0) {
+                            $("#divPaginacion").attr("hidden", false);
+                            changePage(1)
                         }
+                        else {
+                            $("#TableRenglonesMod").append("");
+                            showMessage("La búsqueda no produjo ningun resultado", "info");
+                        }
+
                     });
                 }
 
@@ -1439,15 +1376,22 @@
         function onChequearSincroContactoMod(data, parametros) {
             if (data == true) {
                 callWS("googleAdManager", "ComprobarModificacionesDSincro", JSON.stringify(parametros), function (data) {
-                    onCargarTablaD('TableRenglonesMod', data);
-                    if (data.length == 0) {
-                        message = 'La búsqueda no produjo ningun resultado';
-                        showMessage(message, "info");
+
+                    detallesOP = data;
+
+                    if (data.length != 0) {
+                        $("#divPaginacion").attr("hidden", false);
+                        changePage(1)
                     }
+                    else {
+                        $("#TableRenglonesMod").append("");
+                        showMessage("La búsqueda no produjo ningun resultado", "info");
+                    }
+
                 });
             }
             else {
-                onCargarTablaD('TableDetalles', '');
+                $("#TableRenglonesMod").append("");
                 showMessage("El Anunciante no está sincronizado con ningún Anunciante del AdServer", "info");
             }
         }

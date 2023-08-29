@@ -658,7 +658,7 @@
                         <!--Sinc Anunciante-->
                         <div class="row py-1" id="rowSincAnun" hidden="hidden">
                             <div class="col-md-6" style="align-self: self-end;text-align: end;">
-                                <label id="lblAnunNoSinc" style="color: red">*El Anunciante no está sincronizado con la Red AdServer seleccionada</label>
+                                <label id="lblAnunNoSinc" style="color: red"><!--*El Anunciante no está sincronizado con la Red AdServer seleccionada--></label>
                             </div>
                             <div class="col-md-3">
                                 <label>Anunciante AdServer</label>
@@ -674,10 +674,10 @@
                             <div class="col-md-4">
                             </div>
                             <div class="col-md-4 d-flex justify-content-end align-items-end">
-                                <button type="button" class="btn btn-dark btn-sm mx-1" onclick="enviarOrdenAdServer()">
+                                <button type="button" id="bCrearPedido" class="btn btn-dark btn-sm mx-1" onclick="crearPedidoAdServer()">
                                     <span class="fa fa-cloud-upload"></span> Crear
                                 </button>
-                                <button type="button" class="btn btn-dark btn-sm mx-1" onclick="filterPedidos()">
+                                <button type="button" id="bFilterPedidos" class="btn btn-dark btn-sm mx-1" onclick="filterPedidos()">
                                     <span class="fa fa-search"></span> Buscar
                                 </button>
                             </div>
@@ -727,20 +727,6 @@
                     <!-- Modal body -->
                     <div class="modal-body" id="importarModalBody">
                         <!--Filtros-->
-                        <!--<div class="row py-1">
-                        <div class="col-md-4">
-                            <label for="idFiltroD">ID OP: </label>
-                            <div class="input-group enterSearch"> <input type="number" id="idFiltroOpD" class="form-control"></div>
-                        </div>
-                        <div class="col-md-4">
-                            <label for="descFiltroD">Nombre OP: </label>
-                            <div class="input-group enterSearch"> <input type="text" id="descFiltroOpD" class="form-control"></div>
-                        </div>
-                        <div class="col-md-4">
-                            <label for="selRedesD">Red AdServer: </label>
-                            <select class="form-control enterSearch" id="selRedesD" onchange="onRedSelectedD()"></select>
-                        </div>
-                    </div>-->
                         <div class="row py-1">
                             <div class="col-md-3">
                                 <label for="idFiltroPedidoImp">ID Pedido</label>
@@ -784,7 +770,7 @@
                         <!--Sinc Anunciante-->
                         <div class="row py-1" id="rowAnuncianteSincImp" hidden="hidden">
                             <div class="col-md-6" style="align-self: self-end;text-align: end;">
-                                <label id="lblAnunNoSincImp" style="color: red">*El Anunciante no está sincronizado con la Red AdServer seleccionada</label>
+                                <label id="lblAnunNoSincImp" style="color: red"><!--*El Anunciante no está sincronizado con la Red AdServer seleccionada--></label>
                             </div>
                             <div class="col-md-3">
                                 <label>Anunciante AdServer</label>
@@ -1337,9 +1323,6 @@
                                 </div>
                                 <div class="col-lg-4"></div>
                                 <div class="col-lg-4 d-flex justify-content-end">
-                                    <!--<button type="button" data-id="sendOrderAS" id="bSendOrdenAdServer" class="btn actions btn-outline-dark btn-sm mr-1" disabled="disabled" onclick="enviarOrdenAdServer()" title="Exportar OP a AdServer">
-                    <span class="fa fa-cloud-upload" id="brow"></span>
-                </button>-->
                                     <button type="button" id="bGuardarOrden" class="btn actions btn-dark btn-sm mx-1" onclick="prevSaveOrder()">
                                         <span class="fa fa-save"></span> Guardar
                                     </button>
@@ -2364,9 +2347,10 @@
             } else {
                 if (idSelect == "selAnunciante") {
                     $("#selAnunciante").change();//Carga los productos
-                } else if (idSelect == "selAgencia" && selected == undefined) {
-                    $("#selAgencia").change();//Carga los Anunciantes
                 }
+                //else if (idSelect == "selAgencia" && selected == undefined) {
+                //    $("#selAgencia").change();//Carga los Anunciantes
+                //}
             }
             if (idSelect == "selOrdenRelacionada" || idSelect == "selPrograma" || idSelect == "selDetConvenio") {
                 $("#" + idSelect).prepend("<option value=''></option>");
@@ -3569,7 +3553,7 @@
             }
         }
 
-        function enviarOrdenAdServer() {
+        function crearPedidoAdServer() {
             params = {};
             params.id = $("#idFiltroPedido").val();
             params.descripcion = $('#descFiltroPedido').val();
@@ -5293,12 +5277,12 @@
 
                     var parametrosAnun = setListaParametros(paramsAnun);
 
-                    callWS("googleAdManager", "getAnunciantes", JSON.stringify(parametrosAnun), function (data) { onGetAnuncianteGAM(data, "selAnunciantePedidoAS", "rowSincAnun"); });
+                    callWS("googleAdManager", "getAnunciantes", JSON.stringify(parametrosAnun), function (data) { onGetAnuncianteGAM(data, "selAnunciantePedidoAS", "rowSincAnun", "lblAnunNoSinc", "bVincularAnun"); });
                 }
             });
         }
 
-        function onGetAnuncianteGAM(anunciantes, selAnunAS, rowAnun) {
+        function onGetAnuncianteGAM(anunciantes, selAnunAS, rowAnun, lblAnun, bAnun) {
             var listitems = '<option value="-1">  </option>';
             $.each(anunciantes, function (it, anun) {
 
@@ -5312,6 +5296,12 @@
             });
             $("#" + selAnunAS).empty();
             $("#" + selAnunAS).append(listitems);
+            $("#" + bAnun).removeClass("btn-success").addClass("btn-primary");
+            $("#" + bAnun).css("background-color", "#6c757d");
+            $("#" + bAnun).val(1);
+            $("#" + bAnun).html('Vincular');
+            $("#" + lblAnun).text('*El Anunciante no está sincronizado con la Red AdServer seleccionada');
+            $("#" + selAnunAS).attr("disabled", false);
             $("#" + rowAnun).attr("hidden", false);
         }
 
@@ -5526,7 +5516,7 @@
 
                         var parametrosAnun = setListaParametros(paramsAnun);
 
-                        callWS("googleAdManager", "getAnunciantes", JSON.stringify(parametrosAnun), function (data) { onGetAnuncianteGAM(data, "selAnuncianteSincImp", "rowAnuncianteSincImp"); });
+                        callWS("googleAdManager", "getAnunciantes", JSON.stringify(parametrosAnun), function (data) { onGetAnuncianteGAM(data, "selAnuncianteSincImp", "rowAnuncianteSincImp", "lblAnunNoSincImp", "bVincularAnunImp"); });
                     }
                 });
             }

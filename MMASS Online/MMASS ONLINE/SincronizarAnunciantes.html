@@ -236,7 +236,7 @@
             if (page > totalPags) page = totalPags;
 
             //Construyo la tabla
-            $("#TableRenglones tr").remove()
+            $("#TableRenglones tr").remove();
             var strCabeceraOption = ' <select class="form-control" style="width: 426px;" ';
 
             page_span.innerHTML = page + " de " + totalPags;
@@ -257,7 +257,9 @@
                 btn_last.style.visibility = "visible";
             }
 
-            for (var i = (page - 1) * records_per_page; i < (page * records_per_page); i++) {    
+            for (var i = (page - 1) * records_per_page; i < (page * records_per_page); i++) {   
+                if (anunciantesGAM[i] == undefined) { break; }
+
                 var str = '';
                 str = "<tr>";
                 str = str + "<td class='col-xs-2' > " + anunciantesGAM[i].idContactoDigital + "</td > ";
@@ -392,8 +394,6 @@
 
                 var parametrosAnun = setListaParametros(paramsAnun);
 
-                //$("#pleaseWaitDialog").modal('show');
-
                 callWS("contactos", "getAnunSincro", JSON.stringify(red), function (data) { llenarStrOption(data); });
                 callWS("googleAdManager", "getAnunciantes", JSON.stringify(parametrosAnun), onGetAnuncianteGAM);
             }
@@ -407,7 +407,6 @@
             anunciantesGAM = data;
 
             if (data.length != 0) {
-                //$("#pleaseWaitDialog").modal();
                 $("#divPaginacion").attr("hidden", false);
                 changePage(1)
             }
