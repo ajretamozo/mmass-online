@@ -766,6 +766,13 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="col-md-3" style="align-self: self-end;">
+                                <div class="form-check-inline mr-0">
+                                    <label class="form-check-label " for="checkArchivadas" style="padding-right: 15px; margin-left: 10px;">
+                                        <input type="checkbox" style="margin-top: .4rem; margin-right: .2rem" class="form-check-input float-sm-left" id="checkArchivadas" checked="checked">Incluir archivadas
+                                    </label>
+                                </div>
+                            </div>
                         </div>
                         <!--Sinc Anunciante-->
                         <div class="row py-1" id="rowAnuncianteSincImp" hidden="hidden">
@@ -5489,6 +5496,12 @@
                     if (error != '') { error += ' / ' }
                     error += "Formato 'Fecha Hasta' invalido";
                 }
+            }
+            if (document.getElementById("checkArchivadas").checked == true) {
+                params.archivadas = 1;
+            }
+            else {
+                params.archivadas = 0;
             }
 
             if (params.red != 0 && params.red != null) {

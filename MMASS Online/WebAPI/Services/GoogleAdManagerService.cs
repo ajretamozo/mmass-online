@@ -17,8 +17,6 @@ using System.Security.Cryptography.X509Certificates;
 using System.Configuration;
 using System.IO;
 using Microsoft.AspNetCore.Mvc;
-//using Microsoft.CodeAnalysis.CSharp.Syntax;
-//using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Runtime.CompilerServices;
 using System.Drawing;
 

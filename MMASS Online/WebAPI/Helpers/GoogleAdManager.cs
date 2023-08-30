@@ -266,7 +266,6 @@ namespace WebApi.Helpers
         {
             List<LineItem> Lineas = new List<LineItem>();
 
-            //string mifiltro = "isArchived = false";
             string mifiltro = "1 = 1";
 
             foreach (Parametro p in parametros)
@@ -281,6 +280,8 @@ namespace WebApi.Helpers
                         mifiltro = mifiltro + " and startDateTime >= '" + p.Value.ToString() + "'";
                     if (p.ParameterName == "fecha_hasta")
                         mifiltro = mifiltro + " and endDateTime <= '" + p.Value.ToString() + "'";
+                    if ((p.ParameterName == "archivadas") && p.Value == "0")
+                        mifiltro = mifiltro + " and isArchived = false";
                 }
             }
             mifiltro = mifiltro + " and OrderId IN (" + listaOP + ")";
