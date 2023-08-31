@@ -1392,7 +1392,29 @@ namespace WebApi.Services
                         detalle.Descripcion = linea.name;
                         detalle.Tarifa_manual = 1;
                         detalle.Importe_unitario = (float)(linea.costPerUnit.microAmount / 1000000.0);
-                        detalle.Porc_dto = (float)linea.discount;
+                        if (linea.discount == 0)
+                        {
+                            detalle.Porc_dto = 0;
+                        }
+                        else
+                        {
+                            if (linea.discountType == LineItemDiscountType.ABSOLUTE_VALUE)
+                            {
+                                if(detalle.Tipo_tarifa == 0)
+                                {
+                                    detalle.Porc_dto = ((float)linea.discount * 100) / (linea.primaryGoal.units * (float)((linea.costPerUnit.microAmount / 1000000.0)/1000));
+
+                                }
+                                else
+                                {
+                                    detalle.Porc_dto = ((float)linea.discount * 100) / (linea.primaryGoal.units * (float)(linea.costPerUnit.microAmount / 1000000.0));
+                                }
+                            }
+                            else
+                            {
+                                detalle.Porc_dto = (float)linea.discount;
+                            }
+                        }                       
 
                         if (esSponsor)
                         {
