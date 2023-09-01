@@ -917,12 +917,41 @@ namespace WebApi.Services
                             cambiosL.Parametros.Add(cambioLImpUni);
                         }
 
-                        if ((float)linea.discount != detalle.Porc_dto)
+                        if (linea.discountType == LineItemDiscountType.ABSOLUTE_VALUE)
                         {
-                            Parametro cambioLDesc = new Parametro();
-                            cambioLDesc.ParameterName = "Descuento";
-                            cambioLDesc.Value = detalle.Porc_dto.ToString() + "@@@" + ((float)linea.discount).ToString();
-                            cambiosL.Parametros.Add(cambioLDesc);
+                            float descLinea;
+                            if (detalle.Tipo_tarifa == 0)
+                            {
+                                descLinea = (float)linea.discount * 100 / (linea.primaryGoal.units * (float)(linea.costPerUnit.microAmount / 1000000.0 / 1000));
+                                if (descLinea != detalle.Porc_dto)
+                                {
+                                    Parametro cambioLDesc = new Parametro();
+                                    cambioLDesc.ParameterName = "Descuento";
+                                    cambioLDesc.Value = detalle.Porc_dto.ToString() + "@@@" + (descLinea).ToString();
+                                    cambiosL.Parametros.Add(cambioLDesc);
+                                }
+                            }
+                            else
+                            {
+                                descLinea = (float)linea.discount * 100 / (linea.primaryGoal.units * (float)(linea.costPerUnit.microAmount / 1000000.0));
+                                if (descLinea != detalle.Porc_dto)
+                                {
+                                    Parametro cambioLDesc = new Parametro();
+                                    cambioLDesc.ParameterName = "Descuento";
+                                    cambioLDesc.Value = detalle.Porc_dto.ToString() + "@@@" + (descLinea).ToString();
+                                    cambiosL.Parametros.Add(cambioLDesc);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if ((float)linea.discount != detalle.Porc_dto)
+                            {
+                                Parametro cambioLDesc = new Parametro();
+                                cambioLDesc.ParameterName = "Descuento";
+                                cambioLDesc.Value = detalle.Porc_dto.ToString() + "@@@" + ((float)linea.discount).ToString();
+                                cambiosL.Parametros.Add(cambioLDesc);
+                            }
                         }
 
                         if (linea.costType != CostType.CPD && (int)linea.primaryGoal.units != detalle.Cantidad)
@@ -1064,131 +1093,154 @@ namespace WebApi.Services
                     if (detalle.Id_Google_Ad_Manager == linea.id && detalle.Id_red == int.Parse(linea.externalId))
                     {
                         existeDet = true;
-                            //se buscan diferencias entre la orden gam y la orden ap
-                            switch (detalle.Tipo_tarifa)
-                            {
-                                case 0:
-                                    if (linea.costType != CostType.CPM)
-                                    {
-                                        detallesMod.Add(detalle);
-                                        continue;
-                                    }
-                                    break;
-                                case 1:
-                                    if (linea.costType != CostType.CPD)
-                                    {
-                                        detallesMod.Add(detalle);
-                                        continue;
-                                    }
-                                    break;
-                                case 2:
-                                    {
-                                        detallesMod.Add(detalle);
-                                        continue;
-                                    }
-                                case 3:
-                                    if (linea.costType != CostType.CPC)
-                                    {
-                                        detallesMod.Add(detalle);
-                                        continue;
-                                    }
-                                    break;
-                                case 4:
-                                    if (linea.costType != CostType.CPA)
-                                    {
-                                        detallesMod.Add(detalle);
-                                        continue;
-                                    }
-                                    break;
-                            }
-
-                            if (linea.name != detalle.Descripcion)
-                            {
-                                detallesMod.Add(detalle);
-                                continue;
-                            }
-
-                            //Se comparan emplazamientos
-                            int cantEmpGam = 0;
-                            long[] emplazasLinea = { };
-
-                            if (linea.targeting.inventoryTargeting.targetedPlacementIds != null)
-                            {
-                                cantEmpGam = linea.targeting.inventoryTargeting.targetedPlacementIds.Length;
-                                emplazasLinea = linea.targeting.inventoryTargeting.targetedPlacementIds;
-                            }
-
-                            if (cantEmpGam != detalle.Emplazamientos.Count)
-                            {
-                                detallesMod.Add(detalle);
-                                continue;
-                            }
-
-                            else
-                            {
-                                foreach (Dg_orden_pub_emplazamientos emp in detalle.Emplazamientos)
+                        //se buscan diferencias entre la orden gam y la orden ap
+                        switch (detalle.Tipo_tarifa)
+                        {
+                            case 0:
+                                if (linea.costType != CostType.CPM)
                                 {
-                                    bool existeEmp = false;
-                                    foreach (long idEmpla in emplazasLinea)
+                                    detallesMod.Add(detalle);
+                                    continue;
+                                }
+                                break;
+                            case 1:
+                                if (linea.costType != CostType.CPD)
+                                {
+                                    detallesMod.Add(detalle);
+                                    continue;
+                                }
+                                break;
+                            case 2:
+                                {
+                                    detallesMod.Add(detalle);
+                                    continue;
+                                }
+                            case 3:
+                                if (linea.costType != CostType.CPC)
+                                {
+                                    detallesMod.Add(detalle);
+                                    continue;
+                                }
+                                break;
+                            case 4:
+                                if (linea.costType != CostType.CPA)
+                                {
+                                    detallesMod.Add(detalle);
+                                    continue;
+                                }
+                                break;
+                        }
+
+                        if (linea.name != detalle.Descripcion)
+                        {
+                            detallesMod.Add(detalle);
+                            continue;
+                        }
+
+                        //Se comparan emplazamientos
+                        int cantEmpGam = 0;
+                        long[] emplazasLinea = { };
+
+                        if (linea.targeting.inventoryTargeting.targetedPlacementIds != null)
+                        {
+                            cantEmpGam = linea.targeting.inventoryTargeting.targetedPlacementIds.Length;
+                            emplazasLinea = linea.targeting.inventoryTargeting.targetedPlacementIds;
+                        }
+
+                        if (cantEmpGam != detalle.Emplazamientos.Count)
+                        {
+                            detallesMod.Add(detalle);
+                            continue;
+                        }
+
+                        else
+                        {
+                            foreach (Dg_orden_pub_emplazamientos emp in detalle.Emplazamientos)
+                            {
+                                bool existeEmp = false;
+                                foreach (long idEmpla in emplazasLinea)
+                                {
+                                    if (idEmpla == emp.Codigo_emplazamiento)
                                     {
-                                        if (idEmpla == emp.Codigo_emplazamiento)
-                                        {
-                                            existeEmp = true;
-                                            break;
-                                        }
-                                    }
-                                    if (existeEmp == false)
-                                    {
-                                        detallesMod.Add(detalle);
-                                        continue;
+                                        existeEmp = true;
+                                        break;
                                     }
                                 }
-                            }
-
-                            //Se comparan medidas
-                            if (linea.creativePlaceholders.Length != detalle.Medidas.Count)
-                            {
-                                detallesMod.Add(detalle);
-                                continue;
-                            }
-
-                            else
-                            {
-                                foreach (Dg_orden_pub_medidas med in detalle.Medidas)
+                                if (existeEmp == false)
                                 {
-                                    string medAg = med.Ancho.ToString() + "x" + med.Alto.ToString();
-                                    bool existe = false;
-                                    foreach (CreativePlaceholder cph in linea.creativePlaceholders)
-                                    {
-                                        string medGam = cph.size.width.ToString() + "x" + cph.size.height.ToString();
-
-                                        if (String.Equals(medGam, medAg))
-                                        {
-                                            existe = true;
-                                            break;
-                                        }
-                                    }
-                                    if (existe == false)
-                                    {
-                                        detallesMod.Add(detalle);
-                                        continue;
-                                    }
+                                    detallesMod.Add(detalle);
+                                    continue;
                                 }
                             }
+                        }
 
-                            if ((linea.costPerUnit.microAmount / 1000000.0) != detalle.Importe_unitario)
+                        //Se comparan medidas
+                        if (linea.creativePlaceholders.Length != detalle.Medidas.Count)
+                        {
+                            detallesMod.Add(detalle);
+                            continue;
+                        }
+
+                        else
+                        {
+                            foreach (Dg_orden_pub_medidas med in detalle.Medidas)
                             {
-                                detallesMod.Add(detalle);
-                                continue;
-                            }
+                                string medAg = med.Ancho.ToString() + "x" + med.Alto.ToString();
+                                bool existe = false;
+                                foreach (CreativePlaceholder cph in linea.creativePlaceholders)
+                                {
+                                    string medGam = cph.size.width.ToString() + "x" + cph.size.height.ToString();
 
+                                    if (String.Equals(medGam, medAg))
+                                    {
+                                        existe = true;
+                                        break;
+                                    }
+                                }
+                                if (existe == false)
+                                {
+                                    detallesMod.Add(detalle);
+                                    continue;
+                                }
+                            }
+                        }
+
+                        if ((linea.costPerUnit.microAmount / 1000000.0) != detalle.Importe_unitario)
+                        {
+                            detallesMod.Add(detalle);
+                            continue;
+                        }
+
+                        if (linea.discountType == LineItemDiscountType.ABSOLUTE_VALUE)
+                        {
+                            if (detalle.Tipo_tarifa == 0)
+                            {
+                                if ((float)linea.discount * 100 / (linea.primaryGoal.units * (float)(linea.costPerUnit.microAmount / 1000000.0 / 1000)) != detalle.Porc_dto)
+                                {
+                                    detallesMod.Add(detalle);
+                                    continue;
+                                }
+
+                            }
+                            else
+                            {
+                                if ((float)linea.discount * 100 / (linea.primaryGoal.units * (float)(linea.costPerUnit.microAmount / 1000000.0)) != detalle.Porc_dto)
+                                {
+                                    detallesMod.Add(detalle);
+                                    continue;
+                                }
+                            }
+                        }
+                        else
+                        {
                             if ((float)linea.discount != detalle.Porc_dto)
                             {
                                 detallesMod.Add(detalle);
                                 continue;
                             }
+                        }
 
-                            if (linea.costType != CostType.CPD && (int)linea.primaryGoal.units != detalle.Cantidad)
+                        if (linea.costType != CostType.CPD && (int)linea.primaryGoal.units != detalle.Cantidad)
                             {
                                 detallesMod.Add(detalle);
                                 continue;
@@ -1402,12 +1454,12 @@ namespace WebApi.Services
                             {
                                 if(detalle.Tipo_tarifa == 0)
                                 {
-                                    detalle.Porc_dto = ((float)linea.discount * 100) / (linea.primaryGoal.units * (float)((linea.costPerUnit.microAmount / 1000000.0)/1000));
+                                    detalle.Porc_dto = (float)linea.discount * 100 / (linea.primaryGoal.units * (float)(linea.costPerUnit.microAmount / 1000000.0/1000));
 
                                 }
                                 else
                                 {
-                                    detalle.Porc_dto = ((float)linea.discount * 100) / (linea.primaryGoal.units * (float)(linea.costPerUnit.microAmount / 1000000.0));
+                                    detalle.Porc_dto = (float)linea.discount * 100 / (linea.primaryGoal.units * (float)(linea.costPerUnit.microAmount / 1000000.0));
                                 }
                             }
                             else

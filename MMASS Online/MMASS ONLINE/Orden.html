@@ -1221,19 +1221,19 @@
                                         <div class="col-lg-2">
                                             <label>Precio Unitario</label>
                                             <div id="divPrecioUnitarioD">
-                                                <input type="number" id="precioUnitarioD" class="form-control" readonly="readonly" onchange="calcularNetoD(this)">
+                                                <input type="number" id="precioUnitarioD" class="form-control" readonly="readonly" onchange="calcularNetoD()">
                                             </div>
                                         </div>
                                         <div class="col-lg-2">
                                             <label id="cantidadL">Cantidad</label>
                                             <div id="divCantD">
-                                                <input type="number" id="cantidadD" class="form-control" onchange="calcularNetoD(this)">
+                                                <input type="number" id="cantidadD" class="form-control" onchange="calcularNetoD()">
                                             </div>
                                         </div>
                                         <div class="col-lg-2">
                                             <label>% Descuento</label>
                                             <div id="divDescuentoD">
-                                                <input type="number" id="descuentoD" class="form-control" onchange="calcularNetoD(this)">
+                                                <input type="number" id="descuentoD" class="form-control" onchange="calcularNetoD()">
                                             </div>
                                         </div>
                                         <div class="col-lg-2">
@@ -2196,14 +2196,6 @@
                     today = dd + '/' + mm + '/' + yyyy;
                     $("#inpFechaAlta").val(today);
                 }
-
-                //if (data.es_facturada) {
-                //    $("#inpEsFacturada").val("SI");
-                //    $("#bGuardarOrden").attr("disabled", true);
-                //    $("#bGuardarOrden").attr("title", "No se pueden guardar ordenes que esten facturadas");
-                //} else {
-                //    $("#inpEsFacturada").val("NO");
-                //}
 
                 bloquearOp(data.op.id_op_dg);
 
@@ -3236,12 +3228,10 @@
         }
 
 
-        function calcularNetoD(data) {
+        function calcularNetoD() {
 
             cantD = $("#cantidadD").val();
             descD = $("#descuentoD").val();
-            //ncD = $("#confNCD").val();
-            //fcD = $("#confFCD").val();
             resultD = $("#precioUnitarioD").val();
 
             var divD = 1;
@@ -3261,12 +3251,6 @@
                 if (descD == "") {
                     descD = 0;
                 }
-                //if (ncD == "") {
-                //    ncD = 0;
-                //}
-                //if (fcD == "") {
-                //    fcD = 0;
-                //}
                 if (resultD == "" || resultD < 0) {
                     $("#resultD").val("");
                     $("#totalD").val("");
@@ -3284,10 +3268,6 @@
             resultD = brutoD - (brutoD * descD / 100);
 
             $("#totalD").val(resultD.toFixed(2));
-
-            //resultD2 = resultD1 - (resultD1 * ncD / 100) - (resultD1 * fcD / 100);
-
-            //$("#totalD").val(resultD2.toFixed(2));
         }
 
         function cargarModificarRenglon(r) {
@@ -3654,7 +3634,12 @@
                 callWS("dg_orden_pub_aps", "grabarLog", JSON.stringify(params));
             }
             else {
-                showMessage(msj,'error');
+                if (idGAM == -4) {
+                    showMessage(msj, 'info');
+                }
+                else {
+                    showMessage(msj, 'error');
+                }
             }
         }
 
@@ -4778,11 +4763,13 @@
                     break;
                 case 'PrecioUnitarioD':
                     $("#precioUnitarioD").val(valNuevo);
+                    calcularNetoD();
                     $("#btnApl" + paramName).addClass('btn-blue');
                     showMessage("Precio Unitario actualizado", "info");
                     break;
                 case 'DescuentoD':
                     $("#descuentoD").val(valNuevo);
+                    calcularNetoD();
                     $("#btnApl" + paramName).addClass('btn-blue');
                     showMessage("Descuento actualizado", "info");
                     break;
