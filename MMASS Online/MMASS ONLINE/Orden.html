@@ -4,7 +4,6 @@
     <title>MMASS Online - Orden Publicitaria</title>
 
     <link rel="shortcut icon" href="favicon.png">
-
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment-with-locales.min.js"></script>
@@ -314,7 +313,6 @@
         .rounded {
             border-radius: 1.5rem !important;
         }
-
     </style>
 
     <script>
@@ -1349,8 +1347,8 @@
                         <div class="col-lg-4">
                             <label>Mostrar: </label>
                             <!--DESACTIVADO HASTA REHACER CERT EXCEL-->
-                            <!--<div class="mt-1" onclick="actDesactExcel()">-->
-                            <div class="mt-1">
+                            <div class="mt-1" onclick="actDesactExcel()">
+                            <!--<div class="mt-1">-->
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio" name="tipo" id="0" value="0" checked>
                                     <label class="form-check-label" for="0">Objetivo</label>
@@ -4265,7 +4263,6 @@
             var url = 'data:application/vnd.ms-word;charset=utf-8,' + encodeURIComponent(html);
 
             // Specify file name
-            //var filename = filename ? 'Cert ' + op + '_' + moment().hour() + "" + moment().minute() + "" + moment().second() + '.doc' : 'document.doc';
             var filename = 'Cert ' + op + '_' + moment().hour() + moment().minute() + moment().second() + '.doc';
 
             // Create download link element
@@ -4289,7 +4286,6 @@
             document.body.removeChild(downloadLink);
         }
 
-
         function loadCert(formato) {
             var tipo = $('input[type=radio]:checked').val();
             //op = $('#inpOrderNumber').attr('id_op_dg');
@@ -4298,63 +4294,59 @@
             var idOrden = $("#inpOrderNumber").attr('id_op_dg');
 
             if (idOrden != undefined && idOrden != '0') {
-                //callWS("dg_orden_pub_aps", "getById", JSON.stringify(op_obj), function (data) {
-                //    var opRes = {};
-                //    opRes = data;
-
-                        if (formato == 3) {
-                            callWS("googleAdManager", "printCertExcel", JSON.stringify(opRes), function (link) {
-                                linkDesc = link;
-                                window.open(linkDesc, '_blank');
-                            });
+                if (formato == 3) {
+                    callWS("googleAdManager", "printCertExcel", JSON.stringify(idOrden), function (links) {
+                        links.forEach(function (link) {
+                            window.open(link, '_blank');
+                        });
+                    });
+                }
+                else {
+                    callWS("googleAdManager", "GetOrderListDetails2", JSON.stringify(idOrden), function (data) {
+                        $("#divCert").html(data);
+                        $('.add-mb-6').addClass('mb-6');
+                        $("#divCert").attr('style', 'font-size:1rem;display:none;');
+                        if (formato == 1) {
+                            $(".divImgCert").html("<div class='d-flex justify-content-center'> <img src='./BannerCertif.png' height='150' alt='Campaña'> </div>");
                         }
                         else {
-                            callWS("googleAdManager", "GetOrderListDetails2", JSON.stringify(idOrden), function (data) {
-                                $("#divCert").html(data);
-                                $('.add-mb-6').addClass('mb-6');
-                                $("#divCert").attr('style', 'font-size:1rem;display:none;');
-                                if (formato == 1) {
-                                    $(".divImgCert").html("<div class='d-flex justify-content-center'> <img src='./BannerCertif.png' height='150' alt='Campaña'> </div>");
-                                }
-                                else {
-                                    $(".divImgCert").html("<p style='font-weight: bold;font-family: Roboto'>Reporte de campaña</p>");
-                                }
-                                $('.certTableHeader').attr('style', 'font-weight: bold;background-color:#f7f7f7;');
-                                $('.totales').attr('style', 'font-weight: bold;background-color:#f7f7f7;');
-                                a = document.querySelector(".breakBefore");
-                                a.classList.remove("breakBefore");
+                            $(".divImgCert").html("<p style='font-weight: bold;font-family: Roboto'>Reporte de campaña</p>");
+                        }
+                        $('.certTableHeader').attr('style', 'font-weight: bold;background-color:#f7f7f7;');
+                        $('.totales').attr('style', 'font-weight: bold;background-color:#f7f7f7;');
+                        a = document.querySelector(".breakBefore");
+                        a.classList.remove("breakBefore");
 
-                                if (tipo == 0) {
-                                    $('.pautado').show();
-                                    $('.impreso').hide();
-                                    $('.ctr.pautado').hide();
-                                    $('.ctr.impreso').hide();
-                                    $('.clicks').hide(); 
-                                    $('.detalledias').hide();
-                                } else if (tipo == 1) {
-                                    $('.pautado').hide();
-                                    $('.impreso').show();
-                                } else if (tipo == 2) {
-                                    $('.pautado').show();
-                                    $('.impreso').show();
-                                    $('.headerObjetivo').text('Objetivo');
-                                    $('.ctr.pautado').hide();
-                                }
+                        if (tipo == 0) {
+                            $('.pautado').show();
+                            $('.impreso').hide();
+                            $('.ctr.pautado').hide();
+                            $('.ctr.impreso').hide();
+                            $('.clicks').hide(); 
+                            $('.detalledias').hide();
+                        } else if (tipo == 1) {
+                            $('.pautado').hide();
+                            $('.impreso').show();
+                        } else if (tipo == 2) {
+                            $('.pautado').show();
+                            $('.impreso').show();
+                            $('.headerObjetivo').text('Objetivo');
+                            $('.ctr.pautado').hide();
+                        }
 
-                                if (formato == 1) {
-                                    divImgs = includeImgs();
-                                    $('#divAdjuntos').html(divImgs);
-                                    certificar('divCert');
-                                }
-                                else {
-                                    certificarWord('divCert');
-                                }
-                            });
-                        }                       
-                //});
+                        if (formato == 1) {
+                            divImgs = includeImgs();
+                            $('#divAdjuntos').html(divImgs);
+                            certificar('divCert');
+                        }
+                        else {
+                            certificarWord('divCert');
+                        }
+                    });
+                }                      
             }
             else {
-                showMessage('No hay Detalles enviados para certificar', 'info')
+                showMessage('No hay Detalles enviados para certificar', 'info');
             }
         }
 

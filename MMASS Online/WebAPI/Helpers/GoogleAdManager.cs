@@ -1319,18 +1319,15 @@ namespace WebApi.Helpers
         //    }
         //}
 
-        public static string printCertExcel(long orderId, System.DateTime? fechaDesde, System.DateTime? fechaHasta)
+        public static string printCertExcel(long lineId, System.DateTime? fechaDesde, System.DateTime? fechaHasta)
         {
-
-            //CambiarRed("5491998");
-            //CambiarRed("22474715684");
-            //orderId = 2934737245;
 
             using (ReportService reportService = user.GetService<ReportService>())
             {
                 // Create report job.
                 ReportJob reportJob = new ReportJob();
                 reportJob.reportQuery = new ReportQuery();
+                reportJob.reportQuery.timeZoneType = TimeZoneType.PUBLISHER;
                 reportJob.reportQuery.dimensions = new Dimension[]
                 {
                     Dimension.ORDER_ID,
@@ -1370,8 +1367,8 @@ namespace WebApi.Helpers
                     .FromDateTime((System.DateTime)fechaHasta, "America/Argentina/Buenos_Aires").date;
 
                 // Create statement object to filter for an order.
-                StatementBuilder statementBuilder = new StatementBuilder().Where("ORDER_ID = :id")
-                    .AddValue("id", orderId);
+                StatementBuilder statementBuilder = new StatementBuilder().Where("LINE_ITEM_ID = :id")
+                    .AddValue("id", lineId);
                 reportJob.reportQuery.statement = statementBuilder.ToStatement();
 
                 try
@@ -1386,6 +1383,7 @@ namespace WebApi.Helpers
                     ReportDownloadOptions options = new ReportDownloadOptions();
                     options.exportFormat = ExportFormat.XLSX;
                     options.useGzipCompression = false;
+                    options.includeReportProperties = true;
                     reportUtilities.reportDownloadOptions = options;
 
                     //Esperamos a que el reporte esté listo

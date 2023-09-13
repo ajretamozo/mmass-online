@@ -59,9 +59,9 @@ namespace WebApi.Controllers
         }
 
         [HttpPost("printCertExcel")]
-        public IActionResult printCertExcel([FromBody] Dg_orden_pub_ap order)
+        public IActionResult printCertExcel([FromBody] int idOrden)
         {
-            var res = _GoogleAdManagerService.printCertExcel(order);
+            var res = _GoogleAdManagerService.printCertExcel(idOrden);
             return Ok(JsonConvert.SerializeObject(res));
         }
 

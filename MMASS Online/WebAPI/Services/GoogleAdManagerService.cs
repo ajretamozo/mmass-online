@@ -27,7 +27,7 @@ namespace WebApi.Services
         IEnumerable<Contacto> GetAnunciantes(List<Parametro> parametros);
         String GetOrderDetails(int idOrden);
         String GetOrderDetails2(int idOrden);
-        String printCertExcel(Dg_orden_pub_ap orden);
+        List<String> printCertExcel(int idOrden);
         Parametro CreateOrder(List<Parametro> parametros);
         Parametro CreateLineItems(Dg_orden_pub_as det);
         List<long> GetLineItemCreatives(long lineItemId);
@@ -339,9 +339,23 @@ namespace WebApi.Services
             //procesarReporte();
         }
 
-        public String printCertExcel(Dg_orden_pub_ap orden)
+        public List<string> printCertExcel(int idOrden)
         {
-            return GoogleAdManager.printCertExcel(orden.Id_Google_Ad_Manager, orden.Fecha, orden.Fecha_expiracion);
+            List<string> links = new();
+            Dg_orden_pub_ap orden = Dg_orden_pub_ap.getById(idOrden);
+
+            foreach (Dg_orden_pub_as det in orden.Detalles)
+            {
+                if (det.Id_Google_Ad_Manager > 0)
+                {
+                    //apuntamos a la red adserver del detalle
+                    Dg_red_GAM red = Dg_red_GAM.getById(det.Id_red);
+                    CambiarRed(red.Codigo_red.ToString());
+
+                    links.Add(GoogleAdManager.printCertExcel(det.Id_Google_Ad_Manager, det.Fecha_desde, det.Fecha_hasta));
+                }
+            }
+            return links;
         }
 
         public String GetOrderDetails2(int idOrden)
