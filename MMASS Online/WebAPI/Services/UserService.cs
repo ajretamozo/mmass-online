@@ -24,6 +24,7 @@ namespace WebApi.Services
         Usuario getById(int id);
         bool cantMaxUsers();
         int updateAlerta(Usuario miobj);
+        IEnumerable<Usuario> getUsersTrafico();
     }
 
     public class UserService : IUserService
@@ -180,6 +181,11 @@ namespace WebApi.Services
         public int updateAlerta(Usuario miobj)
         {
             return miobj.updateAlerta();
+        }
+
+        public IEnumerable<Usuario> getUsersTrafico()
+        {
+            return Usuario.getUsersTrafico();
         }
 
     }

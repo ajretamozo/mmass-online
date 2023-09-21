@@ -77,6 +77,11 @@
             border-radius: 1.5rem !important;
         }
 
+        .modalConv {
+            max-width: none;
+            width: 90%;
+        }
+
     </style>
 
 </head>
@@ -102,6 +107,46 @@
             </div>
         </div>
 
+        <!--Modal Importar Usuario-->
+        <div class="modal fade" id="importUserModal">
+            <div class="modal-dialog modal-xl modalConv">
+                <div class="modal-content shadow p-3 mb-5 bg-white rounded">
+
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="importUserModalTitle">USUARIOS MMASS RADIO/TV</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+
+                    <!-- Modal body -->
+                    <div class="modal-body" id="importUserModalBody">
+                        <!--Tabla-->
+                        <div class="table-responsive tableFixHead mt-2">
+                            <table class="table table-fixed table-hover table-sm " id="tablaImportUser">
+                                <thead align="center">
+                                    <tr id="header">
+                                        <th class="col-xs-3">ID</th>
+                                        <th class="col-xs-9">Usuario</th>
+                                        <th class="col-xs-9">Nombre</th>
+                                        <th class="col-xs-3">Fecha de Alta</th>
+                                        <th width="1px"></th>
+                                        <th width="1px"></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tableImportUser" class="small" align="center"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
         <div id="divMessage" class="alert" style="display:none;cursor:pointer;z-index:10000;" title="Click para cerrar" onclick="$('#divMessage').hide('slideDown')"> </div>
 
         <div class="card mb-3 shadow p-3 mb-5 bg-white rounded" style="max-width: 100rem; margin-top: 5rem;">
@@ -115,12 +160,19 @@
             </div>
             <div class="card-body">
                 <div class="row">
-                    <div class="col-lg-6">
-                        <div class="input-group input-group-sm col-lg-3 mb-2">
+                    <div class="col-lg-2">
+                        <div class="input-group input-group-sm mb-2" style="padding-left: 0px;">
                             <div class="input-group-prepend">
-                                <span class="input-group-text" id="inputGroup-sizing-sm">#</span>
+                                <span class="input-group-text" id="inputGroup-sizing-sm">ID</span>
                             </div>
                             <input id="idUser" value="0" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" readonly>
+                        </div>
+                    </div>
+                    <div class="col-lg-6" id="rowUserTrafico">
+                        <div class="card rounded bg-transparent" id="cardUserTrafico" style="color: #d0d0d0;width: 180px;height: 30px;font-size: small;">
+                            <div class="card-body" style="padding-bottom: 0px;padding-top: 5px;padding-right: 10px;padding-left: 10px;">
+                                Usuario MMASS Radio/TV
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -156,6 +208,17 @@
                     <div class="col-lg-3" style="padding-left: 130px;padding-top: 50px;">
                         <input class="enableOnEdit" type="checkbox" id="checkAdmin" title="Los Administradores pueden crear, modificar y eliminar Usuarios">
                         <label for="checkAdmin" title="Los Administradores pueden crear, modificar y eliminar Usuarios"> Administrador</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4">
+                        <button type="button" id="bUserTrafico" class="btn btn-outline-dark btn-sm enableOnEdit" style="margin-top: 5px;" title="Importar Usuario de MMASS Radio/TV" onclick="importUser()">
+                            <span class="fa fa-user-plus"></span> MMASS Radio/TV
+                        </button>
+                    </div>
+                    <div class="col-lg-5">
+                    </div>
+                    <div class="col-lg-3" style="padding-left: 130px;padding-top: 50px;">
                     </div>
                 </div>
             </div>
@@ -216,6 +279,16 @@
             } else {
                 $('#checkAdmin').attr("checked", false);
             }
+            if (data.clave != "") {
+                $('#descUser').attr("disabled", true);
+                $('#descUser').attr("title", "Usuario de MMASS Radio/TV. Campo no editable");
+                $('#usuario').attr("disabled", true);
+                $('#usuario').attr("title", "Usuario de MMASS Radio/TV. Campo no editable");
+                $('#bUserTrafico').attr("disabled", true); 
+            }
+            else {
+                $("#cardUserTrafico").hide();
+            }
         }
 
         function setMode(mode) {
@@ -225,7 +298,6 @@
                 $('.disableOnEdit').attr("disabled", false);
                 //#botGuardar, #botCancelar, #checkAdmin
                 $('.enableOnEdit').attr("disabled", true);
-                //AGREGUE:
                 $('.View').attr("disabled", false);
                 //#descRed
                 $('.readonlyOnView').attr("readonly", true);
@@ -367,6 +439,54 @@
                 showMessage(message, "error");
             }
 
+        }
+
+        function importUser() {
+            callWS("users", "getUsersTrafico", "", function (data) {
+                if (data.length > 0) {
+                    onCargarTablaImportUser(data);
+                }
+                else {
+                    onCargarTablaImportUser(data);
+                    showMessage("No se encontraron Usuarios", "info");
+                }
+            });
+        }
+
+        function onCargarTablaImportUser(data) {
+            rowHTML = ''
+
+            $.each(data, function (it, usuario) {
+
+                rowHTML += "<tr>";
+                rowHTML += "<td class='col-xs-1'> " + usuario.id_usuario + "</td > ";
+                rowHTML += "<td class='col-xs-1'> " + usuario.nombre + "</td > ";
+                rowHTML += "<td class='col-xs-1'> " + usuario.nombrel + "</td > ";
+                rowHTML += "<td class='col-xs-1'> " + dateToFieldFormat(usuario.f_alta) + "</td > ";
+                rowHTML += '<td class="col-xs-2" > <button type="button" id=bSelUsuario' + usuario.id_usuario + ' class="btn btn-dark" style="height: 31px; width: 77.81px;font - size: inherit;" title="Seleccionar Usuario" onClick="seleccionarUsuario(\'' + usuario.nombrel + '\', \'' + usuario.nombre + '\', \'' + usuario.email + '\')"><span class="fa fa-user-plus"></span></button> </td ></tr>';
+                rowHTML += "</tr>";
+
+            });
+
+            $("#tableImportUser").html(rowHTML);
+
+            $("#importUserModal").modal('show');
+        }
+
+        function seleccionarUsuario(nombreCompleto, nombreUsuario, email) {
+            $('#descUser').val(nombreCompleto);
+            $('#usuario').val(nombreUsuario);
+            $('#mail').val(email);
+
+            $("#importUserModal").modal('hide');
+        }
+
+        function dateToFieldFormat(date) {
+            date = date.split('T')[0];
+            arr = date.split("-");
+            fieldFormatDate = '';
+            fieldFormatDate = arr[2] + '/' + arr[1] + '/' + arr[0];
+            return fieldFormatDate;
         }
 
     </script>

@@ -84,5 +84,12 @@ namespace WebApi.Controllers
             var user = _userService.updateAlerta(miobj);
             return Ok(user);
         }
+
+        [HttpPost("getUsersTrafico")]
+        public IActionResult getUsersTrafico()
+        {
+            var users = _userService.getUsersTrafico();
+            return Ok(users);
+        }
     }
 }

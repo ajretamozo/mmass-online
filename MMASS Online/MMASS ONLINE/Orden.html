@@ -2431,12 +2431,9 @@
         }
 
         function onPopulateSelectDetConv(data, idSelect, colId, colDesc, colDet) {
-
-            var sel = document.getElementById(idSelect);
-            var selected = sel.options[sel.selectedIndex];
-
             var pObj = data;
             var listitems = '';
+
             $.each(pObj, function (it, iObj) {
                 listitems += '<option id_detalle=' + iObj[colDet] + ' value=' + iObj[colId] + '>' + iObj[colDesc] + '</option>';
             });
@@ -2577,7 +2574,7 @@
                 data.id_convenio = idConvenio;
                 data.id_empresa = idEmpresa;
                 callWS("medios", "GetDetConveniosByIdConv", JSON.stringify(data), function (data) { onPopulateSelectDetConv(data, 'selDetConvenio', 'id_det_conv', 'descripcion', 'id_detalle'); });
-                bloquearCamposDetalle();
+                $.when(bloquearCamposDetalle()).then($("#selDetConvenio").attr("disabled", false));
             }
             else {
                 $("#selDetConvenio").attr("disabled", true);
@@ -4234,8 +4231,6 @@
                 pagebreak: { before: '.breakBefore' },
                 jsPDF: { orientation: 'portrait', unit: 'in', format: 'a3', compressPDF: false }
             }).save();
-
-            //document.body.removeChild(downloadLink);
         }
 
         function certificarWord(id_div) {

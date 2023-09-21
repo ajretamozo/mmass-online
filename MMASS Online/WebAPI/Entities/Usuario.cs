@@ -357,5 +357,23 @@ namespace WebApi.Entities
             return col;
         }
 
+        public static List<Usuario> getUsersTrafico()
+        {
+            string sqlCommand = "select id_usuario, nombre, nombrel, tipodoc, nrodoc, f_alta, f_baja, clave, clave_web, email, " +
+                                "adusuario, Ambito, usrrol, idioma, sistema from usuarios " +
+                                "where (clave_web is null or clave_web = '') and (f_baja is null or f_baja = '')";
+
+            List<Usuario> col = new List<Usuario>();
+            Usuario user;
+            DataTable t = DB.Select(sqlCommand);
+
+            foreach (DataRow item in t.Rows)
+            {
+                user = getUsuario(item);
+                col.Add(user);
+            }
+            return col;
+        }
+
     }
 }

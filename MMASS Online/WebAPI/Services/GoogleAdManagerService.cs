@@ -464,7 +464,7 @@ namespace WebApi.Services
                         {
                             totalImpresionesEmitidasD += float.Parse(tabla[i][1]);
                             totalClicksD += float.Parse(tabla[i][2]);
-                            float ctr = (float.Parse(tabla[i][3])) / 100;
+                            double ctr = (double.Parse(tabla[i][3])) / 100;
 
                             result += "<tr style='border-left: solid thin; border-right: solid thin; border-color: #e7e9eb;' class='detalledias'>";
                             result += "<td></td>";
