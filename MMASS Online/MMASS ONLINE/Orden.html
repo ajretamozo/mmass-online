@@ -295,11 +295,11 @@
             border-color: #fc9a00
         }
 
-            .btn-danger:hover {
-                color: #fff;
-                background-color: #e08902;
-                border-color: #e08902
-            }
+        .btn-danger:hover {
+            color: #fff;
+            background-color: #e08902;
+            border-color: #e08902
+        }
 
         .dataTitle {
             font-family: 'Roboto';
@@ -1313,7 +1313,7 @@
 
                         <div class="card-footer mt-2 ">
                             <div class="row">
-                                <div class="col-lg-4">
+                                <div class="col-lg-5">
                                     <button type="button" id="bClonar" disabled="disabled" class="btn actions btn-dark btn-sm mx-1" onclick="prevClonarOrden()">
                                         <span class="fa fa-clone"></span> Clonar OP
                                     </button>
@@ -1326,8 +1326,8 @@
                                         </label>
                                     </div>
                                 </div>
-                                <div class="col-lg-4"></div>
-                                <div class="col-lg-4 d-flex justify-content-end">
+                                <div class="col-lg-3"></div>
+                                <div class="col-md-4 d-flex justify-content-end">
                                     <button type="button" id="bGuardarOrden" class="btn actions btn-dark btn-sm mx-1" onclick="prevSaveOrder()">
                                         <span class="fa fa-save"></span> Guardar
                                     </button>
@@ -2451,10 +2451,10 @@
             var listitems = '';
             $.each(pObj, function (it, iObj) {
                 if (iObj.base == true) {
-                    listitems += '<option cambio=' + iObj['cambioVenta'] + ' value=' + iObj['id_moneda'] + ' selected>' + iObj["nombre"] + " (" + iObj["simbolo"] + ')</option>';
+                    listitems += '<option cambio=' + iObj['cambioCompra'] + ' value=' + iObj['id_moneda'] + ' selected>' + iObj["nombre"] + " (" + iObj["simbolo"] + ')</option>';
                 }
                 else {
-                    listitems += '<option cambio=' + iObj['cambioVenta'] + ' value=' + iObj['id_moneda'] + '>' + iObj["nombre"] + " (" + iObj["simbolo"] + ')</option>';
+                    listitems += '<option cambio=' + iObj['cambioCompra'] + ' value=' + iObj['id_moneda'] + '>' + iObj["nombre"] + " (" + iObj["simbolo"] + ')</option>';
                 }
             });
             $("#" + idSelect).empty();

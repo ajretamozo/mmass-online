@@ -741,10 +741,10 @@
             var listitems = '';
             $.each(pObj, function (it, iObj) {
                 if (iObj.base == true) {
-                    listitems += '<option cambio=' + iObj['cambioVenta'] + ' value=' + iObj['id_moneda'] + ' selected>' + iObj["nombre"] + " (" + iObj["simbolo"] + ')</option>';
+                    listitems += '<option cambio=' + iObj['cambioCompra'] + ' value=' + iObj['id_moneda'] + ' selected>' + iObj["nombre"] + " (" + iObj["simbolo"] + ')</option>';
                 }
                 else {
-                    listitems += '<option cambio=' + iObj['cambioVenta'] + ' value=' + iObj['id_moneda'] + '>' + iObj["nombre"] + " (" + iObj["simbolo"] + ')</option>';
+                    listitems += '<option cambio=' + iObj['cambioCompra'] + ' value=' + iObj['id_moneda'] + '>' + iObj["nombre"] + " (" + iObj["simbolo"] + ')</option>';
                 }
             });
             $("#" + idSelect).empty();

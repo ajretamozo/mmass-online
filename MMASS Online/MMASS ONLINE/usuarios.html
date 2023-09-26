@@ -82,6 +82,22 @@
             width: 90%;
         }
 
+        a, a:hover {
+            color: #333
+        }
+
+        .btn-danger {
+            color: #fff;
+            background-color: #fc9a00;
+            border-color: #fc9a00
+        }
+
+        .btn-danger:hover {
+            color: #fff;
+            background-color: #e08902;
+            border-color: #e08902
+        }
+
     </style>
 
 </head>
@@ -191,8 +207,11 @@
                     </div>
                     <div class="col-lg-4">
                         <label for="contra"> Contraseña</label>
-                        <div class="input-group">
-                            <input type="text" id="contra" class="form-control readonlyOnView" placeholder="Contraseña">
+                        <div class="input-group" id="show_hide_password">
+                            <input class="form-control readonlyOnView" type="password" id="contra">
+                            <div class="input-group-text">
+                                <a href=""><i class="fa fa-eye-slash" aria-hidden="true"></i></a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -488,6 +507,46 @@
             fieldFormatDate = arr[2] + '/' + arr[1] + '/' + arr[0];
             return fieldFormatDate;
         }
+
+        //Icono ver password:
+        //const togglePassword = document
+        //    .querySelector('#togglePassword');
+        //const password = document.querySelector('#contra');
+        //togglePassword.addEventListener('click', () => {
+        //    // Toggle the type attribute using
+        //    // getAttribure() method
+        //    const type = password
+        //        .getAttribute('type') === 'password' ?
+        //        'text' : 'password';
+        //    password.setAttribute('type', type);
+        //    // toggle the eye icon
+        //    //this.classList.toggle('fa-eye');
+        //    //this.classList.toggle('fa-eye-slash');
+
+        //    if ($('#contra input').attr("type") == "text") {
+        //        $('#contra i').addClass("fa-eye-slash");
+        //        $('#contra i').removeClass("fa-eye");
+        //    } else if ($('#contra input').attr("type") == "password") {
+        //        $('#contra i').removeClass("fa-eye-slash");
+        //        $('#contra i').addClass("fa-eye");
+        //    }
+        //});
+
+        //Icono ver password:
+        $(document).ready(function () {
+            $("#show_hide_password a").on('click', function (event) {
+                event.preventDefault();
+                if ($('#show_hide_password input').attr("type") == "text") {
+                    $('#show_hide_password input').attr('type', 'password');
+                    $('#show_hide_password i').addClass("fa-eye-slash");
+                    $('#show_hide_password i').removeClass("fa-eye");
+                } else if ($('#show_hide_password input').attr("type") == "password") {
+                    $('#show_hide_password input').attr('type', 'text');
+                    $('#show_hide_password i').removeClass("fa-eye-slash");
+                    $('#show_hide_password i').addClass("fa-eye");
+                }
+            });
+        });
 
     </script>
     <footer>

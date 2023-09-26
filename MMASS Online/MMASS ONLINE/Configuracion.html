@@ -83,12 +83,12 @@
             height: 34px;
         }
 
-            /* Hide default HTML checkbox */
-            .switch input {
-                opacity: 0;
-                width: 0;
-                height: 0;
-            }
+        /* Hide default HTML checkbox */
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
 
         /* The slider */
         .slider {
@@ -103,17 +103,17 @@
             transition: .4s;
         }
 
-            .slider:before {
-                position: absolute;
-                content: "";
-                height: 26px;
-                width: 26px;
-                left: 4px;
-                bottom: 4px;
-                background-color: white;
-                -webkit-transition: .4s;
-                transition: .4s;
-            }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
 
         input:checked + .slider {
             background-color: #343a40;
@@ -134,9 +134,25 @@
             border-radius: 34px;
         }
 
-            .slider.round:before {
-                border-radius: 50%;
-            }
+        .slider.round:before {
+            border-radius: 50%;
+        }
+
+        a, a:hover {
+            color: #333
+        }
+
+        .btn-danger {
+            color: #fff;
+            background-color: #fc9a00;
+            border-color: #fc9a00
+        }
+
+        .btn-danger:hover {
+            color: #fff;
+            background-color: #e08902;
+            border-color: #e08902
+        }
 
     </style>
 
@@ -186,9 +202,16 @@
                                 </div>
                             </div>
                             <div class="col-lg-4">
-                                <label for="pass">Password</label>
-                                <div class="input-group">
+                                <label for="pass"> Contraseña</label>
+                                <!--<div class="input-group">
                                     <input type="password" id="pass" class="form-control readonlyOnView" autocomplete="new-password" placeholder="Password">
+                                </div>-->
+
+                                <div class="input-group" id="show_hide_password">
+                                    <input class="form-control readonlyOnView" type="password" autocomplete="new-password" id="pass">
+                                    <div class="input-group-text">
+                                        <a href=""><i class="fa fa-eye-slash" aria-hidden="true"></i></a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -223,7 +246,7 @@
                     <!-- Modal footer -->
                     <div class="modal-footer">
                         <button type="button" class="btn btn-dark" onclick="guardarMail()">Guardar</button>
-                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                        <button type="button" class="btn btn-dark" data-dismiss="modal">Cerrar</button>
                     </div>
 
                 </div>
@@ -1032,6 +1055,22 @@
                 }
             });
         }
+
+        //Icono ver password:
+        $(document).ready(function () {
+            $("#show_hide_password a").on('click', function (event) {
+                event.preventDefault();
+                if ($('#show_hide_password input').attr("type") == "text") {
+                    $('#show_hide_password input').attr('type', 'password');
+                    $('#show_hide_password i').addClass("fa-eye-slash");
+                    $('#show_hide_password i').removeClass("fa-eye");
+                } else if ($('#show_hide_password input').attr("type") == "password") {
+                    $('#show_hide_password input').attr('type', 'text');
+                    $('#show_hide_password i').removeClass("fa-eye-slash");
+                    $('#show_hide_password i').addClass("fa-eye");
+                }
+            });
+        });
 
     </script>
     <footer>
