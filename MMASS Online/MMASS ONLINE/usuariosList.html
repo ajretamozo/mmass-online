@@ -108,11 +108,15 @@
             <p class="dataTitle">USUARIOS</p>
             <div id="divUsersData d-flex align-items-around align-items-end">
                 <div class="row py-1">
-                    <div class="col-md-5">
-                        <label for="descFiltro">Nombre de Usuario: </label>
-                        <div class="input-group "> <input type="text" id="descFiltro" class="form-control"></div>
+                    <div class="col-md-4">
+                        <label for="descFiltro">Nombre: </label>
+                        <div class="input-group "> <input type="text" id="descFiltro" class="form-control enterSearch"></div>
                     </div>
-                    <div class="col-md-7 d-flex justify-content-end align-items-end">
+                    <div class="col-md-4">
+                        <label for="duserFiltro">Usuario: </label>
+                        <div class="input-group "> <input type="text" id="userFiltro" class="form-control enterSearch"></div>
+                    </div>
+                    <div class="col-md-4 d-flex justify-content-end align-items-end">
                         <button type="button" class="btn btn-dark btn-sm mx-1" onclick="searchUsers()">
                             <span class="fa fa-search"></span> Buscar
                         </button>
@@ -147,6 +151,11 @@
             $('input[type=text]').attr('autocomplete', 'off');
             $("#divNavBar").load("navBar.html");
             populateFields();
+            $(".enterSearch").on("keydown", function (e) {
+                if (event.which == 13) {
+                    searchUsers();
+                }
+            });
             document.body.style.backgroundImage = "url(./fondoM3.png)";
             mensaje();
         });
@@ -182,41 +191,40 @@
         }
 
         function searchUsers() {
-            var nombre = $('#descFiltro').val();
-            //params = {};
-            //params.nombre = $('#descFiltro').val();
+            params = {};
+            params.nombre = $('#descFiltro').val();
+            params.user = $('#userFiltro').val();
 
-            //for (param in params) {
-            //    if (params[param] == null) {
-            //        params[param] = '';
-            //    }
-            //};
+            for (param in params) {
+                if (params[param] == null) {
+                    params[param] = '';
+                }
+            };
 
-            //var parametros = setListaParametros(params);
+            var parametros = setListaParametros(params);
 
-            callWS("users", "getUserByNom", JSON.stringify(nombre), function (data) {
-                if (data.length > 0) {
-                    populateTable(data, 'TableUsers');
-                } else {
+            callWS("users", "filterUser", JSON.stringify(parametros), function (data) {
+                populateTable(data, 'TableUsers');
+                if (data.length == 0) {
                     message = 'La búsqueda no produjo ningun resultado';
                     showMessage(message, "info");
                 }
             });
         }
 
-        //function setListaParametros(data) {
-        //    var parametros = {};
-        //    var listaParametros = [];
+        function setListaParametros(data) {
+            var parametros = {};
+            var listaParametros = [];
 
-        //    Object.keys(data).forEach(function (key) {
-        //        var objParametro = {};
-        //        objParametro.ParameterName = key;
-        //        objParametro.Value = data[key];
-        //        listaParametros.push(objParametro);
-        //    });
-        //    parametros.Parametros = listaParametros;
-        //    return parametros;
-        //}
+            Object.keys(data).forEach(function (key) {
+                var objParametro = {};
+                objParametro.ParameterName = key;
+                objParametro.Value = data[key];
+                listaParametros.push(objParametro);
+            });
+            parametros.Parametros = listaParametros;
+            return parametros;
+        }
 
         function nuevoUser() {
             location.href = "/usuarios.html?mode=new";

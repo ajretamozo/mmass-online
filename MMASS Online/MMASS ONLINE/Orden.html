@@ -271,10 +271,10 @@
             height: 500px;
         }
 
-            .tableFixHead thead th {
-                position: sticky;
-                top: 0;
-            }
+        .tableFixHead thead th {
+            position: sticky;
+            top: 0;
+        }
 
         .list-group-item {
             padding: .2rem 1rem;
@@ -283,6 +283,8 @@
         .modalConv {
             max-width: none;
             width: 90%;
+            height: 60%;
+            /*overflow-y: auto;*/
         }
 
         .btn-blue {
@@ -622,9 +624,9 @@
 
 
         <!--Modal Pedidos-->
-        <div class="modal fade" id="pedidosModal">
+        <div class="modal fade" id="pedidosModal"  style="height: 1000px;">
             <div class="modal-dialog modal-xl modalConv">
-                <div class="modal-content shadow p-3 mb-5 bg-white rounded">
+                <div class="modal-content shadow p-3 mb-5 bg-white rounded" style="height: 713.6px;">
 
                     <!-- Modal Header -->
                     <div class="modal-header">
@@ -681,7 +683,7 @@
                             </div>
                         </div>
                         <!--Tabla-->
-                        <div class="table-responsive tableFixHead mt-2">
+                        <div class="table-responsive tableFixHead mt-2" style="height: 300px;">
                             <table class="table table-fixed table-hover table-sm " id="tablaPedidos">
                                 <thead align="center">
                                     <tr id="header">
@@ -712,9 +714,9 @@
 
 
         <!--Modal Importar Detalle-->
-        <div class="modal fade" id="importarModal">
-            <div class="modal-dialog modal-xl modalConv">
-                <div class="modal-content shadow p-3 mb-5 bg-white rounded">
+        <div class="modal fade" id="importarModal" style="height: 1000px;">
+            <div class="modal-dialog modal-s modalConv">
+                <div class="modal-content shadow p-3 mb-5 bg-white rounded" style="height: 713.6px;">
 
                     <!-- Modal Header -->
                     <div class="modal-header">
@@ -723,7 +725,7 @@
                     </div>
 
                     <!-- Modal body -->
-                    <div class="modal-body" id="importarModalBody">
+                    <div class="modal-body" id="importarModalBody" style="height: 332px;">
                         <!--Filtros-->
                         <div class="row py-1">
                             <div class="col-md-3">
@@ -797,9 +799,9 @@
                             </div>
                         </div>
                         <!--Tabla-->
-                        <div class="table-responsive mt-2 tableFixHead">
-                            <table class="table table-fixed table-hover table-sm " id="tablaDetGAM">
-                                <thead align="center">
+                        <div class="table-responsive mt-2 tableFixHead" id="tabDetGAMvariable" style="height: 300px;">
+                            <table class="table table-fixed table-striped" id="tablaDetGAM">
+                                <thead class="thead-dark" align="center">
                                     <tr id="header">
                                         <th class="col-xs-3">ID Pedido</th>
                                         <th class="col-xs-9">Nombre Pedido</th>
@@ -869,7 +871,11 @@
         <!-- PRINCIPAL -->
         <div id="divMessage" class="alert" style="display:none;cursor:pointer;z-index:10000;" title="Click para cerrar"> </div>
         <div class="jumbotron mt-4 py-4 shadow p-3 mb-5 bg-white rounded" id="divOrderMain">
-            <p class="dataTitle" id="pTitulo">ORDEN PUBLICITARIA</p>
+            <div class=" d-flex align-items-center" style="margin-bottom: 1rem;">
+                <span class="dataTitle" id="pTitulo" style="margin-right: 15px;">ORDEN PUBLICITARIA</span>
+                <div id="divAnuClon">
+                </div>
+            </div>
             <!-- TABS -->
             <nav class="nav nav-tabs mb-3">
                 <a class="nav-link active" id="principal-tab" data-toggle="tab" href="#principal" role="tab" aria-controls="principal" aria-selected="true">General</a>
@@ -931,7 +937,7 @@
                                 </div>
                                 <div class="col-lg-4">
                                     <!--<label>Orden Relacionada</label>
-        <select class="form-control" id="selOrdenRelacionada" onchange="enableConf()" disabled="disabled"></select>-->
+                            <select class="form-control" id="selOrdenRelacionada" onchange="enableConf()" disabled="disabled"></select>-->
                                     <label>Descripción</label>
                                     <div class="input-group"> <input type="text" id="inpDescOP" class="form-control"> </div>
                                 </div>
@@ -1049,7 +1055,7 @@
                                         <button type="button" class="btn  actions btn-outline-dark btn-sm" id="bCargarNuevoRenglon" onclick="cargarNuevoRenglon()" title="Nuevo Detalle" style="padding-top: 2px; padding-bottom: 2px; margin-right: 10px; padding-right: 10px; padding-left: 10px;">
                                             <span class="fa fa-plus"></span>
                                         </button>
-                                        <button type="button" class="btn  actions btn-outline-dark btn-sm" id="bImportarNuevoRenglon" onclick="importarNuevoRenglon()" title="Importar Línean de Pedido" style="padding-top: 2px;padding-bottom: 2px;">
+                                        <button type="button" class="btn  actions btn-outline-dark btn-sm" id="bImportarNuevoRenglon" onclick="importarNuevoRenglon()" title="Importar Línea de Pedido" style="padding-top: 2px;padding-bottom: 2px;">
                                             <span class="fa fa-cloud-download"></span>
                                         </button>
                                     </div>
@@ -1081,7 +1087,12 @@
 
 
                             <div id="divAddRow" class="card" style="display:none;">
-                                <div class="card-header" id="chDetalle">NUEVO DETALLE</div>
+                                <div class="card-header d-flex" id="chDetalle">
+                                    <!--NUEVO DETALLE-->
+                                    <span class="dataTitle" id="pTituloDetalle" style="margin-right: 15px;">NUEVO DETALLE</span>
+                                    <div id="divClonDet">
+                                    </div>
+                                </div>
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-lg-5">
@@ -1263,7 +1274,6 @@
                                                 <button type="button" id="GuardarRenglon" class="btn btn-dark btn-sm mx-1" onclick="prevAddRenglon(-1);">
                                                     <span class="fa fa-check"></span> Aceptar
                                                 </button>
-                                                <!--AGREGUE (modifiqué el onclick cancelar para que setee el boton aceptar en -1):-->
                                                 <button type="button" class="btn btn-dark btn-sm mx-1" onclick="cancelarCargaDetalle();">
                                                     <span class="fa fa-remove"></span> Cancelar
                                                 </button>
@@ -1348,7 +1358,7 @@
                             <label>Mostrar: </label>
                             <!--DESACTIVADO HASTA REHACER CERT EXCEL-->
                             <div class="mt-1" onclick="actDesactExcel()">
-                            <!--<div class="mt-1">-->
+                                <!--<div class="mt-1">-->
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio" name="tipo" id="0" value="0" checked>
                                     <label class="form-check-label" for="0">Objetivo</label>
@@ -1660,8 +1670,9 @@
                 $("#bGuardarOrden").attr("disabled", true);
                 $("#bGuardarOrden").attr("title", "No se pueden guardar ordenes que estén anuladas");
                 bloquearCamposCabecera()
-                $('#pTitulo').append('<span id="sTituloDinamico"> - </span>');
-                $('#pTitulo').append('<span id="sTituloDinamico" style="color: red;">ANULADA</span>');
+ 
+                $("#divAnuClon").append('<div class="card rounded bg-transparent" id="cardAnulada" style="border-color: red; color: red; width: 70px; height: 30px; font-size: small; "><div class= "card-body" style = "padding-bottom: 0px;padding-top: 5px;padding-right: 10px;padding-left: 10px;" > Anulada</div ></div >');
+
                 $("#bClonar").attr("disabled", true);
             }
             else {
@@ -1703,8 +1714,8 @@
             if (OpClon) {
                 $("#bAnular").attr("disabled", true);
                 $("#bClonar").attr("disabled", true);
-                $('#pTitulo').append('<span id="sTituloDinamico1"> - </span>');
-                $('#pTitulo').append('<span id="sTituloDinamico2" style="color: #007bff;">CLONACION</span>');
+
+                $("#divAnuClon").append('<div class="card rounded bg-transparent" id = "cardClonacion" style = "border-color: #007bff; color: #007bff; width: 80px; height: 30px; font-size: small; " ><div class= "card-body" style = "padding-bottom: 0px;padding-top: 5px;padding-right: 10px;padding-left: 10px;" >Clonación</div ></div >');
 
                 Detalles.forEach(function (detalle) {
                     detalle.id_Google_Ad_Manager = 0;
@@ -2162,8 +2173,7 @@
                 OpClon = false;
                 OpSinc = false;
                 
-                $('#sTituloDinamico1').remove();
-                $('#sTituloDinamico2').remove();
+                $("#divAnuClon").empty();
 
                 if (data.op.id_Google_Ad_Manager > 0) {
                     $("#bgetOrderASDetais").attr("disabled", false);
@@ -2481,7 +2491,9 @@
 
 
         function cargarNuevoRenglon() {
-            $('#chDetalle').text('NUEVO DETALLE');
+            $('#pTituloDetalle').text('NUEVO DETALLE');
+            $("#divClonDet").empty();
+
             if ($("#fechaHasta").val() == "" || $("#fechaDesde").val() == "") {
                 showMessage("Debe seleccionar la vigencia de la orden", "info");
                 return 0;
@@ -2551,7 +2563,7 @@
             $('#totalD').val("");
             $("#bcomprobarModificacionesD").attr("disabled", true); 
             $("#selRedes").attr("disabled", false);
-            $("#bBuscarPedido").attr("disabled", false); 
+            $("#bBuscarPedido").attr("disabled", true); 
             $('#inpPedido').val("");
             $('#inpIdPedido').val("");
             callWS("medios", "getAll", '', function (data) { onPopulateSelectDone(data, 'selMediosD', 'id_medio', 'desc_medio'); });
@@ -3267,11 +3279,12 @@
 
         function cargarModificarRenglon(r) {
             if (DetalleClon == true) {
-                $('#chDetalle').text('NUEVO DETALLE - ')
-                $('#chDetalle').append('<span id="sTituloDinamicoD" style="color: #007bff;">CLONACION</span>');
+                $('#pTituloDetalle').text('NUEVO DETALLE')
+                $("#divClonDet").append('<div class="card rounded bg-transparent" id = "cardClonacion" style = "border-color: #007bff; color: #007bff; width: 80px; height: 30px; font-size: small; " ><div class= "card-body" style = "padding-bottom: 0px;padding-top: 5px;padding-right: 10px;padding-left: 10px;" >Clonación</div ></div >');
             }
             else {
-                $('#chDetalle').text('EDITAR DETALLE')
+                $('#pTituloDetalle').text('EDITAR DETALLE')
+                $("#divClonDet").empty();
             }
             desbloquearCamposDetalle();
             if ($("#fechaHasta").val() == "" || $("#fechaDesde").val() == "") {
@@ -3324,6 +3337,7 @@
             //idEmpresa = $('#selEmpresa').val();
             $("#checkTarifaManualD")[0].checked = false;
             $("#checkTarifaManualD").change();
+            $("#bBuscarPedido").attr("disabled", true);
             if ($("#inpEsFacturada").val() == 'SI' || OpAnulada == true || OpYaAbierta == true) {
                 bloquearCamposDetalle();
             }
@@ -3457,11 +3471,12 @@
 
             //Carga datos ad server
             $("#selRedes option[value=" + rDetalle.id_red + "]").attr("selected", "selected");
+
             if ((rDetalle.id_Google_Ad_Manager > 0 && rDetalle.id_Google_Ad_Manager != null && DetalleClon == false) || LineaImpConv.id_detalle > 0) {
                 $("#selRedes").attr("disabled", true);
                 $("#inpIdLinea").val(rDetalle.id_Google_Ad_Manager);
                 $('#inpIdLinea').css("background-color", "#c3e6cb");
-                $("#bBuscarPedido").attr("disabled", true);               
+                //$("#bBuscarPedido").attr("disabled", true);               
 /*                if ($("#inpOrderNumber").attr("id_op_dg") > 0) {*/
                     if ($("#spanCompActD" + rDetalle.id_detalle).hasClass("invisible") == false) {
                         $("#bcomprobarModificacionesD").attr("disabled", false);
@@ -3479,16 +3494,19 @@
                 $("#inpPedido").val(rDetalle.nombre_pedido_Google_Ad_Manager);
             }
             else {
+                if (rDetalle.id_red > 0 && OpAnulada == false) {
+                    $("#bBuscarPedido").attr("disabled", false);
+                }
                 if (OpAnulada) {
                     $("#selRedes").attr("disabled", true);
-                    $("#bBuscarPedido").attr("disabled", true);
+                    //$("#bBuscarPedido").attr("disabled", true);
                 }
                 else {
                     $("#selRedes").attr("disabled", false);
                     $('#inpIdLinea').css("background-color", "#e9ecef");
                     $("#inpIdLinea").val("");
                     $("#bcomprobarModificacionesD").attr("disabled", true);
-                    $("#bBuscarPedido").attr("disabled", false);
+                    //$("#bBuscarPedido").attr("disabled", false);
                     $("#inpIdPedido").val('');
                     $("#inpPedido").val('');
                 }
@@ -3761,7 +3779,7 @@
 
             $("#TableConvenios").html(rowHTML);
 
-            $("#conveniosModal").modal('show');
+            //$("#conveniosModal").modal('show');
 
         }
 
@@ -3878,12 +3896,11 @@
             var parametros = setListaParametros(params);
             if (error == '') {
                 callWS("medios", "filterConvenios", JSON.stringify(parametros), function (data) {
-                    if (data.length > 0) {
-                        onPopulateTableConvenios(data);
-                    } else {
+                    onPopulateTableConvenios(data);
+                    if (data.length == 0) {
                         message = 'La búsqueda no produjo ningun resultado';
                         showMessage(message, "info");
-                    }
+                    } 
                 });
             } else {
                 showMessage(error, "info");
@@ -4559,6 +4576,13 @@
             //recargar emplazamientos
             callWS("medios", "getAllE", JSON.stringify(idRed), function (data) { onPopulateSelectEmplaza(data, 'selEmplazaD', 'id_emplazamiento', 'descripcion', 'codigo_emplazamiento'); });
 
+            if (idRed > 0) {
+                $("#bBuscarPedido").attr("disabled", false);
+            }
+            else {
+                $("#bBuscarPedido").attr("disabled", true);
+            }
+
             $("#inpPedido").val("");
             $("#inpIdPedido").val("");
         }
@@ -4863,7 +4887,7 @@
             $("#selProductoD").attr("disabled", false);
             $("#descripcionD").attr("disabled", false);
             $("#selRedes").attr("disabled", false);
-            $("#bBuscarPedido").attr("disabled", false);
+            //$("#bBuscarPedido").attr("disabled", false);
             $("#selPrograma").attr("disabled", false);
             $("#selTipoAvisoD").attr("disabled", false);
             $("#selTipoTarifaD").attr("disabled", false);
@@ -5367,7 +5391,7 @@
 
             $("#" + tablaID).html(rowHTML);
 
-            $("#pleaseWaitDialog").modal('hide');
+            //$("#pleaseWaitDialog").modal('hide');
         }
 
         function seleccionarPedido(idPedido, nombrePedido) {
@@ -5381,6 +5405,9 @@
         }
 
         function importarNuevoRenglon() {
+            //seteamos altura original de la tabla
+            $("#tabDetGAMvariable").height(300);
+
             if ($("#fechaHasta").val() == "" || $("#fechaDesde").val() == "") {
                 showMessage("Debe seleccionar la vigencia de la orden", "info");
                 return 0;
@@ -5497,6 +5524,9 @@
                         callWS("googleAdManager", "getDetNuevos", JSON.stringify(parametros), function (data) { onGetDetallesGAM(data); });
                     }
                     else {
+                        //seteamos la altura de la tabla para que no se sobreponga al botón cerrar
+                        $("#tabDetGAMvariable").height(250);
+
                         var paramsAnun = {};
                         paramsAnun.red = $('#selRedesImp').val();
                         paramsAnun.nombre = "";
@@ -5551,7 +5581,7 @@
 
             $("#" + tablaID).html(rowHTML);
 
-            $("#pleaseWaitDialog").modal('hide');
+            //$("#pleaseWaitDialog").modal('hide');
         }
 
         function selLinea(linea) {

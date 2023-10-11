@@ -167,7 +167,14 @@
 
         <div class="card mb-3 shadow p-3 mb-5 bg-white rounded" style="max-width: 100rem; margin-top: 5rem;">
             <div class="card-header d-flex align-items-center" style="margin-bottom: 1rem;">
-                <span id="headerTitle" class="mr-auto dataTitle">Usuarios</span>
+                <span id="headerTitle" class="dataTitle" style="margin-right: 15px;">Usuarios</span>
+                <div class="mr-auto">
+                    <div class="card rounded bg-transparent" id="cardUserTrafico" style="border-color: #b1b1b1; color: #999898; width: 180px; height: 30px; font-size: small; ">
+                        <div class="card-body" style="padding-bottom: 0px;padding-top: 5px;padding-right: 10px;padding-left: 10px;">
+                            Usuario MMASS Radio/TV
+                        </div>
+                    </div>
+                </div>
                 <div>
                     <button id="botNuevo" type="button" class="btn btn-light disableOnEdit" onclick="nuevoUser()">Nuevo</button>
                     <button id="botEditar" type="button" class="btn btn-light disableOnEdit" onclick="editarUser()">Editar</button>
@@ -182,13 +189,6 @@
                                 <span class="input-group-text" id="inputGroup-sizing-sm">ID</span>
                             </div>
                             <input id="idUser" value="0" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" readonly>
-                        </div>
-                    </div>
-                    <div class="col-lg-6" id="rowUserTrafico">
-                        <div class="card rounded bg-transparent" id="cardUserTrafico" style="color: #d0d0d0;width: 180px;height: 30px;font-size: small;">
-                            <div class="card-body" style="padding-bottom: 0px;padding-top: 5px;padding-right: 10px;padding-left: 10px;">
-                                Usuario MMASS Radio/TV
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -208,9 +208,9 @@
                     <div class="col-lg-4">
                         <label for="contra"> Contraseña</label>
                         <div class="input-group" id="show_hide_password">
-                            <input class="form-control readonlyOnView" type="password" id="contra">
+                            <input class="form-control readonlyOnView" type="password" id="contra" placeholder="Contraseña">
                             <div class="input-group-text">
-                                <a href=""><i class="fa fa-eye-slash" aria-hidden="true"></i></a>
+                                <a href="" title="Mostrar contraseña"><i class="fa fa-eye-slash" aria-hidden="true"></i></a>
                             </div>
                         </div>
                     </div>
@@ -336,6 +336,7 @@
                 $('.enableOnEdit').attr("disabled", false);
                 //#descRed
                 $('.readonlyOnView').attr("readonly", false);
+                $("#cardUserTrafico").hide();
             } else {
                 console.log("invalid mode:" + mode);
                 location.href = "/usuariosList.html"
@@ -540,10 +541,12 @@
                     $('#show_hide_password input').attr('type', 'password');
                     $('#show_hide_password i').addClass("fa-eye-slash");
                     $('#show_hide_password i').removeClass("fa-eye");
+                    $('#show_hide_password a').prop('title', 'Mostrar contraseña');
                 } else if ($('#show_hide_password input').attr("type") == "password") {
                     $('#show_hide_password input').attr('type', 'text');
                     $('#show_hide_password i').removeClass("fa-eye-slash");
                     $('#show_hide_password i').addClass("fa-eye");
+                    $('#show_hide_password a').prop('title', 'Ocultar contraseña');
                 }
             });
         });

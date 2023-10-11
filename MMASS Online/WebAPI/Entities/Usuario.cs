@@ -225,13 +225,27 @@ namespace WebApi.Entities
             return col;
         }
 
-        public static List<Usuario> getByNombreList(string pNombre)
+        public static List<Usuario> filterUser(List<Parametro> parametros)
         {
             string sqlCommand = " select id_usuario, nombre, nombrel, tipodoc, nrodoc, f_alta, f_baja, clave, clave_web, email, adusuario, Ambito, " +
-                                " usrrol, idioma, sistema from usuarios where (clave_web is not null and clave_web != '') and nombre like '%" + pNombre + "%' and (f_baja is null or f_baja = '')";
+                                " usrrol, idioma, sistema from usuarios where (clave_web is not null and clave_web != '') and (f_baja is null or f_baja = '')";
+            string mifiltro = "";
+
+            foreach (Parametro p in parametros)
+            {
+                if (p.Value.ToString() != "")
+                {
+                    if ((p.ParameterName == "nombre") && (p.Value.ToString() != ""))
+                        mifiltro = mifiltro + " and nombrel like '%" + p.Value + "%'";
+
+                    if ((p.ParameterName == "user") && (p.Value.ToString() != ""))
+                        mifiltro = mifiltro + " and nombre like '%" + p.Value + "%'";
+                }
+            }
+
             List<Usuario> col = new List<Usuario>();
             Usuario user;
-            DataTable t = DB.Select(sqlCommand);
+            DataTable t = DB.Select(sqlCommand + mifiltro);
 
             foreach (DataRow item in t.Rows)
             {

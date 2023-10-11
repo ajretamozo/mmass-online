@@ -110,7 +110,7 @@
                 <div class="row py-1">
                     <div class="col-md-5">
                         <label for="descFiltro">Descripcion</label>
-                        <div class="input-group "> <input type="text" id="descFiltro" class="form-control"></div>
+                        <div class="input-group "> <input type="text" id="descFiltro" class="form-control enterSearch"></div>
                     </div>
                     <div class="col-md-7 d-flex justify-content-end align-items-end">
                         <button type="button" class="btn btn-dark btn-sm mx-1" onclick="searchTiposAvisos()">
@@ -147,6 +147,11 @@
             $('input[type=text]').attr('autocomplete', 'off');
             $("#divNavBar").load("navBar.html");
             populateFields();
+            $(".enterSearch").on("keydown", function (e) {
+                if (event.which == 13) {
+                    searchTiposAvisos();
+                }
+            });
             document.body.style.backgroundImage = "url(./fondoM3.png)";
             mensaje();
         });

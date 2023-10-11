@@ -19,7 +19,7 @@ namespace WebApi.Services
         IEnumerable<User> GetAll();
         int saveUser(Usuario miobj);
         IEnumerable<Usuario> getAllUsers();
-        IEnumerable<Usuario> getUserByNom(string nom);
+        IEnumerable<Usuario> filterUser(List<Parametro> parametros);
         bool deleteUser(Usuario miobj);
         Usuario getById(int id);
         bool cantMaxUsers();
@@ -155,9 +155,9 @@ namespace WebApi.Services
             return Usuario.getAllUsers();
         }
 
-        public IEnumerable<Usuario> getUserByNom(string nom)
+        public IEnumerable<Usuario> filterUser(List<Parametro> parametros)
         {
-            return Usuario.getByNombreList(nom);
+            return Usuario.filterUser(parametros);
         }
 
         public bool deleteUser(Usuario miobj)

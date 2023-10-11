@@ -203,14 +203,10 @@
                             </div>
                             <div class="col-lg-4">
                                 <label for="pass"> Contraseña</label>
-                                <!--<div class="input-group">
-                                    <input type="password" id="pass" class="form-control readonlyOnView" autocomplete="new-password" placeholder="Password">
-                                </div>-->
-
                                 <div class="input-group" id="show_hide_password">
                                     <input class="form-control readonlyOnView" type="password" autocomplete="new-password" id="pass">
                                     <div class="input-group-text">
-                                        <a href=""><i class="fa fa-eye-slash" aria-hidden="true"></i></a>
+                                        <a href="" title="Mostrar contraseña"><i class="fa fa-eye-slash" aria-hidden="true"></i></a>
                                     </div>
                                 </div>
                             </div>
@@ -1064,10 +1060,12 @@
                     $('#show_hide_password input').attr('type', 'password');
                     $('#show_hide_password i').addClass("fa-eye-slash");
                     $('#show_hide_password i').removeClass("fa-eye");
+                    $('#show_hide_password a').prop('title', 'Mostrar contraseña');
                 } else if ($('#show_hide_password input').attr("type") == "password") {
                     $('#show_hide_password input').attr('type', 'text');
                     $('#show_hide_password i').removeClass("fa-eye-slash");
                     $('#show_hide_password i').addClass("fa-eye");
+                    $('#show_hide_password a').prop('title', 'Ocultar contraseña');
                 }
             });
         });

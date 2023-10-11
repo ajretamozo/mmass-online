@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using WebApi.Services;
 using WebApi.Entities;
+using System.Collections.Generic;
 
 namespace WebApi.Controllers
 {
@@ -50,10 +51,10 @@ namespace WebApi.Controllers
             return Ok(users);
         }
 
-        [HttpPost("getUserByNom")]
-        public IActionResult getUserByNom([FromBody] string nom)
+        [HttpPost("filterUser")]
+        public IActionResult getUserByNom(ListaParametro parametros)
         {
-            var users = _userService.getUserByNom(nom);
+            var users = _userService.filterUser(parametros.Parametros);
             return Ok(users);
         }
 
