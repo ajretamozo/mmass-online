@@ -22,8 +22,26 @@
     }
 </style>
 
+<!-- Modal Mensajes -->
+<div class="modal fade" id="modalInfo" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content shadow p-3 mb-5 bg-white rounded">
+            <div class="modal-header d-flex justify-content-center">
+                <h5 class="modal-title" id="modalCenterTitle"><span class="fa fa-info-circle"></span>  Información del sistema</h5>
+            </div>
+            <div class="modal-body" id="modalInfoBody">
+
+            </div>
+            <div class="modal-footer d-flex justify-content-end" id="modalInfoFooter">
+
+            </div>
+        </div>
+    </div>
+</div>
+
 <nav class="navbar navbar-expand-lg navbar-dark sticky-top bg-dark shadow">
-    <a class="navbar-brand" href="ordenList.html">
+    <!--<a class="navbar-brand" href="OrdenList.html">-->
+    <a class="navbar-brand" href="Home.html">
         <img src="/img/logoMmassOnlineFO.svg" width="120" height="35" class="d-inline-block align-top" alt="">
         <!--MMASS Online-->
     </a>
@@ -84,8 +102,9 @@
                 </div>
             </li>
             <li>
-                <a id="version" class="nav-link disabled" href="#" onclick="">v 3.4.3</a>
-                <a class="nav-link disabled" id="BaseDatos" style="font-size: small;" href="#">Base de Datos</a>
+                <button type="button" class="btn btn-dark" title="Ver información del sistema" onclick="verInfo()">
+                    <span class="fa fa-info-circle"></span>
+                </button>
             </li>
         </ul>
 
@@ -96,9 +115,34 @@
     </div>
 </nav>
 <script type="text/javascript">
+
     setUserName();
-    getCS();
     setUserRol();
+
+    function verInfo() {
+        callWS("medios", "getConString", '', function (cs) { onVerInfo(cs); });
+    }
+
+    function onVerInfo(cs) {
+        options = [
+            {
+                optionDesc: "Cerrar",
+                optionFunc: ""
+            }
+        ];
+        var mensaje = "<div class='row'><div class='col' style='padding - right: 0px;'>• Versión:</div><div class='col' style='padding - left: 0px;'><b>3.4.4</b></div></div><div class='row'><div class='col' style='padding - right: 0px;'>• Base de Datos:</div><div class='col' style='padding - left: 0px;'><b>" + cs + "</b></div></div>";
+        showModalInfo(mensaje, options);
+    }
+
+    function showModalInfo(message, options) {
+        $("#modalInfoBody").html(message);
+        strHTML = '';
+        options.forEach(function (option) {
+            strHTML += "<button type='button' class='btn btn-secondary' data-dismiss='modal' onClick=" + option.optionFunc + ">" + option.optionDesc + "</button>"
+        });
+        $("#modalInfoFooter").html(strHTML);
+        $("#modalInfo").modal('show');
+    }
 
 </script>
 

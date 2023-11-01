@@ -849,8 +849,8 @@
                                 <thead class="thead-dark">
                                     <tr>
                                         <th class="col-xs-2" style="text-align: center;">Moneda</th>
-                                        <th class="col-xs-2" style="text-align: center;">Compra</th>
-                                        <th class="col-xs-1" style="text-align: center;">Venta</th>
+                                        <th class="col-xs-2" style="text-align: center;">Cotización</th>
+                                        <!--<th class="col-xs-1" style="text-align: center;">Venta</th>-->
                                         <th class="col-xs-1" style="text-align: center;">Ultima actualización</th>
                                     </tr>
                                 </thead>
@@ -923,7 +923,7 @@
                                 <div class="col-lg-1" style="padding-top: 4px;">
                                     <label for="bCambioMoneda" class="invisible">Cambios</label>
                                     <button type="button" data-id="getOrderASDetails" id="bgetOrderASDetais" disabled="disabled" class="btn btn-dark btn-sm mx-1" onclick="getOrderDetails()" style="width: 67px;" title="Ver progreso de la Orden">
-                                        <span class="fa fa-line-chart"></span>
+                                        <span class="fa fa-bar-chart"></span>
                                     </button>
                                 </div>
                             </div>
@@ -2306,16 +2306,10 @@
             $("#" + idSelect).empty();
             $("#" + idSelect).append("<option value=''></option>");
             $("#" + idSelect).append(listitems);
-            //if (pObj.length > 1) {
-            //    $("#" + idSelect).val([]);
-            //} else {
-            //    $("#" + idSelect).change();
-            //}
             $("#" + idSelect).val([]);
         }
 
         function onTarifasGetAllConv(data, idSelect, colId, colDesc) {
-
             var listitems = '';
 
             listitems += '<option forma_uso_desc=' + data['forma_uso']['descripcion'] + ' forma_uso_id=' + data['forma_uso']['id'] + ' precio_unitario= ' + data['precio_unitario'] + ' value=' + data[colId] + '>' + data[colDesc] + '</option>';
@@ -2324,7 +2318,6 @@
             $("#" + idSelect).append("<option value=''></option>");
             $("#" + idSelect).append(listitems);
             $("#selTarifaD option[value='" + data[colId] + "']").attr("selected", "selected");
-            //$("#" + idSelect).change();
         }
 
         function onAreasGeoGetAll(data, idSelect) {
@@ -2594,8 +2587,8 @@
 
         }
 
-        //(cantidad = días al seleccionar CPD Sponsor):
         function filterTarifas() {
+            //tieneTarifa se usa solo en convenios
             if (tieneTarifa == false) {
                 var error = [];
                 var day1;
@@ -5699,7 +5692,7 @@
                 rowHTML += "<tr>";
                 rowHTML += "<td class='col-xs-1' style='text-align: center;'> " + cotizacion.nombre + " (" + cotizacion.simbolo + ")</td > ";
                 rowHTML += "<td class='col-xs-1' style='text-align: center;'> " + cotizacion.cambioCompra + "</td >";
-                rowHTML += "<td class='col-xs-1' style='text-align: center;'> " + cotizacion.cambioVenta + "</td >";
+            /*    rowHTML += "<td class='col-xs-1' style='text-align: center;'> " + cotizacion.cambioVenta + "</td >";*/
                 rowHTML += "<td class='col-xs-1' style='text-align: center;'> " + dateToFieldFormat(cotizacion.fecha) + "</td >";
                 rowHTML += "</tr>";
 

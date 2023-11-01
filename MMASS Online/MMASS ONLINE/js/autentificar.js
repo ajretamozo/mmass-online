@@ -143,14 +143,6 @@ function showModal(message, options) {
             $("#modalCenter").modal('show');
 }
 
-function getCS() {
-    callWS("medios", "getConString", '', function (cs) { onGetCS(cs); });
-}
-
-function onGetCS(bd) {
-    $("#BaseDatos").text(bd);
-}
-
 function getUserRol() {
     return sessionStorage.getItem('userRol');
 }

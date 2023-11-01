@@ -26,7 +26,19 @@ namespace WebApi.Controllers
             return Ok(lista);
         }
 
+        [HttpPost("getDatosHome")]
+        public IActionResult getDatosHome(ListaParametro parametros)
+        {
+            var lista = _r_ventasService.getDatosHome(parametros.Parametros);
+            return Ok(lista);
+        }
 
+        [HttpPost("getRankingsHome")]
+        public IActionResult getRankingsHome(ListaParametro parametros)
+        {
+            var lista = _r_ventasService.getRankingsHome(parametros.Parametros);
+            return Ok(lista);
+        }
 
     }
 }

@@ -77,6 +77,10 @@
             border-radius: 1.5rem !important;
         }
 
+        a, a:hover {
+            color: #333
+        }
+
     </style>
 
 </head>
@@ -106,7 +110,14 @@
 
         <div class="card mb-3 shadow p-3 mb-5 bg-white rounded" style="max-width: 100rem; margin-top: 5rem;">
             <div class="card-header d-flex align-items-center" style="margin-bottom: 1rem;">
-                <span id="headerTitle" class="mr-auto dataTitle">MI PERFIL</span>
+                <span id="headerTitle" class="dataTitle" style="margin-right: 15px;">Mi Perfil</span>
+                <div class="mr-auto">
+                    <div class="card rounded bg-transparent" id="cardUserAdmin" style="border-color: #b1b1b1; color: #999898; width: 106.6px; height: 30px; font-size: small; ">
+                        <div class="card-body" style="padding-bottom: 0px;padding-top: 5px;padding-right: 10px;padding-left: 10px;">
+                            Administrador
+                        </div>
+                    </div>
+                </div>
                 <div>
                     <button id="botEditar" type="button" class="btn btn-light disableOnEdit" onclick="editarUser()">Editar</button>
                 </div>
@@ -137,8 +148,11 @@
                     </div>
                     <div class="col-lg-4">
                         <label for="contra"> Contraseña</label>
-                        <div class="input-group">
-                            <input type="text" id="contra" class="form-control readonlyOnView" placeholder="Contraseña">
+                        <div class="input-group" id="show_hide_password">
+                            <input class="form-control readonlyOnView" type="password" id="contra" placeholder="Contraseña">
+                            <div class="input-group-text">
+                                <a href="" title="Mostrar contraseña"><i class="fa fa-eye-slash" aria-hidden="true"></i></a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -188,9 +202,8 @@
             $('#contra').attr("value", data.clave_web);
             $('#mail').attr("value", data.email);
             $('#usrrol').attr("value", data.usrrol);
-            if (data.usrrol == 1) {
-                $('#headerTitle').append('<span id="sTituloDinamico1"> - </span>');
-                $('#headerTitle').append('<span id="sTituloDinamico2" style="color: #007bff;">ADMIN</span>');
+            if (data.usrrol != 1) {
+                $("#cardUserAdmin").hide();
             }
         }
 
@@ -269,8 +282,25 @@
                 message = message.slice(0, -3);
                 showMessage(message, "error");
             }
-
         }
+
+        //Icono ver password:
+        $(document).ready(function () {
+            $("#show_hide_password a").on('click', function (event) {
+                event.preventDefault();
+                if ($('#show_hide_password input').attr("type") == "text") {
+                    $('#show_hide_password input').attr('type', 'password');
+                    $('#show_hide_password i').addClass("fa-eye-slash");
+                    $('#show_hide_password i').removeClass("fa-eye");
+                    $('#show_hide_password a').prop('title', 'Mostrar contraseña');
+                } else if ($('#show_hide_password input').attr("type") == "password") {
+                    $('#show_hide_password input').attr('type', 'text');
+                    $('#show_hide_password i').removeClass("fa-eye-slash");
+                    $('#show_hide_password i').addClass("fa-eye");
+                    $('#show_hide_password a').prop('title', 'Ocultar contraseña');
+                }
+            });
+        });
 
     </script>
     <footer>

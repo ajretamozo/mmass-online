@@ -148,16 +148,21 @@
 
         //DatePickers Initialization
         $(function () {
-            $('input[type=text]').attr('autocomplete', 'off');
-            $("#divNavBar").load("navBar.html");
-            populateFields();
-            $(".enterSearch").on("keydown", function (e) {
-                if (event.which == 13) {
-                    searchUsers();
-                }
-            });
-            document.body.style.backgroundImage = "url(./fondoM3.png)";
-            mensaje();
+            if (getUserRol() == 1) {
+                $('input[type=text]').attr('autocomplete', 'off');
+                $("#divNavBar").load("navBar.html");
+                populateFields();
+                $(".enterSearch").on("keydown", function (e) {
+                    if (event.which == 13) {
+                        searchUsers();
+                    }
+                });
+                document.body.style.backgroundImage = "url(./fondoM3.png)";
+                mensaje();
+            }
+            else {
+                location.href = "/home.html"
+            }
         });
 
 

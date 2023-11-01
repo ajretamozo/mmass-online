@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html>
+<head runat="server">
+    <title>MMASS Online - Inicio</title>
+
+    <link rel="shortcut icon" href="favicon.png">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/js/tempusdominus-bootstrap-4.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/css/tempusdominus-bootstrap-4.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400&display=swap" rel="stylesheet">
+    <script src="./js/autentificar.js"></script>
+
+
+    <style>
+        .table-hover tbody tr:hover > td {
+            cursor: pointer;
+        }
+
+        .search-box-closed {
+            width: 53px;
+        }
+
+        th {
+            text-align: center;
+        }
+
+        .dataTitle {
+            font-family: 'Roboto';
+            font-size: 20px;
+        }
+
+        @media (max-width: 767px) {
+            .search-box-open {
+                width: 100%;
+            }
+
+            #divMessage {
+                position: fixed;
+                width: 100%;
+                bottom: 2px;
+                text-align: center;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .search-box-open {
+                width: 300px;
+            }
+        }
+
+        @media screen {
+
+            #divMessage {
+                position: fixed;
+                left: 50%;
+                margin-left: -200px;
+                width: 400px;
+                bottom: 30px;
+                text-align: center;
+            }
+        }
+
+        .jumbotron {
+            background-color: #f5f5f5 !important;
+        }
+
+        .rounded {
+            border-radius: 1.5rem !important;
+        }
+
+        .btn-primary {
+            color: #fff;
+            background-color: #f6ab36;
+            border-color: #f6ab36;
+        }
+
+        .btn-primary:hover {
+            background-color: #d69126;
+            border-color: #d69126;
+        }
+
+        .btn-primary:active {
+            background-color: #f6ab36 !important;
+            border-color: #f6ab36 !important;
+        }
+
+    </style>
+
+</head>
+<body style="padding-top: 80px; font-family: 'Roboto';">
+    <!--MENU-->
+    <div id="divNavBar"></div>
+
+    <main role="main" class="container d-flex justify-content-center">
+        <div id="divBlock" style="left:0; right:0;top:0; bottom:0;overflow-x: hidden; overflow-y: auto;position:fixed;z-index:1051;outline:0;display:none"></div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="modalCenter" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content shadow p-3 mb-5 bg-white rounded">
+                    <div class="modal-header d-flex justify-content-center">
+                        <h5 class="modal-title" id="modalCenterTitle">Advertencia</h5>
+                    </div>
+                    <div class="modal-body" id="modalCenterBody">
+
+                    </div>
+                    <div class="modal-footer d-flex justify-content-center" id="modalCenterFooter">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="divMessage" class="alert" style="display:none;cursor:pointer;z-index:10000;" title="Click para cerrar" onclick="$('#divMessage').hide('slideDown')"> </div>
+        <div class="jumbotron mt-4 py-4 shadow p-3 mb-5 bg-white rounded" id="HomeMain">
+            <!--Tipos de Avisos DATA-->
+            <p class="dataTitle">INICIO</p>
+            <div id="divRedesData d-flex align-items-around align-items-end">
+                <div class="row">
+                    <div class="card mb-3 shadow p-3 bg-white rounded" style="margin-right: 20px; margin-left: 20px; width: 1234px; ">
+                        <div class="card-header d-flex align-items-center" style="margin-bottom: 1rem;">
+                            <span id="headerTitle" class="dataTitle" style="margin-right: 15px;">Accesos directos</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="row py-1">
+                                <div class="col-md-3">
+                                    <button class="btn btn-lg btn-primary btn-block" onclick="onAccesoDir('Orden')">
+                                        <span class="fa fa-plus"></span> Nueva Orden
+                                    </button>
+                                </div>
+                                <div class="col-md-3">
+                                    <button class="btn btn-lg btn-primary btn-block" onclick="onAccesoDir('OrdenList')">
+                                        <span class="fa fa-th-list"></span> Ordenes
+                                    </button>
+                                </div>
+                                <div class="col-md-3">
+                                    <button class="btn btn-lg btn-primary btn-block" onclick="onAccesoDir('informeVentas')">
+                                        <span class="fa fa-area-chart"></span> Informe de Ventas
+                                    </button>
+                                </div>
+                                <div class="col-md-3">
+                                    <button class="btn btn-lg btn-primary btn-block" onclick="onAccesoDir('perfil')">
+                                        <span class="fa fa-id-card"></span> Mi Perfil
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="card mb-3 shadow p-3 bg-white rounded" style="margin-right: 20px; margin-left: 20px; width: 1234px; ">
+                        <div class="card-header d-flex align-items-center" style="margin-bottom: 1rem;">
+                            <span class="dataTitle" style="margin-right: 15px;">Indicadores <br /> 
+                            <span id="span30dias" style="font-size: 15px;">Ultimos 30 días</span></span>
+                        </div>
+                        <div class="card-body">
+                            <div class="row py-1">
+                                <div class="col-md-3">
+                                    <div class="card rounded bg-transparent" style="align-items: center; border-color: #f6ab36; color: #ffffff; max-width: -webkit-fill-available; height: 152px; background-image: linear-gradient(#f6ab36 25%, #ffffff 25%); ">
+                                        <div class="d-flex dataTitle" style="padding-top: 5px;">
+                                            <span class="fa fa-money" style="padding-top: 5px;margin-right: 5px;"></span> Ingresos
+                                        </div>
+                                        <div class="card-body" style="text-align: center; padding-top: 10px;">
+                                            <span class="dataTitle" id="spanIngresos" style=" font-size: 40px;color: black;">
+
+                                            </span>
+                                            <br />
+                                            <span id="spanIngresosDif" style="font-size: 20px;">
+
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="card rounded bg-transparent" style="align-items: center; border-color: #f6ab36; color: #ffffff; max-width: -webkit-fill-available; height: 152px; background-image: linear-gradient(#f6ab36 25%, #ffffff 25%); ">
+                                        <div class="d-flex dataTitle" style="padding-top: 5px;">
+                                            <span class="fa fa-picture-o" style="padding-top: 5px;margin-right: 5px;"></span> Impresiones
+                                        </div>
+                                        <div class="card-body" style="text-align: center; padding-top: 10px;">
+                                            <span class="dataTitle" id="spanImpresiones" style=" font-size: 40px;color: black;">
+
+                                            </span>
+                                            <br />
+                                            <span id="spanImpresionesDif" style="font-size: 20px;">
+
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="card rounded bg-transparent" style="align-items: center; border-color: #f6ab36; color: #ffffff; max-width: -webkit-fill-available; height: 152px; background-image: linear-gradient(#f6ab36 25%, #ffffff 25%); ">
+                                        <div class="d-flex dataTitle" style="padding-top: 5px;">
+                                            <span class="fa fa-pie-chart" style="margin-bottom: 0px;padding-top: 5px;margin-right: 5px;"></span> eCPM
+                                        </div>
+                                        <div class="card-body" style="text-align: center; padding-top: 10px;">
+                                            <span class="dataTitle" id="spanEcpm" style=" font-size: 40px;color: black;">
+
+                                            </span>
+                                            <br />
+                                            <span id="spanEcpmDif" style="font-size: 20px;">
+
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="card rounded bg-transparent" style="align-items: center; border-color: #f6ab36; color: #ffffff; max-width: -webkit-fill-available; height: 152px; background-image: linear-gradient(#f6ab36 25%, #ffffff 25%); ">
+                                        <div class="d-flex dataTitle" style="padding-top: 5px;">
+                                            <span class="fa fa-th-list" style="margin-bottom: 0px;padding-top: 5px;margin-right: 5px;"></span> Ordenes
+                                        </div>
+                                        <div class="card-body" style="text-align: center; padding-top: 10px;">
+                                            <span class="dataTitle" id="spanOrdenes" style=" font-size: 40px;color: black;">
+
+                                            </span>
+                                            <br />
+                                            <span id="spanOrdenesDif" style="font-size: 20px;">
+
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row py-4">
+                                <div class="col-md-3">
+                                    <div class="card rounded bg-transparent" style="align-items: center; border-color: #f6ab36; color: #ffffff; max-width: -webkit-fill-available; height: 152px; background-image: linear-gradient(#f6ab36 25%, #ffffff 25%); ">
+                                        <div class="d-flex dataTitle" style="padding-top: 5px;">
+                                            <span class="fa fa-line-chart" style="margin-bottom: 0px;padding-top: 5px;margin-right: 5px;"></span> Ranking Anunciantes
+                                        </div>
+                                        <div class="card-body" style="text-align: center; padding-top: 10px;">
+                                            <span id="spanAnunciantes1" style="font-size: 24px;color: black;">
+
+                                            </span>
+                                            <br />
+                                            <span id="spanAnunciantes2" style="font-size: 22px; color: #595959;">
+
+                                            </span>
+                                            <br />
+                                            <span id="spanAnunciantes3" style="font-size: 15px; color: #a7a7a7;">
+
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="card rounded bg-transparent" style="align-items: center; border-color: #f6ab36; color: #ffffff; max-width: -webkit-fill-available; height: 152px; background-image: linear-gradient(#f6ab36 25%, #ffffff 25%); ">
+                                        <div class="d-flex dataTitle" style="padding-top: 5px;">
+                                            <span class="fa fa-plus" style="margin-bottom: 0px;padding-top: 5px;margin-right: 5px;"></span> Rancking Agencias
+                                        </div>
+                                        <div class="card-body" style="text-align: center; padding-top: 10px;">
+                                            <span id="spanAgencias1" style="font-size: 24px;color: black;">
+
+                                            </span>
+                                            <br />
+                                            <span id="spanAgencias2" style="font-size: 22px; color: #595959;">
+
+                                            </span>
+                                            <br />
+                                            <span id="spanAgencias3" style="font-size: 15px; color: #a7a7a7;">
+
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="card rounded bg-transparent" style="align-items: center; border-color: #f6ab36; color: #ffffff; max-width: -webkit-fill-available; height: 152px; background-image: linear-gradient(#f6ab36 25%, #ffffff 25%); ">
+                                        <div class="d-flex dataTitle" style="padding-top: 5px;">
+                                            <span class="fa fa-plus" style="margin-bottom: 0px;padding-top: 5px;margin-right: 5px;"></span> Ingresos
+                                        </div>
+                                        <div class="card-body">
+                                            Usuario MMASS Radio/TV
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="card rounded bg-transparent" style="align-items: center; border-color: #f6ab36; color: #ffffff; max-width: -webkit-fill-available; height: 152px; background-image: linear-gradient(#f6ab36 25%, #ffffff 25%); ">
+                                        <div class="d-flex dataTitle" style="padding-top: 5px;">
+                                            <span class="fa fa-plus" style="margin-bottom: 0px;padding-top: 5px;margin-right: 5px;"></span> Ingresos
+                                        </div>
+                                        <div class="card-body">
+                                            Usuario MMASS Radio/TV
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>                    
+            </div>
+        </div>
+    </main>
+
+    <!--Scripts-->
+    <script type="text/javascript">
+
+        //DatePickers Initialization
+        $(function () {
+            $('input[type=text]').attr('autocomplete', 'off');
+            $("#divNavBar").load("navBar.html");
+            //populateFields();
+            //$(".enterSearch").on("keydown", function (e) {
+            //    if (event.which == 13) {
+            //        searchRedes();
+            //    }
+            //});
+            document.body.style.backgroundImage = "url(./fondoM3.png)";
+            buscarDatosIndicadores(); 
+        });
+
+        function buscarDatosIndicadores() {
+            const hastaUltimo = new Date();
+            hastaUltimo.setDate(hastaUltimo.getDate() - 1);
+            const desdeUltimo = new Date();
+            desdeUltimo.setDate(desdeUltimo.getDate() - 30);
+
+            const hastaPenultimo = new Date();
+            hastaPenultimo.setDate(hastaPenultimo.getDate() - 1 - 30);
+            const desdePenultimo = new Date();
+            desdePenultimo.setDate(desdePenultimo.getDate() - 30 - 30);
+
+            //agregamos fechas al título
+            $("#span30dias").append(' ' + '(' + formatDate(desdeUltimo) + ' - ' + formatDate(hastaUltimo) + ')');
+
+            params = {};
+            params.fechaDesdeUltimo = formatDate2(desdeUltimo);
+            params.fechaHastaUltimo = formatDate2(hastaUltimo);
+            params.fechaDesdePenultimo = formatDate2(desdePenultimo);
+            params.fechaHastaPenultimo = formatDate2(hastaPenultimo);
+            var parametros = setListaParametros(params);
+            //buscamos los datos indicadores
+            callWS("R_Ventas", "getDatosHome", JSON.stringify(parametros), function (data) { onBuscarDatosIndicadores(data); });
+            //buscamos los datos rankings
+            callWS("R_Ventas", "getRankingsHome", JSON.stringify(parametros), function (data) { onBuscarDatosRankings(data); });
+        }
+
+        function onBuscarDatosIndicadores(data) {
+            //Ingresos
+            var ingresosDif = data[0].importe_total - data[1].importe_total;
+            var ingresosDifPorc = (Math.abs(ingresosDif) * 100) / data[1].importe_total;
+
+            setColoresDif(ingresosDif, '#spanIngresosDif');
+            $("#spanIngresos").append(nFormatter(data[0].importe_total, 2) + '$');
+            $("#spanIngresosDif").append(nFormatter(Math.abs(ingresosDif), 2) + '$ (' + ingresosDifPorc.toFixed() + '%)');
+
+            //Impresiones
+            var impresionesDif = data[0].impresiones - data[1].impresiones;
+            var impresionesDifPorc = (Math.abs(impresionesDif) * 100) / data[1].impresiones;
+
+            setColoresDif(impresionesDif, '#spanImpresionesDif');
+            $("#spanImpresiones").append(nFormatter(data[0].impresiones, 2));
+            $("#spanImpresionesDif").append(nFormatter(Math.abs(impresionesDif), 2) + ' (' + impresionesDifPorc.toFixed() + '%)');
+
+            //eCPM
+            var ecpmDif = data[0].ecpm - data[1].ecpm
+            var ecpmDifPorc = (Math.abs(ecpmDif) * 100) / data[1].ecpm;
+
+            setColoresDif(ecpmDif, '#spanEcpmDif');
+            $("#spanEcpm").append(nFormatter(data[0].ecpm, 2) + '$');
+            $("#spanEcpmDif").append(nFormatter(Math.abs(ecpmDif), 2) + '$ (' + ecpmDifPorc.toFixed() + '%)');
+
+            //Cantidad de Ordenes
+            var ordenesDif = data[0].cantidad_ordenes - data[1].cantidad_ordenes;
+            var ordenesDifPorc = (Math.abs(ordenesDif) * 100) / data[1].cantidad_ordenes;
+
+            setColoresDif(ordenesDif, '#spanOrdenesDif');
+            $("#spanOrdenes").append(data[0].cantidad_ordenes);
+            $("#spanOrdenesDif").append(nFormatter(Math.abs(ordenesDif)) + ' (' + ordenesDifPorc.toFixed() + '%)');
+        }
+
+        function onBuscarDatosRankings(data) {
+            //Ranking Anunciantes
+            if (data[0][0] != null) {
+                $("#spanAnunciantes1").append(data[0][0].anunciante.slice(0, 9) + ' (' + nFormatter(data[0][0].importe_total, 2) + '$' + ')');
+            }
+            if (data[0][1] != null) {
+                $("#spanAnunciantes2").append(data[0][1].anunciante.slice(0, 9) + ' (' + nFormatter(data[0][1].importe_total, 2) + '$' + ')');
+            }
+            if (data[0][2] != null) {
+                $("#spanAnunciantes3").append(data[0][2].anunciante.slice(0, 9) + ' (' + nFormatter(data[0][2].importe_total, 2) + '$' + ')');
+            }
+
+            //Ranking Agencias
+            if (data[1][0] != null) {
+                $("#spanAgencias1").append(data[1][0].agencia.slice(0, 9) + ' (' + nFormatter(data[1][0].importe_total, 2) + '$' + ')');
+            }
+            if (data[1][1] != null) {
+                $("#spanAgencias2").append(data[1][1].agencia.slice(0, 9) + ' (' + nFormatter(data[1][1].importe_total, 2) + '$' + ')');
+            }
+            if (data[1][2] != null) {
+                $("#spanAgencias3").append(data[1][2].agencia.slice(0, 9) + ' (' + nFormatter(data[1][2].importe_total, 2) + '$' + ')');
+            }
+        }
+
+        function setColoresDif(diferencia, span) {
+            if (diferencia < 0) {
+                $(span).append('-');
+                $(span).css("color", "crimson");
+            }
+            else if (diferencia == 0) {
+                $(span).css("color", "cornflowerblue");
+            }
+            else {
+                $(span).append('+');
+                $(span).css("color", "forestgreen");
+            }
+        }
+
+        function formatDate(date) {
+            return [
+                padTo2Digits(date.getDate()),
+                padTo2Digits(date.getMonth() + 1),
+                date.getFullYear(),
+            ].join('/');
+        }
+
+        function formatDate2(date) {
+            return [
+                date.getFullYear(),
+                padTo2Digits(date.getMonth() + 1),
+                padTo2Digits(date.getDate()),
+            ].join('/');
+        }
+
+        function padTo2Digits(num) {
+            return num.toString().padStart(2, '0');
+        }
+
+        function onAccesoDir(pag) {
+            location.href = '/' + pag + '.html';
+        }
+
+        function setListaParametros(data) {
+            var parametros = {};
+            var listaParametros = [];
+
+            Object.keys(data).forEach(function (key) {
+                var objParametro = {};
+                objParametro.ParameterName = key;
+                objParametro.Value = data[key];
+                listaParametros.push(objParametro);
+            });
+            parametros.Parametros = listaParametros;
+            return parametros;
+        }
+
+        function nFormatter(num, digits) {
+            const lookup = [
+                { value: 1, symbol: "" },
+                { value: 1e3, symbol: "mil" },
+                { value: 1e6, symbol: "M" },
+                { value: 1e9, symbol: "G" },
+                { value: 1e12, symbol: "T" },
+                { value: 1e15, symbol: "P" },
+                { value: 1e18, symbol: "E" }
+            ];
+            const rx = /\.0+$|(\.[0-9]*[1-9])0+$/;
+            var item = lookup.slice().reverse().find(function (item) {
+                return num >= item.value;
+            });
+            return item ? (num / item.value).toFixed(digits).replace(rx, "$1").replace(".", ",") + " " + item.symbol : "0";
+        }
+
+    </script>
+    <footer>
+        <p style="text-align: center; font-size: x-small;">Powered by <b style="font-size: small;">Strategy Zone S.A. ©</b></p>
+    </footer>
+</body>
+</html>

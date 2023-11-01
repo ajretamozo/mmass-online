@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using System.Data;
 using WebApi.Helpers;
 using Microsoft.Data.SqlClient;
+using System.Collections;
+using System.Text.RegularExpressions;
 //using Microsoft.IdentityModel.Protocols;
 
 namespace WebApi.Entities
@@ -40,6 +42,10 @@ namespace WebApi.Entities
         public float Cambio { get; set; }
         public DateTime? Fecha { get; set; }
         public DateTime? Fecha_expiracion { get; set; }
+        public int Impresiones { get; set; }
+        public float Importe_total { get; set; }
+        public float Ecpm { get; set; }
+        public int Cantidad_ordenes { get; set; }
 
         public static List<R_Ventas> filterBy(List<Parametro> parametros)
         {
@@ -236,5 +242,83 @@ namespace WebApi.Entities
             }
             return col;
         }
+
+        public static List<R_Ventas> getDatosHome(string fechaDesde, string fechaHasta)
+        {
+            //chequeamos multimoneda
+            string queryMulti = "";
+            if (int.Parse(Dg_parametro.getById(5).Valor) == 1)
+            {
+                queryMulti = "dbo.getcambioMoneda(id_moneda, (select id_moneda from moneda where base=1),GETDATE())";
+            }
+            else
+            {
+                queryMulti = "1";
+            }
+
+            string sqlCommand = "select Total_Impresiones as impresiones,seg_neto as importe_total, " + queryMulti + " as cambio " +
+                                "from dg_orden_pub_ap where fecha >= '" + fechaDesde + "' and fecha <= '" + fechaHasta + "' and es_anulada = 0 ";
+
+            List<R_Ventas> col = new List<R_Ventas>();
+            R_Ventas elem;
+            DataTable t = DB.Select(sqlCommand);
+            foreach (DataRow item in t.Rows)
+            {
+                elem = new R_Ventas
+                {
+                    Impresiones = int.Parse(item["impresiones"].ToString()),
+                    Importe_total = float.Parse(item["importe_total"].ToString()),
+                    Cambio = DB.DFloat(item["cambio"].ToString())
+                };
+
+                col.Add(elem);
+            }
+            return col;
+        }
+
+        public static List<R_Ventas> getRankingsHome(string fechaDesde, string fechaHasta, int tipo)
+        {
+            string contacto = "";
+            if (tipo == 1)
+            {
+                contacto = "id_anunciante";
+            }
+            else if (tipo == 2)
+            {
+                contacto = "id_agencia";
+            }
+
+            string sqlCommand = "select op." + contacto + ", c.NOMBRE_COM, sum(op.seg_neto * m.cambioCompra) as ingresos from dg_orden_pub_ap op" +
+                                " inner join CONTACTOS c on c.ID_CONTACTO = " + contacto +
+                                " inner join moneda m on m.id_moneda = op.id_moneda " +
+                                " where op.fecha >= '" + fechaDesde + "' and op.fecha <= '" + fechaHasta + "' and op.es_anulada = 0 " +
+                                " group by op." + contacto + ", c.NOMBRE_COM " +
+                                " order by ingresos desc";
+
+            List<R_Ventas> col = new List<R_Ventas>();
+            R_Ventas elem;
+            DataTable t = DB.Select(sqlCommand);
+            foreach (DataRow item in t.Rows)
+            {
+                elem = new R_Ventas
+                {
+                    Importe_total = float.Parse(item["ingresos"].ToString())
+                };
+                if (tipo == 1)
+                {
+                    elem.Id_anunciante = int.Parse(item[contacto].ToString());
+                    elem.Anunciante = item["NOMBRE_COM"].ToString();
+                }
+                else if (tipo == 2)
+                {
+                    elem.Agencia = item[contacto].ToString();
+                    elem.Agencia = item["NOMBRE_COM"].ToString();
+                }
+
+                col.Add(elem);
+            }
+            return col;
+        }
+
     }
 }
