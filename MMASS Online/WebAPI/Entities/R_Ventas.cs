@@ -7,6 +7,7 @@ using WebApi.Helpers;
 using Microsoft.Data.SqlClient;
 using System.Collections;
 using System.Text.RegularExpressions;
+using System.Reflection;
 //using Microsoft.IdentityModel.Protocols;
 
 namespace WebApi.Entities
@@ -314,6 +315,34 @@ namespace WebApi.Entities
                     elem.Agencia = item[contacto].ToString();
                     elem.Agencia = item["NOMBRE_COM"].ToString();
                 }
+
+                col.Add(elem);
+            }
+            return col;
+        }
+
+        public static List<R_Ventas> getRankingMedios(string fechaDesde, string fechaHasta)
+        {
+            string sqlCommand = @"select id_medio, DESC_MEDIO, sum((monto_neto * porcentaje / 100) / cambio) as ingresos from
+                                    (select d.id_op_dg, d.id_detalle, d.monto_neto, dbo.getcambioMoneda(op.id_moneda, (select id_moneda from moneda where base = 1), GETDATE()) as cambio, om.id_medio, m.DESC_MEDIO, om.porcentaje from dg_orden_pub_as d
+                                    inner join dg_orden_pub_medios om on om.id_op_dg = d.id_op_dg and om.id_detalle = d.id_detalle
+                                    inner join MEDIOS m on m.ID_MEDIO = om.id_medio
+                                    inner join dg_orden_pub_ap op on op.id_op_dg = d.id_op_dg
+                                    where op.fecha >= '" + fechaDesde + "' and op.fecha <= '" + fechaHasta + "' and op.es_anulada = 0) as subquery " +
+                                    " group by id_medio, DESC_MEDIO" +
+                                    " order by ingresos desc";
+
+            List<R_Ventas> col = new List<R_Ventas>();
+            R_Ventas elem;
+            DataTable t = DB.Select(sqlCommand);
+            foreach (DataRow item in t.Rows)
+            {
+                elem = new R_Ventas
+                {
+                    Id_medio = int.Parse(item["id_medio"].ToString()),
+                    Medio = item["DESC_MEDIO"].ToString(),
+                    Importe_total = float.Parse(item["ingresos"].ToString())
+                };
 
                 col.Add(elem);
             }

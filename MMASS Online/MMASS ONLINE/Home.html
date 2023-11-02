@@ -234,15 +234,15 @@
                                             <span class="fa fa-line-chart" style="margin-bottom: 0px;padding-top: 5px;margin-right: 5px;"></span> Ranking Anunciantes
                                         </div>
                                         <div class="card-body" style="text-align: center; padding-top: 10px;">
-                                            <span id="spanAnunciantes1" style="font-size: 24px;color: black;">
+                                            <span id="spanAnunciantes1" style="font-size: 22px;color: black;">
 
                                             </span>
                                             <br />
-                                            <span id="spanAnunciantes2" style="font-size: 22px; color: #595959;">
+                                            <span id="spanAnunciantes2" style="font-size: 18px; color: #595959;">
 
                                             </span>
                                             <br />
-                                            <span id="spanAnunciantes3" style="font-size: 15px; color: #a7a7a7;">
+                                            <span id="spanAnunciantes3" style="font-size: 13px; color: #a7a7a7;">
 
                                             </span>
                                         </div>
@@ -251,18 +251,18 @@
                                 <div class="col-md-3">
                                     <div class="card rounded bg-transparent" style="align-items: center; border-color: #f6ab36; color: #ffffff; max-width: -webkit-fill-available; height: 152px; background-image: linear-gradient(#f6ab36 25%, #ffffff 25%); ">
                                         <div class="d-flex dataTitle" style="padding-top: 5px;">
-                                            <span class="fa fa-plus" style="margin-bottom: 0px;padding-top: 5px;margin-right: 5px;"></span> Rancking Agencias
+                                            <span class="fa fa-plus" style="margin-bottom: 0px;padding-top: 5px;margin-right: 5px;"></span> Ranking Agencias
                                         </div>
                                         <div class="card-body" style="text-align: center; padding-top: 10px;">
-                                            <span id="spanAgencias1" style="font-size: 24px;color: black;">
+                                            <span id="spanAgencias1" style="font-size: 22px;color: black;">
 
                                             </span>
                                             <br />
-                                            <span id="spanAgencias2" style="font-size: 22px; color: #595959;">
+                                            <span id="spanAgencias2" style="font-size: 18px; color: #595959;">
 
                                             </span>
                                             <br />
-                                            <span id="spanAgencias3" style="font-size: 15px; color: #a7a7a7;">
+                                            <span id="spanAgencias3" style="font-size: 13px; color: #a7a7a7;">
 
                                             </span>
                                         </div>
@@ -271,10 +271,20 @@
                                 <div class="col-md-3">
                                     <div class="card rounded bg-transparent" style="align-items: center; border-color: #f6ab36; color: #ffffff; max-width: -webkit-fill-available; height: 152px; background-image: linear-gradient(#f6ab36 25%, #ffffff 25%); ">
                                         <div class="d-flex dataTitle" style="padding-top: 5px;">
-                                            <span class="fa fa-plus" style="margin-bottom: 0px;padding-top: 5px;margin-right: 5px;"></span> Ingresos
+                                            <span class="fa fa-plus" style="margin-bottom: 0px;padding-top: 5px;margin-right: 5px;"></span> Ranking Medios
                                         </div>
-                                        <div class="card-body">
-                                            Usuario MMASS Radio/TV
+                                        <div class="card-body" style="text-align: center; padding-top: 10px;">
+                                            <span id="spanMedios1" style="font-size: 22px;color: black;">
+
+                                            </span>
+                                            <br />
+                                            <span id="spanMedios2" style="font-size: 18px; color: #595959;">
+
+                                            </span>
+                                            <br />
+                                            <span id="spanMedios3" style="font-size: 13px; color: #a7a7a7;">
+
+                                            </span>
                                         </div>
                                     </div>
                                 </div>
@@ -376,24 +386,35 @@
         function onBuscarDatosRankings(data) {
             //Ranking Anunciantes
             if (data[0][0] != null) {
-                $("#spanAnunciantes1").append(data[0][0].anunciante.slice(0, 9) + ' (' + nFormatter(data[0][0].importe_total, 2) + '$' + ')');
+                $("#spanAnunciantes1").append(data[0][0].anunciante.slice(0, 8) + ' (' + nFormatter(data[0][0].importe_total, 1) + '$' + ')');
             }
             if (data[0][1] != null) {
-                $("#spanAnunciantes2").append(data[0][1].anunciante.slice(0, 9) + ' (' + nFormatter(data[0][1].importe_total, 2) + '$' + ')');
+                $("#spanAnunciantes2").append(data[0][1].anunciante.slice(0, 8) + ' (' + nFormatter(data[0][1].importe_total, 1) + '$' + ')');
             }
             if (data[0][2] != null) {
-                $("#spanAnunciantes3").append(data[0][2].anunciante.slice(0, 9) + ' (' + nFormatter(data[0][2].importe_total, 2) + '$' + ')');
+                $("#spanAnunciantes3").append(data[0][2].anunciante.slice(0, 8) + ' (' + nFormatter(data[0][2].importe_total, 1) + '$' + ')');
             }
 
             //Ranking Agencias
             if (data[1][0] != null) {
-                $("#spanAgencias1").append(data[1][0].agencia.slice(0, 9) + ' (' + nFormatter(data[1][0].importe_total, 2) + '$' + ')');
+                $("#spanAgencias1").append(data[1][0].agencia.slice(0, 8) + ' (' + nFormatter(data[1][0].importe_total, 1) + '$' + ')');
             }
             if (data[1][1] != null) {
-                $("#spanAgencias2").append(data[1][1].agencia.slice(0, 9) + ' (' + nFormatter(data[1][1].importe_total, 2) + '$' + ')');
+                $("#spanAgencias2").append(data[1][1].agencia.slice(0, 8) + ' (' + nFormatter(data[1][1].importe_total, 1) + '$' + ')');
             }
             if (data[1][2] != null) {
-                $("#spanAgencias3").append(data[1][2].agencia.slice(0, 9) + ' (' + nFormatter(data[1][2].importe_total, 2) + '$' + ')');
+                $("#spanAgencias3").append(data[1][2].agencia.slice(0, 8) + ' (' + nFormatter(data[1][2].importe_total, 1) + '$' + ')');
+            }
+
+            //Ranking Medios
+            if (data[2][0] != null) {
+                $("#spanMedios1").append(data[2][0].medio.slice(0, 8) + ' (' + nFormatter(data[2][0].importe_total, 1) + '$' + ')');
+            }
+            if (data[2][1] != null) {
+                $("#spanMedios2").append(data[2][1].medio.slice(0, 8) + ' (' + nFormatter(data[2][1].importe_total, 1) + '$' + ')');
+            }
+            if (data[2][2] != null) {
+                $("#spanMedios3").append(data[2][2].medio.slice(0, 8) + ' (' + nFormatter(data[2][2].importe_total, 1) + '$' + ')');
             }
         }
 

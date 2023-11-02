@@ -66,7 +66,15 @@ namespace WebApi.Services
             //Raning Agencias
             rankings.Add(R_Ventas.getRankingsHome(parametros[0].Value, parametros[1].Value, 2));
 
+            //Raning Medios
+            rankings.Add(R_Ventas.getRankingMedios(parametros[0].Value, parametros[1].Value));
+
             return rankings;
+        }
+
+        public IEnumerable<R_Ventas> getRankingMedios(List<Parametro> parametros)
+        {
+            return R_Ventas.getRankingMedios(parametros[0].Value, parametros[1].Value);
         }
     }
 

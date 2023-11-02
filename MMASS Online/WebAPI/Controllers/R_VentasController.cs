@@ -40,5 +40,12 @@ namespace WebApi.Controllers
             return Ok(lista);
         }
 
+        //[HttpPost("getRankingMedios")]
+        //public IActionResult getRankingMedios(ListaParametro parametros)
+        //{
+        //    var lista = _r_ventasService.getRankingMedios(parametros.Parametros);
+        //    return Ok(lista);
+        //}
+
     }
 }
