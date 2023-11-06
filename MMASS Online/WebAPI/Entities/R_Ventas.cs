@@ -47,6 +47,8 @@ namespace WebApi.Entities
         public float Importe_total { get; set; }
         public float Ecpm { get; set; }
         public int Cantidad_ordenes { get; set; }
+        public int Id_tipo_aviso { get; set; }
+        public string Tipo_aviso { get; set; }
 
         public static List<R_Ventas> filterBy(List<Parametro> parametros)
         {
@@ -341,6 +343,34 @@ namespace WebApi.Entities
                 {
                     Id_medio = int.Parse(item["id_medio"].ToString()),
                     Medio = item["DESC_MEDIO"].ToString(),
+                    Importe_total = float.Parse(item["ingresos"].ToString())
+                };
+
+                col.Add(elem);
+            }
+            return col;
+        }
+
+        public static List<R_Ventas> getRankingTiposAviso(string fechaDesde, string fechaHasta)
+        {
+            string sqlCommand = @"select id_categoria, DESC_CATEGORIA, sum(monto_neto / cambio) as ingresos from
+                                    (select d.id_op_dg, d.id_detalle, d.monto_neto, dbo.getcambioMoneda(op.id_moneda, (select id_moneda from moneda where base = 1), GETDATE()) as cambio, d.id_categoria, c.DESC_CATEGORIA from dg_orden_pub_as d
+                                    inner join CATEGORIAS c on c.ID_CATEGORIA = d.id_categoria
+                                    inner join dg_orden_pub_ap op on op.id_op_dg = d.id_op_dg
+                                    where 
+									op.fecha >= '" + fechaDesde + "' and op.fecha <= '" + fechaHasta + "' and op.es_anulada = 0) as subquery " +
+                                    " group by id_categoria, DESC_CATEGORIA" +
+                                    " order by ingresos desc";
+
+            List<R_Ventas> col = new List<R_Ventas>();
+            R_Ventas elem;
+            DataTable t = DB.Select(sqlCommand);
+            foreach (DataRow item in t.Rows)
+            {
+                elem = new R_Ventas
+                {
+                    Id_tipo_aviso = int.Parse(item["id_categoria"].ToString()),
+                    Tipo_aviso = item["DESC_CATEGORIA"].ToString(),
                     Importe_total = float.Parse(item["ingresos"].ToString())
                 };
 

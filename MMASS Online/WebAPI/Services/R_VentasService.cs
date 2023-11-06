@@ -60,14 +60,17 @@ namespace WebApi.Services
         public IEnumerable<List<R_Ventas>> getRankingsHome(List<Parametro> parametros)
         {
             List<List<R_Ventas>> rankings = new List<List<R_Ventas>>();
-            //Raning Anunciantes
+            //Ranking Anunciantes
             rankings.Add(R_Ventas.getRankingsHome(parametros[0].Value, parametros[1].Value, 1));
 
-            //Raning Agencias
+            //Ranking Agencias
             rankings.Add(R_Ventas.getRankingsHome(parametros[0].Value, parametros[1].Value, 2));
 
-            //Raning Medios
+            //Ranking Medios
             rankings.Add(R_Ventas.getRankingMedios(parametros[0].Value, parametros[1].Value));
+
+            //Ranking Tipos Aviso
+            rankings.Add(R_Ventas.getRankingTiposAviso(parametros[0].Value, parametros[1].Value));
 
             return rankings;
         }

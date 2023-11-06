@@ -1493,6 +1493,45 @@
             document.body.style.backgroundImage = "url(./fondoM3.png)";
         });
 
+        function inicializar() {
+            $('#fechaDesde').datetimepicker({ format: 'L', locale: 'es' });
+            $('#fechaHasta').datetimepicker({ format: 'L', locale: 'es' });
+            $('#fechaDesdeD').datetimepicker({ format: 'L', locale: 'es' });
+            $('#fechaHastaD').datetimepicker({ format: 'L', locale: 'es' });
+            $('#fechaDesdeC').datetimepicker({ format: 'L', locale: 'es' });
+            $('#fechaHastaC').datetimepicker({ format: 'L', locale: 'es' });
+            $('#fechaDesdeImp').datetimepicker({ format: 'L', locale: 'es' });
+            $('#fechaHastaImp').datetimepicker({ format: 'L', locale: 'es' });
+
+            callWS("medios", "getParamById", JSON.stringify(4), function (parLista) {
+                if (parLista.valor == 1) {
+                    $("#checkListaParaFact")[0].checked = true;
+                    $("#checkListaParaFact").change();
+                }
+                else {
+                    $("#checkListaParaFact")[0].checked = false;
+                    $("#checkListaParaFact").change();
+                }
+            });
+
+            $("#divMessage").on("click", function () { $("#divMessage").hide(); });
+            $.when(
+                callWS("contactos", "getAgencias", '', function (data) { onPopulateSelectDone(data, 'selAgencia', 'id', 'nombre_com'); }),
+                callWS("contactos", "getAnunciantes", '', function (data) { onPopulateSelectDone(data, 'selAnunciante', 'id', 'nombre_com'); }),
+                callWS("productos", "getAll", '', function (data) { onPopulateSelectDone(data, 'selProducto', 'id_producto', 'desc_producto'); }),
+                callWS("empresas", "getall", '', function (data) { onPopulateSelectDone(data, 'selEmpresa', 'id_empresa', 'razon_social'); }),
+                callWS("contactos", "getEjecutivos", '', function (data) { onPopulateSelectDone(data, 'selEjecutivo', 'id', 'razonSocial'); }),
+                callWS("forma_pagos", "getAll", '', function (data) { onPopulateSelectDone(data, 'selFPago', 'id_formapago', 'desc_formapago'); }),
+                callWS("medios", "getAllPlazos", '', function (data) { onPopulateSelectDone(data, 'selPlazoP', 'id_condpagoap', 'desc_condpagoap'); }),
+                callWS("medios", "getAllMonedas", '', function (data) { onPopulateSelectMoneda(data, 'selMoneda'); }),
+                callWS("medios", "getAllConceptos", '', function (data) { onPopulateSelectDone(data, 'selConceptoN', 'id_concepto_negocio', 'desc_concepto_negocio'); }),
+                callWS("medios", "getAllClasificacion", '', function (data) { onPopulateSelectDone(data, 'selClasificacion', 'id_clasificacion_op', 'desc_clasificacion_op'); })
+            ).then(function () { checkParameters(); }, function (data1, data2, data3, data4, data5, data6) {
+                console.log("Agencias: " + data1[2].statusText + "; Anunciantes " + data2[2].statusText + "empresas: " + data3[2].statusText + ";" + "ejecutivos: " + data4[2].statusText + ";" + "ejecutivos: " + data5[2].statusText + ";" + "ejecutivos: " + data6[2].statusText + ";");
+                showMessage("Se produjo un error al cargar los campos, intentelo nuevamente", type = "alert");
+            });
+        }
+
         function onTarifaDSelected() {
             if (!$("#checkTarifaManualD").is(":checked")) {
                 $('#precioUnitarioD').val($('#selTarifaD').children("option:selected").attr("precio_unitario"));
@@ -4110,46 +4149,6 @@
             //globalbearer = data.token;
             //callWSA("users", "", "", onTest);
             showMessage(data);
-        }
-
-
-        function inicializar() {
-            $('#fechaDesde').datetimepicker({ format: 'L', locale: 'es' });
-            $('#fechaHasta').datetimepicker({ format: 'L', locale: 'es' });
-            $('#fechaDesdeD').datetimepicker({ format: 'L', locale: 'es' });
-            $('#fechaHastaD').datetimepicker({ format: 'L', locale: 'es' });
-            $('#fechaDesdeC').datetimepicker({ format: 'L', locale: 'es' });
-            $('#fechaHastaC').datetimepicker({ format: 'L', locale: 'es' });
-            $('#fechaDesdeImp').datetimepicker({ format: 'L', locale: 'es' });
-            $('#fechaHastaImp').datetimepicker({ format: 'L', locale: 'es' });
-
-            callWS("medios", "getParamById", JSON.stringify(4), function (parLista) {
-                if (parLista.valor == 1) {
-                    $("#checkListaParaFact")[0].checked = true;
-                    $("#checkListaParaFact").change();
-                }
-                else {
-                    $("#checkListaParaFact")[0].checked = false;
-                    $("#checkListaParaFact").change();
-                }
-            });
-
-            $("#divMessage").on("click", function () { $("#divMessage").hide(); });
-            $.when(
-                callWS("contactos", "getAgencias", '', function (data) { onPopulateSelectDone(data, 'selAgencia', 'id', 'nombre_com'); }),
-                callWS("contactos", "getAnunciantes", '', function (data) { onPopulateSelectDone(data, 'selAnunciante', 'id', 'nombre_com'); }),
-                callWS("productos", "getAll", '', function (data) { onPopulateSelectDone(data, 'selProducto', 'id_producto', 'desc_producto'); }),
-                callWS("empresas", "getall", '', function (data) { onPopulateSelectDone(data, 'selEmpresa', 'id_empresa', 'razon_social'); }),
-                callWS("contactos", "getEjecutivos", '', function (data) { onPopulateSelectDone(data, 'selEjecutivo', 'id', 'razonSocial'); }),
-                callWS("forma_pagos", "getAll", '', function (data) { onPopulateSelectDone(data, 'selFPago', 'id_formapago', 'desc_formapago'); }),
-                callWS("medios", "getAllPlazos", '', function (data) { onPopulateSelectDone(data, 'selPlazoP', 'id_condpagoap', 'desc_condpagoap'); }),
-                callWS("medios", "getAllMonedas", '', function (data) { onPopulateSelectMoneda(data, 'selMoneda'); }),
-                callWS("medios", "getAllConceptos", '', function (data) { onPopulateSelectDone(data, 'selConceptoN', 'id_concepto_negocio', 'desc_concepto_negocio'); }),
-                callWS("medios", "getAllClasificacion", '', function (data) { onPopulateSelectDone(data, 'selClasificacion', 'id_clasificacion_op', 'desc_clasificacion_op'); })
-            ).then(function () { checkParameters(); }, function (data1, data2, data3, data4, data5, data6) {
-                console.log("Agencias: " + data1[2].statusText + "; Anunciantes " + data2[2].statusText + "empresas: " + data3[2].statusText + ";" + "ejecutivos: " + data4[2].statusText + ";" + "ejecutivos: " + data5[2].statusText + ";" + "ejecutivos: " + data6[2].statusText + ";");
-                showMessage("Se produjo un error al cargar los campos, intentelo nuevamente", type = "alert");
-            });
         }
 
         function descargar(path) {

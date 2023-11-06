@@ -7,7 +7,7 @@
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment-with-locales.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/js/tempusdominus-bootstrap-4.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/css/tempusdominus-bootstrap-4.min.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
@@ -24,6 +24,11 @@
 
         .search-box-closed {
             width: 53px;
+        }
+
+        .input-group-addon {
+            padding: 5px;
+            background: #b3c1cc;
         }
 
         th {
@@ -80,15 +85,32 @@
             border-color: #f6ab36;
         }
 
-        .btn-primary:hover {
-            background-color: #d69126;
-            border-color: #d69126;
+            .btn-primary:hover {
+                background-color: #d69126;
+                border-color: #d69126;
+            }
+
+            .btn-primary:active {
+                background-color: #f6ab36 !important;
+                border-color: #f6ab36 !important;
+            }
+
+        .modalRangos {
+            position: absolute !important;
+            top: 50% !important;
+            left: 50% !important;
+            transform: translate(-50%, -50%) !important;
         }
 
-        .btn-primary:active {
-            background-color: #f6ab36 !important;
-            border-color: #f6ab36 !important;
+        .btn-rangos {
+            color: #000;
+            background-color: #f7f7f7;
+            border-color: #f2e9e9;
         }
+
+            .btn-rangos:hover {
+                background-color: #f2e9e9;
+            }
 
     </style>
 
@@ -112,6 +134,47 @@
                     </div>
                     <div class="modal-footer d-flex justify-content-center" id="modalCenterFooter">
 
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Rangos -->
+        <div class="modal fade modalRangos" id="modalRangos" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
+            <div class="modalRangos modal-dialog modal-xl" role="document">
+                <div class="modal-content shadow p-3 mb-5 bg-white rounded">
+                    <div class="modal-header d-flex justify-content-center">
+                        <h5 class="modal-title" id="modalCenterTitle">
+                            Seleccionar periodo
+                        </h5>
+                    </div>
+                    <div class="modal-body" id="modalRangosBody">
+                        <div class='row'>
+                            <div class='col-lg-6' style='padding - right: 0px;'>
+                                <select class="form-control" id="selRango" onchange="onSelRangoSelected()">
+                                    <option value="0">Hoy</option>
+                                    <option value="1">Ayer</option>
+                                    <option value="2">Ultimos 7 días</option>
+                                    <option value="3" selected>Ultimos 30 días</option>
+                                    <option value="4">Ultimos 90 días</option>
+                                    <option value="5">El mes pasado</option>
+                                    <option value="6">Mes hasta la fecha</option>
+                                    <option value="7">Trimestre hasta la fecha</option>
+                                    <option value="8">Presonalizado</option>
+                                </select>
+                            </div>
+                            <div class='col-lg-6' style='padding - left: 0px;'>
+                                <div class="input-group input-daterange">
+                                    <input type="text" class="form-control enterSearch" id="fechaDesde" data-toggle="datetimepicker" data-target="#fechaDesde" />
+                                    <span class="input-group-addon">hasta</span>
+                                    <input type="text" class="form-control enterSearch" id="fechaHasta" data-toggle="datetimepicker" data-target="#fechaHasta" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer d-flex justify-content-end" id="modalRangosFooter">
+                        <button type="button" class="btn btn-dark" data-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-dark" onclick="aplicarRango()">Aplicar</button>
                     </div>
                 </div>
             </div>
@@ -157,8 +220,19 @@
                 <div class="row">
                     <div class="card mb-3 shadow p-3 bg-white rounded" style="margin-right: 20px; margin-left: 20px; width: 1234px; ">
                         <div class="card-header d-flex align-items-center" style="margin-bottom: 1rem;">
-                            <span class="dataTitle" style="margin-right: 15px;">Indicadores <br /> 
-                            <span id="span30dias" style="font-size: 15px;">Ultimos 30 días</span></span>
+                            <!--<span class="dataTitle" style="margin-right: 15px;">
+                            Indicadores <br />
+                            <span id="span30dias" style="font-size: 15px;">Ultimos 30 días</span>
+                        </span>-->
+                            <div class="col-lg-4">
+                                <row class="row py-1">
+                                    <label class="dataTitle" style="margin-bottom: 0px;">Indicadores</label>
+                                </row>
+                                <row class="row py-1">
+                                    <label id="lblRango" style="margin-top: 8px; margin-right: 8px;"></label>
+                                    <button type="button" id="btnRango" class="btn btn-rangos" onclick="prevModalRangos()"></button>
+                                </row> 
+                            </div>
                         </div>
                         <div class="card-body">
                             <div class="row py-1">
@@ -234,15 +308,15 @@
                                             <span class="fa fa-line-chart" style="margin-bottom: 0px;padding-top: 5px;margin-right: 5px;"></span> Ranking Anunciantes
                                         </div>
                                         <div class="card-body" style="text-align: center; padding-top: 10px;">
-                                            <span id="spanAnunciantes1" style="font-size: 22px;color: black;">
+                                            <span id="spanAnunciante0" style="font-size: 22px;color: black;">
 
                                             </span>
                                             <br />
-                                            <span id="spanAnunciantes2" style="font-size: 18px; color: #595959;">
+                                            <span id="spanAnunciante1" style="font-size: 18px; color: #595959;">
 
                                             </span>
                                             <br />
-                                            <span id="spanAnunciantes3" style="font-size: 13px; color: #a7a7a7;">
+                                            <span id="spanAnunciante2" style="font-size: 13px; color: #a7a7a7;">
 
                                             </span>
                                         </div>
@@ -251,18 +325,18 @@
                                 <div class="col-md-3">
                                     <div class="card rounded bg-transparent" style="align-items: center; border-color: #f6ab36; color: #ffffff; max-width: -webkit-fill-available; height: 152px; background-image: linear-gradient(#f6ab36 25%, #ffffff 25%); ">
                                         <div class="d-flex dataTitle" style="padding-top: 5px;">
-                                            <span class="fa fa-plus" style="margin-bottom: 0px;padding-top: 5px;margin-right: 5px;"></span> Ranking Agencias
+                                            <span class="fa fa-line-chart" style="margin-bottom: 0px;padding-top: 5px;margin-right: 5px;"></span> Ranking Agencias
                                         </div>
                                         <div class="card-body" style="text-align: center; padding-top: 10px;">
-                                            <span id="spanAgencias1" style="font-size: 22px;color: black;">
+                                            <span id="spanAgencia0" style="font-size: 22px;color: black;">
 
                                             </span>
                                             <br />
-                                            <span id="spanAgencias2" style="font-size: 18px; color: #595959;">
+                                            <span id="spanAgencia1" style="font-size: 18px; color: #595959;">
 
                                             </span>
                                             <br />
-                                            <span id="spanAgencias3" style="font-size: 13px; color: #a7a7a7;">
+                                            <span id="spanAgencia2" style="font-size: 13px; color: #a7a7a7;">
 
                                             </span>
                                         </div>
@@ -271,18 +345,18 @@
                                 <div class="col-md-3">
                                     <div class="card rounded bg-transparent" style="align-items: center; border-color: #f6ab36; color: #ffffff; max-width: -webkit-fill-available; height: 152px; background-image: linear-gradient(#f6ab36 25%, #ffffff 25%); ">
                                         <div class="d-flex dataTitle" style="padding-top: 5px;">
-                                            <span class="fa fa-plus" style="margin-bottom: 0px;padding-top: 5px;margin-right: 5px;"></span> Ranking Medios
+                                            <span class="fa fa-line-chart" style="margin-bottom: 0px;padding-top: 5px;margin-right: 5px;"></span> Ranking Medios
                                         </div>
                                         <div class="card-body" style="text-align: center; padding-top: 10px;">
-                                            <span id="spanMedios1" style="font-size: 22px;color: black;">
+                                            <span id="spanMedio0" style="font-size: 22px;color: black;">
 
                                             </span>
                                             <br />
-                                            <span id="spanMedios2" style="font-size: 18px; color: #595959;">
+                                            <span id="spanMedio1" style="font-size: 18px; color: #595959;">
 
                                             </span>
                                             <br />
-                                            <span id="spanMedios3" style="font-size: 13px; color: #a7a7a7;">
+                                            <span id="spanMedio2" style="font-size: 13px; color: #a7a7a7;">
 
                                             </span>
                                         </div>
@@ -291,17 +365,27 @@
                                 <div class="col-md-3">
                                     <div class="card rounded bg-transparent" style="align-items: center; border-color: #f6ab36; color: #ffffff; max-width: -webkit-fill-available; height: 152px; background-image: linear-gradient(#f6ab36 25%, #ffffff 25%); ">
                                         <div class="d-flex dataTitle" style="padding-top: 5px;">
-                                            <span class="fa fa-plus" style="margin-bottom: 0px;padding-top: 5px;margin-right: 5px;"></span> Ingresos
+                                            <span class="fa fa-line-chart" style="margin-bottom: 0px;padding-top: 5px;margin-right: 5px;"></span> Ranking Tipos de Avisos
                                         </div>
-                                        <div class="card-body">
-                                            Usuario MMASS Radio/TV
+                                        <div class="card-body" style="text-align: center; padding-top: 10px;">
+                                            <span id="spanTipoAviso0" style="font-size: 22px;color: black;">
+
+                                            </span>
+                                            <br />
+                                            <span id="spanTipoAviso1" style="font-size: 18px; color: #595959;">
+
+                                            </span>
+                                            <br />
+                                            <span id="spanTipoAviso2" style="font-size: 13px; color: #a7a7a7;">
+
+                                            </span>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>                    
+                </div>
             </div>
         </div>
     </main>
@@ -320,10 +404,22 @@
             //    }
             //});
             document.body.style.backgroundImage = "url(./fondoM3.png)";
+            $('#fechaDesde').datetimepicker({ format: 'L', locale: 'es' });
+            $('#fechaHasta').datetimepicker({ format: 'L', locale: 'es' });
+            $("#lblRango").text('Ultimos 30 días');
             buscarDatosIndicadores(); 
         });
 
         function buscarDatosIndicadores() {
+            //seteamos el rango por defecto (últimos 30 días)
+            const hoy = new Date();
+            let ayer = new Date(hoy);
+            ayer.setDate(ayer.getDate() - 1);
+            let treintaDias = new Date(hoy);
+            treintaDias.setDate(treintaDias.getDate() - 30);
+            $('#fechaDesde').datetimepicker('date', moment(treintaDias, 'DD/MM/YYYY'));
+            $('#fechaHasta').datetimepicker('date', moment(ayer, 'DD/MM/YYYY'));
+
             const hastaUltimo = new Date();
             hastaUltimo.setDate(hastaUltimo.getDate() - 1);
             const desdeUltimo = new Date();
@@ -334,8 +430,10 @@
             const desdePenultimo = new Date();
             desdePenultimo.setDate(desdePenultimo.getDate() - 30 - 30);
 
-            //agregamos fechas al título
-            $("#span30dias").append(' ' + '(' + formatDate(desdeUltimo) + ' - ' + formatDate(hastaUltimo) + ')');
+            //agregamos fechas al btnRango
+            //$("#btnRango").attr('value', '(' + formatDate(desdeUltimo) + ' - ' + formatDate(hastaUltimo) + ')'); 
+            $("#btnRango").html('(' + formatDate(desdeUltimo) + ' - ' + formatDate(hastaUltimo) + ')');
+    /*        $("#btnRango").text('(' + formatDate(desdeUltimo) + ' - ' + formatDate(hastaUltimo) + ')');*/
 
             params = {};
             params.fechaDesdeUltimo = formatDate2(desdeUltimo);
@@ -385,36 +483,36 @@
 
         function onBuscarDatosRankings(data) {
             //Ranking Anunciantes
-            if (data[0][0] != null) {
-                $("#spanAnunciantes1").append(data[0][0].anunciante.slice(0, 8) + ' (' + nFormatter(data[0][0].importe_total, 1) + '$' + ')');
-            }
-            if (data[0][1] != null) {
-                $("#spanAnunciantes2").append(data[0][1].anunciante.slice(0, 8) + ' (' + nFormatter(data[0][1].importe_total, 1) + '$' + ')');
-            }
-            if (data[0][2] != null) {
-                $("#spanAnunciantes3").append(data[0][2].anunciante.slice(0, 8) + ' (' + nFormatter(data[0][2].importe_total, 1) + '$' + ')');
-            }
+            llenarRanking(data, 0);
 
             //Ranking Agencias
-            if (data[1][0] != null) {
-                $("#spanAgencias1").append(data[1][0].agencia.slice(0, 8) + ' (' + nFormatter(data[1][0].importe_total, 1) + '$' + ')');
-            }
-            if (data[1][1] != null) {
-                $("#spanAgencias2").append(data[1][1].agencia.slice(0, 8) + ' (' + nFormatter(data[1][1].importe_total, 1) + '$' + ')');
-            }
-            if (data[1][2] != null) {
-                $("#spanAgencias3").append(data[1][2].agencia.slice(0, 8) + ' (' + nFormatter(data[1][2].importe_total, 1) + '$' + ')');
-            }
+            llenarRanking(data, 1);
 
             //Ranking Medios
-            if (data[2][0] != null) {
-                $("#spanMedios1").append(data[2][0].medio.slice(0, 8) + ' (' + nFormatter(data[2][0].importe_total, 1) + '$' + ')');
-            }
-            if (data[2][1] != null) {
-                $("#spanMedios2").append(data[2][1].medio.slice(0, 8) + ' (' + nFormatter(data[2][1].importe_total, 1) + '$' + ')');
-            }
-            if (data[2][2] != null) {
-                $("#spanMedios3").append(data[2][2].medio.slice(0, 8) + ' (' + nFormatter(data[2][2].importe_total, 1) + '$' + ')');
+            llenarRanking(data, 2);
+
+            //Ranking Tipos Aviso
+            llenarRanking(data, 3);
+        }
+
+        function llenarRanking(data, ranking) {
+            for (let i = 0; i < 3; i++) {
+                if (data[ranking][i] != null) {
+                    switch (ranking) {
+                        case 0:
+                            $("#spanAnunciante" + i).append(data[ranking][i].anunciante.slice(0, 8) + ' (' + nFormatter(data[ranking][i].importe_total, 1) + '$' + ')');
+                            break;
+                        case 1:
+                            $("#spanAgencia" + i).append(data[ranking][i].agencia.slice(0, 8) + ' (' + nFormatter(data[ranking][i].importe_total, 1) + '$' + ')');
+                            break;
+                        case 2:
+                            $("#spanMedio" + i).append(data[ranking][i].medio.slice(0, 8) + ' (' + nFormatter(data[ranking][i].importe_total, 1) + '$' + ')');
+                            break;
+                        case 3:
+                            $("#spanTipoAviso" + i).append(data[ranking][i].tipo_aviso.slice(0, 8) + ' (' + nFormatter(data[ranking][i].importe_total, 1) + '$' + ')');
+                            break;
+                    }
+                }
             }
         }
 
@@ -485,6 +583,128 @@
                 return num >= item.value;
             });
             return item ? (num / item.value).toFixed(digits).replace(rx, "$1").replace(".", ",") + " " + item.symbol : "0";
+        }
+
+        function dateToSqlFormat(date) {
+            arr = date.split("/");
+            sqlFormatDate = '';
+            sqlFormatDate = arr[2] + '-' + arr[1] + '-' + arr[0];
+            return sqlFormatDate;
+        }
+
+        function dateToFieldFormat(date) {
+            date = date.split('T')[0];
+            arr = date.split("-");
+            fieldFormatDate = '';
+            fieldFormatDate = arr[2] + '/' + arr[1] + '/' + arr[0];
+            return fieldFormatDate;
+        }
+
+        function prevModalRangos() {
+            rangoValue = $('#selRango').val();
+            const hoy = new Date();
+            switch (rangoValue) {
+                case 0:
+                    $('#fechaDesde').datetimepicker('date', moment(dateToFieldFormat(hoy), 'DD/MM/YYYY'));
+                    break;
+                case 1:
+                    $("#spanAgencia" + i).append(data[ranking][i].agencia.slice(0, 8) + ' (' + nFormatter(data[ranking][i].importe_total, 1) + '$' + ')');
+                    break;
+                case 2:
+                    $("#spanMedio" + i).append(data[ranking][i].medio.slice(0, 8) + ' (' + nFormatter(data[ranking][i].importe_total, 1) + '$' + ')');
+                    break;
+                case 3:
+                    $("#spanTipoAviso" + i).append(data[ranking][i].tipo_aviso.slice(0, 8) + ' (' + nFormatter(data[ranking][i].importe_total, 1) + '$' + ')');
+                    break;
+            }
+
+            //if(rangoValue==0)
+            //if (rangoValue == 8) {
+            //    $("#fechaDesde").attr("disabled", false);
+            //    $("#fechaHasta").attr("disabled", false);
+            //}
+            //else {
+            //    $("#fechaDesde").attr("disabled", true);
+            //    $("#fechaHasta").attr("disabled", true);
+            //}
+
+            $("#modalRangos").modal('show')
+        }
+
+        function onSelRangoSelected() {
+            var rangoValue = $('#selRango').val();
+            const hoy = new Date();
+            let ayer = new Date(hoy);
+            ayer.setDate(ayer.getDate() - 1);
+
+            switch (rangoValue) {
+                case '0':
+                    //hoy
+                    $('#fechaDesde').datetimepicker('date', moment(hoy, 'DD/MM/YYYY'));
+                    $('#fechaHasta').datetimepicker('date', moment(hoy, 'DD/MM/YYYY'));
+                    break;
+                case '1':
+                    //ayer
+                    $('#fechaDesde').datetimepicker('date', moment(ayer, 'DD/MM/YYYY'));
+                    $('#fechaHasta').datetimepicker('date', moment(ayer, 'DD/MM/YYYY'));
+                    break;
+                case '2':
+                    //ultimos 7 dias
+                    let sieteDias = new Date(hoy);
+                    sieteDias.setDate(sieteDias.getDate() - 7);
+                    $('#fechaDesde').datetimepicker('date', moment(sieteDias, 'DD/MM/YYYY'));
+                    $('#fechaHasta').datetimepicker('date', moment(ayer, 'DD/MM/YYYY'));
+                    break;
+                case '3':
+                    //ultimos 30 dias
+                    let treintaDias = new Date(hoy);
+                    treintaDias.setDate(treintaDias.getDate() - 30);
+                    $('#fechaDesde').datetimepicker('date', moment(treintaDias, 'DD/MM/YYYY'));
+                    $('#fechaHasta').datetimepicker('date', moment(ayer, 'DD/MM/YYYY'));
+                    break;
+                case '4':
+                    //ultimos 90 dias
+                    let noventaDias = new Date(hoy);
+                    noventaDias.setDate(noventaDias.getDate() - 90);
+                    $('#fechaDesde').datetimepicker('date', moment(noventaDias, 'DD/MM/YYYY'));
+                    $('#fechaHasta').datetimepicker('date', moment(ayer, 'DD/MM/YYYY'));
+                    break;
+                case '5':
+                    //el mes pasado
+                    var mesPasado = new Date();
+                    mesPasado.setDate(0); // 0 devuelve el ultimo dia del mes pasado
+                    $('#fechaHasta').datetimepicker('date', moment(mesPasado, 'DD/MM/YYYY'));
+                    mesPasado.setDate(1); // 1 devuelve el primer dia del mes pasado
+                    $('#fechaDesde').datetimepicker('date', moment(mesPasado, 'DD/MM/YYYY'));
+                    break;
+                case '6':
+                    //mes hasta la fecha
+                    var primerDiaMes = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
+                    $('#fechaDesde').datetimepicker('date', moment(primerDiaMes, 'DD/MM/YYYY'));
+                    $('#fechaHasta').datetimepicker('date', moment(hoy, 'DD/MM/YYYY'));
+                    break;
+                case '7':
+                    //trimestre hasta la fecha
+                    const trimestre = Math.floor((hoy.getMonth() / 3));
+                    const primerDiaTrimestre = new Date(hoy.getFullYear(), trimestre * 3, 1);
+                    $('#fechaDesde').datetimepicker('date', moment(primerDiaTrimestre, 'DD/MM/YYYY'));
+                    $('#fechaHasta').datetimepicker('date', moment(hoy, 'DD/MM/YYYY'));
+                    break;
+                case '8':
+                    //personalizado
+                    $("#fechaDesde").attr("disabled", false);
+                    $("#fechaHasta").attr("disabled", false);
+                    break;
+            }
+
+            //if (rangoValue == 8) {
+            //    $("#fechaDesde").attr("disabled", false);
+            //    $("#fechaHasta").attr("disabled", false);
+            //}
+            //else {
+            //    $("#fechaDesde").attr("disabled", true);
+            //    $("#fechaHasta").attr("disabled", true);
+            //}
         }
 
     </script>
