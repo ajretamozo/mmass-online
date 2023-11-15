@@ -96,7 +96,7 @@
             }
 
         .modalRangos {
-            position: absolute !important;
+            position: fixed !important;
             top: 50% !important;
             left: 50% !important;
             transform: translate(-50%, -50%) !important;
@@ -105,11 +105,12 @@
         .btn-rangos {
             color: #000;
             background-color: #f7f7f7;
-            border-color: #f2e9e9;
+            border-bottom-color: #d8d8d8;
+            /* border-right-color: #f2e9e9;*/
         }
 
             .btn-rangos:hover {
-                background-color: #f2e9e9;
+                background-color: #d8d8d8;
             }
 
     </style>
@@ -165,9 +166,9 @@
                             </div>
                             <div class='col-lg-6' style='padding - left: 0px;'>
                                 <div class="input-group input-daterange">
-                                    <input type="text" class="form-control enterSearch" id="fechaDesde" data-toggle="datetimepicker" data-target="#fechaDesde" />
+                                    <input type="text" class="form-control enterSearch" id="fechaDesde" data-toggle="datetimepicker" data-target="#fechaDesde" onchange="comprobarFechas(1)" disabled="disabled"/>
                                     <span class="input-group-addon">hasta</span>
-                                    <input type="text" class="form-control enterSearch" id="fechaHasta" data-toggle="datetimepicker" data-target="#fechaHasta" />
+                                    <input type="text" class="form-control enterSearch" id="fechaHasta" data-toggle="datetimepicker" data-target="#fechaHasta" onchange="comprobarFechas(2)" disabled="disabled"/>
                                 </div>
                             </div>
                         </div>
@@ -220,17 +221,14 @@
                 <div class="row">
                     <div class="card mb-3 shadow p-3 bg-white rounded" style="margin-right: 20px; margin-left: 20px; width: 1234px; ">
                         <div class="card-header d-flex align-items-center" style="margin-bottom: 1rem;">
-                            <!--<span class="dataTitle" style="margin-right: 15px;">
-                            Indicadores <br />
-                            <span id="span30dias" style="font-size: 15px;">Ultimos 30 días</span>
-                        </span>-->
-                            <div class="col-lg-4">
+                            <div class="col-lg-6">
                                 <row class="row py-1">
                                     <label class="dataTitle" style="margin-bottom: 0px;">Indicadores</label>
                                 </row>
                                 <row class="row py-1">
-                                    <label id="lblRango" style="margin-top: 8px; margin-right: 8px;"></label>
-                                    <button type="button" id="btnRango" class="btn btn-rangos" onclick="prevModalRangos()"></button>
+                                    <label id="lblRango" style="margin-top: 8px; margin-right: 3px;"></label>
+                                    <button type="button" id="btnRango" class="btn btn-rangos" onclick="prevModalRangos()">
+                                    </button>
                                 </row> 
                             </div>
                         </div>
@@ -308,7 +306,7 @@
                                             <span class="fa fa-line-chart" style="margin-bottom: 0px;padding-top: 5px;margin-right: 5px;"></span> Ranking Anunciantes
                                         </div>
                                         <div class="card-body" style="text-align: center; padding-top: 10px;">
-                                            <span id="spanAnunciante0" style="font-size: 22px;color: black;">
+                                            <span id="spanAnunciante0" style="font-size: 21px;color: black;">
 
                                             </span>
                                             <br />
@@ -328,7 +326,7 @@
                                             <span class="fa fa-line-chart" style="margin-bottom: 0px;padding-top: 5px;margin-right: 5px;"></span> Ranking Agencias
                                         </div>
                                         <div class="card-body" style="text-align: center; padding-top: 10px;">
-                                            <span id="spanAgencia0" style="font-size: 22px;color: black;">
+                                            <span id="spanAgencia0" style="font-size: 21px;color: black;">
 
                                             </span>
                                             <br />
@@ -348,7 +346,7 @@
                                             <span class="fa fa-line-chart" style="margin-bottom: 0px;padding-top: 5px;margin-right: 5px;"></span> Ranking Medios
                                         </div>
                                         <div class="card-body" style="text-align: center; padding-top: 10px;">
-                                            <span id="spanMedio0" style="font-size: 22px;color: black;">
+                                            <span id="spanMedio0" style="font-size: 21px;color: black;">
 
                                             </span>
                                             <br />
@@ -368,7 +366,7 @@
                                             <span class="fa fa-line-chart" style="margin-bottom: 0px;padding-top: 5px;margin-right: 5px;"></span> Ranking Tipos de Avisos
                                         </div>
                                         <div class="card-body" style="text-align: center; padding-top: 10px;">
-                                            <span id="spanTipoAviso0" style="font-size: 22px;color: black;">
+                                            <span id="spanTipoAviso0" style="font-size: 21px;color: black;">
 
                                             </span>
                                             <br />
@@ -404,42 +402,48 @@
             //    }
             //});
             document.body.style.backgroundImage = "url(./fondoM3.png)";
-            $('#fechaDesde').datetimepicker({ format: 'L', locale: 'es' });
-            $('#fechaHasta').datetimepicker({ format: 'L', locale: 'es' });
-            $("#lblRango").text('Ultimos 30 días');
-            buscarDatosIndicadores(); 
+            inicializar();
         });
 
-        function buscarDatosIndicadores() {
-            //seteamos el rango por defecto (últimos 30 días)
-            const hoy = new Date();
-            let ayer = new Date(hoy);
-            ayer.setDate(ayer.getDate() - 1);
-            let treintaDias = new Date(hoy);
-            treintaDias.setDate(treintaDias.getDate() - 30);
-            $('#fechaDesde').datetimepicker('date', moment(treintaDias, 'DD/MM/YYYY'));
-            $('#fechaHasta').datetimepicker('date', moment(ayer, 'DD/MM/YYYY'));
+        function inicializar() {
+            $.when(formatearDatetimepickers()).then(function () {
+                $("#lblRango").text($("#selRango option:selected").text());
+                $("#selRango").change();
+            });
+        }
 
-            const hastaUltimo = new Date();
-            hastaUltimo.setDate(hastaUltimo.getDate() - 1);
-            const desdeUltimo = new Date();
-            desdeUltimo.setDate(desdeUltimo.getDate() - 30);
+        function formatearDatetimepickers() {
+            var hoy = new Date();
+            hoy.setUTCHours(23, 59, 59, 999);
+            $('#fechaDesde').datetimepicker({ format: 'L', locale: 'es', maxDate: hoy });
+            $('#fechaHasta').datetimepicker({ format: 'L', locale: 'es', maxDate: hoy });
+        }
 
-            const hastaPenultimo = new Date();
-            hastaPenultimo.setDate(hastaPenultimo.getDate() - 1 - 30);
-            const desdePenultimo = new Date();
-            desdePenultimo.setDate(desdePenultimo.getDate() - 30 - 30);
+        function buscarDatosIndicadoresRanking() {
+            const desdePenultimoDate = new Date();
+            const hastaPenultimoDate = new Date();
 
             //agregamos fechas al btnRango
-            //$("#btnRango").attr('value', '(' + formatDate(desdeUltimo) + ' - ' + formatDate(hastaUltimo) + ')'); 
-            $("#btnRango").html('(' + formatDate(desdeUltimo) + ' - ' + formatDate(hastaUltimo) + ')');
-    /*        $("#btnRango").text('(' + formatDate(desdeUltimo) + ' - ' + formatDate(hastaUltimo) + ')');*/
+            $("#btnRango").html('(' + $('#fechaDesde').val() + ' - ' + $('#fechaHasta').val() + ')<span class="fa fa-caret-down" style="margin-left: 10px;"></span>');
+
+            var desdeUltimo = dateToSqlFormat($('#fechaDesde').val());
+            var hastaUltimo = dateToSqlFormat($('#fechaHasta').val());
+
+            var desdeUltimoDate = new Date(desdeUltimo + 'T00:00:00');
+            var hastaUltimoDate = new Date(hastaUltimo + 'T00:00:00');
+            const diffTime = Math.abs(hastaUltimoDate - desdeUltimoDate);
+            const cantDias = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+            desdeUltimoDate.setDate(desdeUltimoDate.getDate() - (cantDias + 1));
+            hastaUltimoDate.setDate(hastaUltimoDate.getDate() - (cantDias + 1));
+
+            var desdePenultimo = formatDate2(desdeUltimoDate);
+            var hastaPenultimo = formatDate2(hastaUltimoDate);
 
             params = {};
-            params.fechaDesdeUltimo = formatDate2(desdeUltimo);
-            params.fechaHastaUltimo = formatDate2(hastaUltimo);
-            params.fechaDesdePenultimo = formatDate2(desdePenultimo);
-            params.fechaHastaPenultimo = formatDate2(hastaPenultimo);
+            params.fechaDesdeUltimo = desdeUltimo;
+            params.fechaHastaUltimo = hastaUltimo;
+            params.fechaDesdePenultimo = desdePenultimo;
+            params.fechaHastaPenultimo = hastaPenultimo;
             var parametros = setListaParametros(params);
             //buscamos los datos indicadores
             callWS("R_Ventas", "getDatosHome", JSON.stringify(parametros), function (data) { onBuscarDatosIndicadores(data); });
@@ -450,35 +454,76 @@
         function onBuscarDatosIndicadores(data) {
             //Ingresos
             var ingresosDif = data[0].importe_total - data[1].importe_total;
-            var ingresosDifPorc = (Math.abs(ingresosDif) * 100) / data[1].importe_total;
+            var ingresosDifPorc = 0;
+            if (Math.abs(ingresosDif) > 0) {
+                ingresosDifPorc = (Math.abs(ingresosDif) * 100) / data[1].importe_total;
+            }
+            var strgPorcIng = '';
+            if (ingresosDifPorc > 100) {
+                strgPorcIng = '>100';
+            }
+            else {
+                strgPorcIng = ingresosDifPorc.toFixed();
+            }
 
-            setColoresDif(ingresosDif, '#spanIngresosDif');
-            $("#spanIngresos").append(nFormatter(data[0].importe_total, 2) + '$');
-            $("#spanIngresosDif").append(nFormatter(Math.abs(ingresosDif), 2) + '$ (' + ingresosDifPorc.toFixed() + '%)');
+            var signo = setColoresDif(ingresosDif, '#spanIngresosDif');
+            $("#spanIngresos").html(nFormatter(data[0].importe_total, 2) + '$');
+            $("#spanIngresosDif").html(signo + nFormatter(Math.abs(ingresosDif), 2) + '$ (' + strgPorcIng + '%)');
 
             //Impresiones
             var impresionesDif = data[0].impresiones - data[1].impresiones;
-            var impresionesDifPorc = (Math.abs(impresionesDif) * 100) / data[1].impresiones;
+            var impresionesDifPorc = 0;
+            if (Math.abs(impresionesDif) > 0) {
+                impresionesDifPorc = (Math.abs(impresionesDif) * 100) / data[1].impresiones;
+            }
 
-            setColoresDif(impresionesDif, '#spanImpresionesDif');
-            $("#spanImpresiones").append(nFormatter(data[0].impresiones, 2));
-            $("#spanImpresionesDif").append(nFormatter(Math.abs(impresionesDif), 2) + ' (' + impresionesDifPorc.toFixed() + '%)');
+            var strgPorcImp = '';
+            if (impresionesDifPorc > 100) {
+                strgPorcImp = '>100'
+            }
+            else {
+                strgPorcImp = impresionesDifPorc.toFixed();
+            }
 
-            //eCPM
+            var signo = setColoresDif(impresionesDif, '#spanImpresionesDif');
+            $("#spanImpresiones").html(nFormatter(data[0].impresiones, 2));
+            $("#spanImpresionesDif").html(signo + nFormatter(Math.abs(impresionesDif), 2) + ' (' + strgPorcImp + '%)');
+
+            //eCPM 
             var ecpmDif = data[0].ecpm - data[1].ecpm
-            var ecpmDifPorc = (Math.abs(ecpmDif) * 100) / data[1].ecpm;
+            var ecpmDifPorc = 0;
+            if (Math.abs(ecpmDif) > 0) {
+                 ecpmDifPorc = (Math.abs(ecpmDif) * 100) / data[1].ecpm;
+            }
+            var strgPorcEcpm = '';
+            if (ecpmDifPorc > 100) {
+                strgPorcEcpm = '>100'
+            }
+            else {
+                strgPorcEcpm = ecpmDifPorc.toFixed();
+            }
 
-            setColoresDif(ecpmDif, '#spanEcpmDif');
-            $("#spanEcpm").append(nFormatter(data[0].ecpm, 2) + '$');
-            $("#spanEcpmDif").append(nFormatter(Math.abs(ecpmDif), 2) + '$ (' + ecpmDifPorc.toFixed() + '%)');
+            var signo = setColoresDif(ecpmDif, '#spanEcpmDif');
+            $("#spanEcpm").html(nFormatter(data[0].ecpm, 2) + '$');
+            $("#spanEcpmDif").html(signo + nFormatter(Math.abs(ecpmDif), 2) + '$ (' + strgPorcEcpm + '%)');
 
             //Cantidad de Ordenes
             var ordenesDif = data[0].cantidad_ordenes - data[1].cantidad_ordenes;
-            var ordenesDifPorc = (Math.abs(ordenesDif) * 100) / data[1].cantidad_ordenes;
+            var ordenesDifPorc = 0;
+            if (Math.abs(ordenesDif) > 0) {
+                ordenesDifPorc = (Math.abs(ordenesDif) * 100) / data[1].cantidad_ordenes;
+            }
+            var strgPorcOrd = '';
+            if (ordenesDifPorc > 100) {
+                strgPorcOrd = '>100'
+            }
+            else {
+                strgPorcOrd = ordenesDifPorc.toFixed();
+            }
 
-            setColoresDif(ordenesDif, '#spanOrdenesDif');
-            $("#spanOrdenes").append(data[0].cantidad_ordenes);
-            $("#spanOrdenesDif").append(nFormatter(Math.abs(ordenesDif)) + ' (' + ordenesDifPorc.toFixed() + '%)');
+            var signo = setColoresDif(ordenesDif, '#spanOrdenesDif');
+            $("#spanOrdenes").html(data[0].cantidad_ordenes);
+            $("#spanOrdenesDif").html(signo + nFormatter(Math.abs(ordenesDif)) + ' (' + strgPorcOrd + '%)');
         }
 
         function onBuscarDatosRankings(data) {
@@ -497,27 +542,47 @@
 
         function llenarRanking(data, ranking) {
             for (let i = 0; i < 3; i++) {
-                if (data[ranking][i] != null) {
-                    switch (ranking) {
-                        case 0:
-                            $("#spanAnunciante" + i).append(data[ranking][i].anunciante.slice(0, 8) + ' (' + nFormatter(data[ranking][i].importe_total, 1) + '$' + ')');
-                            break;
-                        case 1:
-                            $("#spanAgencia" + i).append(data[ranking][i].agencia.slice(0, 8) + ' (' + nFormatter(data[ranking][i].importe_total, 1) + '$' + ')');
-                            break;
-                        case 2:
-                            $("#spanMedio" + i).append(data[ranking][i].medio.slice(0, 8) + ' (' + nFormatter(data[ranking][i].importe_total, 1) + '$' + ')');
-                            break;
-                        case 3:
-                            $("#spanTipoAviso" + i).append(data[ranking][i].tipo_aviso.slice(0, 8) + ' (' + nFormatter(data[ranking][i].importe_total, 1) + '$' + ')');
-                            break;
-                    }
+                switch (ranking) {
+                    case 0:
+                        if (data[ranking][i] == null) {
+                            $("#spanAnunciante" + i).html('')
+                        }
+                        else {
+                            $("#spanAnunciante" + i).html(data[ranking][i].anunciante.slice(0, 8) + ' (' + nFormatter(data[ranking][i].importe_total, 1) + '$' + ')');
+                        }
+                        break;
+                    case 1:
+                        if (data[ranking][i] == null) {
+                            $("#spanAgencia" + i).html('')
+                        }
+                        else {
+                            $("#spanAgencia" + i).html(data[ranking][i].agencia.slice(0, 8) + ' (' + nFormatter(data[ranking][i].importe_total, 1) + '$' + ')');
+                        }
+                        break;
+                    case 2:
+                        if (data[ranking][i] == null) {
+                            $("#spanMedio" + i).html('')
+                        }
+                        else {
+                            $("#spanMedio" + i).html(data[ranking][i].medio.slice(0, 8) + ' (' + nFormatter(data[ranking][i].importe_total, 1) + '$' + ')');
+                        }
+                        break;
+                    case 3:
+                        if (data[ranking][i] == null) {
+                            $("#spanTipoAviso" + i).html('')
+                        }
+                        else {
+                            $("#spanTipoAviso" + i).html(data[ranking][i].tipo_aviso.slice(0, 8) + ' (' + nFormatter(data[ranking][i].importe_total, 1) + '$' + ')');
+                        }
+                        break;
                 }
             }
         }
 
         function setColoresDif(diferencia, span) {
+            var signo = '';
             if (diferencia < 0) {
+                signo = '-';
                 $(span).append('-');
                 $(span).css("color", "crimson");
             }
@@ -525,9 +590,11 @@
                 $(span).css("color", "cornflowerblue");
             }
             else {
+                signo = '+';
                 $(span).append('+');
                 $(span).css("color", "forestgreen");
             }
+            return signo;
         }
 
         function formatDate(date) {
@@ -601,33 +668,6 @@
         }
 
         function prevModalRangos() {
-            rangoValue = $('#selRango').val();
-            const hoy = new Date();
-            switch (rangoValue) {
-                case 0:
-                    $('#fechaDesde').datetimepicker('date', moment(dateToFieldFormat(hoy), 'DD/MM/YYYY'));
-                    break;
-                case 1:
-                    $("#spanAgencia" + i).append(data[ranking][i].agencia.slice(0, 8) + ' (' + nFormatter(data[ranking][i].importe_total, 1) + '$' + ')');
-                    break;
-                case 2:
-                    $("#spanMedio" + i).append(data[ranking][i].medio.slice(0, 8) + ' (' + nFormatter(data[ranking][i].importe_total, 1) + '$' + ')');
-                    break;
-                case 3:
-                    $("#spanTipoAviso" + i).append(data[ranking][i].tipo_aviso.slice(0, 8) + ' (' + nFormatter(data[ranking][i].importe_total, 1) + '$' + ')');
-                    break;
-            }
-
-            //if(rangoValue==0)
-            //if (rangoValue == 8) {
-            //    $("#fechaDesde").attr("disabled", false);
-            //    $("#fechaHasta").attr("disabled", false);
-            //}
-            //else {
-            //    $("#fechaDesde").attr("disabled", true);
-            //    $("#fechaHasta").attr("disabled", true);
-            //}
-
             $("#modalRangos").modal('show')
         }
 
@@ -642,11 +682,17 @@
                     //hoy
                     $('#fechaDesde').datetimepicker('date', moment(hoy, 'DD/MM/YYYY'));
                     $('#fechaHasta').datetimepicker('date', moment(hoy, 'DD/MM/YYYY'));
+                    $("#fechaDesde").attr("disabled", true);
+                    $("#fechaHasta").attr("disabled", true);
+                    aplicarRango(); 
                     break;
                 case '1':
                     //ayer
                     $('#fechaDesde').datetimepicker('date', moment(ayer, 'DD/MM/YYYY'));
                     $('#fechaHasta').datetimepicker('date', moment(ayer, 'DD/MM/YYYY'));
+                    $("#fechaDesde").attr("disabled", true);
+                    $("#fechaHasta").attr("disabled", true);
+                    aplicarRango(); 
                     break;
                 case '2':
                     //ultimos 7 dias
@@ -654,6 +700,9 @@
                     sieteDias.setDate(sieteDias.getDate() - 7);
                     $('#fechaDesde').datetimepicker('date', moment(sieteDias, 'DD/MM/YYYY'));
                     $('#fechaHasta').datetimepicker('date', moment(ayer, 'DD/MM/YYYY'));
+                    $("#fechaDesde").attr("disabled", true);
+                    $("#fechaHasta").attr("disabled", true);
+                    aplicarRango(); 
                     break;
                 case '3':
                     //ultimos 30 dias
@@ -661,6 +710,9 @@
                     treintaDias.setDate(treintaDias.getDate() - 30);
                     $('#fechaDesde').datetimepicker('date', moment(treintaDias, 'DD/MM/YYYY'));
                     $('#fechaHasta').datetimepicker('date', moment(ayer, 'DD/MM/YYYY'));
+                    $("#fechaDesde").attr("disabled", true);
+                    $("#fechaHasta").attr("disabled", true);
+                    aplicarRango(); 
                     break;
                 case '4':
                     //ultimos 90 dias
@@ -668,6 +720,9 @@
                     noventaDias.setDate(noventaDias.getDate() - 90);
                     $('#fechaDesde').datetimepicker('date', moment(noventaDias, 'DD/MM/YYYY'));
                     $('#fechaHasta').datetimepicker('date', moment(ayer, 'DD/MM/YYYY'));
+                    $("#fechaDesde").attr("disabled", true);
+                    $("#fechaHasta").attr("disabled", true);
+                    aplicarRango(); 
                     break;
                 case '5':
                     //el mes pasado
@@ -676,12 +731,18 @@
                     $('#fechaHasta').datetimepicker('date', moment(mesPasado, 'DD/MM/YYYY'));
                     mesPasado.setDate(1); // 1 devuelve el primer dia del mes pasado
                     $('#fechaDesde').datetimepicker('date', moment(mesPasado, 'DD/MM/YYYY'));
+                    $("#fechaDesde").attr("disabled", true);
+                    $("#fechaHasta").attr("disabled", true);
+                    aplicarRango(); 
                     break;
                 case '6':
                     //mes hasta la fecha
                     var primerDiaMes = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
                     $('#fechaDesde').datetimepicker('date', moment(primerDiaMes, 'DD/MM/YYYY'));
                     $('#fechaHasta').datetimepicker('date', moment(hoy, 'DD/MM/YYYY'));
+                    $("#fechaDesde").attr("disabled", true);
+                    $("#fechaHasta").attr("disabled", true);
+                    aplicarRango(); 
                     break;
                 case '7':
                     //trimestre hasta la fecha
@@ -689,6 +750,9 @@
                     const primerDiaTrimestre = new Date(hoy.getFullYear(), trimestre * 3, 1);
                     $('#fechaDesde').datetimepicker('date', moment(primerDiaTrimestre, 'DD/MM/YYYY'));
                     $('#fechaHasta').datetimepicker('date', moment(hoy, 'DD/MM/YYYY'));
+                    $("#fechaDesde").attr("disabled", true);
+                    $("#fechaHasta").attr("disabled", true);
+                    aplicarRango(); 
                     break;
                 case '8':
                     //personalizado
@@ -696,15 +760,61 @@
                     $("#fechaHasta").attr("disabled", false);
                     break;
             }
+        }
 
-            //if (rangoValue == 8) {
-            //    $("#fechaDesde").attr("disabled", false);
-            //    $("#fechaHasta").attr("disabled", false);
-            //}
-            //else {
-            //    $("#fechaDesde").attr("disabled", true);
-            //    $("#fechaHasta").attr("disabled", true);
-            //}
+        function aplicarRango() {
+//            if (!validarFechas()) { return false; }
+
+            $("#lblRango").text($("#selRango option:selected").text());
+            $("#btnRango").html('(' + $('#fechaDesde').val() + ' - ' + $('#fechaHasta').val() + ')<span class="fa fa-caret-down" style="margin-left: 10px;"></span>');
+            buscarDatosIndicadoresRanking();
+
+            $("#modalRangos").modal('hide')
+        } 
+
+        function comprobarFechas(selector) {
+            var o1 = new Date(dateToSqlFormat($('#fechaDesde').val()) + 'T00:00:00');
+            var o2 = new Date(dateToSqlFormat($('#fechaHasta').val()) + 'T00:00:00');
+            if (o2 < o1) {
+                //si fechaDesde < fechaHasta, entonces de setea la fecha seleccionada en fechaDesde en fechaHasta
+                if (selector == 1) {
+                    $("#fechaHasta").val($("#fechaDesde").val());
+                }
+                //si fechaHasta < fechaDesde, entonces de setea la fecha seleccionada en fechaHasta en fechaDesde
+                else {
+                    $("#fechaDesde").val($("#fechaHasta").val());
+                }
+            }
+        }
+
+        function validarFechas() {
+            if ($('#fechaDesde').val() != "") {
+                fDesde = new Date(moment($("#fechaDesde").val(), 'DD/MM/YYYY', true).format());
+                mfDesde = moment(fDesde);
+                if (mfDesde.isValid() == false) {
+                    showMessage("Seleccione una fecha válida para el periodo", "info");
+                    return false;
+                }
+            }
+            else {
+                showMessage("Seleccione una fecha para el periodo", "info");
+                return false;
+            }
+
+            if ($('#fechaHasta').val() != "") {
+                fHasta = new Date(moment($("#fechaHasta").val(), 'DD/MM/YYYY', true).format());
+                mfHasta = moment(fHasta);
+                if (mfHasta.isValid() == false) {
+                    showMessage("Seleccione una fecha válida para el periodo", "info");
+                    return false;
+                }
+            }
+            else {
+                showMessage("Seleccione una fecha para el periodo", "info");
+                return false;
+            }
+
+            return true;
         }
 
     </script>

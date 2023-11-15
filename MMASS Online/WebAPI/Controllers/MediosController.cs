@@ -187,10 +187,10 @@ namespace WebApi.Controllers
             return Ok(BD);
         }
 
-        [HttpPost("getConString")]
-        public IActionResult getConString()
+        [HttpPost("getInfoSistema")]
+        public IActionResult getInfoSistema()
         {
-            var cn = _medioService.getConString();
+            var cn = _medioService.getInfoSistema();
             return Ok(JsonConvert.SerializeObject(cn));
         }
 

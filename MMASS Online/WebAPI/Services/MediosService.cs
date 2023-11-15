@@ -40,7 +40,7 @@ namespace WebApi.Services
         IEnumerable<Clasificacion_op> getAllClasificacion();
         Dg_emplazamientos getEmplazaByCodigo(long cod, int idRed);
         int getBD();
-        String getConString();
+        String getInfoSistema();
         IEnumerable<Plazos_Pagos> GetAllPlazos();
         bool cambiarParam(Dg_parametro param);
         Dg_parametro getParamById(int id);
@@ -180,13 +180,15 @@ namespace WebApi.Services
             return int.Parse(Dg_parametro.getById(1).Valor);
         }
 
-        public String getConString()
+        public String getInfoSistema()
         {
             string csEdit = "";
             string[] arrCs = DB.conexion.ConnectionString.Split(";");
             string[] arrIp = arrCs[0].Split("=");
             string[] arrBd = arrCs[1].Split("=");
             csEdit = arrIp[1] + " - " + arrBd[1];
+
+            csEdit += "$$$" + Dg_parametro.getById(6).Valor;
 
             return csEdit;
         }

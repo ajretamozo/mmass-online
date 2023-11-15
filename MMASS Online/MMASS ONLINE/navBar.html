@@ -123,17 +123,19 @@
     setUserRol();
 
     function verInfo() {
-        callWS("medios", "getConString", '', function (cs) { onVerInfo(cs); });
+        callWS("medios", "getInfoSistema", '', function (cs) { onVerInfo(cs); });
     }
 
     function onVerInfo(cs) {
+        arr = cs.split("$$$");
+
         options = [
             {
                 optionDesc: "Cerrar",
                 optionFunc: ""
             }
         ];
-        var mensaje = "<div class='row'><div class='col' style='padding - right: 0px;'>• Versión:</div><div class='col' style='padding - left: 0px;'><b>3.4.4</b></div></div><div class='row'><div class='col' style='padding - right: 0px;'>• Base de Datos:</div><div class='col' style='padding - left: 0px;'><b>" + cs + "</b></div></div>";
+        var mensaje = "<div class='row'><div class='col' style='padding - right: 0px;'>• Versión:</div><div class='col' style='padding - left: 0px;'><b>" + arr[1] + "</b></div></div><div class='row'><div class='col' style='padding - right: 0px;'>• Base de Datos:</div><div class='col' style='padding - left: 0px;'><b>" + arr[0] + "</b></div></div>";
         showModalInfo(mensaje, options);
     }
 

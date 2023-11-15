@@ -30,31 +30,37 @@ namespace WebApi.Services
             //Obtenemos los datos del último mes 
             List<R_Ventas> datosMeses = new List<R_Ventas>();
             List<R_Ventas> OrdenesUltimoMes = R_Ventas.getDatosHome(parametros[0].Value, parametros[1].Value);
-            R_Ventas ultimoMes = new R_Ventas();
-            foreach(R_Ventas orden in OrdenesUltimoMes)
-            {
-                ultimoMes.Impresiones += orden.Impresiones;
-                ultimoMes.Importe_total += orden.Importe_total / orden.Cambio;
-            }
-            ultimoMes.Ecpm = (ultimoMes.Importe_total / ultimoMes.Impresiones) * 1000;
-            ultimoMes.Cantidad_ordenes = OrdenesUltimoMes.Count();
 
-            datosMeses.Add(ultimoMes);
+            datosMeses.Add(calcularIndicadores(OrdenesUltimoMes));
 
             //Obtenemos los datos del penúltimo mes 
             List<R_Ventas> OrdenesPenultimoMes = R_Ventas.getDatosHome(parametros[2].Value, parametros[3].Value);
-            R_Ventas penultimoMes = new R_Ventas();
-            foreach (R_Ventas orden in OrdenesPenultimoMes)
-            {
-                penultimoMes.Impresiones += orden.Impresiones;
-                penultimoMes.Importe_total += orden.Importe_total / orden.Cambio;
-            }
-            penultimoMes.Ecpm = (penultimoMes.Importe_total / penultimoMes.Impresiones) * 1000;
-            penultimoMes.Cantidad_ordenes = OrdenesPenultimoMes.Count();
 
-            datosMeses.Add(penultimoMes);
+            datosMeses.Add(calcularIndicadores(OrdenesPenultimoMes));
 
             return datosMeses;
+        }
+
+        public R_Ventas calcularIndicadores(List<R_Ventas> ordenesMes)
+        {
+            R_Ventas datosMes = new R_Ventas();
+
+            foreach (R_Ventas orden in ordenesMes)
+            {
+                datosMes.Impresiones += orden.Impresiones;
+                datosMes.Importe_total += orden.Importe_total / orden.Cambio;
+            }
+            if (datosMes.Impresiones == 0)
+            {
+                datosMes.Ecpm = 0;
+            }
+            else
+            {
+                datosMes.Ecpm = (datosMes.Importe_total / datosMes.Impresiones) * 1000;
+            }
+            datosMes.Cantidad_ordenes = ordenesMes.Count();
+
+            return datosMes;
         }
 
         public IEnumerable<List<R_Ventas>> getRankingsHome(List<Parametro> parametros)
