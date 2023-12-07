@@ -79,7 +79,7 @@ namespace WebApi.Entities
         public int Id_tarifa_dg { get; set; }
         public string Descripcion { get; set; }
         public DateTime Fecha_desde { get; set; }
-        public DateTime Fecha_hasta { get; set; }
+        public DateTime? Fecha_hasta { get; set; }
         public Dg_tarifa_forma_uso Forma_uso { get; set; }
         public double Precio_unitario { get; set; }
         public bool Es_borrado { get; set; }
@@ -108,13 +108,19 @@ namespace WebApi.Entities
                 resultado.Id_tarifa_dg = int.Parse(t.Rows[0]["id_tarifa_dg"].ToString());
                 resultado.Descripcion = t.Rows[0]["descripcion"].ToString();
                 resultado.Fecha_desde = DateTime.Parse(t.Rows[0]["fecha_desde"].ToString());
-                resultado.Fecha_hasta = DateTime.Parse(t.Rows[0]["fecha_hasta"].ToString());
+                //resultado.Fecha_hasta = DateTime.Parse(t.Rows[0]["fecha_hasta"].ToString());
                 resultado.Forma_uso =  Dg_tarifa_forma_uso.getFormaUso(DB.DInt(t.Rows[0]["forma_uso"].ToString()));
                 resultado.Precio_unitario = double.Parse(t.Rows[0]["precio_unitario"].ToString());
                 resultado.Es_borrado = (t.Rows[0]["Es_borrado"].ToString()=="1");
                 resultado.Id_red = int.Parse(t.Rows[0]["id_red"].ToString());
                 resultado.Id_moneda = DB.DInt(t.Rows[0]["id_moneda"].ToString());
                 resultado.Cambio = DB.DFloat(t.Rows[0]["cambio"].ToString());
+
+                if (t.Rows[0]["fecha_hasta"].ToString() != "")
+                {
+                    resultado.Fecha_hasta = DateTime.Parse(t.Rows[0]["fecha_hasta"].ToString());
+                }
+
                 // Medios
                 resultado.Medios = new List<Medio>();                
                 det = DB.Select("select tm.id_tarifa_dg, m.* from dg_tarifas_medios tm inner join medios m on m.id_medio = tm.id_medio where id_tarifa_dg = " + t.Rows[0]["id_tarifa_dg"].ToString());                
@@ -174,13 +180,13 @@ namespace WebApi.Entities
         {
             int respuesta = 0;
 
-            if (existeTarifa())
-            {
-                respuesta = 1;
-                return respuesta;
-            }
-            else
-            {
+            //if (existeTarifa())
+            //{
+            //    respuesta = 1;
+            //    return respuesta;
+            //}
+            //else
+            //{
                 string sql = "";
                 // Si es nuevo va insert, sino update
                 if (Id_tarifa_dg == 0)
@@ -203,8 +209,8 @@ namespace WebApi.Entities
                     { ParameterName="@descripcion", SqlDbType = SqlDbType.NVarChar, Value = Descripcion },
                     new SqlParameter()
                     { ParameterName="@fecha_desde", SqlDbType = SqlDbType.DateTime, Value = Fecha_desde },
-                    new SqlParameter()
-                    { ParameterName="@fecha_hasta", SqlDbType = SqlDbType.DateTime, Value = Fecha_hasta },
+                    //new SqlParameter()
+                    //{ ParameterName="@fecha_hasta", SqlDbType = SqlDbType.DateTime, Value = Fecha_hasta },
                     new SqlParameter()
                     { ParameterName="@forma_uso", SqlDbType = SqlDbType.Int, Value = Forma_uso.Id },
                     new SqlParameter()
@@ -215,7 +221,17 @@ namespace WebApi.Entities
                      { ParameterName = "@id_moneda", SqlDbType = SqlDbType.Int, Value = Id_moneda },
                      new SqlParameter()
                      { ParameterName = "@cambio", SqlDbType = SqlDbType.Float, Value = Cambio }
-            };
+                };
+
+                if (Fecha_hasta == null)
+                {
+                    parametros.Add(new SqlParameter() { ParameterName = "@fecha_hasta", SqlDbType = SqlDbType.DateTime, Value = DBNull.Value });
+                }
+                else
+                {
+                    parametros.Add(new SqlParameter() { ParameterName = "@fecha_hasta", SqlDbType = SqlDbType.DateTime, Value = Fecha_hasta });
+                }
+
                 try
                 {
                     using (TransactionScope transaccion = new TransactionScope(TransactionScopeOption.RequiresNew, new TimeSpan(0, 2, 0)))
@@ -278,13 +294,14 @@ namespace WebApi.Entities
                 }
 
                 return respuesta;
-            }         
+            //}         
         }
 
         public static List<Dg_tarifas> getAll()
         {
-            string sqlCommand = " select id_tarifa_dg, descripcion, fecha_desde, fecha_hasta, forma_uso, precio_unitario, es_borrado, id_red, id_moneda, cambio" +
-                                " from dg_tarifas where es_borrado = 0 " ;
+            string sqlCommand = " select top 100 id_tarifa_dg, descripcion, fecha_desde, fecha_hasta, forma_uso, precio_unitario, es_borrado, id_red, id_moneda, cambio" +
+                                " from dg_tarifas where es_borrado = 0 " +
+                                " order by id_tarifa_dg desc";
 
             List<Dg_tarifas> col = new List<Dg_tarifas>();
             Dg_tarifas elem;
@@ -297,7 +314,7 @@ namespace WebApi.Entities
                     Id_tarifa_dg = int.Parse(item["id_tarifa_dg"].ToString()),
                     Descripcion = item["descripcion"].ToString(),
                     Fecha_desde = DateTime.Parse(item["fecha_desde"].ToString()),
-                    Fecha_hasta = DateTime.Parse(item["fecha_hasta"].ToString()),
+                    //Fecha_hasta = DateTime.Parse(item["fecha_hasta"].ToString()),
                     Forma_uso = Dg_tarifa_forma_uso.getFormaUso(DB.DInt(item["forma_uso"].ToString())),
                     Precio_unitario = double.Parse(item["precio_unitario"].ToString()),
                     Es_borrado = (item["Es_borrado"].ToString()=="1"),
@@ -305,6 +322,11 @@ namespace WebApi.Entities
                     Id_moneda = DB.DInt(t.Rows[0]["id_moneda"].ToString()),
                     Cambio = DB.DFloat(t.Rows[0]["cambio"].ToString())
             };
+                if (item["fecha_hasta"].ToString() != "")
+                {
+                    elem.Fecha_hasta = DateTime.Parse(item["fecha_hasta"].ToString());
+                }
+
                 col.Add(elem);
             }
             return col;
@@ -349,7 +371,7 @@ namespace WebApi.Entities
 
         public static List<Dg_tarifas> filter(List<Parametro> parametros)
         {
-            string sqlCommand = " select id_tarifa_dg, descripcion, fecha_desde, fecha_hasta, forma_uso, precio_unitario, es_borrado, id_red, dg_tarifas.id_moneda, cambio, m.simbolo " +
+            string sqlCommand = " select top 100 id_tarifa_dg, descripcion, fecha_desde, fecha_hasta, forma_uso, precio_unitario, es_borrado, id_red, dg_tarifas.id_moneda, cambio, m.simbolo " +
                                 " from dg_tarifas " +
                                 " left outer join moneda m on dg_tarifas.id_moneda = m.id_moneda " +
                                 " where es_borrado = 0 ";
@@ -379,7 +401,7 @@ namespace WebApi.Entities
                     if ((p.ParameterName == "fecha_desde") && (p.Value.ToString() != ""))
                         mifiltro = mifiltro + " and fecha_desde >= '" + p.Value.ToString() + "'";
                     if ((p.ParameterName == "fecha_hasta") && (p.Value.ToString() != ""))
-                        mifiltro = mifiltro + " and fecha_hasta <= '" + p.Value.ToString() + "'";
+                        mifiltro = mifiltro + " and (fecha_hasta <= '" + p.Value.ToString() + "' or fecha_hasta is null)";
                     if ((p.ParameterName == "forma_uso") && (p.Value.ToString() != ""))
                         mifiltro = mifiltro + " and forma_uso = " + p.Value.ToString();
                     if ((p.ParameterName == "id_medio") && (p.Value.ToString() != ""))
@@ -403,7 +425,7 @@ namespace WebApi.Entities
                     if ((p.ParameterName == "id_areaGeo") && (p.Value.ToString() != ""))
                         mifiltro = mifiltro + " and exists (select * from dg_tarifas_areas where dg_tarifas_areas.id_tarifa_dg = dg_tarifas.id_tarifa_dg and id_area = " + p.Value.ToString() + ")";
                     if ((p.ParameterName == "vigente") && (p.Value.ToString() == "1"))
-                        mifiltro = mifiltro + " and (getdate() between fecha_desde and fecha_hasta) ";
+                        mifiltro = mifiltro + " and ((getdate() between fecha_desde and fecha_hasta) or (getdate() >= fecha_desde and fecha_hasta is null)) ";
                     if ((p.ParameterName == "id_red") && (p.Value.ToString() != ""))
                         mifiltro = mifiltro + " and (id_red = 0 or id_red = " + p.Value.ToString() + ")";
                     if ((p.ParameterName == "fecha_desde_det") && (p.Value.ToString() != ""))
@@ -418,10 +440,11 @@ namespace WebApi.Entities
             {
                 mifiltro = mifiltro + " and exists (select * from dg_tarifas_medidas where dg_tarifas_medidas.id_tarifa_dg = dg_tarifas.id_tarifa_dg and id_medidadigital IN (" + idMedidas + "))";
             }
+            string orderBy = " order by id_tarifa_dg desc";
 
             List<Dg_tarifas> col = new List<Dg_tarifas>();
             Dg_tarifas elem;
-            DataTable t = DB.Select(sqlCommand + mifiltro);
+            DataTable t = DB.Select(sqlCommand + mifiltro + orderBy);
 
             foreach (DataRow item in t.Rows)
             {
@@ -430,7 +453,7 @@ namespace WebApi.Entities
                     Id_tarifa_dg = int.Parse(item["id_tarifa_dg"].ToString()),
                     Descripcion = item["descripcion"].ToString(),
                     Fecha_desde = DateTime.Parse(item["fecha_desde"].ToString()),
-                    Fecha_hasta = DateTime.Parse(item["fecha_hasta"].ToString()),
+                    //Fecha_hasta = DateTime.Parse(item["fecha_hasta"].ToString()),
                     Forma_uso = Dg_tarifa_forma_uso.getFormaUso(DB.DInt(item["forma_uso"].ToString())),
                     Precio_unitario = double.Parse(item["precio_unitario"].ToString()),
                     Es_borrado = (item["Es_borrado"].ToString() == "1"),
@@ -439,24 +462,63 @@ namespace WebApi.Entities
                     Cambio = DB.DFloat(t.Rows[0]["cambio"].ToString()),
                     SimboloMoneda = item["simbolo"].ToString()
                 };
+                if (item["fecha_hasta"].ToString() != "")
+                {
+                    elem.Fecha_hasta = DateTime.Parse(item["fecha_hasta"].ToString());
+                }
+
                 col.Add(elem);
             }
             return col;
         }
 
-        public bool existeTarifa()
-        {
-            string sqlCommand = "select id_tarifa_dg from dg_tarifas where es_borrado = 0 and descripcion = '" + Descripcion + "' and id_tarifa_dg != " + Id_tarifa_dg.ToString();
-            bool resultado = false;
+        //public bool existeTarifa()
+        //{
+        //    string sqlCommand = "select id_tarifa_dg from dg_tarifas where es_borrado = 0 and descripcion = '" + Descripcion + "' and id_tarifa_dg != " + Id_tarifa_dg.ToString();
+        //    bool resultado = false;
 
-            DataTable t = DB.Select(sqlCommand);
+        //    DataTable t = DB.Select(sqlCommand);
 
-            if (t.Rows.Count > 0)
-            {
-                resultado = true;
-            }
-            return resultado;
-        }
+        //    if (t.Rows.Count > 0)
+        //    {
+        //        resultado = true;
+        //    }
+        //    return resultado;
+        //}
+
+        //public int updateFechaHastaTarifa()
+        //{
+        //    int respuesta = 0;
+
+        //    string sql = " update dg_tarifas set fecha_hasta=@fecha_hasta where Id_tarifa_dg = @Id_tarifa_dg";
+
+        //    List<SqlParameter> parametros = new List<SqlParameter>()
+        //    {
+        //        new SqlParameter()
+        //        { ParameterName="@Id_tarifa_dg",SqlDbType = SqlDbType.Int, Value = Id_tarifa_dg }
+        //    };
+
+        //    if (Fecha_hasta == null)
+        //    {
+        //        parametros.Add(new SqlParameter() { ParameterName = "@fecha_hasta", SqlDbType = SqlDbType.DateTime, Value = DBNull.Value });
+        //    }
+        //    else
+        //    {
+        //        parametros.Add(new SqlParameter() { ParameterName = "@fecha_hasta", SqlDbType = SqlDbType.DateTime, Value = Fecha_hasta });
+        //    }
+
+        //    try
+        //    {
+        //        DB.Execute(sql, parametros);                
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Console.WriteLine(ex.Message);
+        //        respuesta = 2;
+        //        return respuesta;
+        //    }
+        //    return respuesta;      
+        //}
 
     }
 }

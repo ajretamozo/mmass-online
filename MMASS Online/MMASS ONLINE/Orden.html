@@ -922,7 +922,7 @@
                                 </div>
                                 <div class="col-lg-1" style="padding-top: 4px;">
                                     <label for="bCambioMoneda" class="invisible">Cambios</label>
-                                    <button type="button" data-id="getOrderASDetails" id="bgetOrderASDetais" disabled="disabled" class="btn btn-dark btn-sm mx-1" onclick="getOrderDetails()" style="width: 67px;" title="Ver progreso de la Orden">
+                                    <button type="button" data-id="getOrderASDetails" id="bgetOrderASDetais" disabled="disabled" class="btn actions btn-outline-dark btn-sm mr-1" onclick="getOrderDetails()" style="width: 67px;" title="Ver progreso de la Orden">
                                         <span class="fa fa-bar-chart"></span>
                                     </button>
                                 </div>
@@ -2607,10 +2607,10 @@
             callWS("medios", "getAllA", '', function (data) { onAreasGeoGetAll(data, 'selAreasGeo', 'Id_area', 'descripcion', 'Codigo_area', 'tipo'); });
             callWS("medios", "getAllE", JSON.stringify(0), function (data) { onPopulateSelectEmplaza(data, 'selEmplazaD', 'id_emplazamiento', 'descripcion', 'codigo_emplazamiento'); });
             //callWS("programa", "getAllProgramasMedio", "1", function (data) {onPopulateSelectDone(data,'selPrograma','id_programa','desc_programa')})
-            params = {}
-            params.fecha_desta = dateToSqlFormat($('#fechaDesde').val());
-            params.fecha_hasta = dateToSqlFormat($('#fechaHasta').val());
-            params.vigente = 1;
+            //params = {}
+            //params.fecha_desta = dateToSqlFormat($('#fechaDesde').val());
+            //params.fecha_hasta = dateToSqlFormat($('#fechaHasta').val());
+            //params.vigente = 1;
             //callWS("tarifas", "filter", JSON.stringify(setListaParametros(params)), function (data) { onTarifasGetAll(data, 'selTarifaD', 'id_tarifa_dg', 'descripcion'); })
 
             if (idConvenio > 0) {
@@ -3219,6 +3219,10 @@
             str = str + "<td class='col-xs-1'>" + det.monto_neto + "</td>"; //Revisar esto
             str = str + "<td class='col-xs-2 pr-0 actions d-flex justify-content-center align-content-start'>";
             $('.disableOnEdit').attr("disabled", false);
+
+            //  Botón modificar renglon
+            str = str + " <button type='button' data-id='" + id + "' class='btn actions btn-outline-dark btn-sm mr-1'  onclick='cargarModificarRenglon(this)' title='Editar Detalle'> <span class='fa fa-edit'></span></button>";
+
             //  Botón enviar renglon a AdServer
             if (det.tipo_aviso_dg == "" || det.tipo_aviso_dg == undefined || det.tipo_aviso_dg == null || OpAnulada == true || OpBloqueada == true) {
                 str = str + " <button type='button' data-id='" + id + "' disabled id='bSendAddServer" + id + "' class='btn actions btn-outline-dark btn-sm mr-1' onclick='enviarLineaAddServer(this)' title='Exportar Detalle AdServer'> <span class='fa fa-cloud-upload ' id='brow" + id + "'></span></button>";
@@ -3231,34 +3235,32 @@
                     str = str + " <button type='button' data-id='" + id + "' disabled id='bSendAddServer" + id + "' class='btn actions btn-outline-dark btn-sm mr-1' onclick='enviarLineaAddServer(this)' title='Exportar Detalle AdServer'> <span class='fa fa-cloud-upload' id='brow" + id + "'></span></button>";
                 }
             }
-            //  Botón eliminar renglon
+
+            //  Botón clonar renglon y eliminar renglon
             if ($("#inpEsFacturada").val() == 'SI' || OpAnulada == true || OpBloqueada == true) {
+                str = str + " <button type='button' data-id='" + id + "' disabled id='bClonarReng" + id + "' class='btn actions btn-outline-dark btn-sm mr-1'  onclick='clonarD(this)' title='Clonar Detalle'> <span class='fa fa-clone'></span></button>";
                 str = str + " <button type='button' id='bElim" + id + "' data-id='" + id + "' disabled id='bEliminar" + id + "' class='btn actions btn-outline-dark btn-sm mr-1'  onclick='deleteRenglon(this)' title='Eliminar Detalle'> <span class='fa fa-trash'></span></button>";
             }
             else {
+                str = str + " <button type='button' data-id='" + id + "' class='btn actions btn-outline-dark btn-sm mr-1'  onclick='clonarD(this)' title='Clonar Detalle'> <span class='fa fa-clone'></span></button>";
                 str = str + " <button type='button' id='bElim" + id + "' data-id='" + id + "' class='btn actions btn-outline-dark btn-sm mr-1'  onclick='deleteRenglon(this)' title='Eliminar Detalle'> <span class='fa fa-trash'></span></button>";
             }
-            //  Botón modificar renglon
-            str = str + " <button type='button' data-id='" + id + "' class='btn actions btn-outline-dark btn-sm mr-1'  onclick='cargarModificarRenglon(this)' title='Editar Detalle'> <span class='fa fa-edit'></span></button>";
-            //  Botón clonar renglon
-            if ($("#inpEsFacturada").val() == 'SI' || OpAnulada == true || OpBloqueada == true) {
-                str = str + " <button type='button' data-id='" + id + "' disabled id='bClonarReng" + id + "' class='btn actions btn-outline-dark btn-sm mr-1'  onclick='clonarD(this)' title='Clonar Detalle'> <span class='fa fa-clone'></span></button>";
-            }
-            else {
-                str = str + " <button type='button' data-id='" + id + "' class='btn actions btn-outline-dark btn-sm mr-1'  onclick='clonarD(this)' title='Clonar Detalle'> <span class='fa fa-clone'></span></button>";
-            }
             str = str + "</td>";
+
             //  Progreso de Linea de Pedido en AdServer
             str = str + "<td id='tdProg" + id + "' style='padding-top: 16px;'><span class='fa fa-square invisible' id='spanProg" + id + "' title=''></span></td>";
             str = str + "<td id='tdPorc" + id + "' style='padding-top: 18px;padding-left: 0px;font-size: smaller;'></td>";
+
             //  Alerta renglon no guardado
             str = str + "<td class='col-xs-1 pl-0' style='padding-top: 16px'>";
             if (det.id_op_dg == 0) {
                 str = str + "<span class='fa fa-exclamation fa-pulse' id='brow" + id + "' title='Detalle no guardado''></span></td>";
             }
+
             // Alerta Modificaciones en Linea de Pedido en AdServer
             str = str + "<td id='tdMod" + id + "' style='padding-top: 16px;'><span class='fa fa-refresh fa-pulse invisible' id='spanCompActD" + id + "' title='Hay modificaciones en AdServer'></span></td></td></tr>";
             $("#TableRenglones").append(str);
+
             //  Colorear verde renglon enviado a AdServer
             if (det.id_Google_Ad_Manager != undefined && det.id_Google_Ad_Manager != 0) {
                 $("#row" + id).addClass("table-success");

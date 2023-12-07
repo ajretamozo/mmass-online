@@ -155,17 +155,17 @@
                         </div>
                     </div>
                     <!--<div class="col-lg-2">
-                        <label for="selFormaUso">Forma de Uso</label>
-                        <div class="input-group">
-                            <select class="form-control enableOnEdit" id="selFormaUso"></select>
-                        </div>
-                    </div>-->
+                    <label for="selFormaUso">Forma de Uso</label>
+                    <div class="input-group">
+                        <select class="form-control enableOnEdit" id="selFormaUso"></select>
+                    </div>
+                </div>-->
                     <!--<div class="col-lg-3">
-                        <label for="selAreasGeo">Area Geográfica</label>
-                        <div class="input-group">
-                            <select class="form-control enableOnEdit" id="selAreasGeo"></select>
-                        </div>
-                    </div>-->
+                    <label for="selAreasGeo">Area Geográfica</label>
+                    <div class="input-group">
+                        <select class="form-control enableOnEdit" id="selAreasGeo"></select>
+                    </div>
+                </div>-->
                     <div class="col-lg-6">
                         <label for="selRedes">Red AdServer</label>
                         <select class="form-control enableOnEdit" id="selRedes" onchange="onRedSelected()"></select>
@@ -362,7 +362,12 @@
             $('#descTarifa').attr("value", data.descripcion);
             $("#selFormaUso option[value=" + data.forma_uso.id + "]").attr("selected", "selected");
             $('#fechaDesde').attr("value", dateToFieldFormat(data.fecha_desde));
-            $('#fechaHasta').attr("value", dateToFieldFormat(data.fecha_hasta));
+            if (data.fecha_hasta == null) {
+                $('#fechaHasta').attr("value", "");
+            }
+            else {
+                $('#fechaHasta').attr("value", dateToFieldFormat(data.fecha_hasta));
+            }
             $('#inpImporte').attr("value", data.precio_unitario);
             var medios = {};
             medios = data.medios;
@@ -483,13 +488,17 @@
         }
 
         function checkDates(idFechaDesde, idFechaHasta) {
-            //fDesde = new Date($("#" + idFechaDesde).val());
-            fDesde = new Date(moment($("#" + idFechaDesde).val(), 'DD/MM/YYYY', true).format());
-            mfDesde = moment(fDesde);
-            //fHasta = new Date($("#" + idFechaHasta).val());
-            fHasta = new Date(moment($("#" + idFechaHasta).val(), 'DD/MM/YYYY', true).format());
-            mfHasta = moment(fHasta);
-            var res = (fDesde <= fHasta) && mfDesde.isValid() && mfHasta.isValid();
+            var res = true;
+            if ($("#" + idFechaHasta).val() != '') {
+                //fDesde = new Date($("#" + idFechaDesde).val());
+                fDesde = new Date(moment($("#" + idFechaDesde).val(), 'DD/MM/YYYY', true).format());
+                mfDesde = moment(fDesde);
+                //fHasta = new Date($("#" + idFechaHasta).val());
+                fHasta = new Date(moment($("#" + idFechaHasta).val(), 'DD/MM/YYYY', true).format());
+                mfHasta = moment(fHasta);
+                res = (fDesde <= fHasta) && mfDesde.isValid() && mfHasta.isValid();
+            }
+
             return res;
         }
 
@@ -627,7 +636,7 @@
             if ($("#selFormaUso").val() == null) {
                 error.push("Forma de Uso");
             }
-            if ($("#fechaDesde").val() == "" || $("#fechaHasta").val() == "") {
+            if ($("#fechaDesde").val() == "") {
                 error.push("Fecha");
             }
             if ($("#selMedios").val() == 0) {
@@ -650,7 +659,9 @@
                 data.Forma_uso = f_uso;
                 data.Precio_unitario = $("#inpImporte").val();
                 data.Fecha_desde = dateToSqlFormat($("#fechaDesde").val());
-                data.Fecha_hasta = dateToSqlFormat($("#fechaHasta").val());
+                if ($("#fechaHasta").val() != '') {
+                    data.Fecha_hasta = dateToSqlFormat($("#fechaHasta").val());
+                }
                 data.Medios = selectToJson('selMedios', 'id_medio');
                 var TiposAvisos = [];
                 var tipoAviso = {};

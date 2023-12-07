@@ -9,6 +9,8 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using WebApi.Entities;
 using WebApi.Helpers;
+using System.Data;
+using System.Transactions;
 
 namespace WebApi.Services
 {
@@ -21,6 +23,7 @@ namespace WebApi.Services
         bool removeTarifa(Dg_tarifas miobj);
         IEnumerable<Dg_tarifa_forma_uso> getFormasUso();
         IEnumerable<Dg_tarifas> filter(List<Parametro> parametros);
+        int actualizarTarifa(List<Parametro> parametros);
     }
 
     public class TarifaService : ITarifaService
@@ -53,6 +56,47 @@ namespace WebApi.Services
         public IEnumerable<Dg_tarifas> filter(List<Parametro> parametros)
         {
             return Dg_tarifas.filter(parametros);
+        }
+
+        public int actualizarTarifa(List<Parametro> parametros)
+        {
+            int respuesta = 0;
+
+            Dg_tarifas tarifa = Dg_tarifas.getById(int.Parse(parametros[0].Value));
+
+            try
+            {
+                using (TransactionScope transaccion = new TransactionScope(TransactionScopeOption.RequiresNew, new TimeSpan(0, 2, 0)))
+                {
+                    //Actualizo la fechaHasta de la tarifa actual
+                    tarifa.Fecha_hasta = DateTime.Parse(parametros[1].Value);
+                    tarifa.save();
+
+                    //Creo la Tarifa nueva
+                    tarifa.Id_tarifa_dg = 0;
+                    tarifa.Fecha_desde = DateTime.Parse(parametros[1].Value);
+                    if (parametros[2].Value != "")
+                    {
+                        tarifa.Fecha_hasta = DateTime.Parse(parametros[2].Value);
+                    }
+                    else
+                    {
+                        tarifa.Fecha_hasta = null;
+                    }
+                    tarifa.Precio_unitario = double.Parse(parametros[3].Value);
+                    tarifa.save();
+
+                    transaccion.Complete();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                respuesta = 2;
+                return respuesta;
+            }
+
+            return respuesta;
         }
     }
 }

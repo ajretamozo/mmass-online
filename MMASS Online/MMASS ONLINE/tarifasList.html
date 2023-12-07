@@ -80,6 +80,13 @@
             border-radius: 1.5rem !important;
         }
 
+        .modalRangos {
+            position: fixed !important;
+            top: 50% !important;
+            left: 50% !important;
+            transform: translate(-50%, -50%) !important;
+        }
+
     </style>
 
 </head>
@@ -101,7 +108,54 @@
 
                     </div>
                     <div class="modal-footer d-flex justify-content-center" id="modalCenterFooter">
+                    </div>
+                </div>
+            </div>
+        </div>
 
+        <!-- Modal Actualizar Tarifa-->
+        <div class="modal fade modalRangos" id="actualizarModal" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
+            <div class="modalRangos modal-dialog modal-xl" role="document">
+                <div class="modal-content shadow p-3 mb-5 bg-white rounded">
+
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="actualizarModalTitle">ACTUALIZAR TARIFA</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+
+                    <div class="modal-body" id="actualizarModalBody">
+                        <div class="row py-1">
+                            <div class="col-md-6">
+                                <label for="descTarifaAct">Descripción</label>
+                                <div class="input-group"> <input type="text" id="descTarifaAct" class="form-control" disabled="disabled"></div>
+                            </div>
+                        </div>
+                        <div class="row py-1">
+                            <div class="col-md-6">
+                                <label> Vigencia</label>
+                                <div class="input-group input-daterange">
+                                    <input type="text" class="form-control enterUpdate" id="fechaDesdeAct" data-toggle="datetimepicker" data-target="#fechaDesdeAct" />
+                                    <span class="input-group-addon">hasta</span>
+                                    <input type="text" class="form-control enterUpdate" id="fechaHastaAct" data-toggle="datetimepicker" data-target="#fechaHastaAct" />
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="inpImporteAct">Importe</label>
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" id="basic-addon1">$</span>
+                                    </div>
+                                    <input id="inpImporteAct" type="number" min="0" class="form-control enterUpdate" aria-describedby="basic-addon1" autofocus>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer" id="actualizarModalFooter">
+                        <button type="button" class="btn btn-dark" onclick="actualizarTarifa()">
+                            <span class='fa fa-refresh'></span> Actualizar
+                        </button>
+                        <button type="button" class="btn btn-dark" data-dismiss="modal">Cancelar</button>
                     </div>
                 </div>
             </div>
@@ -116,7 +170,7 @@
                 <!--Filtros-->
                 <div class="row py-1">
                     <div class="col-lg-4">
-                        <label for="descFiltro">Descripcion</label>
+                        <label for="descFiltro">Descripción</label>
                         <div class="input-group"> <input type="text" id="descFiltro" class="form-control enterSearch"></div>
                     </div>
                     <div class="col-lg-4">
@@ -167,13 +221,13 @@
                     </div>
                 </div>
                 <!--<div class="row justify-content-end align-items-end">
-                    <button type="button" class="btn btn-dark btn-sm mx-1" onclick="searchTarifas()">
-                        <span class="fa fa-check"></span> Buscar
-                    </button>
-                    <button type="button" class="btn btn-dark btn-sm mx-1" onclick="nuevaTarifa()">
-                        <span class="fa fa-check"></span> Nueva Tarifa
-                    </button>
-                </div>-->
+                <button type="button" class="btn btn-dark btn-sm mx-1" onclick="searchTarifas()">
+                    <span class="fa fa-check"></span> Buscar
+                </button>
+                <button type="button" class="btn btn-dark btn-sm mx-1" onclick="nuevaTarifa()">
+                    <span class="fa fa-check"></span> Nueva Tarifa
+                </button>
+            </div>-->
                 <!--Tabla-->
                 <div class="table-responsive mt-2">
                     <table class='table table-hover'>
@@ -203,6 +257,10 @@
             $("#divNavBar").load("navBar.html");
             $('#fechaDesde').datetimepicker({ format: 'L', locale: 'es' });
             $('#fechaHasta').datetimepicker({ format: 'L', locale: 'es' });
+            var hoy = new Date();
+            hoy.setUTCHours(23, 59, 59, 999);
+            $('#fechaDesdeAct').datetimepicker({ format: 'L', locale: 'es', minDate: hoy });
+            $('#fechaHastaAct').datetimepicker({ format: 'L', locale: 'es' });
             $('input[type=text]').attr('autocomplete', 'off');
             ///autentificar();
             populateFields();
@@ -211,10 +269,17 @@
                     searchTarifas();
                 }
             });
+            $(".enterUpdate").on("keydown", function (e) {
+                if (event.which == 13) {
+                    actualizarTarifa();
+                }
+            });
             document.body.style.backgroundImage = "url(./fondoM3.png)";
             mensaje();
         });
 
+        //param global para llevar el id de la tarifa a actualizar
+        var idTarifaAct = 0;
 
 
         function populateFields() {
@@ -243,7 +308,13 @@
                 //rowHTML += "<tr onclick='openTarifa(this)'>"
                 rowHTML += "<td class='col-xs-1'>" + (it + 1) + "</td>";
                 rowHTML += "<td class='col-xs-1'>" + itar.descripcion + "</td>";
-                rowHTML += "<td class='col-xs-1'>" + dateToFieldFormat(itar.fecha_desde) + ' - ' + dateToFieldFormat(itar.fecha_hasta) + "</td>";
+                rowHTML += "<td class='col-xs-1'>" + dateToFieldFormat(itar.fecha_desde) + ' - '
+                if (itar.fecha_hasta == null) {
+                    rowHTML += "</td>";
+                }
+                else {
+                    rowHTML += dateToFieldFormat(itar.fecha_hasta) + "</td>";
+                }
                 rowHTML += "<td class='col-xs-1'>" + itar.forma_uso.descripcion + "</td>";
                 rowHTML += "<td class='col-xs-1'>" + itar.simboloMoneda + " " + itar.precio_unitario + "</td>";
                 //Acciones
@@ -251,6 +322,7 @@
                 rowHTML += "<div class='divAcciones' id='divAcciones_" + itar.id_tarifa_dg + "'>"
                 rowHTML += "<button type='button' title='Ver' class='btn btn-outline-dark btn-sm mx-1' onclick=\"openTarifa(" + itar.id_tarifa_dg + ",'view')\"><span class='fa fa-eye'></span> </button>"
                 rowHTML += "<button type='button' title='Editar' class='btn btn-outline-dark btn-sm mx-1' onclick=\"openTarifa(" + itar.id_tarifa_dg + ",'edit')\"><span class='fa fa-edit'></span> </button>"
+                rowHTML += "<button type='button' title='Actualizar Tarifa' class='btn btn-outline-dark btn-sm mx-1' onclick='abrirModalActualizar(" + JSON.stringify(itar) + ")'> <span class='fa fa-refresh'></span></button>";
                 rowHTML += "<button type='button' title='Eliminar' class='btn btn-outline-dark btn-sm mx-1' onclick=\"checkBorrarTarifa(" + itar.id_tarifa_dg + ")\"><span class='fa fa-trash'></span> </button>"
                 rowHTML += "</div>"
                 rowHTML += "</td>"
@@ -436,6 +508,86 @@
                 }
             }
         };
+        
+        function abrirModalActualizar(tarifa) {
+            idTarifaAct = tarifa.id_tarifa_dg;
+            //setear nombre tarifa
+            $("#descTarifaAct").val(tarifa.descripcion);
+            //setear la fecha desde en día de hoy, fecha hasta abierta y importe en 0
+            $('#fechaDesdeAct').datetimepicker('date', moment(new Date(), 'DD/MM/YYYY'));
+            $('#fechaHastaAct').val("");
+            $('#inpImporteAct').val("");
+            //poner puntero en importe
+            $('#actualizarModal').on('shown.bs.modal', function () {
+                $('#inpImporteAct').focus();
+            })
+            //luego abrir modal
+            $("#actualizarModal").modal('show');
+        }
+
+        function actualizarTarifa() {
+            var error = [];
+
+            if ($("#fechaDesdeAct").val() == "") {
+                error.push("Fecha");
+            }
+
+            var rangoValido = checkDates("fechaDesdeAct", "fechaHastaAct");
+
+            if (error.length == 0 && rangoValido) {
+                //tarifaAct.Fecha_desde = dateToSqlFormat($("#fechaDesdeAct").val());
+                //if ($("#fechaHastaAct").val() != '') {
+                //    tarifaAct.Fecha_hasta = dateToSqlFormat($("#fechaHastaAct").val());
+                //}
+
+                params = {};
+                params.idTarifaAct = idTarifaAct;
+                params.fechaDesdeAct = dateToSqlFormat($("#fechaDesdeAct").val());
+                if ($("#fechaHastaAct").val() != '') {
+                    params.fechaHastaActa = dateToSqlFormat($("#fechaHastaAct").val());
+                }
+                else {
+                    params.fechaHastaActa = '';
+                }
+                params.importe = $('#inpImporteAct').val();
+
+                callWS("Tarifas", "actualizarTarifa", JSON.stringify(setListaParametros(params)), function (resp) {
+                    if (resp == 0) {
+                        location.href = "/tarifaslist.html?guardado=si";
+                    }
+                    else {
+                        showMessage("Ocurrió un error al intentar guardar la Tarifa", "error");
+                        console.log(data);
+                    }
+                });
+
+            } else if (rangoValido) {
+                message = "Falta completar/indicar los siguientes datos: "
+                error.forEach(function (err) {
+                    message += err + " - ";
+                });
+                message = message.slice(0, -3);
+                showMessage(message, "error");
+            } else {
+                message = "Formato o Rango de fechas incorrectos (Formato correcto DD/MM/AAAA)";
+                showMessage(message, "error");
+            }
+        }
+
+        function checkDates(idFechaDesde, idFechaHasta) {
+            var res = true;
+            if ($("#" + idFechaHasta).val() != '') {
+                //fDesde = new Date($("#" + idFechaDesde).val());
+                fDesde = new Date(moment($("#" + idFechaDesde).val(), 'DD/MM/YYYY', true).format());
+                mfDesde = moment(fDesde);
+                //fHasta = new Date($("#" + idFechaHasta).val());
+                fHasta = new Date(moment($("#" + idFechaHasta).val(), 'DD/MM/YYYY', true).format());
+                mfHasta = moment(fHasta);
+                res = (fDesde <= fHasta) && mfDesde.isValid() && mfHasta.isValid();
+            }
+
+            return res;
+        }
 
     </script>
     <footer>

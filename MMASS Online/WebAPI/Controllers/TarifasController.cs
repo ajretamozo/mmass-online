@@ -36,8 +36,8 @@ namespace WebApi.Controllers
         [HttpPost("save")]
         public IActionResult saveTarifa(Dg_tarifas miobj)
         {
-            var tarifas = _tarifaService.saveTarifa(miobj);
-            return Ok(tarifas);
+            var resutado = _tarifaService.saveTarifa(miobj);
+            return Ok(resutado);
         }
 
         [HttpPost("remove")]
@@ -57,9 +57,15 @@ namespace WebApi.Controllers
         [HttpPost("filter")]
         public IActionResult filter(ListaParametro parametros)
         {
-
             var fu = _tarifaService.filter(parametros.Parametros);
             return Ok(fu);
+        }
+
+        [HttpPost("actualizarTarifa")]
+        public IActionResult actualizarTarifa(ListaParametro parametros)
+        {
+            var tarifas = _tarifaService.actualizarTarifa(parametros.Parametros);
+            return Ok(tarifas);
         }
     }
 }
