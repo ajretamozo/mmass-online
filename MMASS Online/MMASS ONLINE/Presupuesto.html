@@ -1,0 +1,3128 @@
+<!DOCTYPE html>
+<html>
+<head runat="server">
+    <title>MMASS Online - Presupuesto de Venta</title>
+
+    <link rel="shortcut icon" href="favicon.png">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment-with-locales.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/js/tempusdominus-bootstrap-4.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/css/tempusdominus-bootstrap-4.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400&display=swap" rel="stylesheet">
+    <script src="./js/autentificar.js"></script>
+    <script src="./js/export.js"></script>
+    <script src="./js/filedownloader.js"></script>
+    <script src="./js/html2pdf.js"></script>
+    <script src="./dist/duallistbox/jquery.bootstrap-duallistbox.min.js"></script>
+    <link href="./dist/duallistbox/bootstrap-duallistbox.min.css" rel="stylesheet">
+
+
+    <style>
+        .search-box-closed {
+            width: 53px;
+        }
+
+        @media print {
+            .col-lg-1, .col-lg-2, .col-lg-3, .col-lg-4, .col-lg-5, .col-lg-6, .col-lg-7, .col-lg-8, .col-lg-9, .col-lg-10, .col-lg-11, .col-lg-12 {
+                float: left;
+            }
+
+            .actions {
+                display: none;
+            }
+
+            .col-lg-12 {
+                width: 100%;
+            }
+
+            .col-lg-11 {
+                width: 91.66666667%;
+            }
+
+            .col-lg-10 {
+                width: 83.33333333%;
+            }
+
+            .col-lg-9 {
+                width: 75%;
+            }
+
+            .col-lg-8 {
+                width: 66.66666667%;
+            }
+
+            .col-lg-7 {
+                width: 58.33333333%;
+            }
+
+            .col-lg-6 {
+                width: 50%;
+            }
+
+            .col-lg-5 {
+                width: 41.66666667%;
+            }
+
+            .col-lg-4 {
+                width: 33.33333333%;
+            }
+
+            .col-lg-3 {
+                width: 25%;
+            }
+
+            .col-lg-2 {
+                width: 16.66666667%;
+            }
+
+            .col-lg-1 {
+                width: 8.33333333%;
+            }
+        }
+
+        @media (max-width: 767px) {
+            .search-box-open {
+                width: 100%;
+            }
+
+            #divMessage {
+                position: fixed;
+                width: 100%;
+                bottom: 2px;
+                text-align: center;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .search-box-open {
+                width: 300px;
+            }
+        }
+
+        @media (min-width: 1200px) {
+            .container {
+                max-width: 1150px;
+            }
+        }
+
+        @media (min-width: 1400px) {
+            .container {
+                max-width: 1200px;
+            }
+        }
+
+        @media (min-width: 1600px) {
+            .container {
+                max-width: 1400px;
+            }
+        }
+
+        .input-group-addon {
+            padding: 5px;
+            background: #b3c1cc;
+        }
+
+        @media screen {
+
+            #divMessage {
+                position: fixed;
+                left: 50%;
+                margin-left: -200px;
+                width: 400px;
+                bottom: 30px;
+                text-align: center;
+            }
+        }
+
+        ::-webkit-file-upload-button {
+            padding: .2rem .3rem;
+            color: #fff;
+            background-color: #343a40;
+            border-color: #343a40;
+            font-size: .875rem;
+            line-height: 1.5;
+            border-radius: .2rem;
+            cursor: pointer;
+        }
+
+        .mb-6 {
+            margin-bottom: 3rem;
+        }
+
+        button > a {
+            color: #383b3e;
+        }
+
+            button > a:hover {
+                color: #fff;
+            }
+
+        .nav > a {
+            color: #17a2b8;
+        }
+
+            .nav > a:hover {
+                color: #138496;
+            }
+
+        .table td {
+            border-top: 0;
+        }
+
+        td:first-child {
+            border-top-left-radius: .5rem;
+            border-bottom-left-radius: .5rem;
+        }
+
+        td:last-child {
+            border-bottom-right-radius: .5rem;
+            border-top-right-radius: .5rem;
+        }
+
+        .invisible {
+            color: #e9ecef;
+        }
+
+        /* Icon pulse */
+        .fa-pulse {
+            display: inline-block;
+            -moz-animation: pulse 2s infinite linear;
+            -o-animation: pulse 2s infinite linear;
+            -webkit-animation: pulse 2s infinite linear;
+            animation: pulse 2s infinite linear;
+        }
+
+        @-webkit-keyframes pulse {
+            0% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        @-moz-keyframes pulse {
+            0% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        @-o-keyframes pulse {
+            0% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        @-ms-keyframes pulse {
+            0% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        .tableFixHead {
+            overflow-y: auto;
+            height: 500px;
+        }
+
+            .tableFixHead thead th {
+                position: sticky;
+                top: 0;
+            }
+
+        .list-group-item {
+            padding: .2rem 1rem;
+        }
+
+        .modalConv {
+            max-width: none;
+            width: 90%;
+            height: 60%;
+            /*overflow-y: auto;*/
+        }
+
+        .btn-blue {
+            background-color: #d1ecf1;
+        }
+
+        .btn-danger {
+            color: #fff;
+            background-color: #fc9a00;
+            border-color: #fc9a00
+        }
+
+            .btn-danger:hover {
+                color: #fff;
+                background-color: #e08902;
+                border-color: #e08902
+            }
+
+        .dataTitle {
+            font-family: 'Roboto';
+            font-size: 20px;
+        }
+
+        .jumbotron {
+            background-color: #f5f5f5 !important;
+        }
+
+        .rounded {
+            border-radius: 1.5rem !important;
+        }
+    </style>
+
+    <script>
+
+        // Function to change the content of t2
+        function modifyText(new_text) {
+            var t2 = document.getElementById("t2");
+            t2.firstChild.nodeValue = new_text;
+        }
+
+        // Function to add event listener to t
+        function load() {
+            var el = document.getElementById("t");
+            el.addEventListener("click", function () { modifyText("four") }, false);
+        }
+
+        function wait(ms) {
+            var start = new Date().getTime();
+            var end = start;
+            while (end < start + ms) {
+                end = new Date().getTime();
+            }
+        }
+
+        let formChanged = false;
+        document.addEventListener('change', () => formChanged = true);
+        window.addEventListener('beforeunload', (event) => {
+            desbloquearOp();
+            if (formChanged) {
+                event.returnValue = '';
+            }
+            else {
+                wait(200);
+            }
+        });
+
+    </script>
+
+</head>
+
+<body style="padding-top: 80px; font-family: 'Roboto';">
+    <!--MENU-->
+    <div id="divNavBar"></div>
+
+    <!--CONTENEDOR PRINCIPAL HTML-->
+    <main role="main" class="container">
+        <div id="divBlock" style="left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        overflow-x: hidden;
+        overflow-y: auto;
+        position: fixed;
+        z-index: 1051;
+        outline: 0;
+        display: none"></div>
+
+        <!-- Modal Progress bar -->
+        <div class="modal " id="pleaseWaitDialog" data-backdrop="static" data-keyboard="false" style="        display: none
+">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content shadow p-3 mb-5 bg-white rounded">
+                    <div class="modal-header">
+                        <h4 class="modal-title" onclick='hidePleaseWait();'>Procesando...</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="progress">
+                            <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+
+                            </div>
+                        </div>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div>
+
+        <!-- Modal Mensajes -->
+        <div class="modal fade" id="modalCenter" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content shadow p-3 mb-5 bg-white rounded">
+                    <div class="modal-header d-flex justify-content-center">
+                        <h5 class="modal-title" id="modalCenterTitle">Advertencia</h5>
+                    </div>
+                    <div class="modal-body" id="modalCenterBody">
+
+                    </div>
+                    <div class="modal-footer d-flex justify-content-center" id="modalCenterFooter">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="largeModal">
+
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content shadow p-3 mb-5 bg-white rounded">
+
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="largeModalTitle"></h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+
+                    <!-- Modal body -->
+                    <div class="modal-body" id="largeModalBody">
+
+                    </div>
+
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!--Modal Cotizacion Moneda-->
+        <div class="modal fade" id="cotizacionModal" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content shadow p-3 mb-5 bg-white rounded" style="width: 634px;">
+
+                    <!-- Modal Header -->
+                    <div class="modal-header d-flex justify-content-center">
+                        <h4 class="modal-title" id="cotizacionModalTitle">COTIZACIONES DE MONEDAS</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+
+                    <!-- Modal body -->
+                    <div class="modal-body" id="cotizacionModalBody">
+                        <!--Tabla-->
+                        <div class="table-responsive mt-2 tableFixHead" style="height: 300px; width: 500px;">
+                            <table class="table table-fixed table-striped" id="tCotizaciones">
+                                <thead class="thead-dark">
+                                    <tr>
+                                        <th class="col-xs-2" style="text-align: center;">Moneda</th>
+                                        <th class="col-xs-2" style="text-align: center;">Cotización</th>
+                                        <!--<th class="col-xs-1" style="text-align: center;">Venta</th>-->
+                                        <th class="col-xs-1" style="text-align: center;">Ultima actualización</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="TableCotizaciones"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- PRINCIPAL -->
+        <div id="divMessage" class="alert" style="display:none;cursor:pointer;z-index:10000;" title="Click para cerrar"> </div>
+        <div class="jumbotron mt-4 py-4 shadow p-3 mb-5 bg-white rounded">
+            <div class=" d-flex align-items-center" style="margin-bottom: 1rem;">
+                <span class="dataTitle" id="pTitulo" style="margin-right: 15px;">PRESUPUESTO DE VENTA</span>
+                <!--<div id="divAnuClon">
+                </div>-->
+            </div>
+            <!-- TABS -->
+            <!--<nav class="nav nav-tabs mb-3">
+                <a class="nav-link active" id="principal-tab" data-toggle="tab" href="#principal" role="tab" aria-controls="principal" aria-selected="true">General</a>
+                <a class="nav-link" id="archivos-tab" data-toggle="tab" href="#archivos" role="tab" aria-controls="archivos" aria-selected="false">Certificación</a>
+            </nav>-->
+            <!--<div class="tab-content" id="tabsContent">-->
+                <div class="tab-pane fade show active" id="principal" role="tabpanel" aria-labelledby="principal-tab">
+                    <!--ORDER DATA-->
+                    <div id="divOrderData">
+                        <!-- GRUPO 1 -->
+                        <div id="grupo1">
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    <label>Número de Presupuesto</label>
+                                    <div id="PresupuestoNumberComplete" class="row">
+                                        <div class="col-lg-4 "> <div class="input-group"> <input type="text" disabled id="inpOrderYear" class="form-control" value=""></div> </div>
+                                        <div class="col-lg-4 "> <div class="input-group"> <input type="text" disabled id="inpOrderMonth" class="form-control" value=""> </div> </div>
+                                        <div class="col-lg-4 "> <div class="input-group"> <input type="text" disabled class="form-control" id="inpOrderNumber" id_op_dg="0"> </div> </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <label>Fecha Alta</label>
+                                            <div class="input-group"> <input type="text" disabled id="inpFechaAlta" class="form-control  col text-center" value=""> </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <label>Estado</label>
+                                            <div class="input-group"> <input type="text" disabled id="inpEstado" class="form-control col text-center" value="NO"> </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-2" style="padding-right: 0px;">
+                                    <label>Moneda</label>
+                                    <select class="form-control" id="selMoneda" onfocus="this.oldvalue = this.value" onchange="prevMonedaSelected(this); this.oldvalue = this.value;"></select>
+                                </div>
+                                <div class="col-lg-1" style="padding-top: 4px;">
+                                    <label for="bCambioMoneda" class="invisible">Cambios</label>
+                                    <button type="button" data-id="cambioMoneda" id="bCambioMoneda" class="btn actions btn-outline-dark btn-sm mr-1" onclick="getCotizaciones()" style="width: 67px;" title="Ver cotizaciones de monedas">
+                                        <span class="fa fa-usd"></span>
+                                        <span class="fa fa-exchange"></span>
+                                        <span class="fa fa-eur"></span>
+                                    </button>
+                                </div>
+                                <!--<div class="col-lg-1" style="padding-top: 4px;">
+                <label for="bgetOrderASDetais" class="invisible">Cambios</label>
+                <button type="button" data-id="getOrderASDetails" id="bgetOrderASDetais" disabled="disabled" class="btn actions btn-outline-dark btn-sm mr-1" onclick="getOrderDetails()" style="width: 67px;" title="Ver progreso de la Orden">
+                    <span class="fa fa-bar-chart"></span>
+                </button>
+            </div>-->
+                            </div>
+                            <hr>
+                            <!-- GRUPO 2 -->
+                            <!-- FILA 1 -->
+                            <div class="row justify-content-around" style="padding-top: 15px;">
+                                <div class="col-lg-4">
+                                    <!--<label>Número de Orden Cliente</label>
+                <div class="input-group"> <input type="text" id="inpOrderNumberClient" class="form-control" maxlength="50"> </div>-->
+                                    <label>Vigencia Presupuesto</label>
+                                    <div id="OrderDateSpam" class="row">
+                                        <div class="col-lg-12">
+                                            <div class="input-group input-daterange">
+                                                <input type="text" class="form-control datetimepicker-input" id="fechaDesde" data-toggle="datetimepicker" data-target="#fechaDesde" onchange="validarFechasConvenio('fechaD')" />
+                                                <span class="input-group-addon">hasta</span>
+                                                <input type="text" class="form-control datetimepicker-input" autocomplete="off" id="fechaHasta" data-toggle="datetimepicker" data-target="#fechaHasta" onchange="validarFechasConvenio('fechaH')" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <label>Descripción</label>
+                                    <div class="input-group"> <input type="text" id="inpDescOP" class="form-control"> </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <label>Concepto de Negocio</label>
+                                    <select class="form-control" id="selConceptoN"></select>
+                                </div>
+                            </div>
+                            <!-- FILA 2 -->
+                            <!-- GRUPO 2 -->
+                            <hr>
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    <label>Agencia</label>
+                                    <select class="form-control" id="selAgencia" onchange="onAgenciaSelected()"></select>
+                                </div>
+                                <div class="col-lg-4">
+                                    <label>Anunciante</label>
+                                    <select class="form-control" id="selAnunciante" onchange="onAnuncianteSelected()"></select>
+                                </div>
+                                <div class="col-lg-4">
+                                    <label>Producto</label>
+                                    <select class="form-control" id="selProducto" onchange="onProductoSelected()"></select>
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-lg-2 offset-lg-10 d-flex justify-content-end">
+                                    <button id="botLimpiar" title="Limpiar Agencia - Anunciante" type="button" class="btn actions btn-outline-dark btn-sm mr-1" onclick="limpiaVinculados();">
+                                        <span class="fa fa-eraser"></span> Limpiar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row" style="padding-top: 15px;">
+                            <div class="col-lg-6" style="padding-right: 20px;">
+                                <div class="row" style="padding-left: 15px; padding-right: 15px;">
+                                    <label>Facturar a</label>
+                                    <select class="form-control" id="selFacturar" onchange="onFacturarSelected()">
+                                        <option value="0" checked>Agencia</option>
+                                        <option value="1">Anunciante</option>
+                                        <option value="2">No facturar</option>
+                                    </select>
+                                </div>
+                                <div class="row" style="padding-left: 15px; padding-right: 15px; padding-top: 15px;">
+                                    <label>Plazo de Pago</label>
+                                    <select class="form-control" id="selPlazoP"></select>
+                                </div>
+                                <div class="row" style="padding-left: 15px; padding-right: 15px; padding-top: 15px;">
+                                    <label>Ejecutivo</label>
+                                    <select class="form-control" id="selEjecutivo"></select>
+                                </div>
+                            </div>
+                        </div>
+                            <div class="col-lg-6" style="padding-left: 20px;">
+                                <div class="row" style="padding-left: 15px; padding-right: 15px;">
+                                    <label for="selFPago" style="margin-bottom: 0px;">Subtipo de Venta</label>
+                                    <select id="selFPago" class="custom-select" onchange="$('#porcRon').empty(); enableRon();" multiple></select>
+                                </div>
+                                <div class="row" style="padding-left: 15px; padding-right: 15px; padding-top: 13px;">
+                                    <button type="button" id="botPorcRon" class="btn actions btn-outline-dark" style="flex-grow: 1;" onclick="openRonPorc();">
+                                        <span class="fa fa-pie-chart"></span> Porcentajes
+                                    </button>
+                                    <div id="porcRon" style="display:none"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--ORDER DETAILS-->
+                        <hr>
+                        <div id="divOrderDetail" class="mt-2">
+
+                            <div id="divDetailsRows">
+
+                                <div class="row">
+                                    <div class="col-lg-1">
+                                        <label>DETALLES</label>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <button type="button" class="btn  actions btn-outline-dark btn-sm" id="bCargarNuevoRenglon" onclick="cargarNuevoRenglon()" title="Nuevo Detalle" style="padding-top: 2px; padding-bottom: 2px; margin-right: 10px; padding-right: 10px; padding-left: 10px;">
+                                            <span class="fa fa-plus"></span>
+                                        </button>
+                                    </div>
+                                    <div class="col-lg-6">
+                                    </div>
+                                </div>
+
+                                <div class="table-responsive mt-2">
+                                    <table class="table table-fixed" id="tReng" style="text-align: center;">
+                                        <thead>
+                                            <tr>
+                                                <th class="col-xs-3">Programa/Rango horario</th>
+                                                <th class="col-xs-2">Vigencia</th>
+                                                <th class="col-xs-2">T. Aviso</th>
+                                                <th class="col-xs-1">Tarifa</th>
+                                                <th class="col-xs-1">Cant.</th>
+                                                <th class="col-xs-1">Neto</th>
+                                                <th class="col-xs-2 actions" style="text-align:center;">Acciones</th>
+                                                <th width="1px"></th>
+                                                <th width="1px"></th>
+                                                <th width="1px"></th>
+                                                <th width="1px"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="TableRenglones"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+
+                            <div id="divAddRow" class="card" style="display:none;">
+                                <div class="card-header d-flex" id="chDetalle">
+                                    <!--NUEVO DETALLE-->
+                                    <span class="dataTitle" id="pTituloDetalle" style="margin-right: 15px;">NUEVO DETALLE</span>
+                                    <div id="divClonDet">
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-lg-3">
+                                            <label>Medio</label>
+                                            <select class="form-control" id="selDetConvenio" onchange="prevSeleccionarDetConvenio()"></select>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <label>Tarifa</label>
+                                            <select class="form-control" id="selTarifaD" onchange="onTarifaDSelected()"></select>
+                                            <div class="row float-right">
+                                                <div class="form-check-inline mr-0">
+                                                    <label class="form-check-label " for="checkTarifaManualD" style="padding-right: 15px;">
+                                                        <input type="checkbox" style="margin-top: .4rem; margin-right: .2rem" class="form-check-input float-sm-left" id="checkTarifaManualD">Manual
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <label>Ambito</label>
+                                            <select class="form-control" id="selFacturar" onchange="onFacturarSelected()">
+                                                <option value="1" checked>Local</option>
+                                                <option value="2">Nacional</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <label>Vigencia</label>
+                                            <div class="input-group input-daterange">
+                                                <input type="text" class="form-control" id="fechaDesdeD" data-toggle="datetimepicker" data-target="#fechaDesdeD" value="01/08/2019" onchange="calcularNetoD();  validarFechasConvenioD('fechaDD'); filterTarifas()" />
+                                                <span class="input-group-addon">hasta</span>
+                                                <input type="text" class="form-control" id="fechaHastaD" data-toggle="datetimepicker" data-target="#fechaHastaD" value="02/09/2019" onchange="calcularNetoD(); validarFechasConvenioD('fechaHD'); filterTarifas()" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-3">
+                                            <label>Forma de Uso</label>
+                                            <select class="form-control" id="selTipoTarifaD" onchange="filterTarifas(); calcularNetoD()"></select>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <label>Tipo Aviso</label>
+                                            <select class="form-control" id="selDetConvenio" onchange="prevSeleccionarDetConvenio()"></select>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <label>Programa</label>
+                                            <select class="form-control" id="selDetConvenio" onchange="prevSeleccionarDetConvenio()"></select>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <label>Rango Horario</label>
+                                            <div class="input-group input-daterange">
+                                                <input type="text" id="descuentoD" class="form-control" onchange="calcularNetoD()">
+                                                <span class="input-group-addon">hasta</span>
+                                                <input type="text" id="descuentoD" class="form-control" onchange="calcularNetoD()">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-2">
+                                            <label>Precio Unitario</label>
+                                            <div id="divPrecioUnitarioD">
+                                                <input type="number" id="precioUnitarioD" class="form-control" readonly="readonly" onchange="calcularNetoD()">
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-2">
+                                            <label id="cantidadL">Cantidad</label>
+                                            <div id="divCantD">
+                                                <input type="number" id="cantidadD" class="form-control" onchange="calcularNetoD()">
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-2">
+                                            <label>% Descuento</label>
+                                            <div id="divDescuentoD">
+                                                <input type="number" id="descuentoD" class="form-control" onchange="calcularNetoD()">
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-2">
+                                            <label>Total</label>
+                                            <div id="divTotalD">
+                                                <input type="text" id="totalD" readonly="readonly" class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-2">
+                                            <label>% NC</label>
+                                            <div id="divConfNCD">
+                                                <input type="number" id="confNCD" class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-2">
+                                            <label>% FC</label>
+                                            <div id="divConfFCD">
+                                                <input type="number" id="confFCD" class="form-control">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="card-footer mt-2 ">
+                                        <div class="row">
+                                            <div class="col-lg-4">
+                                            </div>
+                                            <div class="col-lg-4"></div>
+                                            <div class="col-lg-4 d-flex justify-content-end">
+                                                <button type="button" id="GuardarRenglon" class="btn btn-dark btn-sm mx-1" onclick="prevAddRenglon(-1);">
+                                                    <span class="fa fa-check"></span> Aceptar
+                                                </button>
+                                                <button type="button" class="btn btn-dark btn-sm mx-1" onclick="cancelarCargaDetalle();">
+                                                    <span class="fa fa-remove"></span> Cancelar
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <!--TOTALES-->
+                        <div class="container-fluid small">
+                            <div class="row">
+                                <div class="col-sm">
+                                    <label>Bruto</label>
+                                    <input type="number" class="form-control" id="montoBruto" readonly="readonly" value="0">
+                                </div>
+                                <div class="col-sm">
+                                    <label>% Desc</label>
+                                    <input type="number" class="form-control" value="0" readonly="readonly" id="porc_desc">
+                                </div>
+                                <div class="col-sm">
+                                    <label>Primer Neto</label>
+                                    <input type="number" class="form-control" value="0" readonly="readonly" id="neto1">
+                                </div>      <div class="col-sm">
+                                    <label>Conf NC</label>
+                                    <input type="number" class="form-control" value="0" id="conf_nc" onchange="calculateTotals()" disabled="disabled">
+                                </div>
+                                <div class="col-sm">
+                                    <label>Conf FC</label>
+                                    <input type="number" class="form-control" value="0" id="conf_fc" onchange="calculateTotals()" disabled="disabled">
+                                </div>
+                                <div class="col-sm">
+                                    <label>Seg Neto</label>
+                                    <input type="number" class="form-control" value="0" readonly="readonly" id="neto2">
+                                </div>
+
+                                <div class="col-sm">
+                                    <!--<label>Total (+IVA)</label>-->
+                                    <label>Total</label>
+                                    <input type="number" class="form-control" value="0" readonly="readonly" id="total">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-footer mt-2 ">
+                            <div class="row">
+                                <div class="col-lg-5">
+                                    <!--<button type="button" id="bClonar" disabled="disabled" class="btn actions btn-dark btn-sm mx-1" onclick="prevClonarOrden()">
+                                        <span class="fa fa-clone"></span> Clonar OP
+                                    </button>-->
+                                </div>
+                                <div class="col-lg-3"></div>
+                                <div class="col-md-4 d-flex justify-content-end">
+                                    <button type="button" id="bGuardarPresup" class="btn actions btn-dark btn-sm mx-1" onclick="prevSavePresup()">
+                                        <span class="fa fa-save"></span> Guardar
+                                    </button>
+                                    <button type="button" class="btn actions btn-dark btn-sm mx-1" onclick="cancelarPresup()">
+                                        <span class="fa fa-remove"></span> Cancelar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+        </div>
+    </main>
+
+    <!--Scripts-->
+    <script type="text/javascript">
+
+        $("#divNavBar").load("navBar.html");
+
+        var cMultiSelect = $('.custom-select').bootstrapDualListbox({
+            filterPlaceHolder: 'Filtrar',
+            removeAllLabel: 'Remove all'
+        });
+        $(".moveall").hide();
+        $(".removeall").hide();
+        $(".btn-group").hide();
+        $(".bootstrap-duallistbox-container").css("flex-grow", "1");
+
+        var body = document.getElementById("output");
+
+        //ONLOAD se ejecuta cuando se termina de cargar la pagina DatePickers Inicializacion
+        //$(function () {
+        //    includeImgs();
+        //    $("#formuploadajax").on("submit", function (e) {
+        //        e.preventDefault();
+        //        var id_op = $("#inpOrderNumber").attr("id_op_dg");
+        //        if (id_op != "0" && $(this)[0].elements[0].files.length != 0) {
+        //            var f = $(this);
+        //            var formData = new FormData(document.getElementById("formuploadajax"));
+        //            formData.append("archivo", $(this)[0].elements[0].files[0]);
+        //            formData.append("id_op", id_op);
+        //            $.ajax({
+        //                url: backendDir + "archivos/upload",
+        //                type: "post",
+        //                headers: { 'Authorization': sessionStorage.getItem('token') },
+        //                dataType: "html",
+        //                data: formData,
+        //                cache: false,
+        //                contentType: false,
+        //                processData: false
+        //            })
+        //                .done(function (res) {
+        //                    getArchivos(id_op);
+        //                });
+        //        } else {
+        //            if (id_op == "0") {
+        //                showMessage("Para poder adjuntar un archivo, primero es necesario guardar la orden", "info")
+        //            } else if ($(this)[0].elements[0].files.length == 0) {
+        //                showMessage("No hay ningun archivo seleccionado", "info")
+        //            }
+
+        //        }
+
+        //    });
+
+            $('#modalCenter').on('hidden.bs.modal', function (e) {
+                $('#ronTableBody').empty();
+            })
+
+            $("input[type=number]").attr("onkeydown", "return event.keyCode !== 69 && event.keyCode !== 109");
+            $("input[type=number]").attr("min", "0");
+
+            inicializar();
+            $("#checkTarifaManualD").change(function () {
+
+                $("#precioUnitarioD").prop("readonly", !$(this).is(":checked"));
+                onTarifaDSelected();
+            });
+            document.body.style.backgroundImage = "url(./fondoM3.png)";
+        });
+
+        function inicializar() {
+            $('#fechaDesde').datetimepicker({ format: 'L', locale: 'es' });
+            $('#fechaHasta').datetimepicker({ format: 'L', locale: 'es' });
+            $('#fechaDesdeD').datetimepicker({ format: 'L', locale: 'es' });
+            $('#fechaHastaD').datetimepicker({ format: 'L', locale: 'es' });
+
+            $("#divMessage").on("click", function () { $("#divMessage").hide(); });
+            $.when(
+                callWS("contactos", "getAgencias", '', function (data) { onPopulateSelectDone(data, 'selAgencia', 'id', 'nombre_com'); }),
+                callWS("contactos", "getAnunciantes", '', function (data) { onPopulateSelectDone(data, 'selAnunciante', 'id', 'nombre_com'); }),
+                callWS("productos", "getAll", '', function (data) { onPopulateSelectDone(data, 'selProducto', 'id_producto', 'desc_producto'); }),
+                callWS("contactos", "getEjecutivos", '', function (data) { onPopulateSelectDone(data, 'selEjecutivo', 'id', 'razonSocial'); }),
+                callWS("forma_pagos", "getAll", '', function (data) { onPopulateSelectDone(data, 'selFPago', 'id_formapago', 'desc_formapago'); }),
+                callWS("medios", "getAllPlazos", '', function (data) { onPopulateSelectDone(data, 'selPlazoP', 'id_condpagoap', 'desc_condpagoap'); }),
+                callWS("medios", "getAllMonedas", '', function (data) { onPopulateSelectMoneda(data, 'selMoneda'); }),
+                callWS("medios", "getAllConceptos", '', function (data) { onPopulateSelectDone(data, 'selConceptoN', 'id_concepto_negocio', 'desc_concepto_negocio'); }),
+            ).then(function () { checkParameters(); });
+        }
+
+        function onTarifaDSelected() {
+            if (!$("#checkTarifaManualD").is(":checked")) {
+                $('#precioUnitarioD').val($('#selTarifaD').children("option:selected").attr("precio_unitario"));
+                calcularNetoD();
+            }
+        }
+
+        function cancelarPresup() { location.href = '/PresupuestoList.html'; }
+
+        var getUrlParameter = function getUrlParameter(sParam) {
+            var sPageURL = window.location.search.substring(1),
+                sURLVariables = sPageURL.split('&'),
+                sParameterName,
+                i;
+
+            for (i = 0; i < sURLVariables.length; i++) {
+                sParameterName = sURLVariables[i].split('=');
+
+                if (sParameterName[0] === sParam) {
+                    return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+                }
+            }
+        };
+
+        function checkParameters() {
+            //si la OP viene de PresupuestoList
+            var presup = getUrlParameter("presupId")
+            var data = {};
+            data.Id_presup = presup;
+            if (op != undefined) {
+                callWS("orden_presup_aps", "getById", JSON.stringify(data), onGetPresup);
+            }
+
+            //si la OP viene de ClonarOP
+            //var op2 = getUrlParameter("orderClon")
+            //var data = {};
+            //data.Id_op_dg = op2;
+
+            //if (op2 != undefined) {
+            //    OpClon = true;
+            //    callWS("dg_orden_pub_aps", "getById", JSON.stringify(data), onGetOrder);
+            //}
+        }
+
+        function onGetPresup(data) {
+            $('#fechaDesde').datetimepicker('date', moment(dateToFieldFormat(data.fecha), 'DD/MM/YYYY'));
+            $('#fechaHasta').datetimepicker('date', moment(dateToFieldFormat(data.fecha_expiracion), 'DD/MM/YYYY'));
+
+            if (OpClon == false) {
+                $("#inpOrderMonth").val(data.mes);
+                $("#inpOrderYear").val(data.anio);
+                $("#inpOrderNumber").val(data.nro_presup);
+                $("#inpOrderNumber").attr("id_op_dg", data.id_presup);
+            }
+
+            if (data.fecha_alta != null && OpClon == false) {
+                $("#inpFechaAlta").val(dateToFieldFormat(data.fecha_alta));
+            }
+
+            if (data.id_moneda != null) {
+                $("#selMoneda option[value=" + data.id_moneda + "]").attr("selected", "selected");
+            }
+
+            $("#selFacturar option[value=" + data.facturar_a + "]").attr("selected", "selected");
+
+            if (data.agencia != null) {
+                $("#selAgencia option[value=" + data.agencia.id_contacto + "]").attr("selected", "selected");
+                cargarProductosyOPRelacionada(data.agencia.id_contacto, data.anunciante.id_contacto, data.producto.id_producto, data.id_op_relacionada);
+            }
+
+            $("#selAnunciante option[value=" + data.anunciante.id_contacto + "]").attr("selected", "selected");
+            $("#selAnunciante").change(); //para que cargue los productos
+
+            $("#inpDescOP").val(data.descripcion);
+
+            if (data.id_condpagoap != null) {
+                $("#selPlazoP option[value=" + data.id_condpagoap + "]").attr("selected", "selected");
+            }
+
+            if (data.id_ejecutivo != null) {
+                $("#selEjecutivo option[value=" + data.id_ejecutivo + "]").attr("selected", "selected");
+            }
+
+            if (data.formasPago.length > 0) {
+                $("#selFPago option[value=" + data.formasPago[0].forma_pago.id_formapago + "]").attr("selected", "selected");
+            }
+
+            var formasPago = rDetalle.formasPago;
+            var viewListformasPago = "<ul class=\"list-group\">"
+            if (formasPago != undefined) {
+                if (formasPago.length > 0) {
+                    var porcHTML = '';
+                    formasPago.forEach(function (fPago) {
+                        $("#selFPago option[value=" + fPago.id_formapago + "]").attr("selected", "selected");
+                        var desc = $("#selFPago option[value=" + fPago.id_formapago + "]").text();
+                        porcHTML += "<tr id='ronRow_" + fPago.id_formapago + "'><td>" + desc + "</td>" + "<td><input type='number' class='form-control inpRon' id='inpRonRow_" + fPago.id_formapago + "' value='" + fPago.porcentaje + "' onchange=\"$(this).attr('value',$(this).val())\" /></td></tr>"
+                    });
+                    $("#porcRon").html(porcHTML);
+                    enableRon();
+                }
+                else {
+                    viewListMedios += "<li class=\"list-group-item\">(Todos)</li>";
+                }
+            }
+            viewListformasPago += "</ul>"
+            $("#selFPago").after(viewListformasPago);
+            cMultiSelect.bootstrapDualListbox('refresh');
+
+            $("#selConceptoN option[value=" + data.id_concepto_negocio + "]").attr("selected", "selected");
+
+            if (data.facturar_a == 2) {
+                $("#selAgencia option[value=" + data.agencia.id_contacto + "]").attr("selected", "selected");
+            }
+
+            //if (data.bloqueado == 0 && OpClon == false) {
+            //    bloquearOp(data.id_op_dg);
+            //}
+            //else if (OpClon == false) {
+            //    OpYaAbierta = true;
+            //    OpBloqueada = true;
+            //    bloquearCamposCabecera();
+            //}
+
+            Detalles = data.detalles;
+
+            //if (OpClon) {
+            //    $("#bAnular").attr("disabled", true);
+            //    $("#bClonar").attr("disabled", true);
+
+            //    $("#divAnuClon").append('<div class="card rounded bg-transparent" id = "cardClonacion" style = "border-color: #007bff; color: #007bff; width: 80px; height: 30px; font-size: small; " ><div class= "card-body" style = "padding-bottom: 0px;padding-top: 5px;padding-right: 10px;padding-left: 10px;" >Clonación</div ></div >');
+            //}
+
+            $("#montoBruto").val(data.monto_bruto);
+            $("#neto1").val(data.primer_neto);
+            $("#neto2").val(data.seg_neto);
+            $("#conf_nc").val(data.imp_conf_nc);
+            $("#conf_fc").val(data.imp_conf_fc);
+            // $("#total").val(data.tercer_neto); //Total
+
+            $("#TableRenglones").empty();
+            if (Detalles.length > 0) {
+                $("#selAnunciante").attr("disabled", true);
+                $("#botLimpiar").attr("disabled", true);
+                $("#botLimpiar").attr("title", "No es posible limpiar Anunciante si existen Detalles cargados");
+            }
+
+            Detalles.forEach(generarTablaDetalles);
+
+            //getArchivos(data.id_op_dg.toString());
+            calculateTotals();
+        }
+
+        function cargarProductosyOPRelacionada(idAgencia, idAnunciante, idProducto, idOpRelacionada) {
+            data = {};
+            data.agencia = {};
+            data.anunciante = {};
+            data.anunciante.id = idAnunciante;
+            data.agencia.id = idAgencia;
+
+            $.when(
+                callWS("productos", "getProductosPorAnunciante", idAnunciante.toString(), function (data) { onPopulateSelectDone(data, 'selProducto', 'id_producto', 'desc_producto'); })
+            ).then(function () { onCargarProductosyOPRelacionada(idProducto, idOpRelacionada) }, function (data1, data2) {
+                console.log("Productos: " + data1[2].statusText + "; Ordenes Relacionadas: " + data2[2].statusText + ";");
+                showMessage("Se produjo un error al cargar los campos, intentelo nuevamente", type = "alert");
+            });
+
+
+        }
+
+        function validarPresup() {
+
+            if ($("#selAnunciante").val() == null) {
+                showMessage("Seleccione un Anunciante", "info");
+                return false;
+            }
+
+            if ($("#selProducto").val() == null) {
+                showMessage("Seleccione un Producto", "info");
+                return false;
+            }
+
+            if ($("#selAgencia").val() == null) {
+                showMessage("Seleccione una Agencia", "info");
+                return false;
+            }
+
+            if ($("#fechaDesde").val() == "" || $("#fechaHasta").val() == "") {
+                showMessage("Seleccione las Fechas de Vigencia de la Orden", "info");
+                return false;
+            }
+
+            var o1 = new Date(dateToSqlFormat($('#fechaDesde').val()) + 'T00:00:00');
+            var o2 = new Date(dateToSqlFormat($('#fechaHasta').val()) + 'T00:00:00');
+            if (o2 < o1) {
+                showMessage("La Fecha Hasta es menor que la Fecha Desde en la Vigencia de la Orden", "info");
+                return false;
+            }
+
+            if (validarFechasCabecYDet(o1, o2)) {
+                showMessage("La Orden contiene Detalles fuera de las Fechas de Vigencia", "info");
+                return false;
+            }
+
+            if ($("#selFPago").val().length == 0) {
+                showMessage("Seleccione un Tipo de Venta", "info");
+                return false;
+            }
+
+            if ($("#selPlazoP").val() == null) {
+                showMessage("Seleccione un Plazo de Pago", "info");
+                return false;
+            }
+
+            if ($("#selConceptoN").val() == null) {
+                showMessage("Seleccione un Concepto de Negocio", "info");
+                return false;
+            }
+
+            if ($("#selEjecutivo").val() == 0) {
+                callWS("medios", "getBD", '', function (bd) { validarEjecutivo(bd) });
+            }
+
+            if (Detalles.length < 1) {
+                showMessage("El Presupuesto tiene que tener al menos un Detalle", "info");
+                return false;
+            }
+
+            if (parseFloat($("#total").val()) < 0) {
+                showMessage("El Total del Presupuesto debe ser igual o mayor a cero", "info");
+                return false;
+            }
+
+            if ($("#selFacturar").val() != "2" && parseFloat($("#total").val()) <= 0) {
+                showMessage("El total del Presupuesto debe ser mayor a cero", "info");
+                return false;
+            }
+
+            var sinDefinir = false;
+            Detalles.forEach(function (detalle, index) {
+                if (detalle.id_categoria == null || detalle.id_tarifa == null || detalle.id_medio == null) {
+                    sinDefinir = true;
+                }
+            });
+            if (sinDefinir == true) {
+                showMessage("Complete los campos sin definir en los Detalles", "info");
+                return false;
+            }
+
+            return true;
+        }
+
+        function validarEjecutivo(bd) {
+            if (bd == 1) {
+                showMessage("Seleccione un Ejecutivo", "info");
+                return false;
+            }
+        }
+
+        function prevSavePresup() {
+            if (!validarPresup()) { return false; }
+
+            var data = {};
+            if ($("#inpOrderNumber").val() != "") {
+                data.id_op_dg = $("#inpOrderNumber").attr("id_op_dg")
+            }
+            data.Bitacora = $("#inpDescOP").val();
+            callWS("dg_orden_pub_aps", "existeOpNombre", JSON.stringify(data), function (data) {
+                if (data == true) {
+                    message = "Ya existe una OP con la Descripción ingresada";
+                    showMessage(message, "error");;
+                } else {
+                    if (DetallesASDelete.length > 0) {
+                        advertenciaDeleteDetalle();
+                    }
+                    else {
+                        savePresup();
+                    }
+                }
+            });
+        }
+
+        function advertenciaDeleteDetalle() {
+            //callWS("medios", "getParamById", JSON.stringify(2), function (param) {
+                var mensaje = "";
+                //if (param.valor == 1) {
+                    mensaje = "<div class='d-flex justify-content-center' style='text-align: center;'>Los Detalles eliminados podrían ser archivados en el AdServer</div>";
+                //}
+                //else {
+                //    mensaje = "<div class='d-flex justify-content-center' style='text-align: center;'>Los Detalles eliminados podrían ser archivados en el AdServer. En el caso de estar publicándose, serán pausados</div>";
+                //}
+                options = [
+                    {
+                        optionDesc: "Aceptar",
+                        optionFunc: "savePresup()"
+                    },
+                    {
+                        optionDesc: "Cancelar",
+                        optionFunc: ""
+                    }
+                ];
+                showModal(mensaje, options);
+            //});
+        }
+
+        function savePresup() {
+
+            var data = {};
+
+            if (!validarPresup()) { return false; }
+            if ($("#inpOrderNumber").val() != "") {
+                data.nro_orden = $("#inpOrderNumber").val();
+                data.id_op_dg = $("#inpOrderNumber").attr("id_op_dg")
+            }
+            data.Nro_orden_ag = $("#inpOrderNumberClient").val();
+            data.Nro_orden_imp = $("#OrdenCompraCliente").val();
+            data.Bitacora = $("#inpDescOP").val();
+            data.empresa = {};
+            data.empresa.Id_empresa = $("#selEmpresa").val();
+            data.id_concepto_negocio = $("#selConceptoN").val();
+            data.id_clasificacion_op = $("#selClasificacion").val();
+            data.Fecha = dateToSqlFormat($("#fechaDesde").val());
+            data.Fecha_expiracion = dateToSqlFormat($("#fechaHasta").val());
+            data.agencia = {};
+            data.agencia.Id_contacto = $("#selAgencia").val();
+            data.anunciante = {};
+            data.anunciante.Id_contacto = $("#selAnunciante").val();
+            data.anunciante.Nombre_com = $("#selAnunciante option:selected").text();
+            data.producto = {};
+            data.producto.Id_producto = $("#selProducto").val();
+            data.medio = {};
+            data.medio.Id_medio = 0;
+            data.Tipo_orden = 4;
+            data.idFormaPago = "1";
+            data.Monto_bruto = $("#montoBruto").val();
+            data.Es_anulada = 0;
+            data.Primer_neto = $("#neto1").val();
+            data.Seg_neto = $("#neto2").val();
+            if ($("#selFacturar").val() == 0) {
+                data.Id_facturar = data.agencia.Id_contacto;
+            } else if ($("#selFacturar").val() == 1) {
+                data.Id_facturar = data.anunciante.Id_contacto;
+            }
+            data.Facturar_a = $("#selFacturar").val();
+            data.Porc_dto = 0;
+
+            data.Monto_dto = 0;
+            data.Imp_conf_nc = $("#conf_nc").val();
+            data.Imp_conf_fc = $("#conf_fc").val();
+            data.Tercer_neto = data.Seg_neto;//$("#total").val(); //Total
+
+            if (document.getElementById("checkListaParaFact").checked) {
+                data.Parafacturar = "1";
+            }
+            else {
+                data.Parafacturar = "0";
+            }
+
+            data.usuario = {};
+            data.usuario.Id_usuario = $("#NombreUsuario").attr("data-id");
+
+            data.Total_Avisos = 0;
+            data.Total_Impresiones = 0;
+            data.id_Google_Ad_Manager = 0;
+
+            Detalles.forEach(function (item, index) {
+                data.Total_Avisos += 1;
+                if (item.tipo_tarifa == 0) {
+                    data.Total_Impresiones += parseFloat(item.cantidad);
+                }
+
+                //guardamos parametro en id_google_ad_manager para detectar si la OP contiene o no algún detalle sincronizado y pintarlo de verde en OrderList
+                if (item.id_Google_Ad_Manager > 0) {
+                    data.id_Google_Ad_Manager = 1;
+                }
+            });
+
+            if (DetallesASDelete.length > 0) {
+                var orden = {};
+                orden.nro_orden = $("#inpOrderNumber").val();
+                orden.anio = $("#inpOrderYear").val();
+                orden.mes = $("#inpOrderMonth").val();
+                orden.Bitacora = $("#inpDescOP").val();
+                orden.Detalles = DetallesASDelete;
+                orden.UsuarioSesion = $("#NombreUsuario").text();
+                callWS("googleAdManager", "archivarLineItems", JSON.stringify(orden));
+            }
+
+            //if ($("#selOrdenRelacionada").val() == "" || $("#selOrdenRelacionada").val() == undefined) {
+            data.id_op_relacionada = -1;
+            //} else {
+            //    data.id_op_relacionada = $("#selOrdenRelacionada").val();
+            //}
+
+            data.idEjecutivo = "0";
+            formaspago = [];
+            fp = {};
+            fp.forma_pago = {};
+            fp.forma_pago.Id_formapago = $("#selFPago").val();
+            data.Id_condpagoap = $("#selPlazoP").val();
+            fp.Porcentaje = 100;
+            formaspago.push(fp);
+            data.FormasPago = formaspago;
+            ejecutivos = [];
+            ej = {};
+            if ($("#selEjecutivo").val() != "" && $("#selEjecutivo").val() != null) {
+                ej.Id_ejecutivo = $("#selEjecutivo").val();
+                data.idEjecutivo = ej.Id_ejecutivo;
+                ej.Porcentaje = 100;
+                ejecutivos.push(ej);
+            }
+
+            data.Ejecutivos = ejecutivos;
+
+            data.Observ = "";
+            if (data.nroOrdenAgencia == "") {
+                data.nroOrdenAgencia = "NULL";
+            }
+
+            data.Id_convenio = idConvenio;
+
+            data.Detalles = Detalles;
+            data.desc_fact = "Orden Digital " + data.fInicio + " - " + data.fFin;
+
+            data.Id_moneda = $("#selMoneda").val();
+            data.Cambio = $('#selMoneda>option:selected').attr("cambio");
+
+            callWS("dg_orden_pub_aps", "save", JSON.stringify(data), function (resultado) { onSavePresup(resultado, data); });
+
+            $("#bConvenios").attr("disabled", true);
+            $("#bBorrConvenios").attr("disabled", true);
+        }
+
+        function dateToSqlFormat(date) {
+            arr = date.split("/");
+            sqlFormatDate = '';
+            sqlFormatDate = arr[2] + '-' + arr[1] + '-' + arr[0];
+            return sqlFormatDate;
+        }
+
+        function dateToFieldFormat(date) {
+            date = date.split('T')[0];
+            arr = date.split("-");
+            fieldFormatDate = '';
+            fieldFormatDate = arr[2] + '/' + arr[1] + '/' + arr[0];
+            return fieldFormatDate;
+        }
+
+        function calculateTotals() {
+
+            var sumNetoRenglones = 0;
+            var sumBrutoRenglones = 0;
+            var sumNCRenglones = 0;
+            var sumFCRenglones = 0;
+            var neto2 = 0;
+            Detalles.forEach(function (item, index) {
+                sumNetoRenglones += parseFloat(item.monto_neto);
+                sumBrutoRenglones += parseFloat(item.monto_bruto);
+                sumNCRenglones += item.impconfnc;
+                sumFCRenglones += item.impconffc;
+            })
+            $("#montoBruto").val(sumBrutoRenglones.toFixed(2));//le agregue tofixed
+
+            if (sumBrutoRenglones != 0) {
+                $("#porc_desc").val((100 - 100 * (sumNetoRenglones / sumBrutoRenglones)).toFixed(2));
+            } else {
+                $("#porc_desc").val(0);
+            }
+
+            $("#conf_nc").val(sumNCRenglones);
+            $("#conf_fc").val(sumFCRenglones);
+
+            $("#neto1").val(sumNetoRenglones);
+
+            /*neto2 = sumNetoRenglones - parseFloat($("#conf_nc").val()) - parseFloat($("#conf_fc").val());*/
+            neto2 = sumNetoRenglones - sumNCRenglones - sumFCRenglones;
+            $("#neto2").val(neto2.toFixed(2));
+            //cTotal = neto2 * 1.21; CON IVA
+            cTotal = neto2;
+
+            $("#total").val(cTotal.toFixed(2));
+
+        }
+
+        function onSavePresup(data, opAntes) {
+
+            if (data.result > 0) {
+
+                //Parametros para el Log
+                var parametros = {};
+                parametros.objeto = 'ORDEN PUBLICITARIA';
+                parametros.clave = data.op.id_op_dg;
+                parametros.idusuario = $("#NombreUsuario").attr("data-id");
+                if (opAntes.id_op_dg == undefined) {
+                    parametros.accion = 'NUEVO';
+                    if (OpClon) {
+                        var opOriginal = getUrlParameter("orderClon");
+                        parametros.descripcion = 'Clonación de OP Digital desde: ' + opOriginal;
+                    }
+                    else {
+                        parametros.descripcion = 'Se creó la OP Digital: ' + data.op.anio + '-' + data.op.mes + '-' + data.op.nro_orden;
+                    }
+                }
+                else {
+                    parametros.accion = 'MODIFICACION';
+                    parametros.descripcion = 'Se modificó la OP Digital: ' + data.op.anio + '-' + data.op.mes + '-' + data.op.nro_orden;
+                }
+                var params = setListaParametros(parametros);
+                callWS("dg_orden_pub_aps", "grabarLog", JSON.stringify(params));
+
+                OpClon = false;
+                OpSinc = false;
+
+                $("#divAnuClon").empty();
+
+                if (data.op.id_Google_Ad_Manager > 0) {
+                    $("#bgetOrderASDetais").attr("disabled", false);
+                }
+
+                $("#bAnular").attr("disabled", false);
+                $("#bAnular").attr("title", "Anular Orden");
+
+                $("#bClonar").attr("disabled", false);
+                $('#inpOrderNumber').val(data.op.nro_orden);
+                $("#inpOrderNumber").attr("id_op_dg", data.op.id_op_dg);
+                $("#inpOrderMonth").val(data.op.mes);
+                $("#inpOrderYear").val(data.op.anio);
+
+                $("#inpDescOP").val(data.op.bitacora);
+
+                if ($("#inpFechaAlta").val() == "") {
+                    var today = new Date();
+                    var dd = today.getDate();
+                    var mm = today.getMonth() + 1;
+                    var yyyy = today.getFullYear();
+                    if (dd < 10) {
+                        dd = '0' + dd;
+                    }
+                    if (mm < 10) {
+                        mm = '0' + mm;
+                    }
+                    today = dd + '/' + mm + '/' + yyyy;
+                    $("#inpFechaAlta").val(today);
+                }
+
+                bloquearOp(data.op.id_op_dg);
+
+                comprobarModDetalle(data.op);
+                obtenerProgresoLineasGam(data.op);
+
+                DetallesASDelete.length = 0;
+                Detalles = data.op.detalles;
+                recargarRenglones();
+
+                showMessage(data.message);
+            }
+            else {
+                showMessage(data.message, "error");
+            }
+        }
+
+        function GetData() {
+            callWS("contactos", "getAgencias", '', function (data) { onPopulateSelectDone(data, "selAgencia"); });
+        }
+
+        function onAnuncianteSelected() {
+            data = {};
+
+            an = $('#selAnunciante').val();
+            if (an == null) {
+                return -1;
+            }
+            ag = $('#selAgencia').val();
+            //if (ag == null) {
+            //    return -1;
+            //}
+            if (ag != null) {
+                data.agencia = {};
+                data.anunciante = {};
+                data.anunciante.id = an;
+                data.agencia.id = ag;
+                //callWS("dg_orden_pub_aps", "getOrdenesRadio", JSON.stringify(data), function (data) { onPopulateSelectDone(data, 'selOrdenRelacionada', 'id', 'descripcion'); });
+                callWS("contactos", "getAgenciasPorAnunciante", an, function (data) { onPopulateSelectDone(data, 'selAgencia', 'id', 'nombre_com'); });
+            } else {
+                callWS("contactos", "getAgenciasPorAnunciante", an, function (data) { onPopulateSelectDone(data, 'selAgencia', 'id', 'nombre_com'); });
+            }
+            //data.agencia = {};
+            //data.anunciante = {};
+            //data.anunciante.id = p;
+            //data.agencia.id = ag;
+            //callWS("dg_orden_pub_aps", "getOrdenesRadio", JSON.stringify(data) , function (data) { onPopulateSelectDone(data, 'selOrdenRelacionada', 'id', 'descripcion'); });
+            callWS("productos", "getProductosPorAnunciante", an, function (data) { onPopulateSelectDone(data, 'selProducto', 'id_producto', 'desc_producto'); });
+        }
+
+        function onAgenciaSelected() {
+            an = $('#selAnunciante').val();
+            ag = $('#selAgencia').val();
+            if (an == null) {
+                $('#selProductoD').empty();
+                $('#selProducto').empty();
+                callWS("contactos", "getAnunciantesPorAgencia", ag, function (data) { onPopulateSelectDone(data, 'selAnunciante', 'id', 'nombre_com'); });
+            } else {
+                data.agencia = {};
+                data.anunciante = {};
+                data.anunciante.id = an;
+                data.agencia.id = ag;
+                //callWS("dg_orden_pub_aps", "getOrdenesRadio", JSON.stringify(data), function (data) { onPopulateSelectDone(data, 'selOrdenRelacionada', 'id', 'descripcion'); });
+                callWS("contactos", "getAnunciantesPorAgencia", ag, function (data) { onPopulateSelectDone(data, 'selAnunciante', 'id', 'nombre_com'); });
+            }
+        }
+
+        function onProductoSelected() {
+            an = $('#selAnunciante').val();
+            ag = $('#selAgencia').val();
+            pr = $('#selProducto').val();
+            if (ag == null && an == null) {
+                callWS("contactos", "getAnunciantesPorProducto", pr, function (data) { onPopulateSelectDone(data, 'selAnunciante', 'id', 'nombre_com'); });
+            }
+        }
+
+
+
+        function onTipoAvisoGetAll(data, idSelect, colId, colDesc) {
+            var pObj = data;
+            var listitems = '';
+            $.each(pObj, function (it, iObj) {
+                listitems += '<option  permite_envio_ads= ' + iObj['permite_envio_ads'] + ' tipo_aviso_ads= ' + iObj['tipo_aviso_ads'] + ' value=' + iObj['id_categoria'] + '>' + iObj["descripcion"] + '</option>';
+            });
+            $("#" + idSelect).empty();
+            $("#" + idSelect).append(listitems);
+            if (pObj.length > 1) {
+                $("#" + idSelect).val([]);
+            }
+        }
+
+
+
+        function onTarifasGetAll(data, idSelect, colId, colDesc) {
+            var pObj = data;
+            var listitems = '';
+            $.each(pObj, function (it, iObj) {
+                listitems += '<option forma_uso_desc=' + iObj['forma_uso']['descripcion'] + ' forma_uso_id=' + iObj['forma_uso']['id'] + ' precio_unitario= ' + iObj['precio_unitario'] + ' value=' + iObj[colId] + '>' + iObj[colDesc] + '</option>';
+            });
+            $("#" + idSelect).empty();
+            $("#" + idSelect).append("<option value=''></option>");
+            $("#" + idSelect).append(listitems);
+            $("#" + idSelect).val([]);
+        }
+
+        function onTarifasGetAllConv(data, idSelect, colId, colDesc) {
+            var listitems = '';
+
+            listitems += '<option forma_uso_desc=' + data['forma_uso']['descripcion'] + ' forma_uso_id=' + data['forma_uso']['id'] + ' precio_unitario= ' + data['precio_unitario'] + ' value=' + data[colId] + '>' + data[colDesc] + '</option>';
+
+            $("#" + idSelect).empty();
+            $("#" + idSelect).append("<option value=''></option>");
+            $("#" + idSelect).append(listitems);
+            $("#selTarifaD option[value='" + data[colId] + "']").attr("selected", "selected");
+        }
+
+        function onAreasGeoGetAll(data, idSelect) {
+            var pObj = data;
+            var listitems = '';
+            $.each(pObj, function (it, iObj) {
+                listitems += '<option  codigo_area= ' + iObj['codigo_area'] + ' tipo= ' + iObj['tipo'] + ' value=' + iObj['id_area'] + '>' + iObj["descripcion"] + '</option>';
+            });
+            $("#" + idSelect).empty();
+            $("#" + idSelect).append(listitems);
+        }
+
+        function onPopulateSelectDone(data, idSelect, colId, colDesc) {
+
+            var sel = document.getElementById(idSelect);
+            var selected = sel.options[sel.selectedIndex];
+
+            var pObj = data;
+            var listitems = '';
+            $.each(pObj, function (it, iObj) {
+                listitems += '<option value=' + iObj[colId] + '>' + iObj[colDesc] + '</option>';
+            });
+            $("#" + idSelect).empty();
+            $("#" + idSelect).append(listitems);
+            if (pObj.length > 1) {
+                $("#" + idSelect).val([]);
+            } else {
+                if (idSelect == "selAnunciante") {
+                    $("#selAnunciante").change();//Carga los productos
+                }
+                //else if (idSelect == "selAgencia" && selected == undefined) {
+                //    $("#selAgencia").change();//Carga los Anunciantes
+                //}
+            }
+            if (idSelect == "selOrdenRelacionada" || idSelect == "selPrograma" || idSelect == "selDetConvenio") {
+                $("#" + idSelect).prepend("<option value=''></option>");
+            }
+
+            if (idSelect == "selOrdenRelacionada") {
+                $("#" + idSelect).val('');
+            }
+
+            if ((idSelect == "selAnunciante" || idSelect == "selAgencia" || idSelect == "selProducto") && selected != undefined) {
+                //Carga las opciones filtradas pero deja seleccionada la que estaba
+                $("#" + idSelect).val(selected.value);
+            }
+
+            if ($("#" + idSelect).attr('multiple') == 'multiple') {
+                cMultiSelect.bootstrapDualListbox('refresh');
+            }
+
+            if (idSelect == 'selMediosD') {
+                enableRon();
+            }
+
+            if (idSelect == 'selDetConvenio') {
+                $("#selDetConvenio option[value='']").attr("selected", "selected");
+            }
+        }
+
+        function onPopulateSelecectContactoConv(data, idSelect, colId, colDesc) {
+
+            var sel = document.getElementById(idSelect);
+            //var selected = sel.options[sel.selectedIndex];
+
+            var listitems = '';
+
+            listitems += '<option value=' + data[colId] + '>' + data[colDesc] + '</option>';
+
+            $("#" + idSelect).empty();
+            //$("#" + idSelect).append("<option value=''>(Todos) </option>");
+            $("#" + idSelect).append(listitems);
+
+            //$("#" + idSelect + "option[value=" + data.id_agencia + "]").attr("selected", "selected");
+        }
+
+        function onPopulateSelectMedidas(data, idSelect, colId, colDesc, colAncho, colAlto) {
+
+            var pObj = data;
+            var listitems = '';
+            $.each(pObj, function (it, iObj) {
+                listitems += '<option ancho=' + iObj[colAncho] + ' alto=' + iObj[colAlto] + ' value=' + iObj[colId] + '>' + iObj[colDesc] + '</option>';
+            });
+            $("#" + idSelect).empty();
+            $("#" + idSelect).append(listitems);
+            if (pObj.length > 1) {
+                $("#" + idSelect).val([]);
+            }
+
+            if ($("#" + idSelect).attr('multiple') == 'multiple') {
+                cMultiSelect.bootstrapDualListbox('refresh');
+            }
+        }
+
+        function onPopulateSelectEmplaza(data, idSelect, colId, colDesc, colCod) {
+
+            //var sel = document.getElementById(idSelect);
+            //var selected = sel.options[sel.selectedIndex];
+
+            var pObj = data;
+            var listitems = '';
+            $.each(pObj, function (it, iObj) {
+                listitems += '<option codigo_emplazamiento=' + iObj[colCod] + ' value=' + iObj[colId] + '>' + iObj[colDesc] + '</option>';
+            });
+            $("#" + idSelect).empty();
+            $("#" + idSelect).append(listitems);
+            if (pObj.length > 1) {
+                $("#" + idSelect).val([]);
+            }
+
+            if ($("#" + idSelect).attr('multiple') == 'multiple') {
+                cMultiSelect.bootstrapDualListbox('refresh');
+            }
+        }
+
+        function onPopulateSelectDetConv(data, idSelect, colId, colDesc, colDet) {
+            var pObj = data;
+            var listitems = '';
+
+            $.each(pObj, function (it, iObj) {
+                listitems += '<option id_detalle=' + iObj[colDet] + ' value=' + iObj[colId] + '>' + iObj[colDesc] + '</option>';
+            });
+            $("#" + idSelect).empty();
+            $("#" + idSelect).append(listitems);
+            if (pObj.length > 1) {
+                $("#" + idSelect).val([]);
+            }
+
+            $("#" + idSelect).val('');
+        }
+
+        function onPopulateSelectMoneda(data, idSelect) {
+            var pObj = data;
+            var listitems = '';
+            $.each(pObj, function (it, iObj) {
+                if (iObj.base == true) {
+                    listitems += '<option cambio=' + iObj['cambioCompra'] + ' value=' + iObj['id_moneda'] + ' selected>' + iObj["nombre"] + " (" + iObj["simbolo"] + ')</option>';
+                }
+                else {
+                    listitems += '<option cambio=' + iObj['cambioCompra'] + ' value=' + iObj['id_moneda'] + '>' + iObj["nombre"] + " (" + iObj["simbolo"] + ')</option>';
+                }
+            });
+            $("#" + idSelect).empty();
+            $("#" + idSelect).append(listitems);
+
+            callWS("medios", "getParamById", JSON.stringify(5), function (parMulti) { onCheckMultimoneda(parMulti); });
+        }
+
+        function onCheckMultimoneda(param) {
+            if (param.valor == 0) {
+                $("#selMoneda").attr("disabled", true);
+                $("#bCambioMoneda").attr("disabled", true);
+            }
+        }
+
+        function limpiaVinculados() {
+            $("#selAgencia").val([]);
+            $("#selAnunciante").val([]);
+            $("#selProducto").val([]);
+            callWS("productos", "getAll", '', function (data) { onPopulateSelectDone(data, 'selProducto', 'id_producto', 'desc_producto'); });
+            callWS("contactos", "getAgencias", '', function (data) { onPopulateSelectDone(data, 'selAgencia', 'id', 'nombre_com'); });
+            callWS("contactos", "getAnunciantes", '', function (data) { onPopulateSelectDone(data, 'selAnunciante', 'id', 'nombre_com'); });
+        }
+
+
+        function cargarNuevoRenglon() {
+            $('#pTituloDetalle').text('NUEVO DETALLE');
+            $("#divClonDet").empty();
+
+            if ($("#fechaHasta").val() == "" || $("#fechaDesde").val() == "") {
+                showMessage("Debe seleccionar la vigencia de la orden", "info");
+                return 0;
+            }
+            if ($("#selAgencia").val() == null) {
+                showMessage("Seleccione una Agencia", "info");
+                return 0;
+            }
+            if ($("#selAnunciante").val() == null) {
+                showMessage("Seleccione un Anunciante", "info");
+                return 0;
+            }
+            if ($("#selProducto").val() == null) {
+                showMessage("Seleccione un Producto", "info");
+                return 0;
+            }
+            if ($("#selEmpresa").val() == null) {
+                showMessage("Seleccione una Empresa", "info");
+                return 0;
+            }
+            if ($("#selConceptoN").val() == null) {
+                showMessage("Seleccione un Concepto de Negocio", "info");
+                return 0;
+            }
+            if ($("#selClasificacion").val() == null) {
+                showMessage("Seleccione una Clasificación Orden", "info");
+                return false;
+            }
+            if ($("#selFPago").val().length == 0) {
+                showMessage("Seleccione un Tipo de Venta", "info");
+                return 0;
+            }
+            if ($("#selPlazoP").val() == null) {
+                showMessage("Seleccione un Plazo de Pago", "info");
+                return 0;
+            }
+            if ($("#selEjecutivo").val() == null || $("#selEjecutivo").val() == 0) {
+                showMessage("Seleccione un Ejecutivo", "info");
+                return 0;
+            }
+
+            //var idRed = $('#selRedes').val();
+            var idEmpresa = $('#selEmpresa').val();
+
+            $("#checkTarifaManualD")[0].checked = false;
+            $("#checkTarifaManualD").change();
+
+            $("#selAnunciante").attr("disabled", true);
+
+            $("#selDetConvenio").attr("disabled", false);
+            $('#divDetailsRows').hide(); $('#divAddRow').show();
+            var $options = $("#selProducto > option").clone();
+            $('#selProductoD').empty();
+            $('#selProductoD').append($options);
+            $('#selProductoD').val($('#selProducto').val());
+            $('#fechaDesdeD').datetimepicker('date', moment($("#fechaDesde").val(), 'DD/MM/YYYY'));
+            $('#fechaHastaD').datetimepicker('date', moment($("#fechaHasta").val(), 'DD/MM/YYYY'));
+            $('#inpIdLinea').val("");
+            $('#inpIdLinea').css("background-color", "#e9ecef");
+            $('#descripcionD').val("");
+            $('#precioUnitarioD').val("");
+            $('#cantidadD').val("");
+            $("#cantidadD").attr("disabled", false);
+            $('#descuentoD').val(0);
+            $("#confNCD").val(0);
+            $("#confFCD").val(0);
+            $('#totalD').val("");
+            $("#bcomprobarModificacionesD").attr("disabled", true);
+            $("#selRedes").attr("disabled", false);
+            $("#bBuscarPedido").attr("disabled", true);
+            $('#inpPedido').val("");
+            $('#inpIdPedido').val("");
+            callWS("medios", "getAll", '', function (data) { onPopulateSelectDone(data, 'selMediosD', 'id_medio', 'desc_medio'); });
+            //callWS("medios", "getPorEmpresa", JSON.stringify(idEmpresa), function (data) { onPopulateSelectDone(data, 'selMediosD', 'id_medio', 'desc_medio'); });
+            callWS("medios", "getAllRedes", '', function (data) { onCargarSelect(data, 'selRedes', 'id_red', 'descripcion', 'codigo_red'); });
+            callWS("tarifas", "getFormasUsoAll", '', function (data) { onPopulateSelectDone(data, 'selTipoTarifaD', 'id', 'descripcion'); });
+            callWS("Tipos_avisos", "getAll", '', function (data) { onTipoAvisoGetAll(data, 'selTipoAvisoD', 'id_categoria', 'descripcion', 'Permite_envio_ads', 'tipo_aviso_ads'); });
+            callWS("medios", "getMedidas", JSON.stringify("0"), function (data) { onPopulateSelectMedidas(data, 'selMedidasD', 'id_medidadigital', 'descripcion', 'ancho', 'alto'); });
+            callWS("medios", "getAllA", '', function (data) { onAreasGeoGetAll(data, 'selAreasGeo', 'Id_area', 'descripcion', 'Codigo_area', 'tipo'); });
+            callWS("medios", "getAllE", JSON.stringify(0), function (data) { onPopulateSelectEmplaza(data, 'selEmplazaD', 'id_emplazamiento', 'descripcion', 'codigo_emplazamiento'); });
+            //callWS("programa", "getAllProgramasMedio", "1", function (data) {onPopulateSelectDone(data,'selPrograma','id_programa','desc_programa')})
+            //params = {}
+            //params.fecha_desta = dateToSqlFormat($('#fechaDesde').val());
+            //params.fecha_hasta = dateToSqlFormat($('#fechaHasta').val());
+            //params.vigente = 1;
+            //callWS("tarifas", "filter", JSON.stringify(setListaParametros(params)), function (data) { onTarifasGetAll(data, 'selTarifaD', 'id_tarifa_dg', 'descripcion'); })
+
+            if (idConvenio > 0) {
+                data = {};
+                data.id_convenio = idConvenio;
+                data.id_empresa = idEmpresa;
+                callWS("medios", "GetDetConveniosByIdConv", JSON.stringify(data), function (data) { onPopulateSelectDetConv(data, 'selDetConvenio', 'id_det_conv', 'descripcion', 'id_detalle'); });
+                $.when(bloquearCamposDetalle()).then($("#selDetConvenio").attr("disabled", false));
+            }
+            else {
+                $("#selDetConvenio").attr("disabled", true);
+            }
+
+        }
+
+        function filterTarifas() {
+            //tieneTarifa se usa solo en convenios
+            if (tieneTarifa == false) {
+                var error = [];
+                var day1;
+                var day2;
+                if ($('#fechaDesdeD').val() != "") {
+                    fDesde = new Date(moment($("#fechaDesdeD").val(), 'DD/MM/YYYY', true).format());
+                    mfDesde = moment(fDesde);
+                    if (mfDesde.isValid()) {
+                        //day1 = dateToSqlFormat($('#fechaDesdeD').val());
+                        day1 = new Date(dateToSqlFormat($('#fechaDesdeD').val()));
+                    } else {
+                        error.push("Formato 'Fecha Desde' invalido");
+                        return error;
+                    }
+                }
+                if ($('#fechaHastaD').val() != "") {
+                    fHasta = new Date(moment($("#fechaHastaD").val(), 'DD/MM/YYYY', true).format());
+                    mfHasta = moment(fHasta);
+                    if (mfHasta.isValid()) {
+                        //day2 = dateToSqlFormat($('#fechaHastaD').val());
+                        var day2 = new Date(dateToSqlFormat($('#fechaHastaD').val()));
+                    } else {
+                        error.push("Formato 'Fecha Hasta' invalido");
+                        return error;
+                    }
+                }
+
+                if ($('#selTipoTarifaD').val() == 1) {
+                    //var difference = Math.abs(day2 - day1);
+                    var cantD = (Math.abs(day2 - day1) / (1000 * 3600 * 24)) + 1;
+                    $("#cantidadL").text("Cantidad (días)");
+                    $("#cantidadD").val(cantD);
+                    //$("#cantidadD").attr("disabled", true);
+                }
+                else {
+                    if ($("#inpEsFacturada").val() == 'NO' && OpAnulada == false) {
+                        $("#cantidadD").attr("disabled", false);
+                    }
+                    $("#cantidadL").text("Cantidad");
+                }
+
+                var parametros = {};
+                var listaParametros = [];
+
+                var objParametro = {};
+                objParametro.ParameterName = "fecha_desde_det";
+                objParametro.Value = day1;
+                listaParametros.push(objParametro);
+
+                var objParametro = {};
+                objParametro.ParameterName = "fecha_hasta_det";
+                if (day2 == undefined) {
+                    day2 = "";
+                }
+                objParametro.Value = day2;
+                listaParametros.push(objParametro);
+
+                if ($('#selTipoTarifaD').val() != null) {
+                    var objParametro = {};
+                    objParametro.ParameterName = "forma_uso";
+                    objParametro.Value = $('#selTipoTarifaD').val();
+                    listaParametros.push(objParametro);
+                }
+                if ($('#selTipoAvisoD').val() != null) {
+                    objParametro = {};
+                    objParametro.ParameterName = "id_categoria";
+                    objParametro.Value = $('#selTipoAvisoD').val();
+                    listaParametros.push(objParametro);
+                }
+
+                values = $('#selMediosD').val();
+                values.forEach(function (value) {
+                    objParametro = {};
+                    objParametro.ParameterName = "id_medio";
+                    objParametro.Value = value;
+                    listaParametros.push(objParametro);
+                });
+
+                tamaños = $('#selMedidasD').val();
+                tamaños.forEach(function (tamaño) {
+                    objParametro = {};
+                    objParametro.ParameterName = "id_medidadigital";
+                    objParametro.Value = tamaño;
+                    listaParametros.push(objParametro);
+                });
+
+                emplazas = $('#selEmplazaD').val();
+                emplazas.forEach(function (emplaza) {
+                    objParametro = {};
+                    objParametro.ParameterName = "id_emplazamiento";
+                    objParametro.Value = emplaza;
+                    listaParametros.push(objParametro);
+                });
+
+                if ($('#selAreasGeo').val() != null) {
+                    objParametro = {};
+                    objParametro.ParameterName = "id_areaGeo";
+                    objParametro.Value = $('#selAreasGeo').val();
+                    listaParametros.push(objParametro);
+                }
+
+                if ($('#selRedes').val() != null) {
+                    objParametro = {};
+                    objParametro.ParameterName = "id_red";
+                    objParametro.Value = $("#selRedes").val();
+                    listaParametros.push(objParametro);
+                }
+
+                if ($('#selMoneda').val() != null) {
+                    objParametro = {};
+                    objParametro.ParameterName = "id_moneda";
+                    objParametro.Value = $("#selMoneda").val();
+                    listaParametros.push(objParametro);
+                }
+
+                objParametro = {};
+                objParametro.ParameterName = "vigente";
+                objParametro.Value = 1;
+                listaParametros.push(objParametro);
+
+                parametros.Parametros = listaParametros;
+
+                return callWS("tarifas", "filter", JSON.stringify(parametros), function (data) { onTarifasGetAll(data, 'selTarifaD', 'id_tarifa_dg', 'descripcion'); })
+            }
+        }
+
+        function setListaParametros(data) {
+            var parametros = {};
+            var listaParametros = [];
+
+            Object.keys(data).forEach(function (key) {
+                var objParametro = {};
+                objParametro.ParameterName = key;
+                objParametro.Value = data[key];
+                listaParametros.push(objParametro);
+            });
+            parametros.Parametros = listaParametros;
+            return parametros;
+        }
+
+        //Parametro global para saber si la OP está abierta por otro usuario, bloqueada, si esta clonandose, si es anulada y si se esta clonando Detalle
+        OpYaAbierta = false;
+        OpBloqueada = false;
+        OpClon = false;
+        OpAnulada = false;
+        OpSinc = false;
+        DetalleClon = false;
+        TipoAvisoClase = 0;
+        //Parametro global para llevar el último Detalle importado
+        var detImportado = false;
+        //Parametro global para llevar los detalles sincronizados con AdServer a eliminar
+        DetallesASDelete = [];
+        //Parametro global para llevar las diferencias entre detalles y lineas de pedido sincronizadas
+        var DiferenciasDetLin = [];
+        //Parametro global para llevar los detalles
+        Detalles = [];
+        //Parametro global para llevar la linea al importar detalle dentro de convenio
+        LineaImpConv = [];
+
+        //Modifica o agrega un renglon segun el id
+        function prevAddRenglon(id) {
+            //se chequea que el nombre no exista ya
+            var descripcionYaExiste = false;
+            Detalles.forEach(function (item, index) {
+                if (($('#descripcionD').val() == item.descripcion) && (id != item.id_detalle)) {
+                    descripcionYaExiste = true;
+                }
+            });
+            if (descripcionYaExiste == true) {
+                showMessage("La Descripción indicada ya existe para otro Detalle", "info");
+                return;
+            }
+            var detalle = {};
+            detalle.fecha_desde = dateToSqlFormat($('#fechaDesdeD').val());
+            if ($('#fechaHastaD').val() == "") {
+                showMessage("Indique una Fecha Hasta para la Vigencia del Detalle", "info");
+                return;
+            }
+            else {
+                detalle.fecha_hasta = dateToSqlFormat($('#fechaHastaD').val());
+            }
+            detalle.emplazamientos = selectToJson('selEmplazaD', 'id_emplazamiento');
+            detalle.emplazamientos.forEach(emplaza => {
+                $('#selEmplazaD option:selected').each(function () {
+                    if ($(this).val() == emplaza.id_emplazamiento) {
+                        emplaza.codigo_emplazamiento = $(this).attr("codigo_emplazamiento");
+                        emplaza.descripcion = $(this).text();
+                    }
+                });
+            });
+
+            if ($('#selTipoAvisoD>option:selected').attr("permite_envio_ads") == "true") {
+                callWS("dg_orden_pub_aps", "getSponsorsPorFecha", JSON.stringify(detalle), function (data) { onGetSponsor(data, id); });
+            }
+            else {
+                addRenglon(id);
+            }
+            /*$("#selEmpresa").attr("disabled", true);*/
+            DetalleClon = false;
+        }
+
+        function onGetSponsor(data, id) {
+            $("#modalCenterTitle").text("Advertencia");
+            if (data.length > 0) {
+                var strBody = "<div class='d-flex justify-content-center'>Las siguientes fechas están reservadas por Sponsors:</div>";
+                var str = "";
+                data.forEach(detalle => detalle.emplazamientos.forEach(emplazamiento => str += "<div class='d-flex justify-content-center'>Desde: " + "<b>" + dateToFieldFormat(detalle.fecha_desde) + "</b>" + " Hasta: " + "<b>" + dateToFieldFormat(detalle.fecha_hasta) + "</b>" + "-" + "<b>" + emplazamiento.descripcion + "</b>" + "</b></div>"));
+
+                strBody = strBody + str;
+
+                options = [
+                    {
+                        optionDesc: "Agregar de todos modos",
+                        optionFunc: "addRenglon('" + id + "')"
+                    },
+                    {
+                        optionDesc: "Cancelar",
+                        optionFunc: ""
+                    }
+                ];
+                showModal(strBody, options);
+            }
+            else {
+                addRenglon(id);
+            }
+        }
+
+
+        function addRenglon(id) {
+            //if (id > 0) {
+            //    id--;
+            //}
+
+            var cantMedios = $("#selMediosD option:selected").length;
+            if ($("#selAnunciante").val() == null) {
+                showMessage("Seleccione un anunciante", "info");
+                return;
+            }
+            if (cantMedios >= 2 && $("#porcRon").html() == "") {
+                showMessage("Debe realizar la distribución de porcentajes de RON", "info")
+                return;
+            }
+            //if ($('#selTipoTarifaD').val() == 1 && ($('#cantidadD').val() < 1 || $('#cantidadD').val() > 100)) {
+            //    showMessage("Introduzca un valor de porcentaje entre 1 y 100", "info");
+            //    return;
+            //}
+
+            var rDetalle = {};
+
+            if (id >= 0) {
+                /*rDetalle = Detalles[id];*/
+                var rDetalle = Detalles.find(detalle => detalle.id_detalle == id);
+                rDetalleCopy = JSON.parse(JSON.stringify(rDetalle));
+            }
+
+            //AGREGUE:
+            rDetalle.id_op_dg = 0;
+
+            rDetalle.medios = selectToJson('selMediosD', 'id_medio');
+            if (cantMedios >= 2) {
+                rDetalle.medios.forEach(medio => medio.porcentaje = $('#inpRonRow_' + medio.id_medio).val());
+            } else if (cantMedios == 1) {
+                rDetalle.medios[0].porcentaje = 100;
+            }
+
+            rDetalle.fecha_desde = dateToSqlFormat($('#fechaDesdeD').val());
+            rDetalle.fecha_hasta = dateToSqlFormat($('#fechaHastaD').val());
+
+            rDetalle.id_producto = $('#selProductoD').val();
+
+            rDetalle.tarifa_dg = {};
+            if ($('#selTarifaD').val() == "" || $('#selTarifaD').val() == undefined) {
+                rDetalle.tarifa_dg.id_tarifa_dg = 0;
+                rDetalle.tarifa_dg.descripcion = "Custom";
+            } else {
+                rDetalle.tarifa_dg.id_tarifa_dg = $('#selTarifaD').val();
+                rDetalle.tarifa_dg.descripcion = $('#selTarifaD>option:selected').text()
+            }
+
+            rDetalle.tipo_aviso_dg = {};
+            rDetalle.tipo_aviso_dg.descripcion = $('#selTipoAvisoD>option:selected').text();
+            rDetalle.tipo_aviso_dg.permite_envio_ads = $('#selTipoAvisoD>option:selected').attr("permite_envio_ads");
+            rDetalle.tipo_aviso_dg.tipo_aviso_ads = $('#selTipoAvisoD>option:selected').attr("tipo_aviso_ads");
+            rDetalle.tipo_aviso_dg.id_categoria = $('#selTipoAvisoD').val();
+
+            rDetalle.areaGeo = {};
+            rDetalle.areaGeo.id_area = $('#selAreasGeo').val();
+            rDetalle.areaGeo.codigo_area = $('#selAreasGeo>option:selected').attr("codigo_area");
+            rDetalle.areaGeo.tipo = $('#selAreasGeo>option:selected').attr("tipo");
+
+            rDetalle.id_det_conv = $('#selDetConvenio').val();
+            idDetConvenio = $('#selDetConvenio').val();
+
+            rDetalle.medidas = selectToJson('selMedidasD', 'id_medidadigital');
+            rDetalle.medidas.forEach(medida => {
+                $('#selMedidasD option:selected').each(function () {
+                    if ($(this).val() == medida.id_medidadigital) {
+                        medida.ancho = $(this).attr("ancho");
+                        medida.alto = $(this).attr("alto");
+                    }
+                });
+            });
+
+            rDetalle.emplazamientos = selectToJson('selEmplazaD', 'id_emplazamiento');
+            rDetalle.emplazamientos.forEach(emplaza => {
+                $('#selEmplazaD option:selected').each(function () {
+                    if ($(this).val() == emplaza.id_emplazamiento) {
+                        emplaza.codigo_emplazamiento = $(this).attr("codigo_emplazamiento");
+                        emplaza.descripcion = $(this).text();
+                    }
+                });
+            });
+
+            rDetalle.tipo_tarifa = $('#selTipoTarifaD').val();
+
+            if ($('#selPrograma').val() == "" || $('#selPrograma').val() == undefined) {
+                rDetalle.id_programa = 0;
+            } else {
+                rDetalle.id_programa = $('#selPrograma').val();
+            }
+
+            rDetalle.descripcion = $('#descripcionD').val();
+
+            rDetalle.importe_unitario = parseFloat($('#precioUnitarioD').val());
+
+            rDetalle.cantidad = parseInt($('#cantidadD').val());
+
+            //rDetalle.porc_dto = parseFloat($('#descuentoD').val());
+            //if (rDetalle.porc_dto == "") {
+            //    rDetalle.porc_dto = 0;
+            //}
+
+            if (parseFloat($("#descuentoD").val()) != 0 && $("#descuentoD").val() != "") {
+                rDetalle.porc_dto = parseFloat($('#descuentoD').val());
+            } else {
+                rDetalle.porc_dto = 0;
+            }
+
+            rDetalle.monto_neto = parseFloat($('#totalD').val());
+            rDetalle.monto_bruto = rDetalle.monto_neto * 100 / (100 - rDetalle.porc_dto)
+
+            if (parseFloat($("#confNCD").val()) != 0 && $("#confNCD").val() != "") {
+                rDetalle.porcconfnc = parseFloat($("#confNCD").val());
+                rDetalle.impconfnc = rDetalle.monto_neto / 100 * rDetalle.porcconfnc;
+            } else {
+                rDetalle.porcconfnc = 0;
+                rDetalle.impconfnc = 0;
+            }
+            if (parseFloat($("#confFCD").val()) != 0 && $("#confFCD").val() != "") {
+                rDetalle.porcconffc = parseFloat($("#confFCD").val());
+                rDetalle.impconffc = rDetalle.monto_neto / 100 * rDetalle.porcconffc;
+            } else {
+                rDetalle.porcconffc = 0;
+                rDetalle.impconffc = 0;
+            }
+
+            if ($("#checkTarifaManualD").is(":checked")) {
+                //rDetalle.netomanual = rDetalle.monto_neto;
+                rDetalle.tarifa_manual = 1;
+            } else {
+                rDetalle.tarifa_manual = 0;
+                rDetalle.imp_tarifa = parseFloat($('#precioUnitarioD').val());
+            }
+
+            if ($('#inpIdLinea').val() != "") {
+                rDetalle.id_Google_Ad_Manager = parseInt($('#inpIdLinea').val());
+            }
+            else {
+                rDetalle.id_Google_Ad_Manager = 0;
+            }
+
+            if ($('#inpIdPedido').val() != "") {
+                rDetalle.id_pedido_Google_Ad_Manager = parseInt($('#inpIdPedido').val());
+            }
+            else {
+                rDetalle.id_pedido_Google_Ad_Manager = 0;
+            }
+
+            rDetalle.nombre_pedido_Google_Ad_Manager = $('#inpPedido').val();
+
+            if ($('#selDetConvenio').val() == "" || $('#selDetConvenio').val() == undefined) {
+                rDetalle.id_det_conv = 0;
+            } else {
+                rDetalle.id_det_conv = $('#selDetConvenio').val();
+            }
+
+            rDetalle.id_red = $('#selRedes').val();
+
+            var error = validarDetalle(rDetalle);
+
+            if (error.length == 0 && validarFechasD()) {
+                $('#divDetailsRows').show();
+                $('#divAddRow').hide();
+                //Guardo un Detalle Nuevo
+                if (id == -1) {
+                    id = Detalles.length + 1;
+                    rDetalle.id_detalle = id;
+                    Detalles.push(rDetalle);
+                }
+                detImportado = false;
+                LineaImpConv.length = 0;
+                //Vuelvo el boton al estado inicial
+                $("#GuardarRenglon").attr("onclick", "prevAddRenglon(-1)");
+                recargarRenglones();
+            }
+            else {
+                //Modifico el Detalle
+                if (id >= 0) {
+                    var indexOfObject;
+
+                    for (let index = 0; index < Detalles.length; index++) {
+                        if (Detalles[index].id_detalle == id) {
+                            indexOfObject = index;
+                        }
+                    }
+
+                    Detalles[indexOfObject] = JSON.parse(JSON.stringify(rDetalleCopy));
+                }
+                if (error.length > 0) {
+                    message = "Falta completar/indicar los siguientes datos: "
+                    error.forEach(function (err) {
+                        message += err + " - ";
+                    });
+                    message = message.slice(0, -3);
+                    showMessage(message, "error");
+                }
+            }
+        }
+
+        function validarDetalle(rDetalle) {
+            var error = [];
+
+            if (rDetalle.medios.length == 0) {
+                error.push("Medios");
+            }
+
+            if (idDetConvenio < 1) {
+                if (rDetalle.tarifa_dg.id_tarifa_dg == null) {
+                    error.push("Tarifa Id");
+                }
+                if (rDetalle.tarifa_dg.descripcion == "") {
+                    error.push("Tarifa");
+                }
+            }
+
+            if (rDetalle.tipo_aviso_dg.id_categoria == null) {
+                error.push("Tipo de Aviso");
+            }
+
+            if (rDetalle.tipo_tarifa == null) {
+                error.push("Forma de Uso");
+            }
+            if (rDetalle.descripcion == "") {
+                error.push("Descripción");
+            }
+            if (isNaN(rDetalle.importe_unitario)) {
+                error.push("Importe");
+            }
+            if (isNaN(rDetalle.cantidad)) {
+                error.push("Cantidad");
+            }
+            if (isNaN(rDetalle.monto_neto)) {
+                error.push("Monto Neto");
+            }
+            if (isNaN(rDetalle.monto_bruto)) {
+                error.push("Monto Bruto");
+            }
+            if (rDetalle.porc_dto > 100) {
+                error.push("Descuento (tope 100%)");
+            }
+            if (LineaImpConv.id_detalle > 0) {
+                if (rDetalle.id_det_conv == 0) {
+                    error.push("Detalle Convenio");
+                }
+            }
+
+            return error;
+        }
+
+        //function validarDetalle(rDetalle) {
+        //    var ret = true;
+
+        //    if (rDetalle.medios.length == 0) return false;
+        //    //rDetalle.fecha_desde = dateToSqlFormat($('#fechaDesdeD').val());
+        //    //rDetalle.fecha_hasta = dateToSqlFormat($('#fechaHastaD').val());
+        //    //rDetalle.id_producto = $('#selProductoD').val();
+
+        //    if (idDetConvenio < 1) {
+        //        if (rDetalle.tarifa_dg.id_tarifa_dg == null) return false;
+        //        if (rDetalle.tarifa_dg.descripcion == "") return false;
+        //    }
+
+        //    //rDetalle.tipo_aviso_dg.descripcion = $('#selTipoAvisoD>option:selected').text();
+        //    //rDetalle.tipo_aviso_dg.permite_envio_ads = $('#selTipoAvisoD>option:selected').attr("permite_envio_ads");
+        //    if (rDetalle.tipo_aviso_dg.id_tipo_aviso_dg == null) return false;
+
+        //    //AGREGUE:
+        //    //if (rDetalle.medidas.length == 0) return false;
+
+        //    if (rDetalle.tipo_tarifa == null) return false;
+        //    if (rDetalle.descripcion == "") return false;
+        //    if (isNaN(rDetalle.importe_unitario)) return false;
+        //    if (isNaN(rDetalle.cantidad)) return false;
+        //    if (isNaN(rDetalle.monto_neto)) return false;
+        //    if (isNaN(rDetalle.monto_bruto)) return false;
+
+        //    return ret;
+        //}
+
+
+        function validarFechasD() {
+            var o1 = new Date(dateToSqlFormat($('#fechaDesde').val()));
+            var o2 = new Date(dateToSqlFormat($('#fechaHasta').val()));
+            var d1 = new Date(dateToSqlFormat($('#fechaDesdeD').val()));
+            var d2 = new Date(dateToSqlFormat($('#fechaHastaD').val()));
+
+            if (d2 < d1) {
+                showMessage("La Fecha Hasta es menor que la Fecha Desde en la Vigencia del Detalle", "error");
+                return false;
+            }
+
+            if (d1 < o1 || d2 > o2) {
+                showMessage("La Vigencia del Detalle debe estar incluida en la Vigencia de la Orden", "error");
+                return false;
+            }
+
+            return true;
+        }
+
+
+        function recargarRenglones() {
+            $("#TableRenglones").empty();
+            Detalles.forEach(generarTablaDetalles);
+            calculateTotals();
+
+            if (Detalles.length > 0) {
+                $("#selAnunciante").attr("disabled", true);
+                $("#botLimpiar").attr("disabled", true);
+                $("#botLimpiar").attr("title", "No es posible limpiar Agencia - Anunciante si existen Detalles cargados");
+
+                var op = {};
+                op.Detalles = Detalles;
+                comprobarModDetalle(op);
+                obtenerProgresoLineasGam(op);
+            }
+            else
+            {
+                if ($("#inpOrderNumber").attr("id_op_dg") == 0) {
+                    $("#selAnunciante").attr("disabled", false);
+                }
+            }
+        }
+
+
+        function generarTablaDetalles(det, index) {
+            id = det.id_detalle;
+
+            var str = "<tr  id='row" + id + "' data-id='row" + id + "' idAnunciante='" + $("#selAnunciante").val() + "'>";
+
+            if (det.desc_programa == "") {
+                str = str + "<td class='col-xs-3' > - / " + det.hs_desde + " - " + det.hs_hasta + "</td > ";
+            }
+            else {
+                str = str + "<td class='col-xs-3' > " + det.desc_programa + " / " + det.hs_desde + " - " + det.hs_hasta + "</td > ";
+            }
+            if (det.fecha_hasta == null) {
+                str = str + "<td  class='col-xs-2' dataid='" + id + "'>" + dateToFieldFormat(det.fecha_desde) + " - Por definir </td>";
+            }
+            else {
+                str = str + "<td  class='col-xs-2' dataid='" + id + "'>" + dateToFieldFormat(det.fecha_desde) + " - " + dateToFieldFormat(det.fecha_hasta) + "</td>";
+            }
+            str = str + " <td class='col-xs-2' dataid = '" + det.id_categoria + "' > " + det.desc_categoria + "</td > ";
+            if (det.id_tarifa == "" || det.id_tarifa == undefined || det.id_tarifa == null) {
+                str = str + "<td class='col-xs-1'> Custom </td>";
+            }
+            else {
+                str = str + "<td class='col-xs-1' dataid = '" + det.id_tarifa + "' > " + det.desc_tarifa + "</td>";
+            }
+            str = str + "<td class='col-xs-1'>" + det.cantidad + "</td>";
+            str = str + "<td class='col-xs-1'>" + det.monto_neto + "</td>";
+            str = str + "<td class='col-xs-2 pr-0 actions d-flex justify-content-center align-content-start'>";
+
+            $('.disableOnEdit').attr("disabled", false);
+
+            //  Botón modificar renglon
+            str = str + " <button type='button' data-id='" + id + "' class='btn actions btn-outline-dark btn-sm mr-1'  onclick='cargarModificarRenglon(this)' title='Editar Detalle'> <span class='fa fa-edit'></span></button>";
+
+            //  Botón clonar renglon y eliminar renglon
+            //if (OpBloqueada == true) {
+            //    str = str + " <button type='button' data-id='" + id + "' disabled id='bClonarReng" + id + "' class='btn actions btn-outline-dark btn-sm mr-1'  onclick='clonarD(this)' title='Clonar Detalle'> <span class='fa fa-clone'></span></button>";
+            //    str = str + " <button type='button' id='bElim" + id + "' data-id='" + id + "' disabled id='bEliminar" + id + "' class='btn actions btn-outline-dark btn-sm mr-1'  onclick='deleteRenglon(this)' title='Eliminar Detalle'> <span class='fa fa-trash'></span></button>";
+            //}
+            //else {
+                //str = str + " <button type='button' data-id='" + id + "' class='btn actions btn-outline-dark btn-sm mr-1'  onclick='clonarD(this)' title='Clonar Detalle'> <span class='fa fa-clone'></span></button>";
+                str = str + " <button type='button' id='bElim" + id + "' data-id='" + id + "' class='btn actions btn-outline-dark btn-sm mr-1'  onclick='deleteRenglon(this)' title='Eliminar Detalle'> <span class='fa fa-trash'></span></button>";
+            //}
+            str = str + "</td>";
+
+            //  Alerta renglon no guardado
+            str = str + "<td class='col-xs-1 pl-0' style='padding-top: 16px'>";
+            if (det.id_presup == 0) {
+                str = str + "<span class='fa fa-exclamation fa-pulse' id='brow" + id + "' title='Detalle no guardado''></span></td>";
+            }
+
+            $("#TableRenglones").append(str);
+        }
+
+
+        function calcularNetoD() {
+
+            cantD = $("#cantidadD").val();
+            descD = $("#descuentoD").val();
+            resultD = $("#precioUnitarioD").val();
+
+            if ($('#selTipoTarifaD').val() == 1) {
+                var day1 = new Date(dateToSqlFormat($('#fechaDesdeD').val()));
+                var day2 = new Date(dateToSqlFormat($('#fechaHastaD').val()));
+
+                var difference = Math.abs(day2 - day1);
+                cantD = (difference / (1000 * 3600 * 24)) + 1;
+
+                $("#cantidadD").val(cantD);
+
+                if (descD == "") {
+                    descD = 0;
+                }
+                if (resultD == "" || resultD < 0) {
+                    $("#resultD").val("");
+                    $("#totalD").val("");
+                    return;
+                }
+                if (cantD == "" || cantD <= 0) {
+                    $("#cantidadD").val("");
+                    $("#totalD").val("");
+                    return;
+                }
+            }
+
+            brutoD = resultD * cantD;
+
+            resultD = brutoD - (brutoD * descD / 100);
+
+            $("#totalD").val(resultD.toFixed(2));
+        }
+
+
+        function cargarModificarRenglon(r) {
+            //if (DetalleClon == true) {
+            //    $('#pTituloDetalle').text('NUEVO DETALLE')
+            //    $("#divClonDet").append('<div class="card rounded bg-transparent" id = "cardClonacion" style = "border-color: #007bff; color: #007bff; width: 80px; height: 30px; font-size: small; " ><div class= "card-body" style = "padding-bottom: 0px;padding-top: 5px;padding-right: 10px;padding-left: 10px;" >Clonación</div ></div >');
+            //}
+            //else {
+                $('#pTituloDetalle').text('EDITAR DETALLE')
+                $("#divClonDet").empty();
+            //}
+            desbloquearCamposDetalle();
+            if ($("#fechaHasta").val() == "" || $("#fechaDesde").val() == "") {
+                showMessage("Debe seleccionar la vigencia de la orden", "info");
+                return 0;
+            }
+            if ($("#selAgencia").val() == null) {
+                showMessage("Seleccione una Agencia", "info");
+                return 0;
+            }
+            if ($("#selAnunciante").val() == null) {
+                showMessage("Seleccione un Anunciante", "info");
+                return 0;
+            }
+            if ($("#selProducto").val() == null) {
+                showMessage("Seleccione un Producto", "info");
+                return 0;
+            }
+            if ($("#selConceptoN").val() == null) {
+                showMessage("Seleccione un Concepto de Negocio", "info");
+                return 0;
+            }
+            if ($("#selFPago").val().length == 0) {
+                showMessage("Seleccione un Tipo de Venta", "info");
+                return 0;
+            }
+            if ($("#selPlazoP").val() == null) {
+                showMessage("Seleccione un Plazo de Pago", "info");
+                return 0;
+            }
+            if ($("#selEjecutivo").val() == null || $("#selEjecutivo").val() == 0) {
+                showMessage("Seleccione un Ejecutivo", "info");
+                return 0;
+            }
+
+            $("#selAnunciante").attr("disabled", true);
+            $('#divDetailsRows').hide(); $('#divAddRow').show();
+            $("#checkTarifaManualD")[0].checked = false;
+            $("#checkTarifaManualD").change();
+
+            //if ($("#inpEsFacturada").val() == 'SI' || OpAnulada == true || OpYaAbierta == true) {
+            //    bloquearCamposDetalle();
+            //}
+
+            var rId = $(r).attr("data-id");
+
+            var rDetalle = Detalles.find(detalle => detalle.id_detalle == rId);
+
+            $.when(
+                callWS("medios", "getAll", '', function (data) { onPopulateSelectDone(data, 'selMediosD', 'id_medio', 'desc_medio'); }),
+                callWS("tarifas", "getFormasUsoAll", '', function (data) { onPopulateSelectDone(data, 'selTipoTarifaD', 'id', 'descripcion'); }),
+                callWS("Tipos_avisos", "getAll", '', function (data) { onTipoAvisoGetAll(data, 'selTipoAvisoD', 'id_categoria', 'descripcion'); })
+            ).then(function () { onCargarModificarRenglon(rDetalle) }, function (data1, data2, data3) {
+                console.log("Medios: " + data1[2].statusText + "; Formas de uso: " + data2[2].statusText + "Tipo Aviso: " + data3[2].statusText + ";");
+                showMessage("Se produjo un error al cargar los campos, intentelo nuevamente", type = "alert");
+            });
+        }
+
+
+        function onCargarModificarRenglon(rDetalle) {
+            //if (DetalleClon == true) {
+            //    $("#GuardarRenglon").attr("onclick", "prevAddRenglon(-1)");
+            //}
+            //else {
+                $("#GuardarRenglon").attr("onclick", "prevAddRenglon(" + rDetalle.id_detalle + ")");
+            //}
+
+            //Carga Fechas
+            $('#fechaDesdeD').datetimepicker('date', moment(dateToFieldFormat(rDetalle.fecha_desde), 'DD/MM/YYYY'));
+
+            if (rDetalle.fecha_hasta == null) {
+                $('#fechaHastaD').datetimepicker('date', null);
+            }
+            else {
+                $('#fechaHastaD').datetimepicker('date', moment(dateToFieldFormat(rDetalle.fecha_hasta), 'DD/MM/YYYY'));
+            }
+
+            //CARGA Medios
+            if (rDetalle.id_medio != null) {
+                $("#selMediosD option[value=" + rDetalle.id_medio + "]").attr("selected", "selected");
+            }
+
+            //Carga Programas
+            filterProgramas(rDetalle.id_programa);
+
+            //Carga Forme de uso
+            $("#selTipoTarifaD option[value=" + rDetalle.tipo_tarifa + "]").attr("selected", "selected");
+
+            //Carga Tipo Aviso
+            if (rDetalle.id_categoria != null) {
+                $("#selTipoAvisoD option[value=" + rDetalle.id_categoria + "]").attr("selected", "selected");
+            }
+
+            //Carga otros datos
+            $('#precioUnitarioD').val(rDetalle.imp_tarifa);
+            if (rDetalle.cantidad == -1) {
+                $('#cantidadD').val(0);
+            }
+            else {
+                $('#cantidadD').val(rDetalle.cantidad);
+            }
+            $('#descuentoD').val(rDetalle.porc_dto);
+            $('#totalD').val(rDetalle.monto_neto);
+            $("#confNCD").val(rDetalle.porcconfnc);
+            $("#confFCD").val(rDetalle.porcconffc);
+
+            //Carga Tarifa
+            //Cambiar filterTarifas, hacerlo al reves. en base a tarifa, filtrar el resto de campos. Primero filtrar por medio
+            //$.when(filterTarifas()).then(function () {
+            //    if (rDetalle.id_tarifa_dg != null) {
+            //        $("#selTarifaD option[value=" + rDetalle.id_tarifa_dg + "]").attr("selected", "selected");
+            //    }
+            //});
+
+            if (rDetalle.id_tarifa_dg != null) {
+                $("#selTarifaD option[value=" + rDetalle.id_tarifa_dg + "]").attr("selected", "selected");
+            }
+
+            if (rDetalle.netomanual) {
+                $("#checkTarifaManualD")[0].checked = true;
+                $("#checkTarifaManualD").change();
+                $("#precioUnitarioD").val(rDetalle.imp_tarifa);
+                $("#precioUnitarioD").change();
+            }
+        }
+
+
+        function deleteRenglon(r) {
+            var rId = $(r).attr("data-id");
+
+            var rDetalle = Detalles.find(detalle => detalle.id_detalle == rId);
+
+            r.parentElement.parentElement.remove();
+
+            var indexOfObject;
+
+            for (let index = 0; index < Detalles.length; index++) {
+                if (Detalles[index].id_detalle == rId) {
+                    indexOfObject = index;
+                }
+            }
+
+            //eliminamos el detalle de Detalles y reordenamos los id_detalle de todos los Detalles
+            $.when(
+                Detalles.splice(indexOfObject, 1)
+            ).then(function () { reordenarRenglon(); });
+
+            if (Detalles.length == 0) {
+                $("#selAgencia").attr("disabled", false);
+                $("#selAnunciante").attr("disabled", false);
+                $("#botLimpiar").attr("disabled", false);
+                $("#botLimpiar").attr("title", "Limpiar Agencia - Anunciante");
+            }
+
+            $("#bAnular").attr("disabled", true);
+            $("#bAnular").attr("title", "Guarde la Orden para poder anularla");
+        }
+
+
+        function reordenarRenglon() {
+            var contador = 1;
+
+            $.when(
+                Detalles.forEach(function (detalle) {
+                    detalle.id_detalle = contador;
+                    contador++;
+                })
+            ).then(function () { calculateTotals(); recargarRenglones(); });
+        }
+
+
+        function selectToJson(idSelect, idCol) {
+            ret = [];
+
+            values = $('#' + idSelect).val();
+            values.forEach(function (value) {
+                item = {};
+                item[idCol] = value;
+                ret.push(item);
+            });
+            return ret;
+        }
+
+
+        function descargar(path) {
+            $.fileDownload(path)
+                .done(function () { alert('File download a success!'); })
+                .fail(function () { alert('File download failed!'); });
+        }
+
+        function getArchivos(id_op) {
+            callWS("archivos", "getArchivosPorOP", id_op, function (data) { populateFilesTable(data); })
+        }
+
+        function populateFilesTable(files) {
+            rowHTML = '';
+            $.each(files, function (it, file) {
+                rowHTML += "<tr class='d-flex'>";
+                rowHTML += "<td class='col-sm-10'>" + file.nombre + "</td>";
+                rowHTML += "<td class='col-sm-2'>";
+                rowHTML += "<button type='button' title='Descargar' class='btn btn-outline-dark btn-sm mx-1'>" + "<a href='" + file.ruta + "' download='" + file.nombre + "' id='" + file.ruta + "'><span class='fa fa-download'></span></a>" + "</button>"
+                rowHTML += "<button type='button' title='Eliminar' class='btn btn-outline-dark btn-sm mx-1' onclick=\"checkDeleteFile('" + file.ruta + "')\";'><span class='fa fa-trash'></span></button>"
+                rowHTML += "</td>";
+                rowHTML += "</tr>";
+            });
+            $("#tablaArchivos").html(rowHTML);
+            loadImgSizes();
+        }
+
+        function checkDeleteFile(filepath) {
+            options = [
+                {
+                    optionDesc: "Aceptar",
+                    optionFunc: "deleteFile('" + filepath + "')"
+                },
+                {
+                    optionDesc: "Cancelar",
+                    optionFunc: ""
+                }
+            ];
+            var mensaje = "<div class='d-flex justify-content-center'>¿Está seguro de borrar el archivo?</div>";
+            showModal(mensaje, options);
+        }
+
+        function deleteFile(filepath) {
+            var arrStr = filepath.split("/");
+            var filename = arrStr[arrStr.length - 1];
+            $.when(callWS("archivos", "delete", "'" + filename + "'", function (data) { })).then(function () { getArchivos($('#inpOrderNumber').attr('id_op_dg')); })
+        }
+
+
+        //OPTIMIZAR, YA QUE EL SELMEDIOS ES INDIVIDUAL Y NO LISTBOX
+        function filterProgramas(selected = 0) {
+            if ($("#selMediosD").val().length > 0) {
+                listaMedios = "";
+                $.each($("#selMediosD").val(), function (it, Medio) {
+                    listaMedios += Medio + ",";
+                });
+                listaMedios = listaMedios.slice(0, -1);
+
+                $.when(callWS("programa", "getAllProgramasMedio", JSON.stringify(listaMedios), function (data) { onPopulateSelectDone(data, 'selPrograma', 'id_programa', 'desc_programa') }))
+                    .then(function () {
+                        if (selected != 0) {
+                            $("#selPrograma option[value=" + selected + "]").attr("selected", "selected");
+                        }
+                    })
+            } else {
+                $("#selPrograma").empty();
+            }
+        }
+
+
+        function loadImgSizes() {
+            html = "";
+            files = $('#tablaArchivos').children();
+            var id_img = 0;
+            $.each(files, function (it, file) {
+                var img = new Image();
+                path = file.children[1].children[0].children[0].getAttribute('href').toString();
+                imgSize = getMeta(path, id_img)
+                //html += "<div class='d-flex justify-content-center breakBefore'> <img id='img" + id_img + "' src='." + path + "'> </div>"
+                id_img++;
+            })
+            return html;
+        }
+
+        function getMeta(url, id_img) {
+            var img = new Image();
+            var height = 0;
+            var width = 0;
+            img.onload = function () {
+                width = this.width;
+                height = this.height;
+                if (this.width > 900) {
+                    height = Math.round(height * (900 / width));
+                    width = Math.round(width * (900 / width));
+                }
+                var a = document.getElementById(url)
+                a.setAttribute('img-width', width)
+                a.setAttribute('img-height', height)
+                //$('#img' + id_img).attr('style', "width:" + width + "px;height:" + height + "px;");
+            };
+            img.src = '.' + url;
+        }
+
+        function includeImgs() {
+            html = "";
+            files = $('#tablaArchivos').children();
+            var id_img = 0;
+            $.each(files, function (it, file) {
+                var img = new Image();
+                path = file.children[1].children[0].children[0].getAttribute('href').toString();
+                width = file.children[1].children[0].children[0].getAttribute('img-width').toString();
+                height = file.children[1].children[0].children[0].getAttribute('img-height').toString();
+                html += "<hr class='breakBefore'><div class='d-flex justify-content-center mt-2'> <img src='." + path + "' style='width:" + width + "px;height:" + height + "px;'> </div>";
+                id_img++;
+            })
+            return html;
+        }
+
+        //USAR PARA LOS TIPOS DE VENTA
+        function openRonPorc() {
+            var modalHTML = '';
+            modalHTML += "<div class='row justify-content-center'><table><thead></thead><tbody id='ronTableBody'>"
+            var div = $("#porcRon");
+            if (div[0].innerHTML == "") {
+                medios = $("#selMediosD option:selected");
+                $.each(medios, function (index, medio) {
+                    modalHTML += "<tr id='ronRow_" + medio.value + "'><td>" + medio.text + "</td>" + "<td width='30%'><input type='number' class='form-control inpRon' id='inpRonRow_" + medio.value + "' value='0' onchange=\"$(this).attr('value',$(this).val())\" /></td></tr>"
+                })
+            } else {
+                modalHTML += div[0].innerHTML;
+            }
+            modalHTML += "</tbody></table></div>"
+            showRonModal(modalHTML);
+        }
+
+        function showRonModal(content) {
+            $("#modalCenterTitle").text("Editar % RON");
+            if ($('#selDetConvenio').val() == "" || $('#selDetConvenio').val() == undefined) {
+                content += "<div class='row justify-content-end mt-3 mr-1'><button type='button' id='distrUniforme' class='btn btn-secondary' onClick=\"distrUniforme();\"> Distr. Uniforme </button></div>";
+            }
+            else {
+                content += "<div class='row justify-content-end mt-3 mr-1'><button type='button' id='distrUniforme' class='btn btn-secondary' disabled='true' onClick=\"distrUniforme();\"> Distr. Uniforme </button></div>";
+            }
+            $("#modalCenterBody").html(content);
+            footer = '';
+            if ($("#inpEsFacturada").val() == 'SI' || OpAnulada == true) {
+                footer += "<button type='button' disabled id='aceptar' class='btn btn-secondary' onClick=\"setDetailRon($('#ronTableBody').html());\"> Aceptar </button>";
+            }
+            else {
+                footer += "<button type='button' id='aceptar' class='btn btn-secondary' onClick=\"setDetailRon($('#ronTableBody').html());\"> Aceptar </button>";
+            }
+            footer += "<button type='button' class='btn btn-secondary' data-dismiss='modal' onClick=\"$('#ronTableBody').empty();\"> Cancelar </button>";
+            $("#modalCenterFooter").html(footer);
+            $("#modalCenter").modal('show');
+        }
+
+        function setDetailRon(content) {
+            var sum = 0;
+            //var valido = new Boolean();
+            var valido = true;
+            $.each($("#ronTableBody").children(), function (index, row) {
+                valido = valido && (parseFloat(row.children[1].children[0].value) > 0);
+                sum += parseFloat(row.children[1].children[0].value);
+            })
+            if (sum == 100 && valido) {
+                var ronDiv = $("#porcRon");
+                ronDiv.html(content);
+                $('#ronTableBody').empty();
+                $("#modalCenter").modal('hide');
+            } else {
+                if (valido) {
+                    showMessage("La suma de los porcentajes debe ser igual a 100", "info");
+                } else {
+                    showMessage("Los porcentajes deben ser mayores a 0", "info");
+                }
+            }
+        }
+
+        function distrUniforme() {
+            var count = $("#ronTableBody").children().length
+            var i = 0;
+            var porc = round((100.00 / count), 2);
+            var porcSum = 0;
+            $.each($("#ronTableBody").children(), function (index, row) {
+                row.children[1].children[0].value = porc;
+                $(row.children[1].children[0]).change();
+                if (++i == count) {
+                    row.children[1].children[0].value = round(100 - porcSum, 2);
+                    $(row.children[1].children[0]).change();
+                }
+                porcSum = round((porcSum + porc) * 100 / 100, 2);
+            })
+        }
+
+        function enableRon() {
+            var selected = $("#selMediosD option:selected").length;
+            if (selected > 1) {
+                $("#botPorcRon").attr("disabled", false);
+            } else {
+                $("#botPorcRon").attr("disabled", true);
+            }
+        }
+
+        function round(value, decimals) {
+            return Number(Math.round(value + 'e' + decimals) + 'e-' + decimals);
+        }
+
+
+        function cancelarCargaDetalle() {
+            $("#GuardarRenglon").attr("onclick", "prevAddRenglon(-1)");
+            $('#divDetailsRows').show();
+            $('#divAddRow').hide();
+            //DetalleClon = false;
+
+            if ($("#inpOrderNumber").attr("id_presup") == 0) {
+                $("#selAnunciante").attr("disabled", false);
+            }
+        }
+
+
+        function bloquearCamposDetalle() {
+            $("#fechaDesdeD").attr("disabled", true);
+            $("#fechaHastaD").attr("disabled", true);
+            $("#selPrograma").attr("disabled", true);
+            $("#selTipoAvisoD").attr("disabled", true);
+            $("#selTipoTarifaD").attr("disabled", true);
+            $("#selTarifaD").attr("disabled", true);
+            $("#selMediosD").attr("disabled", true);
+            $("#checkTarifaManualD").attr("disabled", true);
+            $("#precioUnitarioD").attr("disabled", true);
+            $("#cantidadD").attr("disabled", true);
+            $("#descuentoD").attr("disabled", true);
+            $("#confNCD").attr("disabled", true);
+            $("#confFCD").attr("disabled", true);
+            $("#GuardarRenglon").attr("disabled", true);
+        }
+
+        function desbloquearCamposDetalle() {
+            $("#fechaDesdeD").attr("disabled", false);
+            $("#fechaHastaD").attr("disabled", false);
+            $("#selPrograma").attr("disabled", false);
+            $("#selTipoAvisoD").attr("disabled", false);
+            $("#selTipoTarifaD").attr("disabled", false);
+            $("#selTarifaD").attr("disabled", false);
+            $("#selMediosD").attr("disabled", false);
+            $("#checkTarifaManualD").attr("disabled", false);
+            $("#precioUnitarioD").attr("disabled", false);
+            $("#cantidadD").attr("disabled", false);
+            $("#descuentoD").attr("disabled", false);
+            $("#confNCD").attr("disabled", false);
+            $("#confFCD").attr("disabled", false);
+            $("#GuardarRenglon").attr("disabled", false);
+        }
+
+        function bloquearCamposCabecera() {
+            $("#inpOrderNumberClient").attr("disabled", true);
+            $("#inpDescOP").attr("disabled", true);
+            $("#fechaDesde").attr("disabled", true);
+            $("#fechaHasta").attr("disabled", true);
+            $("#selConceptoN").attr("disabled", true);
+            $("#selAgencia").attr("disabled", true);
+            $("#selProducto").attr("disabled", true);
+            $("#selFacturar").attr("disabled", true);
+            $("#selFPago").attr("disabled", true);
+            $("#selPlazoP").attr("disabled", true);
+            $("#selEjecutivo").attr("disabled", true);
+            $("#selMoneda").attr("disabled", true);
+            $("#bCargarNuevoRenglon").attr("disabled", true);
+            $("#bImportarNuevoRenglon").attr("disabled", true);
+            $(".bootstrap-duallistbox-container").find("*").prop("disabled", true);
+        }
+
+
+        //function bloquearOp(idOp) {
+        //    var opBloq = {}
+        //    opBloq.id_op_dg = idOp;
+        //    opBloq.id_usuario = $("#NombreUsuario").attr("data-id");
+        //    callWS("dg_orden_pub_aps", "bloquearOp", JSON.stringify(opBloq), onBloquearOp);
+        //}
+
+        //function onBloquearOp(res) {
+        //    if (res == false) {
+        //        showMessage("Ocurrió un error al intentar bloquear la Orden", "error");
+        //    }
+        //}
+
+        //function desbloquearOp() {
+        //    if (OpYaAbierta == false) {
+        //        var opBloq = {}
+        //        opBloq.id_op_dg = $("#inpOrderNumber").attr("id_op_dg");
+        //        opBloq.id_usuario = $("#NombreUsuario").attr("data-id");
+        //        callWS("dg_orden_pub_aps", "desbloquearOp", JSON.stringify(opBloq));
+        //    }
+        //}
+
+        //function onDesbloquearOp(res) {
+        //    if (res == false) {
+        //        showMessage("Ocurrió un error al intentar desbloquear la Orden", "error");
+        //    }
+        //}
+
+        //function prevClonarOrden() {
+        //    options = [
+        //        {
+        //            optionDesc: "Ir a clonación",
+        //            optionFunc: "clonarOrden()"
+        //        },
+        //        {
+        //            optionDesc: "Cancelar",
+        //            optionFunc: ""
+        //        }
+        //    ];
+        //    var mensaje = "<div class='d-flex justify-content-center' style='text-align: center;'>Está a punto de salir de la edición de la Orden. ¿Desea ir a Clonación de OP?</div>";
+        //    showModal(mensaje, options);
+        //}
+
+        //function clonarOrden() {
+        //    var idOp = $("#inpOrderNumber").attr("id_op_dg");
+
+        //    location.href = "/orden.html?orderClon=" + idOp;
+        //}
+
+        //function clonarD(IdDet) {
+        //    DetalleClon = true;
+        //    cargarModificarRenglon(IdDet);
+        //}
+
+
+        function validarFechasCabecYDet(fechaDesdeCab, fechaHastaCab) {
+            error = false;
+
+            Detalles.forEach(function (detalle, index) {
+                var fechaDesdeDet;
+                var fechaHastaDet;
+                if (detalle.fecha_desde.includes("T")) {
+                    fechaDesdeDet = new Date(detalle.fecha_desde);
+                }
+                else {
+                    fechaDesdeDet = new Date(detalle.fecha_desde + 'T00:00:00');
+                }
+                if (detalle.fecha_hasta.includes("T")) {
+                    fechaHastaDet = new Date(detalle.fecha_hasta);
+                }
+                else {
+                    fechaHastaDet = new Date(detalle.fecha_hasta + 'T00:00:00');
+                }
+
+                if (fechaDesdeCab > fechaDesdeDet || fechaHastaCab < fechaHastaDet) {
+                    error = true;
+                }
+            });
+
+            return error;
+        }
+
+        function formatearMonto(x) {
+            return Number.parseFloat(x).toFixed(2);
+        }
+
+
+        function prevMonedaSelected(selMoneda) {
+            options = [
+                {
+                    optionDesc: "Continuar",
+                    optionFunc: "cambiarMoneda(" + selMoneda.oldvalue + "," + selMoneda.value  + ")"
+                },
+                {
+                    optionDesc: "Cancelar",
+                    optionFunc: "volverMonedaAnterior(" + selMoneda.oldvalue + ")"
+                }
+            ];
+            var mensaje = "<div class='d-flex justify-content-center'>Las Tarifas de todos los Detalles serán reseteadas</div>";
+            showModal(mensaje, options);
+        }
+
+
+        function volverMonedaAnterior(valorAnterior) {
+            $('#selMoneda').val(valorAnterior);
+        }
+
+
+        function cambiarMoneda(valorAnterior, valorNuevo) {
+            //buscar el cambio
+            var paramsCambio = {};
+            paramsCambio.idMonedaO = valorAnterior;
+            paramsCambio.idMonedaD = valorNuevo;
+
+            var parametrosCambio = setListaParametros(paramsCambio);
+
+            callWS("medios", "getCambioActual", JSON.stringify(parametrosCambio), function (data) { onMonedaSelected(data); });
+        }
+
+
+        function onMonedaSelected(cambio) {
+            $('#precioUnitarioD').val($('#precioUnitarioD').val() / cambio);
+            $('#totalD').val($('#totalD').val() / cambio);
+            $.when(
+                Detalles.forEach(function (detalle) {
+                    detalle.id_tarifa = 0;
+                    detalle.monto_neto = detalle.monto_neto / cambio;
+                    detalle.monto_bruto = detalle.monto_bruto / cambio;
+                    detalle.impconfnc = detalle.impconfnc / cambio;
+                    detalle.impconffc = detalle.impconffc / cambio;
+                    detalle.imp_tarifa = detalle.imp_tarifa / cambio;
+                })
+            ).then(function () { filterTarifas(); calculateTotals(); recargarRenglones(); });
+        }
+
+
+        function getCotizaciones() {
+            callWS("medios", "getCotizaciones", "", function (data) { onPopulateTableCotizaciones(data); });
+        }
+
+
+        function onPopulateTableCotizaciones(data) {
+            rowHTML = ''
+
+            $.each(data, function (it, cotizacion) {
+
+                rowHTML += "<tr>";
+                rowHTML += "<td class='col-xs-1' style='text-align: center;'> " + cotizacion.nombre + " (" + cotizacion.simbolo + ")</td > ";
+                rowHTML += "<td class='col-xs-1' style='text-align: center;'> " + cotizacion.cambioCompra + "</td >";
+            /*    rowHTML += "<td class='col-xs-1' style='text-align: center;'> " + cotizacion.cambioVenta + "</td >";*/
+                rowHTML += "<td class='col-xs-1' style='text-align: center;'> " + dateToFieldFormat(cotizacion.fecha) + "</td >";
+                rowHTML += "</tr>";
+
+            });
+
+            $("#TableCotizaciones").html(rowHTML);
+
+            $("#cotizacionModal").modal('show');
+        }
+
+    </script>
+    <footer>
+        <p style="text-align: center; font-size: x-small;">Powered by <b style="font-size: small;">Strategy Zone S.A. ©</b></p>
+    </footer>
+</body>
+</html>

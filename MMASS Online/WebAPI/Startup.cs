@@ -75,6 +75,7 @@ namespace WebApi
             services.AddScoped<IArchivosService, ArchivosService>();
             services.AddScoped<IDg_medios_asociadosService, Dg_medios_asociadosService>();
             services.AddScoped<IProgramaService, ProgramaService>();
+            services.AddScoped<IOrden_presup_apService, Orden_presup_apService>();
 
             PerformCorsSetup(services);
         }

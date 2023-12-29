@@ -298,7 +298,15 @@
 
         function onAutentificar(data) {
             /* location.href = '/ordenList.html';*/
-            location.href = '/Home.html';
+
+            callWS("medios", "getParamById", JSON.stringify(1), function (bd) {
+                if (bd.valor == 3) {
+                    location.href = '/PresupuestoList.html';
+                }
+                else {
+                    location.href = '/Home.html';
+                }
+            });
         }
 
     </script>

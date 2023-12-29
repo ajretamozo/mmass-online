@@ -54,16 +54,16 @@
     <div class="collapse navbar-collapse" id="navbarCollapse">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item d-flex align-items-center">
-                <a class="nav-link" href="tarifaslist.html">Tarifas</a>
+                <a class="nav-link ocultar" href="tarifaslist.html">Tarifas</a>
             </li>
             <li class="nav-item d-flex align-items-center">
-                <a class="nav-link" href="tiposavisoslist.html">Tipos de Aviso</a>
+                <a class="nav-link ocultar" href="tiposavisoslist.html">Tipos de Aviso</a>
             </li>
             <li class="nav-item d-flex align-items-center">
-                <a class="nav-link" href="redesGamlist.html">Redes AdServer</a>
+                <a class="nav-link ocultar" href="redesGamlist.html">Redes AdServer</a>
             </li>
             <li class="nav-item dropdown d-flex align-items-center">
-                <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
+                <a class="nav-link dropdown-toggle ocultar" href="#" id="navbardrop" data-toggle="dropdown">
                     Ordenes
                 </a>
                 <div class="dropdown-menu">
@@ -72,7 +72,7 @@
                 </div>
             </li>
             <li class="nav-item dropdown d-flex align-items-center">
-                <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
+                <a class="nav-link dropdown-toggle ocultar" href="#" id="navbardrop" data-toggle="dropdown">
                     Sincronizar con AdServer
                 </a>
                 <div class="dropdown-menu">
@@ -83,11 +83,20 @@
                 </div>
             </li>
             <li class="nav-item dropdown d-flex align-items-center">
-                <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
+                <a class="nav-link dropdown-toggle ocultar" href="#" id="navbardrop" data-toggle="dropdown">
                     Reportes
                 </a>
                 <div class="dropdown-menu">
                     <a class="dropdown-item" href="informeVentas.html">Informe de Ventas</a>
+                </div>
+            </li>
+            <li class="nav-item dropdown d-flex align-items-center">
+                <a class="nav-link dropdown-toggle" href="#" id="navbardropPresup" data-toggle="dropdown">
+                    Presupuestos
+                </a>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="Presupuesto.html">Nuevo Presupuesto</a>
+                    <a class="dropdown-item" href="PresupuestoList.html">Buscar</a>
                 </div>
             </li>
         </ul>
@@ -99,7 +108,7 @@
                 </a>
                 <div class="dropdown-menu">
                     <a class="dropdown-item" href="perfil.html">Mi Perfil</a>
-                    <a class="dropdown-item" href="Configuracion.html">Configuración</a>
+                    <a class="dropdown-item ocultar" href="Configuracion.html">Configuración</a>
                     <a class="dropdown-item disabled" id="usuarios" href="usuariosList.html">Usuarios</a>
                     <a class="dropdown-item" href="#" onclick="cerrarSesion()">Cerrar Sesión</a>
                 </div>
@@ -121,6 +130,7 @@
 
     setUserName();
     setUserRol();
+    setOcultarModulos();
 
     function verInfo() {
         callWS("medios", "getInfoSistema", '', function (cs) { onVerInfo(cs); });

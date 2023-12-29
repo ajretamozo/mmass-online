@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html>
+<head runat="server">
+    <title>MMASS Online - Presupuestos de Ventas</title>
+
+    <link rel="shortcut icon" href="favicon.png">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment-with-locales.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/js/tempusdominus-bootstrap-4.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/css/tempusdominus-bootstrap-4.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400&display=swap" rel="stylesheet">
+    <script src="./js/autentificar.js"></script>
+    <script src="./js/export.js"></script>
+
+
+    <style>
+        .table-hover tbody tr:hover > td {
+            cursor: pointer;
+        }
+
+        .search-box-closed {
+            width: 53px;
+        }
+
+        .input-group-addon {
+            padding: 5px;
+            background: #b3c1cc;
+        }
+
+        @media (max-width: 767px) {
+            .search-box-open {
+                width: 100%;
+            }
+
+            #divMessage {
+                position: fixed;
+                width: 100%;
+                bottom: 2px;
+                text-align: center;
+            }
+        }
+
+        /*Small devices (landscape phones, 576px and up)*/
+        @media (min-width: 576px) {
+            .container {
+                max-width: 570px;
+            }
+        }
+
+        /*Medium devices (tablets, 768px and up)*/
+        @media (min-width: 768px) {
+            .container {
+                max-width: 750px;
+            }
+
+            .search-box-open {
+                width: 300px;
+            }
+        }
+
+        /*Large devices (desktops, 992px and up)*/
+        @media (min-width: 992px) {
+            .container {
+                max-width: 900px;
+            }
+        }
+
+        /*Extra large devices (large desktops, 1200px and up)*/
+        @media (min-width: 1200px) {
+            .container {
+                max-width: 1150px;
+            }
+        }
+
+        @media (min-width: 1400px) {
+            .container {
+                max-width: 1200px;
+            }
+        }
+
+        @media (min-width: 1600px) {
+            .container {
+                max-width: 1400px;
+            }
+        }
+
+        @media screen {
+
+            #divMessage {
+                position: fixed;
+                left: 50%;
+                margin-left: -200px;
+                width: 400px;
+                bottom: 30px;
+                text-align: center;
+            }
+        }
+
+        .dataTitle {
+            font-family: 'Roboto';
+            font-size: 20px;
+        }
+
+        .jumbotron {
+            background-color: #f5f5f5 !important;
+        }
+
+        .rounded {
+            border-radius: 1.5rem !important;
+        }
+    </style>
+
+</head>
+<body style="padding-top: 80px;font-family:'Roboto';">
+    <!--MENU-->
+    <div id="divNavBar"></div>
+
+    <!--CONTENEDOR PRINCIPAL HTML-->
+    <main role="main" class="container">
+        <div id="divBlock" style="left:0; right:0;top:0; bottom:0;overflow-x: hidden; overflow-y: auto;position:fixed;z-index:1051;outline:0;display:none"></div>
+        <div class="modal " id="pleaseWaitDialog" data-backdrop="static" data-keyboard="false" style="display:none">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content shadow p-3 mb-5 bg-white rounded">
+                    <div class="modal-header">
+                        <h4 class="modal-title" onclick='hidePleaseWait();'>Procesando...</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="progress">
+                            <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+
+                            </div>
+                        </div>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div>
+
+        <div class="modal fade" id="largeModal">
+
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="largeModalTitle"></h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+
+                    <!-- Modal body -->
+                    <div class="modal-body" id="largeModalBody">
+
+                    </div>
+
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div id="divMessage" class="alert" style="display:none;cursor:pointer;z-index:10000;" title="Click para cerrar"> </div>
+        <div class="jumbotron mt-4 py-4 shadow p-3 mb-5 bg-white rounded" id="divOrderMain">
+            <p class="dataTitle">PRESUPUESTOS DE VENTAS</p>
+            <!--ORDER DATA-->
+            <div id="divPresupuestosData">
+                <!--Filtros-->
+                <div class="row justify-content-around" style="padding-top: 4px;">
+                    <div class="col-md-3">
+                        <label>Número de Presupuesto</label>
+                        <div id="PresupuestoNumberComplete" class="row">
+                            <div class="col-md-4 "> <div class="input-group"> <input type="text" id="inpPresupYear" class="form-control enterSearch"></div> </div>
+                            <div class="col-md-4 "> <div class="input-group"> <input type="text" id="inpPresupMonth" class="form-control enterSearch"> </div> </div>
+                            <div class="col-md-4 "> <div class="input-group"> <input type="text" id="inpPresupNumber" class="form-control enterSearch"> </div> </div>
+                        </div>
+                        <label style="padding-top: 8px;">Agencia</label>
+                        <div class="row align-items-center">
+                            <div class="col-md-12"> <div class="input-group enterSearch"> <input type="text" id="inpDescAgencia" class="form-control"> </div> </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <label>Descripción</label>
+                        <div class="row align-items-center">
+                            <div class="col-md-12"> <div class="input-group enterSearch"> <input type="text" id="inpDescripcion" class="form-control"> </div> </div>
+                        </div>
+                        <label style="padding-top: 8px;">Anunciante</label>
+                        <div class="row align-items-center">
+                            <div class="col-md-12"> <div class="input-group enterSearch"> <input type="text" id="inpDescAnunciante" class="form-control"> </div> </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>Vigencia Orden</label>
+                                <div id="OrderDateSpam" class="row">
+                                    <div class="col-md-12">
+                                        <div class="input-group input-daterange">
+                                            <input type="text" class="form-control datetimepicker-input enterSearch" id="fechaDesde" data-toggle="datetimepicker" data-target="#fechaDesde" />
+                                            <span class="input-group-addon">hasta</span>
+                                            <input type="text" class="form-control datetimepicker-input enterSearch" id="fechaHasta" data-toggle="datetimepicker" data-target="#fechaHasta" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <label style="padding-top: 8px;">Producto</label>
+                                <div class="row align-items-center">
+                                    <div class="col-md-12"> <div class="input-group enterSearch"> <input type="text" id="inpDescProducto" class="form-control"> </div> </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6" style="padding-left: 20px; padding-right: 18px;">
+                                <div class="card" style="height: 147px; border-color: #ced4da; background-color: #343a40">
+                                    <div class="card-header" style="color: white; padding-bottom: 5px; padding-top: 7px;">
+                                        Estado
+                                    </div>
+                                    <div class="card-body" style="padding-top: 10px; padding-bottom: 5px; padding-left: 14px; padding-right: 5px;">
+                                        <div class="row">
+                                            <div class="col-md-6 ">
+                                                <div class="form-check" style="color: #ffffe1;">
+                                                    <input class="form-check-input" type="radio" name="flexRadioEstado" id="flexRadioEnProceso">
+                                                    <label class="form-check-label" for="flexRadioEnProceso">
+                                                        En Proceso
+                                                    </label>
+                                                </div>
+                                                <div class="form-check" style="color: #05baa4;">
+                                                    <input class="form-check-input" type="radio" name="flexRadioEstado" id="flexRadioPendiente">
+                                                    <label class="form-check-label" for="flexRadioPendiente">
+                                                        Pendiente
+                                                    </label>
+                                                </div>
+                                                <div class="form-check" style="color: #ff5353;">
+                                                    <input class="form-check-input" type="radio" name="flexRadioEstado" id="flexRadioRechazado">
+                                                    <label class="form-check-label" for="flexRadioRechazado">
+                                                        Rechazado
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 ">
+                                                <div class="form-check" style="color: #c0dcc0;">
+                                                    <input class="form-check-input" type="radio" name="flexRadioEstado" id="flexRadioAprobado">
+                                                    <label class="form-check-label" for="flexRadioAprobado">
+                                                        Aprobado
+                                                    </label>
+                                                </div>
+                                                <div class="form-check" style="color: #cff2fe;">
+                                                    <input class="form-check-input" type="radio" name="flexRadioEstado" id="flexRadioVinculado">
+                                                    <label class="form-check-label" for="flexRadioVinculado">
+                                                        Vinculado
+                                                    </label>
+                                                </div>
+                                                <div class="form-check" style="color: white;">
+                                                    <input class="form-check-input" type="radio" name="flexRadioEstado" id="flexRadioTodos" checked>
+                                                    <label class="form-check-label" for="flexRadioTodos">
+                                                        Todos
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>                                      
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row justify-content-end py-3">
+                    <div class="col-md-4" style="padding-top: 8px;">
+                    </div>
+                    <div class="col-md-4">
+                    </div>
+                    <div class="col-md-4 d-flex justify-content-end align-items-end">
+                        <button type="button" class="btn btn-dark btn-sm mx-1" onclick=" $('#divDetailsRows').show();$('#divAddRow').hide(); searchOrders();">
+                            <span class="fa fa-search"></span> Buscar
+                        </button>
+                        <button type="button" class="btn btn-dark btn-sm mx-1" onclick="nuevoPresup()">
+                            <span class="fa fa-plus"></span> Nuevo Presupuesto
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!--Tabla-->
+            <div id="tabla" class="table-responsive mt-2">
+                <table id="dataOp" class='table table-hover table-sm '>
+                    <thead align="center">
+                        <tr>
+                            <th>N Presupuesto</th>
+                            <th>Vigencia</th>
+                            <th>Descripción</th>
+                            <th>Agencia</th>
+                            <th>Anunciante</th>
+                            <th>Producto</th>
+                            <th>Neto</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody id="TableRenglones" class="small" align="center"></tbody>
+                </table>
+
+            </div>
+        </div>
+    </main>
+
+
+    <!--Scripts-->
+    <script type="text/javascript">
+
+        //DatePickers Initialization
+        $(function () {
+            $('#fechaDesde').datetimepicker({ format: 'L', locale: 'es' });
+            $('#fechaHasta').datetimepicker({ format: 'L', locale: 'es' });
+            $("#divNavBar").load("navBar.html");
+            $("#divMessage").on("click", function () { $("#divMessage").hide(); });
+            populateFields();
+            $(".enterSearch").on("keydown", function (e) {
+                if (event.which == 13) {
+                    searchOrders();
+                }
+            });
+            document.body.style.backgroundImage = "url(./fondoM3.png)";
+        });
+
+
+        function openPresup(data) {
+
+            var c = data;
+            var tr = $(c);
+
+            location.href = "/Presupuesto.html?presupId=" + tr.attr("id-presup");
+        }
+
+        function populateFields() {
+
+            callWS("orden_presup_aps", "getAll", '', function (data) {
+                if (data.length > 0) {
+                    populateTable(data, 'TableRenglones');
+                } else {
+                    message = 'La búsqueda no produjo ningun resultado';
+                    showMessage(message, "info");
+                }
+            });
+        }
+
+        function onPopulateSelectDone(data) {
+
+            $("#TableRenglones").html(data);
+        }
+
+        function populateTable(presuplist, idTable) {
+            rowHTML = ''
+            $.each(presuplist, function (it, iord) {
+                rowHTML += "<tr id-order=\"" + iord.id_presup + "\" onclick='openPresup(this)'>"
+                rowHTML += "<td class='col-xs-1'>" + iord.anio + "-" + iord.mes + "-" + iord.nro_presup + "</td>";
+                rowHTML += "<td class='col-xs-1'>" + dateToFieldFormat(iord.fecha) + ' - ' + dateToFieldFormat(iord.fecha_expiracion) + "</td>";
+                rowHTML += "<td class='col-xs-1'>" + iord.descripcion + "</td>";
+                rowHTML += "<td class='col-xs-1'>" + iord.agencia.nombre_com + "</td>";
+                rowHTML += "<td class='col-xs-1'>" + iord.anunciante.nombre_com + "</td>";
+                rowHTML += "<td class='col-xs-1'>" + iord.producto.desc_producto + "</td>";
+                rowHTML += "<td class='col-xs-1'>" + iord.simboloMoneda + " " + formatearMonto(iord.seg_neto) + "</td>";
+                switch (iord.id_estado) {
+                    case 1:
+                        rowHTML += "<td class='col-xs-1'>";
+                        rowHTML += "<span class='fa fa-circle fa-2x' style='color: #ffffe1;' title='En Proceso'></span></td>";
+                        break;
+                    case 2:
+                        rowHTML += "<td class='col-xs-1'>";
+                        rowHTML += "<span class='fa fa-circle fa-2x' style='color: #05baa4;' title='Pendiente'></span></td>";
+                        break;
+                    case 3:
+                        rowHTML += "<td class='col-xs-1'>";
+                        rowHTML += "<span class='fa fa-circle fa-2x' style='color: #ff5353;' title='Rechazado'></span></td>";
+                        break;
+                    case 4:
+                        rowHTML += "<td class='col-xs-1'>";
+                        rowHTML += "<span class='fa fa-circle fa-2x' style='color: #c0dcc0;' title='Aprobado'></span></td>";
+                        break;
+                    case 5:
+                        rowHTML += "<td class='col-xs-1'>";
+                        rowHTML += "<span class='fa fa-circle fa-2x' style='color: #cff2fe;' title='Vinculado'></span></td>";
+                        break;
+                }
+                rowHTML += '</tr>'
+            });
+            $("#" + idTable).html(rowHTML);
+        }
+
+        function searchOrders() {
+            error = '';
+            params = {};
+            params.anio = $('#inpPresupYear').val();
+            params.mes = $('#inpPresupMonth').val();
+            params.nro_presup = $('#inpPresupNumber').val();
+            params.descripcion = $('#inpDescripcion').val();
+
+            if (document.getElementById("flexRadioEnProceso").checked == true) {
+                params.id_estado = "1";
+            };
+            if (document.getElementById("flexRadioPendiente").checked == true) {
+                params.id_estado = "2";
+            };
+            if (document.getElementById("flexRadioRechazado").checked == true) {
+                params.id_estado = "3";
+            };
+            if (document.getElementById("flexRadioAprobado").checked == true) {
+                params.id_estado = "4";
+            };
+            if (document.getElementById("flexRadioVinculado").checked == true) {
+                params.id_estado = "5";
+            };
+
+            if ($('#fechaDesde').val() != "") {
+                fDesde = new Date(moment($("#fechaDesde").val(), 'DD/MM/YYYY', true).format());
+                mfDesde = moment(fDesde);
+                if (mfDesde.isValid()) {
+                    params.fecha_desde = dateToSqlFormat($('#fechaDesde').val());
+                } else {
+                    error += "Formato 'Fecha Desde' invalido";
+                }
+            }
+            if ($('#fechaHasta').val() != "") {
+                fHasta = new Date(moment($("#fechaHasta").val(), 'DD/MM/YYYY', true).format());
+                mfHasta = moment(fHasta);
+                if (mfHasta.isValid()) {
+                    params.fecha_hasta = dateToSqlFormat($('#fechaHasta').val());
+                } else {
+                    if (error != '') { error += ' / ' }
+                    error += "Formato 'Fecha Hasta' invalido";
+                }
+            }
+            params.agencia_nombre = $('#inpDescAgencia').val();
+            params.anunciante_nombre = $('#inpDescAnunciante').val();
+            params.producto_nombre = $('#inpDescProducto').val();
+
+            for (param in params) {
+                if (params[param] == null) {
+                    params[param] = '';
+                }
+            };
+
+            var parametros = setListaParametros(params);
+            if (error == '') {
+                callWS("orden_presup_aps", "filter", JSON.stringify(parametros), function (data) {
+                    if (data.length > 0) {
+                        populateTable(data, 'TableRenglones');
+                    } else {
+                        populateTable(data, 'TableRenglones');
+                        message = 'La búsqueda no produjo ningun resultado';
+                        showMessage(message, "info");
+                    }
+                });
+            } else {
+                showMessage(error, "info");
+            }
+        }
+
+        function setListaParametros(data) {
+            var parametros = {};
+            var listaParametros = [];
+
+            Object.keys(data).forEach(function (key) {
+                var objParametro = {};
+                objParametro.ParameterName = key;
+                objParametro.Value = data[key];
+                listaParametros.push(objParametro);
+            });
+            parametros.Parametros = listaParametros;
+            return parametros;
+        }
+
+
+        function dateToSqlFormat(date) {
+            arr = date.split("/");
+            sqlFormatDate = '';
+            sqlFormatDate = arr[2] + '-' + arr[1] + '-' + arr[0];
+            return sqlFormatDate;
+        }
+
+        function dateToFieldFormat(date) {
+            date = date.split('T')[0];
+            arr = date.split("-");
+            fieldFormatDate = '';
+            fieldFormatDate = arr[2] + '/' + arr[1] + '/' + arr[0];
+            return fieldFormatDate;
+        }
+
+        function nuevoPresup() {
+            location.href = "/Presupuesto.html";
+        }
+
+        function formatearMonto(x) {
+            return Number.parseFloat(x).toFixed(2);
+        }
+
+    </script>
+    <footer>
+        <p style="text-align: center; font-size: x-small;">Powered by <b style="font-size: small;">Strategy Zone S.A. ©</b></p>
+    </footer>
+</body>
+
+</html>

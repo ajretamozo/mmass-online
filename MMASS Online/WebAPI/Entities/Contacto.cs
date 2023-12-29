@@ -21,9 +21,20 @@ namespace WebApi.Entities
 
         public static Contacto getContactoById(int Id)
         {
-            string sqlCommand = @"Select c.id_contacto, c.no_facturable, razon_social, nombre_com, g.id_contactodigital from contactos c
+            string sqlCommand = "";
+            int BD = int.Parse(Dg_parametro.getById(1).Valor);
+            if (BD == 3)
+            {
+                sqlCommand = @"Select c.id_contacto, c.no_facturable, razon_social, nombre_com from contactos c
+                                  where c.id_contacto = " + Id.ToString();
+            }
+            else
+            {
+
+                sqlCommand = @"Select c.id_contacto, c.no_facturable, razon_social, nombre_com, g.id_contactodigital from contactos c
                                   left join dg_contacto_red_GAM g on c.id_contacto = g.id_contacto
                                   where c.id_contacto = " + Id.ToString();
+            }
 
             Contacto contacto = new Contacto();
             contacto.IdContactosDigitales = new List<string>();
@@ -35,8 +46,10 @@ namespace WebApi.Entities
                 {
                     contacto.Id = int.Parse(item["id_contacto"].ToString());
                     contacto.Id_contacto = int.Parse(item["id_contacto"].ToString());
-                    //IdContactoDigital = item["id_contactodigital"].ToString(),
-                    contacto.IdContactosDigitales.Add(item["id_contactodigital"].ToString());
+                    if (BD != 3)
+                    {
+                        contacto.IdContactosDigitales.Add(item["id_contactodigital"].ToString());
+                    }
                     contacto.RazonSocial = item["razon_social"].ToString();
                     contacto.Nombre_com = item["nombre_com"].ToString();
                     contacto.No_facturable = !(item["no_facturable"].ToString() == "1");
@@ -193,11 +206,6 @@ namespace WebApi.Entities
             int BD = int.Parse(Dg_parametro.getById(1).Valor);
             if (BD == 1)
             {
-                //sqlCommand = @"Select c.id_contacto, razon_social, nombre_com, g.id_contactodigital from contactos c
-                //                    inner join roles r on r.id_contacto = c.id_contacto
-                //                    left join  dg_contacto_red_GAM g on g.id_contacto = c.id_contacto
-                //                    where r.id_contacto = c.id_contacto
-                //                    and es_borrado = 0 and r.tipo_rol = " + tipo + " order by razon_social";
                 sqlCommand = @"Select c.id_contacto, razon_social, nombre_com from contactos c
                                     inner join roles r on r.id_contacto = c.id_contacto
                                     where r.id_contacto = c.id_contacto
@@ -205,11 +213,6 @@ namespace WebApi.Entities
             }
             else if (BD == 2)
             {
-                //sqlCommand = @"Select c.id_contacto, razon_social, nombre_com, g.id_contactodigital from contactos c
-                //                    inner join roles r on r.id_contacto = c.id_contacto
-                //                    left join  dg_contacto_red_GAM g on g.id_contacto = c.id_contacto
-                //                    where r.id_contacto = c.id_contacto
-                //                    and es_borrado = 0 and r.id_tipo_rol = " + tipo + " order by razon_social";
                 sqlCommand = @"Select c.id_contacto, razon_social, nombre_com from contactos c
                                     inner join roles r on r.id_contacto = c.id_contacto
                                     where r.id_contacto = c.id_contacto

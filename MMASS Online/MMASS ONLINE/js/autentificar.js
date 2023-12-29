@@ -152,3 +152,14 @@ function setUserRol() {
         $("#usuarios").removeClass("disabled");
     }
 }
+
+function setOcultarModulos() {
+    callWS("medios", "getParamById", JSON.stringify(1), function (bd) {
+        if (bd.valor == 3) {
+            $('.ocultar').attr('hidden', 'hidden');
+        }
+        else {
+            $('#navbardropPresup').attr('hidden', 'hidden');
+        }
+    });
+}
