@@ -319,37 +319,37 @@
 
     <script>
 
-        // Function to change the content of t2
-        function modifyText(new_text) {
-            var t2 = document.getElementById("t2");
-            t2.firstChild.nodeValue = new_text;
-        }
+        //// Function to change the content of t2
+        //function modifyText(new_text) {
+        //    var t2 = document.getElementById("t2");
+        //    t2.firstChild.nodeValue = new_text;
+        //}
 
-        // Function to add event listener to t
-        function load() {
-            var el = document.getElementById("t");
-            el.addEventListener("click", function () { modifyText("four") }, false);
-        }
+        //// Function to add event listener to t
+        //function load() {
+        //    var el = document.getElementById("t");
+        //    el.addEventListener("click", function () { modifyText("four") }, false);
+        //}
 
-        function wait(ms) {
-            var start = new Date().getTime();
-            var end = start;
-            while (end < start + ms) {
-                end = new Date().getTime();
-            }
-        }
+        //function wait(ms) {
+        //    var start = new Date().getTime();
+        //    var end = start;
+        //    while (end < start + ms) {
+        //        end = new Date().getTime();
+        //    }
+        //}
 
-        let formChanged = false;
-        document.addEventListener('change', () => formChanged = true);
-        window.addEventListener('beforeunload', (event) => {
-            desbloquearOp();
-            if (formChanged) {
-                event.returnValue = '';
-            }
-            else {
-                wait(200);
-            }
-        });
+        //let formChanged = false;
+        //document.addEventListener('change', () => formChanged = true);
+        //window.addEventListener('beforeunload', (event) => {
+        //    desbloquearOp();
+        //    if (formChanged) {
+        //        event.returnValue = '';
+        //    }
+        //    else {
+        //        wait(200);
+        //    }
+        //});
 
     </script>
 
@@ -540,9 +540,9 @@
                                     <div id="OrderDateSpam" class="row">
                                         <div class="col-lg-12">
                                             <div class="input-group input-daterange">
-                                                <input type="text" class="form-control datetimepicker-input" id="fechaDesde" data-toggle="datetimepicker" data-target="#fechaDesde" onchange="validarFechasConvenio('fechaD')" />
+                                                <input type="text" class="form-control datetimepicker-input" id="fechaDesde" data-toggle="datetimepicker" data-target="#fechaDesde" />
                                                 <span class="input-group-addon">hasta</span>
-                                                <input type="text" class="form-control datetimepicker-input" autocomplete="off" id="fechaHasta" data-toggle="datetimepicker" data-target="#fechaHasta" onchange="validarFechasConvenio('fechaH')" />
+                                                <input type="text" class="form-control datetimepicker-input" autocomplete="off" id="fechaHasta" data-toggle="datetimepicker" data-target="#fechaHasta" />
                                             </div>
                                         </div>
                                     </div>
@@ -601,7 +601,6 @@
                                     <select class="form-control" id="selEjecutivo"></select>
                                 </div>
                             </div>
-                        </div>
                             <div class="col-lg-6" style="padding-left: 20px;">
                                 <div class="row" style="padding-left: 15px; padding-right: 15px;">
                                     <label for="selFPago" style="margin-bottom: 0px;">Subtipo de Venta</label>
@@ -692,9 +691,9 @@
                                         <div class="col-lg-3">
                                             <label>Vigencia</label>
                                             <div class="input-group input-daterange">
-                                                <input type="text" class="form-control" id="fechaDesdeD" data-toggle="datetimepicker" data-target="#fechaDesdeD" value="01/08/2019" onchange="calcularNetoD();  validarFechasConvenioD('fechaDD'); filterTarifas()" />
+                                                <input type="text" class="form-control" id="fechaDesdeD" data-toggle="datetimepicker" data-target="#fechaDesdeD" value="01/08/2019" onchange="calcularNetoD();" />
                                                 <span class="input-group-addon">hasta</span>
-                                                <input type="text" class="form-control" id="fechaHastaD" data-toggle="datetimepicker" data-target="#fechaHastaD" value="02/09/2019" onchange="calcularNetoD(); validarFechasConvenioD('fechaHD'); filterTarifas()" />
+                                                <input type="text" class="form-control" id="fechaHastaD" data-toggle="datetimepicker" data-target="#fechaHastaD" value="02/09/2019" onchange="calcularNetoD();" />
                                             </div>
                                         </div>
                                     </div>
@@ -854,7 +853,7 @@
         var body = document.getElementById("output");
 
         //ONLOAD se ejecuta cuando se termina de cargar la pagina DatePickers Inicializacion
-        //$(function () {
+        $(function () {
         //    includeImgs();
         //    $("#formuploadajax").on("submit", function (e) {
         //        e.preventDefault();
@@ -952,7 +951,7 @@
             var presup = getUrlParameter("presupId")
             var data = {};
             data.Id_presup = presup;
-            if (op != undefined) {
+            if (presup != undefined) {
                 callWS("orden_presup_aps", "getById", JSON.stringify(data), onGetPresup);
             }
 
@@ -1006,19 +1005,15 @@
                 $("#selEjecutivo option[value=" + data.id_ejecutivo + "]").attr("selected", "selected");
             }
 
-            if (data.formasPago.length > 0) {
-                $("#selFPago option[value=" + data.formasPago[0].forma_pago.id_formapago + "]").attr("selected", "selected");
-            }
-
-            var formasPago = rDetalle.formasPago;
+            var formasPago = data.formasPago;
             var viewListformasPago = "<ul class=\"list-group\">"
             if (formasPago != undefined) {
                 if (formasPago.length > 0) {
                     var porcHTML = '';
                     formasPago.forEach(function (fPago) {
-                        $("#selFPago option[value=" + fPago.id_formapago + "]").attr("selected", "selected");
-                        var desc = $("#selFPago option[value=" + fPago.id_formapago + "]").text();
-                        porcHTML += "<tr id='ronRow_" + fPago.id_formapago + "'><td>" + desc + "</td>" + "<td><input type='number' class='form-control inpRon' id='inpRonRow_" + fPago.id_formapago + "' value='" + fPago.porcentaje + "' onchange=\"$(this).attr('value',$(this).val())\" /></td></tr>"
+                        $("#selFPago option[value=" + fPago.forma_pago.id_formapago + "]").attr("selected", "selected");
+                        var desc = $("#selFPago option[value=" + fPago.forma_pago.id_formapago + "]").text();
+                        porcHTML += "<tr id='ronRow_" + fPago.forma_pago.id_formapago + "'><td>" + desc + "</td>" + "<td><input type='number' class='form-control inpRon' id='inpRonRow_" + fPago.forma_pago.id_formapago + "' value='" + fPago.porcentaje + "' onchange=\"$(this).attr('value',$(this).val())\" /></td></tr>"
                     });
                     $("#porcRon").html(porcHTML);
                     enableRon();
@@ -1075,6 +1070,7 @@
             calculateTotals();
         }
 
+
         function cargarProductosyOPRelacionada(idAgencia, idAnunciante, idProducto, idOpRelacionada) {
             data = {};
             data.agencia = {};
@@ -1082,15 +1078,9 @@
             data.anunciante.id = idAnunciante;
             data.agencia.id = idAgencia;
 
-            $.when(
-                callWS("productos", "getProductosPorAnunciante", idAnunciante.toString(), function (data) { onPopulateSelectDone(data, 'selProducto', 'id_producto', 'desc_producto'); })
-            ).then(function () { onCargarProductosyOPRelacionada(idProducto, idOpRelacionada) }, function (data1, data2) {
-                console.log("Productos: " + data1[2].statusText + "; Ordenes Relacionadas: " + data2[2].statusText + ";");
-                showMessage("Se produjo un error al cargar los campos, intentelo nuevamente", type = "alert");
-            });
-
-
+            callWS("productos", "getProductosPorAnunciante", idAnunciante.toString(), function (data) { onPopulateSelectDone(data, 'selProducto', 'id_producto', 'desc_producto'); })
         }
+
 
         function validarPresup() {
 
@@ -1186,63 +1176,30 @@
 
             var data = {};
             if ($("#inpOrderNumber").val() != "") {
-                data.id_op_dg = $("#inpOrderNumber").attr("id_op_dg")
+                data.id_presup = $("#inpOrderNumber").attr("id_op_dg")
             }
-            data.Bitacora = $("#inpDescOP").val();
-            callWS("dg_orden_pub_aps", "existeOpNombre", JSON.stringify(data), function (data) {
+            data.descripcion = $("#inpDescOP").val();
+            callWS("orden_presup_aps", "existePresupNombre", JSON.stringify(data), function (data) {
                 if (data == true) {
-                    message = "Ya existe una OP con la Descripción ingresada";
+                    message = "Ya existe un Presupuesto con la Descripción ingresada";
                     showMessage(message, "error");;
                 } else {
-                    if (DetallesASDelete.length > 0) {
-                        advertenciaDeleteDetalle();
-                    }
-                    else {
-                        savePresup();
-                    }
+                    savePresup();
                 }
             });
         }
 
-        function advertenciaDeleteDetalle() {
-            //callWS("medios", "getParamById", JSON.stringify(2), function (param) {
-                var mensaje = "";
-                //if (param.valor == 1) {
-                    mensaje = "<div class='d-flex justify-content-center' style='text-align: center;'>Los Detalles eliminados podrían ser archivados en el AdServer</div>";
-                //}
-                //else {
-                //    mensaje = "<div class='d-flex justify-content-center' style='text-align: center;'>Los Detalles eliminados podrían ser archivados en el AdServer. En el caso de estar publicándose, serán pausados</div>";
-                //}
-                options = [
-                    {
-                        optionDesc: "Aceptar",
-                        optionFunc: "savePresup()"
-                    },
-                    {
-                        optionDesc: "Cancelar",
-                        optionFunc: ""
-                    }
-                ];
-                showModal(mensaje, options);
-            //});
-        }
 
         function savePresup() {
-
             var data = {};
 
             if (!validarPresup()) { return false; }
             if ($("#inpOrderNumber").val() != "") {
-                data.nro_orden = $("#inpOrderNumber").val();
-                data.id_op_dg = $("#inpOrderNumber").attr("id_op_dg")
+                data.nro_presup = $("#inpOrderNumber").val();
+                data.id_presup = $("#inpOrderNumber").attr("id_op_dg")
             }
-            data.Nro_orden_ag = $("#inpOrderNumberClient").val();
-            data.Nro_orden_imp = $("#OrdenCompraCliente").val();
-            data.Bitacora = $("#inpDescOP").val();
-            data.empresa = {};
-            data.empresa.Id_empresa = $("#selEmpresa").val();
+            data.descripcion = $("#inpDescOP").val();
             data.id_concepto_negocio = $("#selConceptoN").val();
-            data.id_clasificacion_op = $("#selClasificacion").val();
             data.Fecha = dateToSqlFormat($("#fechaDesde").val());
             data.Fecha_expiracion = dateToSqlFormat($("#fechaHasta").val());
             data.agencia = {};
@@ -1252,12 +1209,7 @@
             data.anunciante.Nombre_com = $("#selAnunciante option:selected").text();
             data.producto = {};
             data.producto.Id_producto = $("#selProducto").val();
-            data.medio = {};
-            data.medio.Id_medio = 0;
-            data.Tipo_orden = 4;
-            data.idFormaPago = "1";
             data.Monto_bruto = $("#montoBruto").val();
-            data.Es_anulada = 0;
             data.Primer_neto = $("#neto1").val();
             data.Seg_neto = $("#neto2").val();
             if ($("#selFacturar").val() == 0) {
@@ -1266,57 +1218,14 @@
                 data.Id_facturar = data.anunciante.Id_contacto;
             }
             data.Facturar_a = $("#selFacturar").val();
-            data.Porc_dto = 0;
-
-            data.Monto_dto = 0;
+            data.Porc_dto = $("#porc_desc").val();
             data.Imp_conf_nc = $("#conf_nc").val();
             data.Imp_conf_fc = $("#conf_fc").val();
-            data.Tercer_neto = data.Seg_neto;//$("#total").val(); //Total
-
-            if (document.getElementById("checkListaParaFact").checked) {
-                data.Parafacturar = "1";
-            }
-            else {
-                data.Parafacturar = "0";
-            }
-
             data.usuario = {};
             data.usuario.Id_usuario = $("#NombreUsuario").attr("data-id");
+            data.idEjecutivo = $("#selEjecutivo").val();
 
-            data.Total_Avisos = 0;
-            data.Total_Impresiones = 0;
-            data.id_Google_Ad_Manager = 0;
-
-            Detalles.forEach(function (item, index) {
-                data.Total_Avisos += 1;
-                if (item.tipo_tarifa == 0) {
-                    data.Total_Impresiones += parseFloat(item.cantidad);
-                }
-
-                //guardamos parametro en id_google_ad_manager para detectar si la OP contiene o no algún detalle sincronizado y pintarlo de verde en OrderList
-                if (item.id_Google_Ad_Manager > 0) {
-                    data.id_Google_Ad_Manager = 1;
-                }
-            });
-
-            if (DetallesASDelete.length > 0) {
-                var orden = {};
-                orden.nro_orden = $("#inpOrderNumber").val();
-                orden.anio = $("#inpOrderYear").val();
-                orden.mes = $("#inpOrderMonth").val();
-                orden.Bitacora = $("#inpDescOP").val();
-                orden.Detalles = DetallesASDelete;
-                orden.UsuarioSesion = $("#NombreUsuario").text();
-                callWS("googleAdManager", "archivarLineItems", JSON.stringify(orden));
-            }
-
-            //if ($("#selOrdenRelacionada").val() == "" || $("#selOrdenRelacionada").val() == undefined) {
-            data.id_op_relacionada = -1;
-            //} else {
-            //    data.id_op_relacionada = $("#selOrdenRelacionada").val();
-            //}
-
-            data.idEjecutivo = "0";
+            //ADAPTAR TIPOS DE VENTA CON RON
             formaspago = [];
             fp = {};
             fp.forma_pago = {};
@@ -1325,35 +1234,15 @@
             fp.Porcentaje = 100;
             formaspago.push(fp);
             data.FormasPago = formaspago;
-            ejecutivos = [];
-            ej = {};
-            if ($("#selEjecutivo").val() != "" && $("#selEjecutivo").val() != null) {
-                ej.Id_ejecutivo = $("#selEjecutivo").val();
-                data.idEjecutivo = ej.Id_ejecutivo;
-                ej.Porcentaje = 100;
-                ejecutivos.push(ej);
-            }
-
-            data.Ejecutivos = ejecutivos;
-
-            data.Observ = "";
-            if (data.nroOrdenAgencia == "") {
-                data.nroOrdenAgencia = "NULL";
-            }
-
-            data.Id_convenio = idConvenio;
 
             data.Detalles = Detalles;
-            data.desc_fact = "Orden Digital " + data.fInicio + " - " + data.fFin;
 
             data.Id_moneda = $("#selMoneda").val();
             data.Cambio = $('#selMoneda>option:selected').attr("cambio");
 
-            callWS("dg_orden_pub_aps", "save", JSON.stringify(data), function (resultado) { onSavePresup(resultado, data); });
-
-            $("#bConvenios").attr("disabled", true);
-            $("#bBorrConvenios").attr("disabled", true);
+            callWS("orden_presup_aps", "save", JSON.stringify(data), function (resultado) { onSavePresup(resultado, data); });
         }
+
 
         function dateToSqlFormat(date) {
             arr = date.split("/");
@@ -1362,6 +1251,7 @@
             return sqlFormatDate;
         }
 
+
         function dateToFieldFormat(date) {
             date = date.split('T')[0];
             arr = date.split("-");
@@ -1369,6 +1259,7 @@
             fieldFormatDate = arr[2] + '/' + arr[1] + '/' + arr[0];
             return fieldFormatDate;
         }
+
 
         function calculateTotals() {
 
@@ -1383,7 +1274,7 @@
                 sumNCRenglones += item.impconfnc;
                 sumFCRenglones += item.impconffc;
             })
-            $("#montoBruto").val(sumBrutoRenglones.toFixed(2));//le agregue tofixed
+            $("#montoBruto").val(sumBrutoRenglones.toFixed(2));
 
             if (sumBrutoRenglones != 0) {
                 $("#porc_desc").val((100 - 100 * (sumNetoRenglones / sumBrutoRenglones)).toFixed(2));
@@ -1396,96 +1287,14 @@
 
             $("#neto1").val(sumNetoRenglones);
 
-            /*neto2 = sumNetoRenglones - parseFloat($("#conf_nc").val()) - parseFloat($("#conf_fc").val());*/
             neto2 = sumNetoRenglones - sumNCRenglones - sumFCRenglones;
             $("#neto2").val(neto2.toFixed(2));
             //cTotal = neto2 * 1.21; CON IVA
             cTotal = neto2;
 
             $("#total").val(cTotal.toFixed(2));
-
         }
 
-        function onSavePresup(data, opAntes) {
-
-            if (data.result > 0) {
-
-                //Parametros para el Log
-                var parametros = {};
-                parametros.objeto = 'ORDEN PUBLICITARIA';
-                parametros.clave = data.op.id_op_dg;
-                parametros.idusuario = $("#NombreUsuario").attr("data-id");
-                if (opAntes.id_op_dg == undefined) {
-                    parametros.accion = 'NUEVO';
-                    if (OpClon) {
-                        var opOriginal = getUrlParameter("orderClon");
-                        parametros.descripcion = 'Clonación de OP Digital desde: ' + opOriginal;
-                    }
-                    else {
-                        parametros.descripcion = 'Se creó la OP Digital: ' + data.op.anio + '-' + data.op.mes + '-' + data.op.nro_orden;
-                    }
-                }
-                else {
-                    parametros.accion = 'MODIFICACION';
-                    parametros.descripcion = 'Se modificó la OP Digital: ' + data.op.anio + '-' + data.op.mes + '-' + data.op.nro_orden;
-                }
-                var params = setListaParametros(parametros);
-                callWS("dg_orden_pub_aps", "grabarLog", JSON.stringify(params));
-
-                OpClon = false;
-                OpSinc = false;
-
-                $("#divAnuClon").empty();
-
-                if (data.op.id_Google_Ad_Manager > 0) {
-                    $("#bgetOrderASDetais").attr("disabled", false);
-                }
-
-                $("#bAnular").attr("disabled", false);
-                $("#bAnular").attr("title", "Anular Orden");
-
-                $("#bClonar").attr("disabled", false);
-                $('#inpOrderNumber').val(data.op.nro_orden);
-                $("#inpOrderNumber").attr("id_op_dg", data.op.id_op_dg);
-                $("#inpOrderMonth").val(data.op.mes);
-                $("#inpOrderYear").val(data.op.anio);
-
-                $("#inpDescOP").val(data.op.bitacora);
-
-                if ($("#inpFechaAlta").val() == "") {
-                    var today = new Date();
-                    var dd = today.getDate();
-                    var mm = today.getMonth() + 1;
-                    var yyyy = today.getFullYear();
-                    if (dd < 10) {
-                        dd = '0' + dd;
-                    }
-                    if (mm < 10) {
-                        mm = '0' + mm;
-                    }
-                    today = dd + '/' + mm + '/' + yyyy;
-                    $("#inpFechaAlta").val(today);
-                }
-
-                bloquearOp(data.op.id_op_dg);
-
-                comprobarModDetalle(data.op);
-                obtenerProgresoLineasGam(data.op);
-
-                DetallesASDelete.length = 0;
-                Detalles = data.op.detalles;
-                recargarRenglones();
-
-                showMessage(data.message);
-            }
-            else {
-                showMessage(data.message, "error");
-            }
-        }
-
-        function GetData() {
-            callWS("contactos", "getAgencias", '', function (data) { onPopulateSelectDone(data, "selAgencia"); });
-        }
 
         function onAnuncianteSelected() {
             data = {};
@@ -1495,26 +1304,21 @@
                 return -1;
             }
             ag = $('#selAgencia').val();
-            //if (ag == null) {
-            //    return -1;
-            //}
+
             if (ag != null) {
                 data.agencia = {};
                 data.anunciante = {};
                 data.anunciante.id = an;
                 data.agencia.id = ag;
-                //callWS("dg_orden_pub_aps", "getOrdenesRadio", JSON.stringify(data), function (data) { onPopulateSelectDone(data, 'selOrdenRelacionada', 'id', 'descripcion'); });
+
                 callWS("contactos", "getAgenciasPorAnunciante", an, function (data) { onPopulateSelectDone(data, 'selAgencia', 'id', 'nombre_com'); });
             } else {
                 callWS("contactos", "getAgenciasPorAnunciante", an, function (data) { onPopulateSelectDone(data, 'selAgencia', 'id', 'nombre_com'); });
             }
-            //data.agencia = {};
-            //data.anunciante = {};
-            //data.anunciante.id = p;
-            //data.agencia.id = ag;
-            //callWS("dg_orden_pub_aps", "getOrdenesRadio", JSON.stringify(data) , function (data) { onPopulateSelectDone(data, 'selOrdenRelacionada', 'id', 'descripcion'); });
+
             callWS("productos", "getProductosPorAnunciante", an, function (data) { onPopulateSelectDone(data, 'selProducto', 'id_producto', 'desc_producto'); });
         }
+
 
         function onAgenciaSelected() {
             an = $('#selAnunciante').val();
@@ -1528,10 +1332,11 @@
                 data.anunciante = {};
                 data.anunciante.id = an;
                 data.agencia.id = ag;
-                //callWS("dg_orden_pub_aps", "getOrdenesRadio", JSON.stringify(data), function (data) { onPopulateSelectDone(data, 'selOrdenRelacionada', 'id', 'descripcion'); });
+
                 callWS("contactos", "getAnunciantesPorAgencia", ag, function (data) { onPopulateSelectDone(data, 'selAnunciante', 'id', 'nombre_com'); });
             }
         }
+
 
         function onProductoSelected() {
             an = $('#selAnunciante').val();
@@ -1541,7 +1346,6 @@
                 callWS("contactos", "getAnunciantesPorProducto", pr, function (data) { onPopulateSelectDone(data, 'selAnunciante', 'id', 'nombre_com'); });
             }
         }
-
 
 
         function onTipoAvisoGetAll(data, idSelect, colId, colDesc) {
@@ -1558,7 +1362,6 @@
         }
 
 
-
         function onTarifasGetAll(data, idSelect, colId, colDesc) {
             var pObj = data;
             var listitems = '';
@@ -1571,26 +1374,6 @@
             $("#" + idSelect).val([]);
         }
 
-        function onTarifasGetAllConv(data, idSelect, colId, colDesc) {
-            var listitems = '';
-
-            listitems += '<option forma_uso_desc=' + data['forma_uso']['descripcion'] + ' forma_uso_id=' + data['forma_uso']['id'] + ' precio_unitario= ' + data['precio_unitario'] + ' value=' + data[colId] + '>' + data[colDesc] + '</option>';
-
-            $("#" + idSelect).empty();
-            $("#" + idSelect).append("<option value=''></option>");
-            $("#" + idSelect).append(listitems);
-            $("#selTarifaD option[value='" + data[colId] + "']").attr("selected", "selected");
-        }
-
-        function onAreasGeoGetAll(data, idSelect) {
-            var pObj = data;
-            var listitems = '';
-            $.each(pObj, function (it, iObj) {
-                listitems += '<option  codigo_area= ' + iObj['codigo_area'] + ' tipo= ' + iObj['tipo'] + ' value=' + iObj['id_area'] + '>' + iObj["descripcion"] + '</option>';
-            });
-            $("#" + idSelect).empty();
-            $("#" + idSelect).append(listitems);
-        }
 
         function onPopulateSelectDone(data, idSelect, colId, colDesc) {
 
@@ -1610,9 +1393,6 @@
                 if (idSelect == "selAnunciante") {
                     $("#selAnunciante").change();//Carga los productos
                 }
-                //else if (idSelect == "selAgencia" && selected == undefined) {
-                //    $("#selAgencia").change();//Carga los Anunciantes
-                //}
             }
             if (idSelect == "selOrdenRelacionada" || idSelect == "selPrograma" || idSelect == "selDetConvenio") {
                 $("#" + idSelect).prepend("<option value=''></option>");
@@ -1640,76 +1420,6 @@
             }
         }
 
-        function onPopulateSelecectContactoConv(data, idSelect, colId, colDesc) {
-
-            var sel = document.getElementById(idSelect);
-            //var selected = sel.options[sel.selectedIndex];
-
-            var listitems = '';
-
-            listitems += '<option value=' + data[colId] + '>' + data[colDesc] + '</option>';
-
-            $("#" + idSelect).empty();
-            //$("#" + idSelect).append("<option value=''>(Todos) </option>");
-            $("#" + idSelect).append(listitems);
-
-            //$("#" + idSelect + "option[value=" + data.id_agencia + "]").attr("selected", "selected");
-        }
-
-        function onPopulateSelectMedidas(data, idSelect, colId, colDesc, colAncho, colAlto) {
-
-            var pObj = data;
-            var listitems = '';
-            $.each(pObj, function (it, iObj) {
-                listitems += '<option ancho=' + iObj[colAncho] + ' alto=' + iObj[colAlto] + ' value=' + iObj[colId] + '>' + iObj[colDesc] + '</option>';
-            });
-            $("#" + idSelect).empty();
-            $("#" + idSelect).append(listitems);
-            if (pObj.length > 1) {
-                $("#" + idSelect).val([]);
-            }
-
-            if ($("#" + idSelect).attr('multiple') == 'multiple') {
-                cMultiSelect.bootstrapDualListbox('refresh');
-            }
-        }
-
-        function onPopulateSelectEmplaza(data, idSelect, colId, colDesc, colCod) {
-
-            //var sel = document.getElementById(idSelect);
-            //var selected = sel.options[sel.selectedIndex];
-
-            var pObj = data;
-            var listitems = '';
-            $.each(pObj, function (it, iObj) {
-                listitems += '<option codigo_emplazamiento=' + iObj[colCod] + ' value=' + iObj[colId] + '>' + iObj[colDesc] + '</option>';
-            });
-            $("#" + idSelect).empty();
-            $("#" + idSelect).append(listitems);
-            if (pObj.length > 1) {
-                $("#" + idSelect).val([]);
-            }
-
-            if ($("#" + idSelect).attr('multiple') == 'multiple') {
-                cMultiSelect.bootstrapDualListbox('refresh');
-            }
-        }
-
-        function onPopulateSelectDetConv(data, idSelect, colId, colDesc, colDet) {
-            var pObj = data;
-            var listitems = '';
-
-            $.each(pObj, function (it, iObj) {
-                listitems += '<option id_detalle=' + iObj[colDet] + ' value=' + iObj[colId] + '>' + iObj[colDesc] + '</option>';
-            });
-            $("#" + idSelect).empty();
-            $("#" + idSelect).append(listitems);
-            if (pObj.length > 1) {
-                $("#" + idSelect).val([]);
-            }
-
-            $("#" + idSelect).val('');
-        }
 
         function onPopulateSelectMoneda(data, idSelect) {
             var pObj = data;
@@ -1728,12 +1438,14 @@
             callWS("medios", "getParamById", JSON.stringify(5), function (parMulti) { onCheckMultimoneda(parMulti); });
         }
 
+
         function onCheckMultimoneda(param) {
             if (param.valor == 0) {
                 $("#selMoneda").attr("disabled", true);
                 $("#bCambioMoneda").attr("disabled", true);
             }
         }
+
 
         function limpiaVinculados() {
             $("#selAgencia").val([]);
@@ -1747,7 +1459,7 @@
 
         function cargarNuevoRenglon() {
             $('#pTituloDetalle').text('NUEVO DETALLE');
-            $("#divClonDet").empty();
+            //$("#divClonDet").empty();
 
             if ($("#fechaHasta").val() == "" || $("#fechaDesde").val() == "") {
                 showMessage("Debe seleccionar la vigencia de la orden", "info");
@@ -1765,17 +1477,9 @@
                 showMessage("Seleccione un Producto", "info");
                 return 0;
             }
-            if ($("#selEmpresa").val() == null) {
-                showMessage("Seleccione una Empresa", "info");
-                return 0;
-            }
             if ($("#selConceptoN").val() == null) {
                 showMessage("Seleccione un Concepto de Negocio", "info");
                 return 0;
-            }
-            if ($("#selClasificacion").val() == null) {
-                showMessage("Seleccione una Clasificación Orden", "info");
-                return false;
             }
             if ($("#selFPago").val().length == 0) {
                 showMessage("Seleccione un Tipo de Venta", "info");
@@ -1790,25 +1494,17 @@
                 return 0;
             }
 
-            //var idRed = $('#selRedes').val();
-            var idEmpresa = $('#selEmpresa').val();
-
             $("#checkTarifaManualD")[0].checked = false;
             $("#checkTarifaManualD").change();
 
             $("#selAnunciante").attr("disabled", true);
 
-            $("#selDetConvenio").attr("disabled", false);
             $('#divDetailsRows').hide(); $('#divAddRow').show();
-            var $options = $("#selProducto > option").clone();
-            $('#selProductoD').empty();
-            $('#selProductoD').append($options);
-            $('#selProductoD').val($('#selProducto').val());
+
             $('#fechaDesdeD').datetimepicker('date', moment($("#fechaDesde").val(), 'DD/MM/YYYY'));
             $('#fechaHastaD').datetimepicker('date', moment($("#fechaHasta").val(), 'DD/MM/YYYY'));
             $('#inpIdLinea').val("");
             $('#inpIdLinea').css("background-color", "#e9ecef");
-            $('#descripcionD').val("");
             $('#precioUnitarioD').val("");
             $('#cantidadD').val("");
             $("#cantidadD").attr("disabled", false);
@@ -1816,38 +1512,12 @@
             $("#confNCD").val(0);
             $("#confFCD").val(0);
             $('#totalD').val("");
-            $("#bcomprobarModificacionesD").attr("disabled", true);
-            $("#selRedes").attr("disabled", false);
-            $("#bBuscarPedido").attr("disabled", true);
-            $('#inpPedido').val("");
-            $('#inpIdPedido').val("");
+
             callWS("medios", "getAll", '', function (data) { onPopulateSelectDone(data, 'selMediosD', 'id_medio', 'desc_medio'); });
-            //callWS("medios", "getPorEmpresa", JSON.stringify(idEmpresa), function (data) { onPopulateSelectDone(data, 'selMediosD', 'id_medio', 'desc_medio'); });
-            callWS("medios", "getAllRedes", '', function (data) { onCargarSelect(data, 'selRedes', 'id_red', 'descripcion', 'codigo_red'); });
             callWS("tarifas", "getFormasUsoAll", '', function (data) { onPopulateSelectDone(data, 'selTipoTarifaD', 'id', 'descripcion'); });
             callWS("Tipos_avisos", "getAll", '', function (data) { onTipoAvisoGetAll(data, 'selTipoAvisoD', 'id_categoria', 'descripcion', 'Permite_envio_ads', 'tipo_aviso_ads'); });
-            callWS("medios", "getMedidas", JSON.stringify("0"), function (data) { onPopulateSelectMedidas(data, 'selMedidasD', 'id_medidadigital', 'descripcion', 'ancho', 'alto'); });
-            callWS("medios", "getAllA", '', function (data) { onAreasGeoGetAll(data, 'selAreasGeo', 'Id_area', 'descripcion', 'Codigo_area', 'tipo'); });
-            callWS("medios", "getAllE", JSON.stringify(0), function (data) { onPopulateSelectEmplaza(data, 'selEmplazaD', 'id_emplazamiento', 'descripcion', 'codigo_emplazamiento'); });
-            //callWS("programa", "getAllProgramasMedio", "1", function (data) {onPopulateSelectDone(data,'selPrograma','id_programa','desc_programa')})
-            //params = {}
-            //params.fecha_desta = dateToSqlFormat($('#fechaDesde').val());
-            //params.fecha_hasta = dateToSqlFormat($('#fechaHasta').val());
-            //params.vigente = 1;
-            //callWS("tarifas", "filter", JSON.stringify(setListaParametros(params)), function (data) { onTarifasGetAll(data, 'selTarifaD', 'id_tarifa_dg', 'descripcion'); })
-
-            if (idConvenio > 0) {
-                data = {};
-                data.id_convenio = idConvenio;
-                data.id_empresa = idEmpresa;
-                callWS("medios", "GetDetConveniosByIdConv", JSON.stringify(data), function (data) { onPopulateSelectDetConv(data, 'selDetConvenio', 'id_det_conv', 'descripcion', 'id_detalle'); });
-                $.when(bloquearCamposDetalle()).then($("#selDetConvenio").attr("disabled", false));
-            }
-            else {
-                $("#selDetConvenio").attr("disabled", true);
-            }
-
         }
+
 
         function filterTarifas() {
             //tieneTarifa se usa solo en convenios
@@ -1977,6 +1647,7 @@
             }
         }
 
+
         function setListaParametros(data) {
             var parametros = {};
             var listaParametros = [];
@@ -1991,38 +1662,18 @@
             return parametros;
         }
 
+
         //Parametro global para saber si la OP está abierta por otro usuario, bloqueada, si esta clonandose, si es anulada y si se esta clonando Detalle
         OpYaAbierta = false;
         OpBloqueada = false;
         OpClon = false;
-        OpAnulada = false;
-        OpSinc = false;
         DetalleClon = false;
-        TipoAvisoClase = 0;
-        //Parametro global para llevar el último Detalle importado
-        var detImportado = false;
-        //Parametro global para llevar los detalles sincronizados con AdServer a eliminar
-        DetallesASDelete = [];
-        //Parametro global para llevar las diferencias entre detalles y lineas de pedido sincronizadas
-        var DiferenciasDetLin = [];
         //Parametro global para llevar los detalles
         Detalles = [];
-        //Parametro global para llevar la linea al importar detalle dentro de convenio
-        LineaImpConv = [];
+
 
         //Modifica o agrega un renglon segun el id
         function prevAddRenglon(id) {
-            //se chequea que el nombre no exista ya
-            var descripcionYaExiste = false;
-            Detalles.forEach(function (item, index) {
-                if (($('#descripcionD').val() == item.descripcion) && (id != item.id_detalle)) {
-                    descripcionYaExiste = true;
-                }
-            });
-            if (descripcionYaExiste == true) {
-                showMessage("La Descripción indicada ya existe para otro Detalle", "info");
-                return;
-            }
             var detalle = {};
             detalle.fecha_desde = dateToSqlFormat($('#fechaDesdeD').val());
             if ($('#fechaHastaD').val() == "") {
@@ -2032,137 +1683,38 @@
             else {
                 detalle.fecha_hasta = dateToSqlFormat($('#fechaHastaD').val());
             }
-            detalle.emplazamientos = selectToJson('selEmplazaD', 'id_emplazamiento');
-            detalle.emplazamientos.forEach(emplaza => {
-                $('#selEmplazaD option:selected').each(function () {
-                    if ($(this).val() == emplaza.id_emplazamiento) {
-                        emplaza.codigo_emplazamiento = $(this).attr("codigo_emplazamiento");
-                        emplaza.descripcion = $(this).text();
-                    }
-                });
-            });
 
-            if ($('#selTipoAvisoD>option:selected').attr("permite_envio_ads") == "true") {
-                callWS("dg_orden_pub_aps", "getSponsorsPorFecha", JSON.stringify(detalle), function (data) { onGetSponsor(data, id); });
-            }
-            else {
-                addRenglon(id);
-            }
-            /*$("#selEmpresa").attr("disabled", true);*/
-            DetalleClon = false;
-        }
+            addRenglon(id);
 
-        function onGetSponsor(data, id) {
-            $("#modalCenterTitle").text("Advertencia");
-            if (data.length > 0) {
-                var strBody = "<div class='d-flex justify-content-center'>Las siguientes fechas están reservadas por Sponsors:</div>";
-                var str = "";
-                data.forEach(detalle => detalle.emplazamientos.forEach(emplazamiento => str += "<div class='d-flex justify-content-center'>Desde: " + "<b>" + dateToFieldFormat(detalle.fecha_desde) + "</b>" + " Hasta: " + "<b>" + dateToFieldFormat(detalle.fecha_hasta) + "</b>" + "-" + "<b>" + emplazamiento.descripcion + "</b>" + "</b></div>"));
-
-                strBody = strBody + str;
-
-                options = [
-                    {
-                        optionDesc: "Agregar de todos modos",
-                        optionFunc: "addRenglon('" + id + "')"
-                    },
-                    {
-                        optionDesc: "Cancelar",
-                        optionFunc: ""
-                    }
-                ];
-                showModal(strBody, options);
-            }
-            else {
-                addRenglon(id);
-            }
+            //DetalleClon = false;
         }
 
 
         function addRenglon(id) {
-            //if (id > 0) {
-            //    id--;
-            //}
-
-            var cantMedios = $("#selMediosD option:selected").length;
-            if ($("#selAnunciante").val() == null) {
-                showMessage("Seleccione un anunciante", "info");
-                return;
-            }
-            if (cantMedios >= 2 && $("#porcRon").html() == "") {
-                showMessage("Debe realizar la distribución de porcentajes de RON", "info")
-                return;
-            }
-            //if ($('#selTipoTarifaD').val() == 1 && ($('#cantidadD').val() < 1 || $('#cantidadD').val() > 100)) {
-            //    showMessage("Introduzca un valor de porcentaje entre 1 y 100", "info");
-            //    return;
-            //}
-
             var rDetalle = {};
 
             if (id >= 0) {
-                /*rDetalle = Detalles[id];*/
                 var rDetalle = Detalles.find(detalle => detalle.id_detalle == id);
                 rDetalleCopy = JSON.parse(JSON.stringify(rDetalle));
             }
 
-            //AGREGUE:
-            rDetalle.id_op_dg = 0;
+            rDetalle.id_presup = 0;
 
-            rDetalle.medios = selectToJson('selMediosD', 'id_medio');
-            if (cantMedios >= 2) {
-                rDetalle.medios.forEach(medio => medio.porcentaje = $('#inpRonRow_' + medio.id_medio).val());
-            } else if (cantMedios == 1) {
-                rDetalle.medios[0].porcentaje = 100;
-            }
+            rDetalle.id_medio = $('#selMediosD').val();
 
             rDetalle.fecha_desde = dateToSqlFormat($('#fechaDesdeD').val());
             rDetalle.fecha_hasta = dateToSqlFormat($('#fechaHastaD').val());
 
-            rDetalle.id_producto = $('#selProductoD').val();
-
-            rDetalle.tarifa_dg = {};
             if ($('#selTarifaD').val() == "" || $('#selTarifaD').val() == undefined) {
-                rDetalle.tarifa_dg.id_tarifa_dg = 0;
-                rDetalle.tarifa_dg.descripcion = "Custom";
+                rDetalle.id_tarifa = 0;
+                rDetalle.desc_tarifa = "Custom";
             } else {
-                rDetalle.tarifa_dg.id_tarifa_dg = $('#selTarifaD').val();
-                rDetalle.tarifa_dg.descripcion = $('#selTarifaD>option:selected').text()
+                rDetalle.id_tarifa = $('#selTarifaD').val();
+                rDetalle.desc_tarifa = $('#selTarifaD>option:selected').text()
             }
 
-            rDetalle.tipo_aviso_dg = {};
-            rDetalle.tipo_aviso_dg.descripcion = $('#selTipoAvisoD>option:selected').text();
-            rDetalle.tipo_aviso_dg.permite_envio_ads = $('#selTipoAvisoD>option:selected').attr("permite_envio_ads");
-            rDetalle.tipo_aviso_dg.tipo_aviso_ads = $('#selTipoAvisoD>option:selected').attr("tipo_aviso_ads");
-            rDetalle.tipo_aviso_dg.id_categoria = $('#selTipoAvisoD').val();
-
-            rDetalle.areaGeo = {};
-            rDetalle.areaGeo.id_area = $('#selAreasGeo').val();
-            rDetalle.areaGeo.codigo_area = $('#selAreasGeo>option:selected').attr("codigo_area");
-            rDetalle.areaGeo.tipo = $('#selAreasGeo>option:selected').attr("tipo");
-
-            rDetalle.id_det_conv = $('#selDetConvenio').val();
-            idDetConvenio = $('#selDetConvenio').val();
-
-            rDetalle.medidas = selectToJson('selMedidasD', 'id_medidadigital');
-            rDetalle.medidas.forEach(medida => {
-                $('#selMedidasD option:selected').each(function () {
-                    if ($(this).val() == medida.id_medidadigital) {
-                        medida.ancho = $(this).attr("ancho");
-                        medida.alto = $(this).attr("alto");
-                    }
-                });
-            });
-
-            rDetalle.emplazamientos = selectToJson('selEmplazaD', 'id_emplazamiento');
-            rDetalle.emplazamientos.forEach(emplaza => {
-                $('#selEmplazaD option:selected').each(function () {
-                    if ($(this).val() == emplaza.id_emplazamiento) {
-                        emplaza.codigo_emplazamiento = $(this).attr("codigo_emplazamiento");
-                        emplaza.descripcion = $(this).text();
-                    }
-                });
-            });
+            rDetalle.desc_categoria = $('#selTipoAvisoD>option:selected').text();
+            rDetalle.id_categoria = $('#selTipoAvisoD').val();
 
             rDetalle.tipo_tarifa = $('#selTipoTarifaD').val();
 
@@ -2172,16 +1724,9 @@
                 rDetalle.id_programa = $('#selPrograma').val();
             }
 
-            rDetalle.descripcion = $('#descripcionD').val();
-
-            rDetalle.importe_unitario = parseFloat($('#precioUnitarioD').val());
+            rDetalle.imp_tarifa = parseFloat($('#precioUnitarioD').val());
 
             rDetalle.cantidad = parseInt($('#cantidadD').val());
-
-            //rDetalle.porc_dto = parseFloat($('#descuentoD').val());
-            //if (rDetalle.porc_dto == "") {
-            //    rDetalle.porc_dto = 0;
-            //}
 
             if (parseFloat($("#descuentoD").val()) != 0 && $("#descuentoD").val() != "") {
                 rDetalle.porc_dto = parseFloat($('#descuentoD').val());
@@ -2214,30 +1759,6 @@
                 rDetalle.tarifa_manual = 0;
                 rDetalle.imp_tarifa = parseFloat($('#precioUnitarioD').val());
             }
-
-            if ($('#inpIdLinea').val() != "") {
-                rDetalle.id_Google_Ad_Manager = parseInt($('#inpIdLinea').val());
-            }
-            else {
-                rDetalle.id_Google_Ad_Manager = 0;
-            }
-
-            if ($('#inpIdPedido').val() != "") {
-                rDetalle.id_pedido_Google_Ad_Manager = parseInt($('#inpIdPedido').val());
-            }
-            else {
-                rDetalle.id_pedido_Google_Ad_Manager = 0;
-            }
-
-            rDetalle.nombre_pedido_Google_Ad_Manager = $('#inpPedido').val();
-
-            if ($('#selDetConvenio').val() == "" || $('#selDetConvenio').val() == undefined) {
-                rDetalle.id_det_conv = 0;
-            } else {
-                rDetalle.id_det_conv = $('#selDetConvenio').val();
-            }
-
-            rDetalle.id_red = $('#selRedes').val();
 
             var error = validarDetalle(rDetalle);
 
@@ -2280,6 +1801,7 @@
             }
         }
 
+
         function validarDetalle(rDetalle) {
             var error = [];
 
@@ -2287,24 +1809,19 @@
                 error.push("Medios");
             }
 
-            if (idDetConvenio < 1) {
-                if (rDetalle.tarifa_dg.id_tarifa_dg == null) {
-                    error.push("Tarifa Id");
-                }
-                if (rDetalle.tarifa_dg.descripcion == "") {
-                    error.push("Tarifa");
-                }
+            if (rDetalle.id_tarifa == null) {
+                error.push("Tarifa Id");
+            }
+            if (rDetalle.desc_tarifa == "") {
+                error.push("Tarifa");
             }
 
-            if (rDetalle.tipo_aviso_dg.id_categoria == null) {
+            if (rDetalle.id_categoria == null) {
                 error.push("Tipo de Aviso");
             }
 
             if (rDetalle.tipo_tarifa == null) {
                 error.push("Forma de Uso");
-            }
-            if (rDetalle.descripcion == "") {
-                error.push("Descripción");
             }
             if (isNaN(rDetalle.importe_unitario)) {
                 error.push("Importe");
@@ -2321,44 +1838,9 @@
             if (rDetalle.porc_dto > 100) {
                 error.push("Descuento (tope 100%)");
             }
-            if (LineaImpConv.id_detalle > 0) {
-                if (rDetalle.id_det_conv == 0) {
-                    error.push("Detalle Convenio");
-                }
-            }
 
             return error;
         }
-
-        //function validarDetalle(rDetalle) {
-        //    var ret = true;
-
-        //    if (rDetalle.medios.length == 0) return false;
-        //    //rDetalle.fecha_desde = dateToSqlFormat($('#fechaDesdeD').val());
-        //    //rDetalle.fecha_hasta = dateToSqlFormat($('#fechaHastaD').val());
-        //    //rDetalle.id_producto = $('#selProductoD').val();
-
-        //    if (idDetConvenio < 1) {
-        //        if (rDetalle.tarifa_dg.id_tarifa_dg == null) return false;
-        //        if (rDetalle.tarifa_dg.descripcion == "") return false;
-        //    }
-
-        //    //rDetalle.tipo_aviso_dg.descripcion = $('#selTipoAvisoD>option:selected').text();
-        //    //rDetalle.tipo_aviso_dg.permite_envio_ads = $('#selTipoAvisoD>option:selected').attr("permite_envio_ads");
-        //    if (rDetalle.tipo_aviso_dg.id_tipo_aviso_dg == null) return false;
-
-        //    //AGREGUE:
-        //    //if (rDetalle.medidas.length == 0) return false;
-
-        //    if (rDetalle.tipo_tarifa == null) return false;
-        //    if (rDetalle.descripcion == "") return false;
-        //    if (isNaN(rDetalle.importe_unitario)) return false;
-        //    if (isNaN(rDetalle.cantidad)) return false;
-        //    if (isNaN(rDetalle.monto_neto)) return false;
-        //    if (isNaN(rDetalle.monto_bruto)) return false;
-
-        //    return ret;
-        //}
 
 
         function validarFechasD() {
@@ -2390,11 +1872,6 @@
                 $("#selAnunciante").attr("disabled", true);
                 $("#botLimpiar").attr("disabled", true);
                 $("#botLimpiar").attr("title", "No es posible limpiar Agencia - Anunciante si existen Detalles cargados");
-
-                var op = {};
-                op.Detalles = Detalles;
-                comprobarModDetalle(op);
-                obtenerProgresoLineasGam(op);
             }
             else
             {

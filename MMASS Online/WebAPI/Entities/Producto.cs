@@ -125,7 +125,7 @@ namespace WebApi.Entities
                                     " where p.es_borrado = 0 " +
                                     " and exists(select* from anun_prod ap where ap.id_producto = p.id_producto and ap.id_anunciante = " + IdAnunciante.ToString() + ")";
             }
-            else if (BD == 2)
+            else
             {
                 sqlCommand = "select p.id_producto, desc_producto, p.es_borrado, p.alias_producto, p.no_vinculable, p.email, p.fecha_modificacion, p.transferido, " +
                                     " c.id_competitivo, c.desc_competitivo, " +
@@ -170,7 +170,7 @@ namespace WebApi.Entities
                 {
                     elem.target.Desc_target_producto = item["target_producto"].ToString();
                 }
-                else if (BD == 2)
+                else
                 {
                     elem.target.Desc_target_producto = item["desc_target_producto"].ToString();
                 }

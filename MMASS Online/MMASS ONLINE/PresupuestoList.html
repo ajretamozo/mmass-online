@@ -350,7 +350,7 @@
         function populateTable(presuplist, idTable) {
             rowHTML = ''
             $.each(presuplist, function (it, iord) {
-                rowHTML += "<tr id-order=\"" + iord.id_presup + "\" onclick='openPresup(this)'>"
+                rowHTML += "<tr id-presup=\"" + iord.id_presup + "\" onclick='openPresup(this)'>"
                 rowHTML += "<td class='col-xs-1'>" + iord.anio + "-" + iord.mes + "-" + iord.nro_presup + "</td>";
                 rowHTML += "<td class='col-xs-1'>" + dateToFieldFormat(iord.fecha) + ' - ' + dateToFieldFormat(iord.fecha_expiracion) + "</td>";
                 rowHTML += "<td class='col-xs-1'>" + iord.descripcion + "</td>";

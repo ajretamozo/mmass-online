@@ -43,7 +43,7 @@ namespace WebApi.Entities
         public static Orden_presup_as getOrden_presup_as(DataRow item)
         {
             Orden_presup_as mi = new Orden_presup_as();
-            mi.Id_presup = int.Parse(item["Id_op_dg"].ToString());
+            mi.Id_presup = int.Parse(item["Id_presup"].ToString());
             mi.Id_detalle = int.Parse(item["Id_detalle"].ToString());
             mi.Id_medio = int.Parse(item["Id_medio"].ToString());
             mi.Anio = int.Parse(item["Anio"].ToString());

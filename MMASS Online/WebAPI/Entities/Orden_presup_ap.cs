@@ -236,6 +236,7 @@ namespace WebApi.Entities
                                 " left outer join contactos ag on ag.id_contacto = dg.id_agencia " +
                                 " left outer join contactos an on an.id_contacto = dg.id_anunciante " +
                                 " left outer join productos p on p.id_producto = dg.id_producto " +
+                                " left outer join moneda m on dg.id_moneda = m.id_moneda " +
                                 " where dg.id_presup = " + Id.ToString();
             Orden_presup_ap resultado;
             resultado = new Orden_presup_ap();
@@ -246,8 +247,8 @@ namespace WebApi.Entities
                 resultado = getOrden_presup_ap(t.Rows[0]);
                 // Detalles ...
                 resultado.Detalles = new List<Orden_presup_as>();
-                string strSql = " select d.*, p.desc_programa, c.desc_categoria from orden_presup_as " +
-                                "left join programas p on p.id_programa=d.id_programa" +
+                string strSql = " select d.*, p.desc_programa, c.desc_categoria, t.desc_tarifa from orden_presup_as d " +
+                                "left join programas p on p.id_programa=d.id_programa " +
                                 "left join categorias c on c.id_categoria=d.id_categoria " +
                                 "left join tarifas t on t.id_tarifa=d.id_tarifa " +
                                 "where id_presup = " + resultado.Id_presup.ToString();
