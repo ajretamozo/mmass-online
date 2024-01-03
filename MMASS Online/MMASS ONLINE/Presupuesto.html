@@ -498,6 +498,18 @@
                                         <div class="col-lg-4 "> <div class="input-group"> <input type="text" disabled class="form-control" id="inpOrderNumber" id_op_dg="0"> </div> </div>
                                     </div>
                                 </div>
+                                <div class="col-lg-3" style="padding-right: 0px;">
+                                    <label>Moneda</label>
+                                    <select class="form-control" id="selMoneda" onfocus="this.oldvalue = this.value" onchange="prevMonedaSelected(this); this.oldvalue = this.value;"></select>
+                                </div>
+                                <div class="col-lg-1" style="padding-top: 4px;">
+                                    <label for="bCambioMoneda" class="invisible">Cambios</label>
+                                    <button type="button" data-id="cambioMoneda" id="bCambioMoneda" class="btn actions btn-outline-dark btn-sm mr-1 btn-block" onclick="getCotizaciones()" title="Ver cotizaciones de monedas">
+                                        <span class="fa fa-usd"></span>
+                                        <span class="fa fa-exchange"></span>
+                                        <span class="fa fa-eur"></span>
+                                    </button>
+                                </div>
                                 <div class="col-lg-4">
                                     <div class="row">
                                         <div class="col-lg-6">
@@ -506,36 +518,18 @@
                                         </div>
                                         <div class="col-lg-6">
                                             <label>Estado</label>
-                                            <div class="input-group"> <input type="text" disabled id="inpEstado" class="form-control col text-center" value="NO"> </div>
+                                            <div class="input-group">
+                                                <input type="text" disabled id="inpEstado" class="form-control col text-center" style="background-color: #343a40;">
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-lg-2" style="padding-right: 0px;">
-                                    <label>Moneda</label>
-                                    <select class="form-control" id="selMoneda" onfocus="this.oldvalue = this.value" onchange="prevMonedaSelected(this); this.oldvalue = this.value;"></select>
-                                </div>
-                                <div class="col-lg-1" style="padding-top: 4px;">
-                                    <label for="bCambioMoneda" class="invisible">Cambios</label>
-                                    <button type="button" data-id="cambioMoneda" id="bCambioMoneda" class="btn actions btn-outline-dark btn-sm mr-1" onclick="getCotizaciones()" style="width: 67px;" title="Ver cotizaciones de monedas">
-                                        <span class="fa fa-usd"></span>
-                                        <span class="fa fa-exchange"></span>
-                                        <span class="fa fa-eur"></span>
-                                    </button>
-                                </div>
-                                <!--<div class="col-lg-1" style="padding-top: 4px;">
-                <label for="bgetOrderASDetais" class="invisible">Cambios</label>
-                <button type="button" data-id="getOrderASDetails" id="bgetOrderASDetais" disabled="disabled" class="btn actions btn-outline-dark btn-sm mr-1" onclick="getOrderDetails()" style="width: 67px;" title="Ver progreso de la Orden">
-                    <span class="fa fa-bar-chart"></span>
-                </button>
-            </div>-->
                             </div>
                             <hr>
                             <!-- GRUPO 2 -->
                             <!-- FILA 1 -->
                             <div class="row justify-content-around" style="padding-top: 15px;">
                                 <div class="col-lg-4">
-                                    <!--<label>Número de Orden Cliente</label>
-                <div class="input-group"> <input type="text" id="inpOrderNumberClient" class="form-control" maxlength="50"> </div>-->
                                     <label>Vigencia Presupuesto</label>
                                     <div id="OrderDateSpam" class="row">
                                         <div class="col-lg-12">
@@ -970,16 +964,39 @@
             $('#fechaDesde').datetimepicker('date', moment(dateToFieldFormat(data.fecha), 'DD/MM/YYYY'));
             $('#fechaHasta').datetimepicker('date', moment(dateToFieldFormat(data.fecha_expiracion), 'DD/MM/YYYY'));
 
-            if (OpClon == false) {
+            //if (OpClon == false) {
                 $("#inpOrderMonth").val(data.mes);
                 $("#inpOrderYear").val(data.anio);
                 $("#inpOrderNumber").val(data.nro_presup);
                 $("#inpOrderNumber").attr("id_op_dg", data.id_presup);
-            }
+            //}
 
-            if (data.fecha_alta != null && OpClon == false) {
+            //if (data.fecha_alta != null && OpClon == false) {
                 $("#inpFechaAlta").val(dateToFieldFormat(data.fecha_alta));
-            }
+            //}
+
+            switch (data.id_estado) {
+                case 1:
+                    $("#inpEstado").val("En Proceso");
+                    $("#inpEstado").css("color", "#ffffe1");
+                    break;
+                case 2:
+                    $("#inpEstado").val("Pendiente");
+                    $("#inpEstado").css("color", "#05baa4");
+                    break;
+                case 3:
+                    $("#inpEstado").val("Rechazado");
+                    $("#inpEstado").css("color", "#ff5353");
+                    break;
+                case 4:
+                    $("#inpEstado").val("Aprobado");
+                    $("#inpEstado").css("color", "#c0dcc0");
+                    break;
+                case 5:
+                    $("#inpEstado").val("Vinculado");
+                    $("#inpEstado").css("color", "#cff2fe");
+                    break;
+            }        
 
             if (data.id_moneda != null) {
                 $("#selMoneda option[value=" + data.id_moneda + "]").attr("selected", "selected");
@@ -989,7 +1006,7 @@
 
             if (data.agencia != null) {
                 $("#selAgencia option[value=" + data.agencia.id_contacto + "]").attr("selected", "selected");
-                cargarProductosyOPRelacionada(data.agencia.id_contacto, data.anunciante.id_contacto, data.producto.id_producto, data.id_op_relacionada);
+                cargarProductos(data.anunciante.id_contacto, data.producto.id_producto);
             }
 
             $("#selAnunciante option[value=" + data.anunciante.id_contacto + "]").attr("selected", "selected");
@@ -1071,14 +1088,15 @@
         }
 
 
-        function cargarProductosyOPRelacionada(idAgencia, idAnunciante, idProducto, idOpRelacionada) {
-            data = {};
-            data.agencia = {};
-            data.anunciante = {};
-            data.anunciante.id = idAnunciante;
-            data.agencia.id = idAgencia;
+        function cargarProductos(idAnunciante, idProducto) {
+            $.when(
+                callWS("productos", "getProductosPorAnunciante", idAnunciante.toString(), function (data) { onPopulateSelectDone(data, 'selProducto', 'id_producto', 'desc_producto'); })
+            ).then(function () { onCargarProductos(idProducto) });
+        }
 
-            callWS("productos", "getProductosPorAnunciante", idAnunciante.toString(), function (data) { onPopulateSelectDone(data, 'selProducto', 'id_producto', 'desc_producto'); })
+
+        function onCargarProductos(idProducto) {
+            $("#selProducto option[value=" + idProducto + "]").attr("selected", "selected");
         }
 
 
@@ -1411,7 +1429,7 @@
                 cMultiSelect.bootstrapDualListbox('refresh');
             }
 
-            if (idSelect == 'selMediosD') {
+            if (idSelect == 'selFPago') {
                 enableRon();
             }
 
@@ -2282,15 +2300,15 @@
             return html;
         }
 
-        //USAR PARA LOS TIPOS DE VENTA
+
         function openRonPorc() {
             var modalHTML = '';
             modalHTML += "<div class='row justify-content-center'><table><thead></thead><tbody id='ronTableBody'>"
             var div = $("#porcRon");
             if (div[0].innerHTML == "") {
-                medios = $("#selMediosD option:selected");
-                $.each(medios, function (index, medio) {
-                    modalHTML += "<tr id='ronRow_" + medio.value + "'><td>" + medio.text + "</td>" + "<td width='30%'><input type='number' class='form-control inpRon' id='inpRonRow_" + medio.value + "' value='0' onchange=\"$(this).attr('value',$(this).val())\" /></td></tr>"
+                formasPago = $("#selFPago option:selected");
+                $.each(formasPago, function (index, fPago) {
+                    modalHTML += "<tr id='ronRow_" + fPago.value + "'><td>" + fPago.text + "</td>" + "<td width='30%'><input type='number' class='form-control inpRon' id='inpRonRow_" + fPago.value + "' value='0' onchange=\"$(this).attr('value',$(this).val())\" /></td></tr>"
                 })
             } else {
                 modalHTML += div[0].innerHTML;
@@ -2299,26 +2317,24 @@
             showRonModal(modalHTML);
         }
 
+
         function showRonModal(content) {
             $("#modalCenterTitle").text("Editar % RON");
-            if ($('#selDetConvenio').val() == "" || $('#selDetConvenio').val() == undefined) {
-                content += "<div class='row justify-content-end mt-3 mr-1'><button type='button' id='distrUniforme' class='btn btn-secondary' onClick=\"distrUniforme();\"> Distr. Uniforme </button></div>";
-            }
-            else {
-                content += "<div class='row justify-content-end mt-3 mr-1'><button type='button' id='distrUniforme' class='btn btn-secondary' disabled='true' onClick=\"distrUniforme();\"> Distr. Uniforme </button></div>";
-            }
+            content += "<div class='row justify-content-end mt-3 mr-1'><button type='button' id='distrUniforme' class='btn btn-secondary' onClick=\"distrUniforme();\"> Distr. Uniforme </button></div>";
             $("#modalCenterBody").html(content);
             footer = '';
-            if ($("#inpEsFacturada").val() == 'SI' || OpAnulada == true) {
-                footer += "<button type='button' disabled id='aceptar' class='btn btn-secondary' onClick=\"setDetailRon($('#ronTableBody').html());\"> Aceptar </button>";
-            }
-            else {
+            //si esta en estado convertida, poner no editable
+            //if ($("#inpEsFacturada").val() == 'SI' || OpAnulada == true) {
+            //    footer += "<button type='button' disabled id='aceptar' class='btn btn-secondary' onClick=\"setDetailRon($('#ronTableBody').html());\"> Aceptar </button>";
+            //}
+            //else {
                 footer += "<button type='button' id='aceptar' class='btn btn-secondary' onClick=\"setDetailRon($('#ronTableBody').html());\"> Aceptar </button>";
-            }
+            //}
             footer += "<button type='button' class='btn btn-secondary' data-dismiss='modal' onClick=\"$('#ronTableBody').empty();\"> Cancelar </button>";
             $("#modalCenterFooter").html(footer);
             $("#modalCenter").modal('show');
         }
+
 
         function setDetailRon(content) {
             var sum = 0;
@@ -2342,6 +2358,7 @@
             }
         }
 
+
         function distrUniforme() {
             var count = $("#ronTableBody").children().length
             var i = 0;
@@ -2358,14 +2375,16 @@
             })
         }
 
+
         function enableRon() {
-            var selected = $("#selMediosD option:selected").length;
+            var selected = $("#selFPago option:selected").length;
             if (selected > 1) {
                 $("#botPorcRon").attr("disabled", false);
             } else {
                 $("#botPorcRon").attr("disabled", true);
             }
         }
+
 
         function round(value, decimals) {
             return Number(Math.round(value + 'e' + decimals) + 'e-' + decimals);
@@ -2401,6 +2420,7 @@
             $("#GuardarRenglon").attr("disabled", true);
         }
 
+
         function desbloquearCamposDetalle() {
             $("#fechaDesdeD").attr("disabled", false);
             $("#fechaHastaD").attr("disabled", false);
@@ -2417,6 +2437,7 @@
             $("#confFCD").attr("disabled", false);
             $("#GuardarRenglon").attr("disabled", false);
         }
+
 
         function bloquearCamposCabecera() {
             $("#inpOrderNumberClient").attr("disabled", true);
@@ -2518,6 +2539,7 @@
 
             return error;
         }
+
 
         function formatearMonto(x) {
             return Number.parseFloat(x).toFixed(2);

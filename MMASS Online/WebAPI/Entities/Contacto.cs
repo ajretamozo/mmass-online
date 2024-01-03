@@ -209,14 +209,14 @@ namespace WebApi.Entities
                 sqlCommand = @"Select c.id_contacto, razon_social, nombre_com from contactos c
                                     inner join roles r on r.id_contacto = c.id_contacto
                                     where r.id_contacto = c.id_contacto
-                                    and es_borrado = 0 and es_bloqueado = 0 and r.tipo_rol = " + tipo + " order by razon_social";
+                                    and es_borrado = 0 and (es_bloqueado = 0 or es_bloqueado is null) and r.tipo_rol = " + tipo + " order by razon_social";
             }
             else
             {
                 sqlCommand = @"Select c.id_contacto, razon_social, nombre_com from contactos c
                                     inner join roles r on r.id_contacto = c.id_contacto
                                     where r.id_contacto = c.id_contacto
-                                    and es_borrado = 0 and es_bloqueado = 0 and r.id_tipo_rol = " + tipo + " order by razon_social";
+                                    and es_borrado = 0 and (es_bloqueado = 0 or es_bloqueado is null) and r.id_tipo_rol = " + tipo + " order by razon_social";
             }
 
             List<Contacto> col = new List<Contacto>();
