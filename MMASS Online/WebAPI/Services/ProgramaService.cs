@@ -28,7 +28,7 @@ namespace WebApi.Services
         public IEnumerable<Programa> getAllProgramasMedio(string listaMedios)
         {
             List<Programa> listaProgramas = new List<Programa>();
-            var mediosRadio = Dg_medios_asociados.getAllmediosAsociados(listaMedios);
+            //var mediosRadio = Dg_medios_asociados.getAllmediosAsociados(listaMedios);
             //foreach (Dg_medios_asociados medio in mediosRadio)
             //{
             //    List<Programa> lista = Programa.getAllProgramasMedio(medio.Id_medio_asociado);

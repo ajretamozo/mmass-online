@@ -37,6 +37,8 @@ namespace WebApi.Entities
         public float Porcconffc { get; set; }
         public float Impconfnc { get; set; }
         public float Impconffc { get; set; }
+        public int AmbitoTar { get; set; }
+        public int Formausotarifa { get; set; }
         public string UsuarioSesion { get; set; } // Atributo usado para enviar el usuario en los mails de alerta
 
 
@@ -50,9 +52,9 @@ namespace WebApi.Entities
             mi.Mes = int.Parse(item["Mes"].ToString());
             mi.Nro_presup = int.Parse(item["Nro_presup"].ToString());
             mi.Fecha_desde = DB.DFecha(item["Fecha_desde"].ToString());
-            mi.Fecha_hasta = DB.DFecha(item["Hs_hasta"].ToString());
-            mi.Hs_desde = DB.DFecha(item["Fecha_hasta"].ToString());
-            mi.Hs_hasta = DB.DFecha(item["Hs_desde"].ToString());
+            mi.Fecha_hasta = DB.DFecha(item["Fecha_hasta"].ToString());
+            mi.Hs_desde = DB.DFecha(item["Hs_desde"].ToString());
+            mi.Hs_hasta = DB.DFecha(item["Hs_hasta"].ToString());
             if (item["Id_programa"].ToString() != "")
             {
                 mi.Id_programa = int.Parse(item["Id_programa"].ToString());
@@ -80,6 +82,8 @@ namespace WebApi.Entities
             mi.Porcconfnc = DB.DFloat(item["Porcconfnc"].ToString());
             mi.Porcconfnc = DB.DFloat(item["Porcconfnc"].ToString());
             mi.Porcconfnc = DB.DFloat(item["Porcconfnc"].ToString());
+            mi.AmbitoTar = DB.DInt(item["ambitoTar"].ToString());
+            mi.Formausotarifa = DB.DInt(item["formausotarifa"].ToString());
 
             return mi;
         }
@@ -95,14 +99,14 @@ namespace WebApi.Entities
                 sql += " id_programa,";
             }
             sql += " id_tarifa, id_categoria, imp_tarifa, cantidad, monto_bruto, porc_dto, monto_neto, netomanual," +
-            " porcconfnc, porcconffc, impconffc, impconfnc) " +
+            " porcconfnc, porcconffc, impconffc, impconfnc, ambitoTar, formausotarifa) " +
             " values (@id_presup, @id_detalle, @id_medio, @anio, @mes, @nro_presup, @fecha_desde, @fecha_hasta, @hs_desde, @hs_hasta,";
             if (!progisnull)
             {
                 sql += " @id_programa,";
             }
             sql += " @id_tarifa, @id_categoria, @imp_tarifa, @cantidad, @monto_bruto, @porc_dto, @monto_neto, @netomanual," +
-            "@porcconfnc, @porcconffc, @impconffc, @impconfnc)";
+            "@porcconfnc, @porcconffc, @impconffc, @impconfnc, @ambitoTar, @formausotarifa)";
 
             List<SqlParameter> parametros = new List<SqlParameter>()
             {
@@ -151,7 +155,11 @@ namespace WebApi.Entities
                     new SqlParameter()
                     { ParameterName="@impconffc",SqlDbType = SqlDbType.Float, Value = Impconffc },
                     new SqlParameter()
-                    { ParameterName="@impconfnc",SqlDbType = SqlDbType.Float, Value = Impconfnc }
+                    { ParameterName="@impconfnc",SqlDbType = SqlDbType.Float, Value = Impconfnc },
+                    new SqlParameter()
+                    { ParameterName="@ambitoTar",SqlDbType = SqlDbType.Int, Value = AmbitoTar },
+                    new SqlParameter()
+                    { ParameterName="@formausotarifa",SqlDbType = SqlDbType.Int, Value = Formausotarifa }
             };           
 
             try

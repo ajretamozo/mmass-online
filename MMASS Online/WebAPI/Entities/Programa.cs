@@ -118,7 +118,7 @@ namespace WebApi.Entities
                                "p.hrs_variable " +
                                " from programas p where p.es_borrado = 0 and p.id_medio in ( " + listaMedios + ")";
             }
-            else if (BD == 2)
+            else
             {
                 sqlCommand = "select distinct p.id_programa, p.id_tipo_trans, p.desc_programa, p.es_espacio, p.es_borrado, p.id_medio, p.id_familia_programa, " +
                                "p.hrs_variable, p.Abrev, p.id_representacion, p.habilitado_bonificacion " +

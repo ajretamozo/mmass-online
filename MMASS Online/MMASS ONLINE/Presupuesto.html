@@ -331,14 +331,6 @@
         //    el.addEventListener("click", function () { modifyText("four") }, false);
         //}
 
-        //function wait(ms) {
-        //    var start = new Date().getTime();
-        //    var end = start;
-        //    while (end < start + ms) {
-        //        end = new Date().getTime();
-        //    }
-        //}
-
         //let formChanged = false;
         //document.addEventListener('change', () => formChanged = true);
         //window.addEventListener('beforeunload', (event) => {
@@ -662,11 +654,11 @@
                                     <div class="row">
                                         <div class="col-lg-3">
                                             <label>Medio</label>
-                                            <select class="form-control" id="selDetConvenio" onchange="prevSeleccionarDetConvenio()"></select>
+                                            <select class="form-control" id="selMediosD" onchange="filterTarifas(); filterProgramas()"></select>
                                         </div>
                                         <div class="col-lg-3">
                                             <label>Tarifa</label>
-                                            <select class="form-control" id="selTarifaD" onchange="onTarifaDSelected()"></select>
+                                            <select class="form-control" id="selTarifaD" onchange="filterPorTarifa()"></select>
                                             <div class="row float-right">
                                                 <div class="form-check-inline mr-0">
                                                     <label class="form-check-label " for="checkTarifaManualD" style="padding-right: 15px;">
@@ -677,43 +669,44 @@
                                         </div>
                                         <div class="col-lg-3">
                                             <label>Ambito</label>
-                                            <select class="form-control" id="selFacturar" onchange="onFacturarSelected()">
-                                                <option value="1" checked>Local</option>
+                                            <select class="form-control" id="selAmbito">
+                                                <option value="0"></option>
+                                                <option value="1">Local</option>
                                                 <option value="2">Nacional</option>
                                             </select>
                                         </div>
                                         <div class="col-lg-3">
                                             <label>Vigencia</label>
                                             <div class="input-group input-daterange">
-                                                <input type="text" class="form-control" id="fechaDesdeD" data-toggle="datetimepicker" data-target="#fechaDesdeD" value="01/08/2019" onchange="calcularNetoD();" />
+                                                <input type="datetime" class="form-control" id="fechaDesdeD" data-toggle="datetimepicker" data-target="#fechaDesdeD" onchange="calcularNetoD();" />
                                                 <span class="input-group-addon">hasta</span>
-                                                <input type="text" class="form-control" id="fechaHastaD" data-toggle="datetimepicker" data-target="#fechaHastaD" value="02/09/2019" onchange="calcularNetoD();" />
+                                                <input type="datetime" class="form-control" id="fechaHastaD" data-toggle="datetimepicker" data-target="#fechaHastaD" onchange="calcularNetoD();" />
                                             </div>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-lg-3">
                                             <label>Forma de Uso</label>
-                                            <select class="form-control" id="selTipoTarifaD" onchange="filterTarifas(); calcularNetoD()"></select>
+                                            <select class="form-control" id="selTipoTarifaD" disabled></select>
                                         </div>
                                         <div class="col-lg-3">
                                             <label>Tipo Aviso</label>
-                                            <select class="form-control" id="selDetConvenio" onchange="prevSeleccionarDetConvenio()"></select>
+                                            <select class="form-control" id="selTipoAvisoD"></select>
                                         </div>
                                         <div class="col-lg-3">
                                             <label>Programa</label>
-                                            <select class="form-control" id="selDetConvenio" onchange="prevSeleccionarDetConvenio()"></select>
+                                            <select class="form-control" id="selPrograma"></select>
                                         </div>
                                         <div class="col-lg-3">
                                             <label>Rango Horario</label>
                                             <div class="input-group input-daterange">
-                                                <input type="text" id="descuentoD" class="form-control" onchange="calcularNetoD()">
+                                                <input type="time" id="rangoDesde" class="form-control">
                                                 <span class="input-group-addon">hasta</span>
-                                                <input type="text" id="descuentoD" class="form-control" onchange="calcularNetoD()">
+                                                <input type="time" id="rangoHasta" class="form-control">
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="row">
+                                    <div class="row" style="padding-top: 40px;">
                                         <div class="col-lg-2">
                                             <label>Precio Unitario</label>
                                             <div id="divPrecioUnitarioD">
@@ -751,20 +744,19 @@
                                             </div>
                                         </div>
                                     </div>
-
-                                    <div class="card-footer mt-2 ">
-                                        <div class="row">
-                                            <div class="col-lg-4">
-                                            </div>
-                                            <div class="col-lg-4"></div>
-                                            <div class="col-lg-4 d-flex justify-content-end">
-                                                <button type="button" id="GuardarRenglon" class="btn btn-dark btn-sm mx-1" onclick="prevAddRenglon(-1);">
-                                                    <span class="fa fa-check"></span> Aceptar
-                                                </button>
-                                                <button type="button" class="btn btn-dark btn-sm mx-1" onclick="cancelarCargaDetalle();">
-                                                    <span class="fa fa-remove"></span> Cancelar
-                                                </button>
-                                            </div>
+                                </div>
+                                <div class="card-footer mt-2 ">
+                                    <div class="row">
+                                        <div class="col-lg-4">
+                                        </div>
+                                        <div class="col-lg-4"></div>
+                                        <div class="col-lg-4 d-flex justify-content-end">
+                                            <button type="button" id="GuardarRenglon" class="btn btn-dark btn-sm mx-1" onclick="prevAddRenglon(-1);">
+                                                <span class="fa fa-check"></span> Aceptar
+                                            </button>
+                                            <button type="button" class="btn btn-dark btn-sm mx-1" onclick="cancelarCargaDetalle();">
+                                                <span class="fa fa-remove"></span> Cancelar
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -900,8 +892,8 @@
         function inicializar() {
             $('#fechaDesde').datetimepicker({ format: 'L', locale: 'es' });
             $('#fechaHasta').datetimepicker({ format: 'L', locale: 'es' });
-            $('#fechaDesdeD').datetimepicker({ format: 'L', locale: 'es' });
-            $('#fechaHastaD').datetimepicker({ format: 'L', locale: 'es' });
+            //$('#fechaDesdeD').datetimepicker({ format: 'L', locale: 'es' });
+            //$('#fechaHastaD').datetimepicker({ format: 'L', locale: 'es' });
 
             $("#divMessage").on("click", function () { $("#divMessage").hide(); });
             $.when(
@@ -921,6 +913,8 @@
                 $('#precioUnitarioD').val($('#selTarifaD').children("option:selected").attr("precio_unitario"));
                 calcularNetoD();
             }
+
+            desbloquearCamposDetalle();
         }
 
         function cancelarPresup() { location.href = '/PresupuestoList.html'; }
@@ -1028,9 +1022,9 @@
                 if (formasPago.length > 0) {
                     var porcHTML = '';
                     formasPago.forEach(function (fPago) {
-                        $("#selFPago option[value=" + fPago.forma_pago.id_formapago + "]").attr("selected", "selected");
-                        var desc = $("#selFPago option[value=" + fPago.forma_pago.id_formapago + "]").text();
-                        porcHTML += "<tr id='ronRow_" + fPago.forma_pago.id_formapago + "'><td>" + desc + "</td>" + "<td><input type='number' class='form-control inpRon' id='inpRonRow_" + fPago.forma_pago.id_formapago + "' value='" + fPago.porcentaje + "' onchange=\"$(this).attr('value',$(this).val())\" /></td></tr>"
+                        $("#selFPago option[value=" + fPago.id_formapago + "]").attr("selected", "selected");
+                        var desc = $("#selFPago option[value=" + fPago.id_formapago + "]").text();
+                        porcHTML += "<tr id='ronRow_" + fPago.id_formapago + "'><td>" + desc + "</td>" + "<td><input type='number' class='form-control inpRon' id='inpRonRow_" + fPago.id_formapago + "' value='" + fPago.porcentaje + "' onchange=\"$(this).attr('value',$(this).val())\" /></td></tr>"
                     });
                     $("#porcRon").html(porcHTML);
                     enableRon();
@@ -1139,6 +1133,12 @@
                 return false;
             }
 
+            var cantFPago = $("#selFPago option:selected").length;
+            if (cantFPago >= 2 && $("#porcRon").html() == "") {
+                showMessage("Debe realizar la distribución de porcentajes de RON", "info")
+                return false;
+            }
+
             if ($("#selPlazoP").val() == null) {
                 showMessage("Seleccione un Plazo de Pago", "info");
                 return false;
@@ -1241,17 +1241,21 @@
             data.Imp_conf_fc = $("#conf_fc").val();
             data.usuario = {};
             data.usuario.Id_usuario = $("#NombreUsuario").attr("data-id");
-            data.idEjecutivo = $("#selEjecutivo").val();
+            data.id_ejecutivo = $("#selEjecutivo").val();
 
-            //ADAPTAR TIPOS DE VENTA CON RON
-            formaspago = [];
-            fp = {};
-            fp.forma_pago = {};
-            fp.forma_pago.Id_formapago = $("#selFPago").val();
             data.Id_condpagoap = $("#selPlazoP").val();
-            fp.Porcentaje = 100;
-            formaspago.push(fp);
-            data.FormasPago = formaspago;
+            var cantFPago = $("#selFPago option:selected").length;
+            data.formaspago = selectToJson('selFPago', 'id_formapago');
+
+            if (cantFPago >= 2) {
+                data.formaspago.forEach(fPago => fPago.porcentaje = $('#inpRonRow_' + fPago.forma_pago.id_formapago).val()
+                );
+            } else if (cantFPago == 1) {
+                data.formaspago[0].porcentaje = 100;
+            }
+
+            //por ahora lo guardamos en estado "pendiente"
+            data.id_estado = 2;
 
             data.Detalles = Detalles;
 
@@ -1276,6 +1280,15 @@
             fieldFormatDate = '';
             fieldFormatDate = arr[2] + '/' + arr[1] + '/' + arr[0];
             return fieldFormatDate;
+        }
+
+
+        function datetimeToTime(datetime) {
+            var time = datetime.split('T')[1];
+            arr = time.split(":");
+            fieldFormatTime = '';
+            fieldFormatTime = arr[0] + ':' + arr[1];
+            return fieldFormatTime;
         }
 
 
@@ -1311,6 +1324,72 @@
             cTotal = neto2;
 
             $("#total").val(cTotal.toFixed(2));
+        }
+
+
+        function onSavePresup(data) {
+
+            if (data.result > 0) {
+
+                //Parametros para el Log
+                //var parametros = {};
+                //parametros.objeto = 'ORDEN PUBLICITARIA';
+                //parametros.clave = data.op.id_op_dg;
+                //parametros.idusuario = $("#NombreUsuario").attr("data-id");
+                //if (opAntes.id_op_dg == undefined) {
+                //    parametros.accion = 'NUEVO';
+                //    if (OpClon) {
+                //        var opOriginal = getUrlParameter("orderClon");
+                //        parametros.descripcion = 'Clonación de OP Digital desde: ' + opOriginal;
+                //    }
+                //    else {
+                //        parametros.descripcion = 'Se creó la OP Digital: ' + data.op.anio + '-' + data.op.mes + '-' + data.op.nro_orden;
+                //    }
+                //}
+                //else {
+                //    parametros.accion = 'MODIFICACION';
+                //    parametros.descripcion = 'Se modificó la OP Digital: ' + data.op.anio + '-' + data.op.mes + '-' + data.op.nro_orden;
+                //}
+                //var params = setListaParametros(parametros);
+                //callWS("dg_orden_pub_aps", "grabarLog", JSON.stringify(params));
+
+                //OpClon = false;
+
+                //$("#divAnuClon").empty();              
+
+                //$("#bClonar").attr("disabled", false);
+                $('#inpOrderNumber').val(data.op.nro_presup);
+                $("#inpOrderNumber").attr("id_op_dg", data.op.id_presup);
+                $("#inpOrderMonth").val(data.op.mes);
+                $("#inpOrderYear").val(data.op.anio);
+
+                $("#inpDescOP").val(data.op.descripcion);
+
+                if ($("#inpFechaAlta").val() == "") {
+                    var today = new Date();
+                    var dd = today.getDate();
+                    var mm = today.getMonth() + 1;
+                    var yyyy = today.getFullYear();
+                    if (dd < 10) {
+                        dd = '0' + dd;
+                    }
+                    if (mm < 10) {
+                        mm = '0' + mm;
+                    }
+                    today = dd + '/' + mm + '/' + yyyy;
+                    $("#inpFechaAlta").val(today);
+                }
+
+                //bloquearOp(data.op.id_op_dg);
+
+                Detalles = data.op.detalles;
+                recargarRenglones();
+
+                showMessage(data.message);
+            }
+            else {
+                showMessage(data.message, "error");
+            }
         }
 
 
@@ -1366,11 +1445,11 @@
         }
 
 
-        function onTipoAvisoGetAll(data, idSelect, colId, colDesc) {
+        function onTipoAvisoGetAll(data, idSelect) {
             var pObj = data;
             var listitems = '';
             $.each(pObj, function (it, iObj) {
-                listitems += '<option  permite_envio_ads= ' + iObj['permite_envio_ads'] + ' tipo_aviso_ads= ' + iObj['tipo_aviso_ads'] + ' value=' + iObj['id_categoria'] + '>' + iObj["descripcion"] + '</option>';
+                listitems += '<option value=' + iObj['id_categoria'] + '>' + iObj["descripcion"] + '</option>';
             });
             $("#" + idSelect).empty();
             $("#" + idSelect).append(listitems);
@@ -1380,16 +1459,50 @@
         }
 
 
+        function onTipoAvisoGetAll2(data, rDetalle, idSelect) {
+            var pObj = data;
+            var listitems = '';
+            $.each(pObj, function (it, iObj) {
+                listitems += '<option value=' + iObj['id_categoria'] + '>' + iObj["descripcion"] + '</option>';
+            });
+            $("#" + idSelect).empty();
+            $("#" + idSelect).append(listitems);
+            if (pObj.length > 1) {
+                $("#" + idSelect).val([]);
+            }
+
+            seleccionarCamposRestantes(rDetalle);
+        }
+
+
         function onTarifasGetAll(data, idSelect, colId, colDesc) {
             var pObj = data;
             var listitems = '';
             $.each(pObj, function (it, iObj) {
-                listitems += '<option forma_uso_desc=' + iObj['forma_uso']['descripcion'] + ' forma_uso_id=' + iObj['forma_uso']['id'] + ' precio_unitario= ' + iObj['precio_unitario'] + ' value=' + iObj[colId] + '>' + iObj[colDesc] + '</option>';
+                listitems += '<option forma_uso_desc=' + iObj['forma_uso']['desc_tarifa'] + ' forma_uso_id=' + iObj['forma_uso']['id_tarifa'] + ' precio_unitario= ' + iObj['importe_tarifa'] + ' value=' + iObj[colId] + '>' + iObj[colDesc] + '</option>';
             });
             $("#" + idSelect).empty();
-            $("#" + idSelect).append("<option value=''></option>");
+            //$("#" + idSelect).append("<option value=''></option>");
             $("#" + idSelect).append(listitems);
             $("#" + idSelect).val([]);
+            //$("#" + idSelect).change();
+        }
+
+
+        function onTarifasGetAll2(data, rDetalle, idSelect, colId, colDesc) {
+            var pObj = data;
+            var listitems = '';
+            $.each(pObj, function (it, iObj) {
+                listitems += '<option forma_uso_desc=' + iObj['forma_uso']['desc_tarifa'] + ' forma_uso_id=' + iObj['forma_uso']['id_tarifa'] + ' precio_unitario= ' + iObj['importe_tarifa'] + ' value=' + iObj[colId] + '>' + iObj[colDesc] + '</option>';
+            });
+            $("#" + idSelect).empty();
+            $("#" + idSelect).append(listitems);
+            $("#" + idSelect).val([]);
+
+            $.when($("#selTarifaD option[value=" + rDetalle.id_tarifa + "]").attr("selected", "selected")).then(
+                filterPorTarifa(rDetalle)
+                //$("#selTarifaD").change()
+            )
         }
 
 
@@ -1399,7 +1512,12 @@
             var selected = sel.options[sel.selectedIndex];
 
             var pObj = data;
-            var listitems = '';
+            if (idSelect == "selTipoTarifaD") {
+                listitems = '<option value= -1 ></option>';
+            }
+            else {
+                var listitems = '';
+            }
             $.each(pObj, function (it, iObj) {
                 listitems += '<option value=' + iObj[colId] + '>' + iObj[colDesc] + '</option>';
             });
@@ -1412,12 +1530,8 @@
                     $("#selAnunciante").change();//Carga los productos
                 }
             }
-            if (idSelect == "selOrdenRelacionada" || idSelect == "selPrograma" || idSelect == "selDetConvenio") {
+            if (idSelect == "selPrograma") {
                 $("#" + idSelect).prepend("<option value=''></option>");
-            }
-
-            if (idSelect == "selOrdenRelacionada") {
-                $("#" + idSelect).val('');
             }
 
             if ((idSelect == "selAnunciante" || idSelect == "selAgencia" || idSelect == "selProducto") && selected != undefined) {
@@ -1431,10 +1545,6 @@
 
             if (idSelect == 'selFPago') {
                 enableRon();
-            }
-
-            if (idSelect == 'selDetConvenio') {
-                $("#selDetConvenio option[value='']").attr("selected", "selected");
             }
         }
 
@@ -1503,6 +1613,11 @@
                 showMessage("Seleccione un Tipo de Venta", "info");
                 return 0;
             }
+            var cantFPago = $("#selFPago option:selected").length;
+            if (cantFPago >= 2 && $("#porcRon").html() == "") {
+                showMessage("Debe realizar la distribución de porcentajes de RON", "info")
+                return 0;
+            }
             if ($("#selPlazoP").val() == null) {
                 showMessage("Seleccione un Plazo de Pago", "info");
                 return 0;
@@ -1517,152 +1632,197 @@
 
             $("#selAnunciante").attr("disabled", true);
 
+            bloquearCamposDetalle();
+
             $('#divDetailsRows').hide(); $('#divAddRow').show();
 
-            $('#fechaDesdeD').datetimepicker('date', moment($("#fechaDesde").val(), 'DD/MM/YYYY'));
-            $('#fechaHastaD').datetimepicker('date', moment($("#fechaHasta").val(), 'DD/MM/YYYY'));
-            $('#inpIdLinea').val("");
-            $('#inpIdLinea').css("background-color", "#e9ecef");
+            $("#selTarifaD").val(0);
+            $("#selTipoTarifaD").val(-1);
+            $("#selTipoAvisoD").val(0);
+            $("#selPrograma").val(0);
+            $("#selAmbito").val(0);
+            $('#fechaDesdeD').val("");
+            $('#fechaHastaD').val("");
+            $('#rangoDesde').val("");
+            $('#rangoHasta').val("");
             $('#precioUnitarioD').val("");
             $('#cantidadD').val("");
-            $("#cantidadD").attr("disabled", false);
+            //$("#cantidadD").attr("disabled", false);
             $('#descuentoD').val(0);
             $("#confNCD").val(0);
             $("#confFCD").val(0);
             $('#totalD').val("");
 
             callWS("medios", "getAll", '', function (data) { onPopulateSelectDone(data, 'selMediosD', 'id_medio', 'desc_medio'); });
-            callWS("tarifas", "getFormasUsoAll", '', function (data) { onPopulateSelectDone(data, 'selTipoTarifaD', 'id', 'descripcion'); });
-            callWS("Tipos_avisos", "getAll", '', function (data) { onTipoAvisoGetAll(data, 'selTipoAvisoD', 'id_categoria', 'descripcion', 'Permite_envio_ads', 'tipo_aviso_ads'); });
         }
 
 
-        function filterTarifas() {
-            //tieneTarifa se usa solo en convenios
-            if (tieneTarifa == false) {
-                var error = [];
-                var day1;
-                var day2;
-                if ($('#fechaDesdeD').val() != "") {
-                    fDesde = new Date(moment($("#fechaDesdeD").val(), 'DD/MM/YYYY', true).format());
-                    mfDesde = moment(fDesde);
-                    if (mfDesde.isValid()) {
-                        //day1 = dateToSqlFormat($('#fechaDesdeD').val());
-                        day1 = new Date(dateToSqlFormat($('#fechaDesdeD').val()));
-                    } else {
-                        error.push("Formato 'Fecha Desde' invalido");
-                        return error;
-                    }
-                }
-                if ($('#fechaHastaD').val() != "") {
-                    fHasta = new Date(moment($("#fechaHastaD").val(), 'DD/MM/YYYY', true).format());
-                    mfHasta = moment(fHasta);
-                    if (mfHasta.isValid()) {
-                        //day2 = dateToSqlFormat($('#fechaHastaD').val());
-                        var day2 = new Date(dateToSqlFormat($('#fechaHastaD').val()));
-                    } else {
-                        error.push("Formato 'Fecha Hasta' invalido");
-                        return error;
-                    }
-                }
+        function filterTarifas(rDetalle) {
+            bloquearCamposDetalle();
 
-                if ($('#selTipoTarifaD').val() == 1) {
-                    //var difference = Math.abs(day2 - day1);
-                    var cantD = (Math.abs(day2 - day1) / (1000 * 3600 * 24)) + 1;
-                    $("#cantidadL").text("Cantidad (días)");
-                    $("#cantidadD").val(cantD);
-                    //$("#cantidadD").attr("disabled", true);
+            var error = [];
+            var day1;
+            var day2;
+            if ($('#fechaDesde').val() != "") {
+                fDesde = new Date(moment($("#fechaDesde").val(), 'DD/MM/YYYY', true).format());
+                mfDesde = moment(fDesde);
+                if (mfDesde.isValid()) {
+                    day1 = new Date(dateToSqlFormat($('#fechaDesde').val()));
+                } else {
+                    error.push("Formato 'Fecha Desde' invalido");
+                    return error;
+                }
+            }
+            if ($('#fechaHasta').val() != "") {
+                fHasta = new Date(moment($("#fechaHasta").val(), 'DD/MM/YYYY', true).format());
+                mfHasta = moment(fHasta);
+                if (mfHasta.isValid()) {
+                    var day2 = new Date(dateToSqlFormat($('#fechaHasta').val()));
+                } else {
+                    error.push("Formato 'Fecha Hasta' invalido");
+                    return error;
+                }
+            }
+
+            var parametros = {};
+            var listaParametros = [];
+
+            var objParametro = {};
+            objParametro.ParameterName = "fecha_desde";
+            objParametro.Value = day1;
+            listaParametros.push(objParametro);
+
+            var objParametro = {};
+            objParametro.ParameterName = "fecha_hasta";
+            if (day2 == undefined) {
+                day2 = "";
+            }
+            objParametro.Value = day2;
+            listaParametros.push(objParametro);
+
+            if ($('#selMediosD').val() != null) {
+                objParametro = {};
+                objParametro.ParameterName = "id_medio";
+                objParametro.Value = $('#selMediosD').val();
+                listaParametros.push(objParametro);
+            }
+
+            if ($('#selMoneda').val() != null) {
+                objParametro = {};
+                objParametro.ParameterName = "id_moneda";
+                objParametro.Value = $("#selMoneda").val();
+                listaParametros.push(objParametro);
+            }
+
+            objParametro = {};
+            objParametro.ParameterName = "vigente";
+            objParametro.Value = 1;
+            listaParametros.push(objParametro);
+
+            parametros.Parametros = listaParametros;
+
+            if (rDetalle != undefined) {
+                callWS("tarifas", "filterTrafico", JSON.stringify(parametros), function (data) { onTarifasGetAll2(data, rDetalle, 'selTarifaD', 'id_tarifa', 'desc_tarifa'); });
+            }
+            else {
+                callWS("tarifas", "filterTrafico", JSON.stringify(parametros), function (data) { onTarifasGetAll(data, 'selTarifaD', 'id_tarifa', 'desc_tarifa'); });
+            }
+
+            $("#selTarifaD").attr("disabled", false);
+        }
+
+
+        function filterProgramas(selected = 0) {
+            if ($("#selMediosD").val() != null) {
+                listaMedios = "";
+                listaMedios = $("#selMediosD").val();
+
+                $.when(callWS("programa", "getAllProgramasMedio", JSON.stringify(listaMedios), function (data) { onPopulateSelectDone(data, 'selPrograma', 'id_programa', 'desc_programa') }))
+                    .then(function () {
+                        if (selected != 0) {
+                            $("#selPrograma option[value=" + selected + "]").attr("selected", "selected");
+                        }
+                    })
+            } else {
+                $("#selPrograma").empty();
+            }
+        }
+
+
+        function filterPorTarifa(rDetalle) {
+            if ($("#selTarifaD").val() != "" && $("#selTarifaD").val() != null) {
+                onTarifaDSelected();
+                var tarifa = {};
+                tarifa.Id_tarifa = $("#selTarifaD").val();
+
+                //buscar tarifa por ID
+                $.when(callWS("tarifas", "getFormasUsoAllTrafico", '', function (data) { onPopulateSelectDone(data, 'selTipoTarifaD', 'id', 'descripcion'); })).then(function () {
+                    callWS("tarifas", "getByIdTrafico", JSON.stringify(tarifa), function (data) { onFilterPorTarifa(data, rDetalle); });
+                });
+            }
+        }
+
+
+        function onFilterPorTarifa(tarifa, rDetalle) {
+            //limitar las fechas de vigencia con las fvigen_desde y fvigen_hasta que trae la tarifa
+            $.when(formatearDatetimepickers(tarifa.fvigen_desde, tarifa.fvigen_hasta)).then(function () {
+                $('#fechaDesdeD').datetimepicker('date', moment($("#fechaDesde").val(), 'DD/MM/YYYY'));
+                $('#fechaHastaD').datetimepicker('date', moment($("#fechaHasta").val(), 'DD/MM/YYYY'));
+            });
+
+            //cargar forma de uso con el forma_uso que trae
+            $("#selTipoTarifaD").val(tarifa.forma_uso.id);
+
+            //cargar tipo de aviso con el id_categoria que trae
+            if (tarifa.id_categoria > 0) {
+                var tipoAviso = {};
+                tipoAviso.id_categoria = tarifa.id_categoria;
+                callWS("tipos_avisos", "getById", JSON.stringify(tipoAviso), function (data) { onGetTipoAviso(data, rDetalle); });
+            }
+            else {
+                if (rDetalle != undefined) {
+                    callWS("Tipos_avisos", "getAll", '', function (data) { onTipoAvisoGetAll2(data, rDetalle, 'selTipoAvisoD'); });
                 }
                 else {
-                    if ($("#inpEsFacturada").val() == 'NO' && OpAnulada == false) {
-                        $("#cantidadD").attr("disabled", false);
-                    }
-                    $("#cantidadL").text("Cantidad");
+                    callWS("Tipos_avisos", "getAll", '', function (data) { onTipoAvisoGetAll(data, 'selTipoAvisoD'); });
                 }
-
-                var parametros = {};
-                var listaParametros = [];
-
-                var objParametro = {};
-                objParametro.ParameterName = "fecha_desde_det";
-                objParametro.Value = day1;
-                listaParametros.push(objParametro);
-
-                var objParametro = {};
-                objParametro.ParameterName = "fecha_hasta_det";
-                if (day2 == undefined) {
-                    day2 = "";
-                }
-                objParametro.Value = day2;
-                listaParametros.push(objParametro);
-
-                if ($('#selTipoTarifaD').val() != null) {
-                    var objParametro = {};
-                    objParametro.ParameterName = "forma_uso";
-                    objParametro.Value = $('#selTipoTarifaD').val();
-                    listaParametros.push(objParametro);
-                }
-                if ($('#selTipoAvisoD').val() != null) {
-                    objParametro = {};
-                    objParametro.ParameterName = "id_categoria";
-                    objParametro.Value = $('#selTipoAvisoD').val();
-                    listaParametros.push(objParametro);
-                }
-
-                values = $('#selMediosD').val();
-                values.forEach(function (value) {
-                    objParametro = {};
-                    objParametro.ParameterName = "id_medio";
-                    objParametro.Value = value;
-                    listaParametros.push(objParametro);
-                });
-
-                tamaños = $('#selMedidasD').val();
-                tamaños.forEach(function (tamaño) {
-                    objParametro = {};
-                    objParametro.ParameterName = "id_medidadigital";
-                    objParametro.Value = tamaño;
-                    listaParametros.push(objParametro);
-                });
-
-                emplazas = $('#selEmplazaD').val();
-                emplazas.forEach(function (emplaza) {
-                    objParametro = {};
-                    objParametro.ParameterName = "id_emplazamiento";
-                    objParametro.Value = emplaza;
-                    listaParametros.push(objParametro);
-                });
-
-                if ($('#selAreasGeo').val() != null) {
-                    objParametro = {};
-                    objParametro.ParameterName = "id_areaGeo";
-                    objParametro.Value = $('#selAreasGeo').val();
-                    listaParametros.push(objParametro);
-                }
-
-                if ($('#selRedes').val() != null) {
-                    objParametro = {};
-                    objParametro.ParameterName = "id_red";
-                    objParametro.Value = $("#selRedes").val();
-                    listaParametros.push(objParametro);
-                }
-
-                if ($('#selMoneda').val() != null) {
-                    objParametro = {};
-                    objParametro.ParameterName = "id_moneda";
-                    objParametro.Value = $("#selMoneda").val();
-                    listaParametros.push(objParametro);
-                }
-
-                objParametro = {};
-                objParametro.ParameterName = "vigente";
-                objParametro.Value = 1;
-                listaParametros.push(objParametro);
-
-                parametros.Parametros = listaParametros;
-
-                return callWS("tarifas", "filter", JSON.stringify(parametros), function (data) { onTarifasGetAll(data, 'selTarifaD', 'id_tarifa_dg', 'descripcion'); })
             }
+
+            //if (tarifa.id_categoria > 0) {
+            //    $("#selTipoAvisoD option[value=" + tarifa.id_categoria + "]").attr("selected", "selected");
+            //    $("#selTipoAvisoD").attr("disabled", true);
+            //}
+
+            //limitar los rangos horarios con las hs_desde y hs_hasta que trae o controlar rangos al aceptar
+            //$("#rangoDesde").attr({ "min": datetimeToTime(tarifa.hs_desde) });
+            //$("#rangoHasta").attr({ "max": datetimeToTime(tarifa.hs_hasta) });
+
+            //var desde = new Date(tarifa.hs_desde);
+            //var hasta = new Date(tarifa.hs_hasta);
+
+            //$('#rangoDesde').datetimepicker({ minDate: desde });
+            //$('#rangoHasta').datetimepicker({ maxDate: hasta });
+        }
+
+
+        function onGetTipoAviso(tipoAviso, rDetalle) {
+            var tiposAvisos = {}
+            tiposAvisos.push(tipoAviso);
+            if (rDetalle != undefined) {
+                onTipoAvisoGetAll2(tiposAvisos, rDetalle, 'selTipoAvisoD');
+            }
+            else {
+                onTipoAvisoGetAll(tiposAvisos, 'selTipoAvisoD');
+            }
+        }
+
+
+        function formatearDatetimepickers(fDesde, fHasta) {
+            var desde = new Date(fDesde);
+            var hasta = new Date(fHasta);
+
+            $('#fechaDesdeD').datetimepicker({ format: 'L', locale: 'es', minDate: desde });
+            $('#fechaHastaD').datetimepicker({ format: 'L', locale: 'es', maxDate: hasta });
         }
 
 
@@ -1734,13 +1894,18 @@
             rDetalle.desc_categoria = $('#selTipoAvisoD>option:selected').text();
             rDetalle.id_categoria = $('#selTipoAvisoD').val();
 
-            rDetalle.tipo_tarifa = $('#selTipoTarifaD').val();
+            rDetalle.formausotarifa = $('#selTipoTarifaD').val();
 
             if ($('#selPrograma').val() == "" || $('#selPrograma').val() == undefined) {
                 rDetalle.id_programa = 0;
+                rDetalle.desc_programa = "";
             } else {
                 rDetalle.id_programa = $('#selPrograma').val();
+                rDetalle.desc_programa = $('#selPrograma>option:selected').text();
             }
+
+            rDetalle.hs_desde = "2023-12-01T" + $("#rangoDesde").val() + ":00";
+            rDetalle.hs_hasta = "2023-12-01T" + $("#rangoHasta").val() + ":00";
 
             rDetalle.imp_tarifa = parseFloat($('#precioUnitarioD').val());
 
@@ -1789,8 +1954,7 @@
                     rDetalle.id_detalle = id;
                     Detalles.push(rDetalle);
                 }
-                detImportado = false;
-                LineaImpConv.length = 0;
+
                 //Vuelvo el boton al estado inicial
                 $("#GuardarRenglon").attr("onclick", "prevAddRenglon(-1)");
                 recargarRenglones();
@@ -1823,7 +1987,7 @@
         function validarDetalle(rDetalle) {
             var error = [];
 
-            if (rDetalle.medios.length == 0) {
+            if (rDetalle.id_medio == 0) {
                 error.push("Medios");
             }
 
@@ -1838,10 +2002,10 @@
                 error.push("Tipo de Aviso");
             }
 
-            if (rDetalle.tipo_tarifa == null) {
+            if (rDetalle.formausotarifa == null) {
                 error.push("Forma de Uso");
             }
-            if (isNaN(rDetalle.importe_unitario)) {
+            if (isNaN(rDetalle.imp_tarifa)) {
                 error.push("Importe");
             }
             if (isNaN(rDetalle.cantidad)) {
@@ -1906,10 +2070,10 @@
             var str = "<tr  id='row" + id + "' data-id='row" + id + "' idAnunciante='" + $("#selAnunciante").val() + "'>";
 
             if (det.desc_programa == "") {
-                str = str + "<td class='col-xs-3' > - / " + det.hs_desde + " - " + det.hs_hasta + "</td > ";
+                str = str + "<td class='col-xs-3' > - / " + datetimeToTime(det.hs_desde) + " - " + datetimeToTime(det.hs_hasta) + "</td > ";
             }
             else {
-                str = str + "<td class='col-xs-3' > " + det.desc_programa + " / " + det.hs_desde + " - " + det.hs_hasta + "</td > ";
+                str = str + "<td class='col-xs-3' > " + det.desc_programa + " / " + datetimeToTime(det.hs_desde) + " - " + datetimeToTime(det.hs_hasta) + "</td > ";
             }
             if (det.fecha_hasta == null) {
                 str = str + "<td  class='col-xs-2' dataid='" + id + "'>" + dateToFieldFormat(det.fecha_desde) + " - Por definir </td>";
@@ -2035,6 +2199,8 @@
                 return 0;
             }
 
+            //$('#fechaDesdeD').datetimepicker({ format: 'L', locale: 'es' });
+            //$('#fechaHastaD').datetimepicker({ format: 'L', locale: 'es' });
             $("#selAnunciante").attr("disabled", true);
             $('#divDetailsRows').hide(); $('#divAddRow').show();
             $("#checkTarifaManualD")[0].checked = false;
@@ -2048,10 +2214,19 @@
 
             var rDetalle = Detalles.find(detalle => detalle.id_detalle == rId);
 
+            var parametros = {};
+            var listaParametros = [];
+            objParametro = {};
+            objParametro.ParameterName = "id_medio";
+            objParametro.Value = rDetalle.id_medio;
+            listaParametros.push(objParametro);
+            parametros.Parametros = listaParametros;
+
             $.when(
-                callWS("medios", "getAll", '', function (data) { onPopulateSelectDone(data, 'selMediosD', 'id_medio', 'desc_medio'); }),
-                callWS("tarifas", "getFormasUsoAll", '', function (data) { onPopulateSelectDone(data, 'selTipoTarifaD', 'id', 'descripcion'); }),
-                callWS("Tipos_avisos", "getAll", '', function (data) { onTipoAvisoGetAll(data, 'selTipoAvisoD', 'id_categoria', 'descripcion'); })
+                //callWS("tarifas", "filterTrafico", JSON.stringify(parametros), function (data) { onTarifasGetAll(data, 'selTarifaD', 'id_tarifa', 'desc_tarifa'); }),
+                callWS("medios", "getAll", '', function (data) { onPopulateSelectDone(data, 'selMediosD', 'id_medio', 'desc_medio'); })
+                //callWS("tarifas", "getFormasUsoAllTrafico", '', function (data) { onPopulateSelectDone(data, 'selTipoTarifaD', 'id', 'descripcion'); }),
+                //callWS("Tipos_avisos", "getAll", '', function (data) { onTipoAvisoGetAll(data, 'selTipoAvisoD', 'id_categoria', 'descripcion'); })
             ).then(function () { onCargarModificarRenglon(rDetalle) }, function (data1, data2, data3) {
                 console.log("Medios: " + data1[2].statusText + "; Formas de uso: " + data2[2].statusText + "Tipo Aviso: " + data3[2].statusText + ";");
                 showMessage("Se produjo un error al cargar los campos, intentelo nuevamente", type = "alert");
@@ -2067,6 +2242,86 @@
                 $("#GuardarRenglon").attr("onclick", "prevAddRenglon(" + rDetalle.id_detalle + ")");
             //}
 
+            //Primero seleccionamos el medio, luego la tarifa y luego el resto
+            //$.when($("#selMediosD option[value=" + rDetalle.id_medio + "]").attr("selected", "selected")).then(
+            //    $("#selMediosD").change()
+            //).then(
+            //    onCargarModificarRenglon2(rDetalle)
+            //).then(
+            //    $("#selTarifaD").change()
+            //).then(
+            //    seleccionarCamposRestantes(rDetalle)
+            //);
+            $.when($("#selMediosD option[value=" + rDetalle.id_medio + "]").attr("selected", "selected")).
+                then(filterTarifas(rDetalle)
+                    //$("#selMediosD").change()
+            )
+            //    .then(
+            //    wait(4000)
+            //);
+            //    then(
+            //    onCargarModificarRenglon2(rDetalle)
+            //);
+  
+            //Carga Medios
+            //if (rDetalle.id_medio != null) {
+            //    $("#selMediosD option[value=" + rDetalle.id_medio + "]").attr("selected", "selected");
+            //}
+
+            //Carga Tarifa
+            //Cambiar filterTarifas, hacerlo al reves. en base a tarifa, filtrar el resto de campos. Primero filtrar por medio
+            //$.when(filterTarifas()).then(function () {
+            //    if (rDetalle.id_tarifa_dg != null) {
+            //        $("#selTarifaD option[value=" + rDetalle.id_tarifa_dg + "]").attr("selected", "selected");
+            //    }
+            //});
+
+            //if (rDetalle.id_tarifa_dg != null) {
+            //    $("#selTarifaD option[value=" + rDetalle.id_tarifa_dg + "]").attr("selected", "selected");
+            //}
+        }
+
+
+        function onCargarModificarRenglon2(rDetalle) {
+            //if ($('#selTarifaD > option').length > 0) {
+            //    $.when($("#selTarifaD option[value=" + rDetalle.id_tarifa + "]").attr("selected", "selected")).then(
+            //        $("#selTarifaD").change()
+            //    ).then(
+            //        seleccionarCamposRestantes(rDetalle)
+            //    )
+            //}
+            //else {
+            //    while ($('#selTarifaD > option').length < 1) {
+            //        if ($('#selTarifaD > option').length > 0) {
+            //            $.when($("#selTarifaD option[value=" + rDetalle.id_tarifa + "]").attr("selected", "selected")).then(
+            //                $("#selTarifaD").change()
+            //            ).then(
+            //                seleccionarCamposRestantes(rDetalle)
+            //            )
+            //        }
+            //        else {
+            //            break;
+            //        }
+            //    }
+            //}
+
+            $.when($("#selTarifaD option[value=" + rDetalle.id_tarifa + "]").attr("selected", "selected")).then(
+                $("#selTarifaD").change()
+            ).then(
+                seleccionarCamposRestantes(rDetalle)
+            )
+        }
+
+        function wait(ms) {
+            var start = new Date().getTime();
+            var end = start;
+            while (end < start + ms) {
+                end = new Date().getTime();
+            }
+        }
+
+
+        function seleccionarCamposRestantes(rDetalle) {
             //Carga Fechas
             $('#fechaDesdeD').datetimepicker('date', moment(dateToFieldFormat(rDetalle.fecha_desde), 'DD/MM/YYYY'));
 
@@ -2077,23 +2332,23 @@
                 $('#fechaHastaD').datetimepicker('date', moment(dateToFieldFormat(rDetalle.fecha_hasta), 'DD/MM/YYYY'));
             }
 
-            //CARGA Medios
-            if (rDetalle.id_medio != null) {
-                $("#selMediosD option[value=" + rDetalle.id_medio + "]").attr("selected", "selected");
-            }
-
             //Carga Programas
             filterProgramas(rDetalle.id_programa);
 
             //Carga Forme de uso
-            $("#selTipoTarifaD option[value=" + rDetalle.tipo_tarifa + "]").attr("selected", "selected");
+            $("#selTipoTarifaD option[value=" + rDetalle.formausotarifa + "]").attr("selected", "selected");
 
             //Carga Tipo Aviso
             if (rDetalle.id_categoria != null) {
                 $("#selTipoAvisoD option[value=" + rDetalle.id_categoria + "]").attr("selected", "selected");
             }
 
+            //Carga Rango horarios
+            $('#rangoDesde').val(datetimeToTime(rDetalle.hs_desde));
+            $('#rangoHasta').val(datetimeToTime(rDetalle.hs_hasta));
+
             //Carga otros datos
+            $('#selAmbito').val(rDetalle.ambitoTar);
             $('#precioUnitarioD').val(rDetalle.imp_tarifa);
             if (rDetalle.cantidad == -1) {
                 $('#cantidadD').val(0);
@@ -2105,18 +2360,6 @@
             $('#totalD').val(rDetalle.monto_neto);
             $("#confNCD").val(rDetalle.porcconfnc);
             $("#confFCD").val(rDetalle.porcconffc);
-
-            //Carga Tarifa
-            //Cambiar filterTarifas, hacerlo al reves. en base a tarifa, filtrar el resto de campos. Primero filtrar por medio
-            //$.when(filterTarifas()).then(function () {
-            //    if (rDetalle.id_tarifa_dg != null) {
-            //        $("#selTarifaD option[value=" + rDetalle.id_tarifa_dg + "]").attr("selected", "selected");
-            //    }
-            //});
-
-            if (rDetalle.id_tarifa_dg != null) {
-                $("#selTarifaD option[value=" + rDetalle.id_tarifa_dg + "]").attr("selected", "selected");
-            }
 
             if (rDetalle.netomanual) {
                 $("#checkTarifaManualD")[0].checked = true;
@@ -2228,27 +2471,6 @@
             var arrStr = filepath.split("/");
             var filename = arrStr[arrStr.length - 1];
             $.when(callWS("archivos", "delete", "'" + filename + "'", function (data) { })).then(function () { getArchivos($('#inpOrderNumber').attr('id_op_dg')); })
-        }
-
-
-        //OPTIMIZAR, YA QUE EL SELMEDIOS ES INDIVIDUAL Y NO LISTBOX
-        function filterProgramas(selected = 0) {
-            if ($("#selMediosD").val().length > 0) {
-                listaMedios = "";
-                $.each($("#selMediosD").val(), function (it, Medio) {
-                    listaMedios += Medio + ",";
-                });
-                listaMedios = listaMedios.slice(0, -1);
-
-                $.when(callWS("programa", "getAllProgramasMedio", JSON.stringify(listaMedios), function (data) { onPopulateSelectDone(data, 'selPrograma', 'id_programa', 'desc_programa') }))
-                    .then(function () {
-                        if (selected != 0) {
-                            $("#selPrograma option[value=" + selected + "]").attr("selected", "selected");
-                        }
-                    })
-            } else {
-                $("#selPrograma").empty();
-            }
         }
 
 
@@ -2403,15 +2625,34 @@
         }
 
 
+        //function bloquearCamposDetalle() {
+        //    $("#fechaDesdeD").attr("disabled", true);
+        //    $("#fechaHastaD").attr("disabled", true);
+        //    $("#selPrograma").attr("disabled", true);
+        //    $("#selTipoAvisoD").attr("disabled", true);
+        //    $("#selTipoTarifaD").attr("disabled", true);
+        //    $("#selTarifaD").attr("disabled", true);
+        //    $("#selMediosD").attr("disabled", true);
+        //    $("#checkTarifaManualD").attr("disabled", true);
+        //    $("#precioUnitarioD").attr("disabled", true);
+        //    $("#cantidadD").attr("disabled", true);
+        //    $("#descuentoD").attr("disabled", true);
+        //    $("#confNCD").attr("disabled", true);
+        //    $("#confFCD").attr("disabled", true);
+        //    $("#GuardarRenglon").attr("disabled", true);
+        //}
+
+
         function bloquearCamposDetalle() {
             $("#fechaDesdeD").attr("disabled", true);
             $("#fechaHastaD").attr("disabled", true);
-            $("#selPrograma").attr("disabled", true);
+            $("#selPrograma").attr("disabled", true); 
             $("#selTipoAvisoD").attr("disabled", true);
-            $("#selTipoTarifaD").attr("disabled", true);
             $("#selTarifaD").attr("disabled", true);
-            $("#selMediosD").attr("disabled", true);
             $("#checkTarifaManualD").attr("disabled", true);
+            $("#selAmbito").attr("disabled", true);
+            $("#rangoDesde").attr("disabled", true);
+            $("#rangoHasta").attr("disabled", true);
             $("#precioUnitarioD").attr("disabled", true);
             $("#cantidadD").attr("disabled", true);
             $("#descuentoD").attr("disabled", true);
@@ -2421,15 +2662,34 @@
         }
 
 
+        //function desbloquearCamposDetalle() {
+        //    $("#fechaDesdeD").attr("disabled", false);
+        //    $("#fechaHastaD").attr("disabled", false);
+        //    $("#selPrograma").attr("disabled", false);
+        //    $("#selTipoAvisoD").attr("disabled", false);
+        //    $("#selTipoTarifaD").attr("disabled", false);
+        //    $("#selTarifaD").attr("disabled", false);
+        //    $("#selMediosD").attr("disabled", false);
+        //    $("#checkTarifaManualD").attr("disabled", false);
+        //    $("#precioUnitarioD").attr("disabled", false);
+        //    $("#cantidadD").attr("disabled", false);
+        //    $("#descuentoD").attr("disabled", false);
+        //    $("#confNCD").attr("disabled", false);
+        //    $("#confFCD").attr("disabled", false);
+        //    $("#GuardarRenglon").attr("disabled", false);
+        //}
+
+
         function desbloquearCamposDetalle() {
             $("#fechaDesdeD").attr("disabled", false);
             $("#fechaHastaD").attr("disabled", false);
             $("#selPrograma").attr("disabled", false);
             $("#selTipoAvisoD").attr("disabled", false);
-            $("#selTipoTarifaD").attr("disabled", false);
             $("#selTarifaD").attr("disabled", false);
-            $("#selMediosD").attr("disabled", false);
             $("#checkTarifaManualD").attr("disabled", false);
+            $("#selAmbito").attr("disabled", false);
+            $("#rangoDesde").attr("disabled", false);
+            $("#rangoHasta").attr("disabled", false);
             $("#precioUnitarioD").attr("disabled", false);
             $("#cantidadD").attr("disabled", false);
             $("#descuentoD").attr("disabled", false);
@@ -2453,7 +2713,6 @@
             $("#selEjecutivo").attr("disabled", true);
             $("#selMoneda").attr("disabled", true);
             $("#bCargarNuevoRenglon").attr("disabled", true);
-            $("#bImportarNuevoRenglon").attr("disabled", true);
             $(".bootstrap-duallistbox-container").find("*").prop("disabled", true);
         }
 

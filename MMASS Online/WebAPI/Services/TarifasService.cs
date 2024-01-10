@@ -24,6 +24,9 @@ namespace WebApi.Services
         IEnumerable<Dg_tarifa_forma_uso> getFormasUso();
         IEnumerable<Dg_tarifas> filter(List<Parametro> parametros);
         int actualizarTarifa(List<Parametro> parametros);
+        IEnumerable<Tarifas> filterTrafico(List<Parametro> parametros);
+        Tarifas getByIdTrafico(int Id);
+        IEnumerable<Tarifa_forma_uso> getFormasUsoTrafico();
     }
 
     public class TarifaService : ITarifaService
@@ -97,6 +100,21 @@ namespace WebApi.Services
             }
 
             return respuesta;
+        }
+
+        public IEnumerable<Tarifas> filterTrafico(List<Parametro> parametros)
+        {
+            return Tarifas.filter(parametros);
+        }
+
+        public Tarifas getByIdTrafico(int Id)
+        {
+            return Tarifas.getById(Id);
+        }
+
+        public IEnumerable<Tarifa_forma_uso> getFormasUsoTrafico()
+        {
+            return Tarifa_forma_uso.getAll();
         }
     }
 }

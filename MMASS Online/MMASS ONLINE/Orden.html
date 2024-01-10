@@ -2743,10 +2743,10 @@
                     listaParametros.push(objParametro);
                 }
 
-                objParametro = {};
-                objParametro.ParameterName = "vigente";
-                objParametro.Value = 1;
-                listaParametros.push(objParametro);
+                //objParametro = {};
+                //objParametro.ParameterName = "vigente";
+                //objParametro.Value = 1;
+                //listaParametros.push(objParametro);
 
                 parametros.Parametros = listaParametros;
 
@@ -2862,14 +2862,16 @@
             //}
 
             var cantMedios = $("#selMediosD option:selected").length;
-            if ($("#selAnunciante").val() == null) {
-                showMessage("Seleccione un anunciante", "info");
-                return;
-            }
             if (cantMedios >= 2 && $("#porcRon").html() == "") {
                 showMessage("Debe realizar la distribución de porcentajes de RON", "info")
                 return;
             }
+
+            if ($("#selAnunciante").val() == null) {
+                showMessage("Seleccione un anunciante", "info");
+                return;
+            }
+
             //if ($('#selTipoTarifaD').val() == 1 && ($('#cantidadD').val() < 1 || $('#cantidadD').val() > 100)) {
             //    showMessage("Introduzca un valor de porcentaje entre 1 y 100", "info");
             //    return;
@@ -2883,7 +2885,6 @@
                 rDetalleCopy = JSON.parse(JSON.stringify(rDetalle));
             }
 
-            //AGREGUE:
             rDetalle.id_op_dg = 0;
 
             rDetalle.medios = selectToJson('selMediosD', 'id_medio');
@@ -3459,9 +3460,12 @@
             viewListMedios += "</ul>"
             $("#selMediosD").after(viewListMedios);
             cMultiSelect.bootstrapDualListbox('refresh');
-            $("#selTipoTarifaD option[value=" + rDetalle.tipo_tarifa + "]").attr("selected", "selected");
 
+            //Carga programas
             filterProgramas(rDetalle.id_programa);
+
+            //Carga formas de uso
+            $("#selTipoTarifaD option[value=" + rDetalle.tipo_tarifa + "]").attr("selected", "selected");
 
             //Carga Tipo Aviso
             tipo_aviso = rDetalle.tipo_aviso_dg;

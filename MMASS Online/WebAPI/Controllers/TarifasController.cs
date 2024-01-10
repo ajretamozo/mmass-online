@@ -67,5 +67,26 @@ namespace WebApi.Controllers
             var tarifas = _tarifaService.actualizarTarifa(parametros.Parametros);
             return Ok(tarifas);
         }
+
+        [HttpPost("filterTrafico")]
+        public IActionResult filterTrafico(ListaParametro parametros)
+        {
+            var fu = _tarifaService.filterTrafico(parametros.Parametros);
+            return Ok(fu);
+        }
+
+        [HttpPost("getByIdTrafico")]
+        public IActionResult getByIdTrafico(Tarifas miobj)
+        {
+            var tarifas = _tarifaService.getByIdTrafico(miobj.Id_tarifa);
+            return Ok(tarifas);
+        }
+
+        [HttpPost("getFormasUsoAllTrafico")]
+        public IActionResult getFormasUsoAllTrafico()
+        {
+            var fu = _tarifaService.getFormasUsoTrafico();
+            return Ok(fu);
+        }
     }
 }

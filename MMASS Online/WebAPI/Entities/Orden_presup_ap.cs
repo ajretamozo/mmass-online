@@ -271,7 +271,7 @@ namespace WebApi.Entities
                     dfp.Mes = DB.DInt(r["mes"].ToString());
                     dfp.Anio = DB.DInt(r["anio"].ToString());
                     dfp.Nro_presup = DB.DInt(r["nro_presup"].ToString());
-                    dfp.forma_pago = Forma_Pago.getById(DB.DInt(r["id_formapago"].ToString()));
+                    dfp.Id_formapago = DB.DInt(r["id_formapago"].ToString());
                     dfp.Porcentaje = DB.DFloat(r["porcentaje"].ToString());
                     resultado.FormasPago.Add(dfp);
                 }
@@ -326,7 +326,7 @@ namespace WebApi.Entities
                 }
                 else
                 {
-                    sql = "update orden_presup_ap set fecha_alta=@fecha_alta, id_estado=@id_estado, id_moneda=@id_moneda, cambio=@cambio, " +
+                    sql = "update orden_presup_ap set id_estado=@id_estado, id_moneda=@id_moneda, cambio=@cambio, " +
                             " fecha=@fecha, fecha_expiracion=@fecha_expiracion, descripcion=@descripcion, id_concepto_negocio=@id_concepto_negocio," +
                             " id_agencia=@id_agencia, id_anunciante=@id_anunciante, id_producto=@id_producto, facturar_a=@facturar_a, " +
                             " id_condpagoap=@id_condpagoap, id_ejecutivo=@id_ejecutivo, monto_bruto=@monto_bruto, porc_dto=@porc_dto, " +
@@ -408,9 +408,9 @@ namespace WebApi.Entities
                     }
 
                     // Formas Pago
-                    DB.Execute("delete from orden_presup_pagos where id_op_dg = " + Id_presup.ToString());
-                    sql = "insert into orden_presup_pagos(id_presup, anio, mes, nro_presup, id_formapago, porcentaje) " +
-                          "values (@id_presup, @anio, @mes, @nro_presup, @id_formapago, @porcentaje)";
+                    DB.Execute("delete from orden_presup_pagos where id_presup = " + Id_presup.ToString());
+                    sql = "insert into orden_presup_pagos(id_presup, anio, mes, nro_presup, id_formapago, porcentaje, porcCanje, xCliente) " +
+                          "values (@id_presup, @anio, @mes, @nro_presup, @id_formapago, @porcentaje, 0, 0)";
 
                     foreach (Orden_presup_pagos elem in FormasPago)
                     {
@@ -425,7 +425,7 @@ namespace WebApi.Entities
                             new SqlParameter()
                             { ParameterName="@nro_presup",SqlDbType = SqlDbType.Int, Value = Nro_presup },
                             new SqlParameter()
-                            { ParameterName="@id_formapago",SqlDbType = SqlDbType.Int, Value = elem.forma_pago.Id_formapago },
+                            { ParameterName="@id_formapago",SqlDbType = SqlDbType.Int, Value = elem.Id_formapago },
                             new SqlParameter()
                             { ParameterName="@porcentaje",SqlDbType = SqlDbType.Float, Value = elem.Porcentaje }
                         };

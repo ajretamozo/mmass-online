@@ -412,7 +412,7 @@
 
         function formatearDatetimepickers() {
             var hoy = new Date();
-            hoy.setUTCHours(23, 59, 59, 999);
+            //hoy.setUTCHours(23, 59, 59, 999);
             $('#fechaDesde').datetimepicker({ format: 'L', locale: 'es', maxDate: hoy });
             $('#fechaHasta').datetimepicker({ format: 'L', locale: 'es', maxDate: hoy });
         }

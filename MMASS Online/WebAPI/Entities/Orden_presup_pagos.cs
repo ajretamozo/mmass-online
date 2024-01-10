@@ -13,7 +13,7 @@ namespace WebApi.Entities
         public int Anio { get; set; }
         public int Mes { get; set; }
         public int Nro_presup { get; set; }
-        public Forma_Pago forma_pago { get; set; }
+        public int Id_formapago { get; set; }
         public float Porcentaje { get; set; }
 
         public static Orden_presup_pagos getOrden_presup_pagos(DataRow item)
@@ -24,7 +24,7 @@ namespace WebApi.Entities
                 Anio = DB.DInt(item["Anio"].ToString()),
                 Mes = DB.DInt(item["Mes"].ToString()),
                 Nro_presup = DB.DInt(item["Nro_presup"].ToString()),
-                forma_pago = Forma_Pago.getById(DB.DInt(item["Id_formapago"].ToString())),
+                Id_formapago = DB.DInt(item["id_formapago"].ToString()),
                 Porcentaje = DB.DFloat(item["Porcentaje"].ToString())
             };
             return mi;

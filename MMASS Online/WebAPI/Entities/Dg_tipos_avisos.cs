@@ -19,21 +19,31 @@ namespace WebApi.Entities
         
         public static Dg_tipos_avisos getById(int Id)
         {
-            string sqlCommand = "Select * FROM categorias where (tipomedio = 0 or tipomedio = 2) and Id_categoria = " + Id.ToString();
+            string sqlCommand = "";
+            int BD = int.Parse(Dg_parametro.getById(1).Valor);
+            if (BD == 3)
+            {
+                sqlCommand = "Select id_categoria, desc_categoria FROM categorias where id_categoria = " + Id.ToString();
+            }
+            else
+            {
+                sqlCommand = "Select * FROM categorias where (tipomedio = 0 or tipomedio = 2) and id_categoria = " + Id.ToString();
+            }
+
             Dg_tipos_avisos resultado;
             resultado = new Dg_tipos_avisos();
             DataTable t = DB.Select(sqlCommand);
 
             if (t.Rows.Count ==1)
             {
-                resultado.Id_categoria = int.Parse(t.Rows[0]["Id_categoria"].ToString());
+                resultado.Id_categoria = int.Parse(t.Rows[0]["id_categoria"].ToString());
                 resultado.Descripcion = t.Rows[0]["desc_categoria"].ToString();
                 resultado.Permite_envio_ads = (t.Rows[0]["Permite_envio_ads"].ToString() == "1");
-                if (t.Rows[0]["tipo_aviso_ads"].ToString() != "")
+                if (BD != 3 && t.Rows[0]["tipo_aviso_ads"].ToString() != "")
                 {
                     resultado.Tipo_aviso_ads = int.Parse(t.Rows[0]["tipo_aviso_ads"].ToString());
                 }
-                resultado.Es_borrado = (t.Rows[0]["Es_borrado"].ToString() == "1");
+                resultado.Es_borrado = (t.Rows[0]["es_borrado"].ToString() == "1");
             }
             return resultado;
         }
@@ -95,16 +105,47 @@ namespace WebApi.Entities
                 mi.Tipo_aviso_ads = int.Parse(item["tipo_aviso_ads"].ToString());
             return mi;
         }
+
+        public static Dg_tipos_avisos getDg_tipos_avisos2(DataRow item)
+        {
+            Dg_tipos_avisos mi = new Dg_tipos_avisos
+            {
+                Id_categoria = int.Parse(item["Id_categoria"].ToString()),
+                Descripcion = item["desc_categoria"].ToString(),
+                Permite_envio_ads = (item["Permite_envio_ads"].ToString() == "1"),
+                Es_borrado = (item["Es_borrado"].ToString() == "1")
+            };
+
+            return mi;
+        }
         public static List<Dg_tipos_avisos> getAll()
         {
-            string sql = "Select id_categoria, desc_categoria, Permite_envio_ads, tipo_aviso_ads, Es_borrado FROM categorias where (tipomedio = 0 or tipomedio = 2) and (Es_borrado = 0 or Es_borrado is null) ";
+            string sql = "";
+            int BD = int.Parse(Dg_parametro.getById(1).Valor);
+            if (BD == 3)
+            {
+                sql = "Select id_categoria, desc_categoria, Permite_envio_ads, Es_borrado FROM categorias where (Es_borrado = 0 or Es_borrado is null) ";
+            }
+            else
+            {
+                sql = "Select id_categoria, desc_categoria, Permite_envio_ads, tipo_aviso_ads, Es_borrado FROM categorias where (tipomedio = 0 or tipomedio = 2) and (Es_borrado = 0 or Es_borrado is null) ";
+            }
+
             List<Dg_tipos_avisos> col = new List<Dg_tipos_avisos>();
             Dg_tipos_avisos elem;
             DataTable t = DB.Select(sql);
 
             foreach (DataRow item in t.Rows)
             {
-                elem = getDg_tipos_avisos(item);
+                if (BD == 3)
+                {
+                    elem = getDg_tipos_avisos2(item);
+                }
+                else
+                {
+                    elem = getDg_tipos_avisos(item);
+                }
+
                 col.Add(elem);
             }
             return col;

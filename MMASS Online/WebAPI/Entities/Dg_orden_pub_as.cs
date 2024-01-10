@@ -339,9 +339,9 @@ namespace WebApi.Entities
                 // Grabo detalle de Medios
                 sql = "insert into dg_orden_pub_medios (id_op_dg, id_detalle, id_medio, porcentaje)" +
                       " values (@id_op_dg, @id_detalle, @id_medio, @porcentaje)";
-                int count = Medios.Count();
-                float porc = ((float)100.00 / (float)count);
-                porc = (float)Math.Round(porc,2);
+                //int count = Medios.Count();
+                //float porc = ((float)100.00 / (float)count);
+                //porc = (float)Math.Round(porc,2);
 
                 foreach (Dg_orden_pub_medios elem in Medios)
                 {                   
