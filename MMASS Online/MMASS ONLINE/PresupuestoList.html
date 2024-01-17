@@ -174,9 +174,9 @@
                     <div class="col-md-3">
                         <label>Número de Presupuesto</label>
                         <div id="PresupuestoNumberComplete" class="row">
-                            <div class="col-md-4 "> <div class="input-group"> <input type="text" id="inpPresupYear" class="form-control enterSearch"></div> </div>
-                            <div class="col-md-4 "> <div class="input-group"> <input type="text" id="inpPresupMonth" class="form-control enterSearch"> </div> </div>
-                            <div class="col-md-4 "> <div class="input-group"> <input type="text" id="inpPresupNumber" class="form-control enterSearch"> </div> </div>
+                            <div class="col-md-4 "> <div class="input-group"> <input type="number" id="inpPresupYear" class="form-control enterSearch"></div> </div>
+                            <div class="col-md-4 "> <div class="input-group"> <input type="number" id="inpPresupMonth" class="form-control enterSearch"> </div> </div>
+                            <div class="col-md-4 "> <div class="input-group"> <input type="number" id="inpPresupNumber" class="form-control enterSearch"> </div> </div>
                         </div>
                         <label style="padding-top: 8px;">Agencia</label>
                         <div class="row align-items-center">
@@ -439,18 +439,21 @@
             };
 
             var parametros = setListaParametros(params);
-            if (error == '') {
-                callWS("orden_presup_aps", "filter", JSON.stringify(parametros), function (data) {
-                    if (data.length > 0) {
-                        populateTable(data, 'TableRenglones');
-                    } else {
-                        populateTable(data, 'TableRenglones');
-                        message = 'La búsqueda no produjo ningun resultado';
-                        showMessage(message, "info");
-                    }
-                });
-            } else {
-                showMessage(error, "info");
+
+            if (validarFechas()) {
+                if (error == '') {
+                    callWS("orden_presup_aps", "filter", JSON.stringify(parametros), function (data) {
+                        if (data.length > 0) {
+                            populateTable(data, 'TableRenglones');
+                        } else {
+                            populateTable(data, 'TableRenglones');
+                            message = 'La búsqueda no produjo ningun resultado';
+                            showMessage(message, "info");
+                        }
+                    });
+                } else {
+                    showMessage(error, "info");
+                }
             }
         }
 
@@ -490,6 +493,19 @@
 
         function formatearMonto(x) {
             return Number.parseFloat(x).toFixed(2);
+        }
+
+
+        function validarFechas() {
+            var f1 = new Date(dateToSqlFormat($('#fechaDesde').val()));
+            var f2 = new Date(dateToSqlFormat($('#fechaHasta').val()));
+
+            if (f2 < f1) {
+                showMessage("La Fecha Hasta es menor que la Fecha Desde en la Vigencia", "info");
+                return false;
+            }
+
+            return true;
         }
 
     </script>

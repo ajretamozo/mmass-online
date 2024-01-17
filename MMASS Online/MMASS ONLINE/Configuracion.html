@@ -204,7 +204,7 @@
                             <div class="col-lg-4">
                                 <label for="pass"> Contraseña</label>
                                 <div class="input-group" id="show_hide_password">
-                                    <input class="form-control readonlyOnView" type="password" autocomplete="new-password" id="pass">
+                                    <input class="form-control readonlyOnView" type="password" autocomplete="new-password" id="pass" placeholder="Contraseña">
                                     <div class="input-group-text">
                                         <a href="" title="Mostrar contraseña"><i class="fa fa-eye-slash" aria-hidden="true"></i></a>
                                     </div>
@@ -294,7 +294,7 @@
             <!--Configuracion DATA-->
             <p class="dataTitle">CONFIGURACION</p>
             <div id="divRedesData d-flex align-items-around align-items-end">
-                <div class="row py-1" style="height: 50px;">
+                <div class="row py-1 ocultar" style="height: 50px;">
                     <div class="col-md-6">
                         <label>Desbloqueo de Ordenes</label>
                     </div>
@@ -304,7 +304,7 @@
                         </button>
                     </div>
                 </div>
-                <div id="divMultimoneda">
+                <div id="divMultimoneda" class="ocultar">
                     <div class="row py-1">
                         <div class="col-md-6">
                             <label>Multimoneda</label>
@@ -317,7 +317,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="row py-1">
+                <div class="row py-1 ocultar">
                     <div class="col-md-6">
                         <label>OP lista para facturar por defecto</label>
                     </div>
@@ -328,7 +328,7 @@
                         </label>
                     </div>
                 </div>
-                <div class="row py-1">
+                <div class="row py-1 ocultar">
                     <div class="col-md-6">
                         <label>Sincronización automática con AdServer</label>
                     </div>
@@ -339,7 +339,7 @@
                         </label>
                     </div>
                 </div>
-                <div id="rowSincDet">
+                <div id="rowSincDet" class="ocultar">
                     <div class="row py-1">
                         <div class="col-md-6">
                         </div>
@@ -365,7 +365,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="row py-1">
+                <div class="row py-1 ocultar">
                     <div class="col-md-6">
                         <label>Notificaciones por Mail</label>
                     </div>
@@ -376,7 +376,7 @@
                         </label>
                     </div>
                 </div>
-                <div id="rowNotDet">
+                <div id="rowNotDet" class="ocultar">
                     <div class="row py-1">
                         <div class="col-md-6">
                         </div>
@@ -401,7 +401,7 @@
                             <label for="checkArc">Archivado de Línea de Pedido</label>
                         </div>
                     </div>
-                    <div class="row py-1">
+                    <div class="row py-1 ocultar">
                         <div class="col-md-6">
                         </div>
                         <div class="col-md-3">
@@ -412,6 +412,52 @@
                         <div class="col-md-3" style="padding-left: 0px;">
                             <button type="button" class="btn btn-dark btn-sm mx-1" onclick="destMail()" style="height: 34px;">
                                 <span class="fa fa-envelope-open"></span> Destinatarios
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row py-1">
+                    <div class="col-md-6">
+                        <label>Notificaciones por Mail</label>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="switch">
+                            <input type="checkbox" id="checkActivarMailP" onclick="activarMailP()">
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                </div>
+                <div id="rowNotDetP">
+                    <div class="row py-1">
+                        <div class="col-md-6">
+                        </div>
+                        <div class="col-md-6">
+                            <input type="checkbox" id="checkCreP" style="margin-bottom: .8rem; margin-right: .2rem" onclick="activarMailDP()">
+                            <label for="checkCreP">Creación de Presupuesto</label>
+                        </div>
+                    </div>
+                    <div class="row py-1">
+                        <div class="col-md-6">
+                        </div>
+                        <div class="col-md-6">
+                            <input type="checkbox" id="checkModP" style="margin-bottom: .8rem; margin-right: .2rem" onclick="activarMailDP()">
+                            <label for="checkModP">Modificación Presupuesto</label>
+                        </div>
+                    </div>
+                    <!--<div class="row py-1">
+                        <div class="col-md-6">
+                        </div>
+                        <div class="col-md-6">
+                            <input type="checkbox" id="checkArcP" style="margin-bottom: .8rem; margin-right: .2rem" onclick="activarMailDP()">
+                            <label for="checkArcP">Archivado de Línea de Pedido</label>
+                        </div>
+                    </div>-->
+                    <div class="row py-1">
+                        <div class="col-md-6">
+                        </div>
+                        <div class="col-md-3">
+                            <button type="button" class="btn btn-dark btn-sm mx-1" onclick="configCuentaMail()" style="height: 34px;">
+                                <span class="fa fa-envelope"></span> Configurar cuenta
                             </button>
                         </div>
                     </div>
@@ -442,6 +488,17 @@
             else {
                 $("#divMultimoneda").hide();
             }
+
+            //ocultar configuraciones para presupuestador
+            callWS("medios", "getParamById", JSON.stringify(1), function (bd) {
+                if (bd.valor == 3) {
+                    $('.ocultar').attr('hidden', 'hidden');
+                    callWS("medios", "getParamById", JSON.stringify(7), function (parMail) { iniActMailP(parMail, "checkActivarMailP"); });
+                }
+                //else {
+                //    $('#navbardropPresup').attr('hidden', 'hidden');
+                //}
+            });
         });
 
         function iniCheckParametros(param, check) {
@@ -643,6 +700,101 @@
                     $("#checkArc").change();
                 break;
             }         
+        }
+
+        function iniActMailP(param, check) {
+            var valor = param.valor;
+            switch (valor) {
+                case '0':
+                    $("#" + check)[0].checked = false;
+                    $("#" + check).change();
+                    $("#rowNotDetP").hide();
+
+                    $("#checkCreP")[0].checked = false;
+                    $("#checkCreP").change();
+                    $("#checkModP")[0].checked = false;
+                    $("#checkModP").change();
+                    //$("#checkArc")[0].checked = false;
+                    //$("#checkArc").change();
+                    break;
+                case '1':
+                    $("#" + check)[0].checked = true;
+                    $("#" + check).change();
+
+                    $("#checkCreP")[0].checked = true;
+                    $("#checkCreP").change();
+                    $("#checkModP")[0].checked = true;
+                    $("#checkModP").change();
+                    //$("#checkArc")[0].checked = true;
+                    //$("#checkArc").change();
+                    break;
+                case '2':
+                    $("#" + check)[0].checked = true;
+                    $("#" + check).change();
+
+                    $("#checkCreP")[0].checked = true;
+                    $("#checkCreP").change();
+                    $("#checkModP")[0].checked = false;
+                    $("#checkModP").change();
+                    //$("#checkArc")[0].checked = false;
+                    //$("#checkArc").change();
+                    break;
+                case '3':
+                    $("#" + check)[0].checked = true;
+                    $("#" + check).change();
+
+                    $("#checkCreP")[0].checked = false;
+                    $("#checkCreP").change();
+                    $("#checkModP")[0].checked = true;
+                    $("#checkModP").change();
+                    //$("#checkArc")[0].checked = false;
+                    //$("#checkArc").change();
+                    break;
+                //case '4':
+                //    $("#" + check)[0].checked = true;
+                //    $("#" + check).change();
+
+                //    $("#checkCre")[0].checked = false;
+                //    $("#checkCre").change();
+                //    $("#checkMod")[0].checked = false;
+                //    $("#checkMod").change();
+                //    $("#checkArc")[0].checked = true;
+                //    $("#checkArc").change();
+                //    break;
+                case '5':
+                    $("#" + check)[0].checked = true;
+                    $("#" + check).change();
+
+                    $("#checkCreP")[0].checked = true;
+                    $("#checkCreP").change();
+                    $("#checkModP")[0].checked = true;
+                    $("#checkModP").change();
+                    //$("#checkArc")[0].checked = false;
+                    //$("#checkArc").change();
+                    break;
+                //case '6':
+                //    $("#" + check)[0].checked = true;
+                //    $("#" + check).change();
+
+                //    $("#checkCre")[0].checked = true;
+                //    $("#checkCre").change();
+                //    $("#checkMod")[0].checked = false;
+                //    $("#checkMod").change();
+                //    $("#checkArc")[0].checked = true;
+                //    $("#checkArc").change();
+                //    break;
+                //case '7':
+                //    $("#" + check)[0].checked = true;
+                //    $("#" + check).change();
+
+                //    $("#checkCre")[0].checked = false;
+                //    $("#checkCre").change();
+                //    $("#checkMod")[0].checked = true;
+                //    $("#checkMod").change();
+                //    $("#checkArc")[0].checked = true;
+                //    $("#checkArc").change();
+                //    break;
+            }
         }
 
         function desbloquearOP() {
@@ -1069,6 +1221,97 @@
                 }
             });
         });
+
+        function activarMailP() {
+            param = {};
+            param.id_parametro = 7;
+            param.valor = 0;
+            if (document.getElementById("checkActivarMailP").checked == true) {
+                param.valor = 1;
+                //se muestra el detalle de notificaciones
+                $("#checkCreP")[0].checked = true;
+                $("#checkCreP").change();
+                $("#checkModP")[0].checked = true;
+                $("#checkModP").change();
+                //$("#checkArc")[0].checked = true;
+                //$("#checkArc").change();
+
+                $("#rowNotDetP").show();
+            }
+            else {
+                //se oculta el detalle de notificaciones
+                $("#rowNotDetP").hide();
+
+                $("#checkCreP")[0].checked = false;
+                $("#checkCreP").change();
+                $("#checkModP")[0].checked = false;
+                $("#checkModP").change();
+                //$("#checkArc")[0].checked = false;
+                //$("#checkArc").change();
+            }
+            callWS("medios", "cambiarParam", JSON.stringify(param), function (data) { onActivarMail(data, param); });
+        }
+
+        function onActivarMailP(resultado, param) {
+            if (resultado == true) {
+                if (param.valor == 0) {
+                    showMessage("Notificaciones por mail Desactivadas", "info");
+                }
+                else {
+                    showMessage("Notificaciones por mail Activadas", "info");
+                }
+            }
+            else {
+                if (param.valor == 0) {
+                    showMessage("Ocurrió un error al intentar desactivar las notificaciones", "error");
+                }
+                else {
+                    showMessage("Ocurrió un error al intentar activar las notificaciones", "error");
+                }
+            }
+        }
+
+        function activarMailDP() {
+            param = {};
+            param.id_parametro = 7;
+            param.valor;
+            //envía todas
+            if (document.getElementById("checkCreP").checked == true && document.getElementById("checkModP").checked == true) {
+                param.valor = 1;
+            }
+            //envía creacion
+            else if (document.getElementById("checkCreP").checked == true && document.getElementById("checkModP").checked == false) {
+                param.valor = 2;
+            }
+            //envía modificacion
+            else if (document.getElementById("checkCreP").checked == false && document.getElementById("checkModP").checked == true) {
+                param.valor = 3;
+            }
+            //envía archivado
+            //else if (document.getElementById("checkCreP").checked == false && document.getElementById("checkModP").checked == false) {
+            //    param.valor = 4;
+            //}
+            //envía creacion y modificacion
+            else if (document.getElementById("checkCreP").checked == true && document.getElementById("checkModP").checked == true) {
+                param.valor = 5;
+            }
+            //envía creacion y archivado
+            //else if (document.getElementById("checkCreP").checked == true && document.getElementById("checkModP").checked == false) {
+            //    param.valor = 6;
+            //}
+            //envía modificacion y archivado
+            //else if (document.getElementById("checkCreP").checked == false && document.getElementById("checkModP").checked == true) {
+            //    param.valor = 7;
+            //}
+            //no envía
+            else {
+                param.valor = 0;
+                $("#checkActivarMailP")[0].checked = false;
+                $("#checkActivarMailP").change();
+                $("#rowNotDetP").hide();
+            }
+            callWS("medios", "cambiarParam", JSON.stringify(param));
+        }
 
     </script>
     <footer>

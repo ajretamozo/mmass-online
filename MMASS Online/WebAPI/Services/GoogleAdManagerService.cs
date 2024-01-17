@@ -1573,11 +1573,15 @@ namespace WebApi.Services
         public Mail getMailCta()
         {
             Mail mail = Mail.getMailCta();
-            if (mail.Pass == null)
+            //if (mail.Pass == null)
+            //{
+            //    mail.Pass = "4toQaorWHkvy2xqYBmLyBA==";
+            //}
+            //mail.Pass = UserService.Desencriptar(mail.Pass, "silverblue");
+            if (mail.Pass != null)
             {
-                mail.Pass = "4toQaorWHkvy2xqYBmLyBA==";
+                mail.Pass = UserService.Desencriptar(mail.Pass, "silverblue");
             }
-            mail.Pass = UserService.Desencriptar(mail.Pass, "silverblue");
 
             return mail;
         }
@@ -1768,6 +1772,27 @@ namespace WebApi.Services
             orden.Detalles.Add(detalle);
 
             return orden;
+        }
+
+        public long notificacionCrearPresup(string linkPresup)
+        {
+            int result = 0;
+
+            int paramEnviarMail = int.Parse(Dg_parametro.getById(7).Valor);
+            if (paramEnviarMail == 1 || paramEnviarMail == 2 || paramEnviarMail == 5)
+            {
+                string asunto = "MMASS Online - Presupuesto";
+                string msj = @"Se requiere acción por parte del usuario.<br>
+                                Ingrese al siguiente link para Aprobar o Rechazar el presupuesto: <br>" +
+                                linkPresup + "< br >" +
+                                "--------------------------------------------------------------------" +
+                                "---------------------------------------------------------------<br>" +
+                                "<font size=1>No responder este mensaje</font><br>" +
+                                "<H5>Sistema de Notificaciones MMASS Online</H5>";
+                enviarMail(asunto, msj);
+            }
+
+            return result;
         }
 
     }

@@ -196,7 +196,7 @@ namespace WebApi.Entities
             "tipo_tarifa, imp_tarifa, importe_unitario, cantidad, monto_bruto, porc_dto,monto_neto, netomanual," +
             "porcconfnc, porcconffc, impconffc, impconfnc, porc_dto1, imp_dto1, id_mtvo_dto1, tipo_dto1, porc_dto2, imp_dto2, id_mtvo_dto2, tipo_dto2," +
             "porc_dto3, imp_dto3, id_mtvo_dto3, tipo_dto3, porc_dto4, imp_dto4, id_mtvo_dto4, tipo_dto4, porc_dto5, imp_dto5, id_mtvo_dto5, tipo_dto5, id_google_ad_manager, id_pedido_google_ad_manager, nombre_pedido_google_ad_manager, ron, id_area, id_det_conv, id_red) " +
-            " values (@id_op_dg, @id_detalle, @anio, @mes, @nro_orden, @fecha_desde, @fecha_hasta," +
+            "values (@id_op_dg, @id_detalle, @anio, @mes, @nro_orden, @fecha_desde, @fecha_hasta," +
             "@id_producto, @descripcion,";
             if (!progisnull)
             {

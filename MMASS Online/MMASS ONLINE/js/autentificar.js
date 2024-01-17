@@ -157,9 +157,11 @@ function setOcultarModulos() {
     callWS("medios", "getParamById", JSON.stringify(1), function (bd) {
         if (bd.valor == 3) {
             $('.ocultar').attr('hidden', 'hidden');
+            $("#navBarLogo").attr("href", "/PresupuestoList.html");
         }
         else {
             $('#navbardropPresup').attr('hidden', 'hidden');
+            $("#navBarLogo").attr("href", "/Home.html");
         }
     });
 }

@@ -30,7 +30,16 @@ namespace WebApi.Entities
 
         public static Mail getMailCta()
         {
-            string sqlCommand = " SELECT * FROM dg_msgcta";
+            string sqlCommand = "";
+            int BD = int.Parse(Dg_parametro.getById(1).Valor);
+            if (BD == 3)
+            {
+                sqlCommand = " SELECT * FROM msgcta";
+            }
+            else
+            {
+                sqlCommand = " SELECT * FROM dg_msgcta";
+            }
 
             Mail resultado = new Mail(); ;
             DataTable t = DB.Select(sqlCommand);
@@ -48,16 +57,34 @@ namespace WebApi.Entities
 
             string sql = "";
 
-            if (IdMail == 0)
+            int BD = int.Parse(Dg_parametro.getById(1).Valor);
+            if (BD == 3)
             {
-                sql = @"INSERT INTO dg_msgcta (descmsgcta, msgserver, msguser, msgpass, msgport, msgauth, msgfromname, msgfromaddr,
+                if (IdMail == 0)
+                {
+                    sql = @"INSERT INTO msgcta (descmsgcta, msgserver, msguser, msgpass, msgport, msgauth, msgfromname, msgfromaddr,
                         msgempresa, msggeneral, msgcertifica, msgfactura, borrado, msgportPOP3, msghostPOP3) 
                         VALUES ('Alerta MMASS Online', @servidor, 'mmassOnline', @pass, @puerto, 'atLogin', 'MMASS Online',
                         @dirmail, 0, 0, 0, 0, 0, 0, '')";
+                }
+                else
+                {
+                    sql = "UPDATE msgcta SET msgserver = @servidor, msgpass = @pass, msgport = @puerto, msgfromaddr = @dirmail WHERE idmsgcta = @idMail";
+                }
             }
             else
             {
-                sql = "UPDATE dg_msgcta SET msgserver = @servidor, msgpass = @pass, msgport = @puerto, msgfromaddr = @dirmail WHERE idmsgcta = @idMail";
+                if (IdMail == 0)
+                {
+                    sql = @"INSERT INTO dg_msgcta (descmsgcta, msgserver, msguser, msgpass, msgport, msgauth, msgfromname, msgfromaddr,
+                        msgempresa, msggeneral, msgcertifica, msgfactura, borrado, msgportPOP3, msghostPOP3) 
+                        VALUES ('Alerta MMASS Online', @servidor, 'mmassOnline', @pass, @puerto, 'atLogin', 'MMASS Online',
+                        @dirmail, 0, 0, 0, 0, 0, 0, '')";
+                }
+                else
+                {
+                    sql = "UPDATE dg_msgcta SET msgserver = @servidor, msgpass = @pass, msgport = @puerto, msgfromaddr = @dirmail WHERE idmsgcta = @idMail";
+                }
             }
 
             List<SqlParameter> parametros = new List<SqlParameter>()

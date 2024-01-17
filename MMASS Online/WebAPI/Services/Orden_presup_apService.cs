@@ -9,6 +9,10 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using WebApi.Entities;
 using WebApi.Helpers;
+using System.Net.Mail;
+using System.Net.Security;
+using System.Net;
+using System.Security.Cryptography.X509Certificates;
 
 namespace WebApi.Services
 {
@@ -61,6 +65,20 @@ namespace WebApi.Services
                 {
                     ret.result = 1;
                     ret.message = "El Presupuesto Nro: " + ret.op.Anio + "-" + ret.op.Mes + "-" + ret.op.Nro_presup + " se generó con éxito";
+
+                    int paramEnviarMail = int.Parse(Dg_parametro.getById(7).Valor);
+                    if (paramEnviarMail == 1 || paramEnviarMail == 2 || paramEnviarMail == 5)
+                    {
+                        string asunto = "MMASS Online - Presupuesto";
+                        string msj = @"Se requiere acción por parte del usuario.<br>
+                                Ingrese al siguiente link para Aprobar o Rechazar el presupuesto: <br>" +
+                                        ret.op.LinkPresup + "< br >" +
+                                        "--------------------------------------------------------------------" +
+                                        "---------------------------------------------------------------<br>" +
+                                        "<font size=1>No responder este mensaje</font><br>" +
+                                        "<H5>Sistema de Notificaciones MMASS Online</H5>";
+                        enviarMail(asunto, msj);
+                    }
                 }
                 else
                 {
@@ -103,6 +121,44 @@ namespace WebApi.Services
         public void grabarLog(List<Parametro> datosLog)
         {
             Orden_presup_ap.grabarLog(datosLog);
+        }
+
+        public Mail getMailCta()
+        {
+            Mail mail = Mail.getMailCta();
+
+            if (mail.Pass != null)
+            {
+                mail.Pass = UserService.Desencriptar(mail.Pass, "silverblue");
+            }
+
+            return mail;
+        }
+
+        public void enviarMail(string asunto, string mensaje)
+        {
+            Mail mail = getMailCta();
+            List<Usuario> listaMails = Usuario.getListaAlertas();
+            MailMessage correo = new MailMessage();
+
+            correo.From = new MailAddress(mail.DirMail, mail.Nombre, Encoding.UTF8);//Correo de salida
+            foreach (Usuario u in listaMails)
+            {
+                correo.To.Add(u.Email); //Correo destino
+            }
+            correo.Subject = asunto; //Asunto
+            correo.Body = mensaje; //Mensaje del correo
+            correo.IsBodyHtml = true;
+            correo.Priority = MailPriority.Normal;
+            SmtpClient smtp = new SmtpClient();
+            smtp.UseDefaultCredentials = false;
+            smtp.Host = mail.Servidor; //Host del servidor de correo 
+            smtp.Port = int.Parse(mail.Puerto); //Puerto de salida
+            smtp.Credentials = new NetworkCredential(mail.DirMail, mail.Pass); //Cuenta de correo
+            ServicePointManager.ServerCertificateValidationCallback = delegate (object s, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors) { return true; };
+            smtp.EnableSsl = false;//True si el servidor de correo permite ssl
+
+            smtp.Send(correo);
         }
 
     }

@@ -44,6 +44,7 @@ namespace WebApi.Entities
         public List<Orden_presup_as> Detalles;
         public List<Orden_presup_pagos> FormasPago;
         public string UsuarioSesion { get; set; } // Variable usada para enviar el usuario en los mails de alerta
+        public string LinkPresup { get; set; } // Variable usada para enviar el link en los mails de alerta
         public string SimboloMoneda { get; set; }
         public Usuario usuario { get; set; }
 
@@ -286,8 +287,8 @@ namespace WebApi.Entities
             if (t.Rows.Count == 1)
             {
                 proximo = int.Parse(t.Rows[0]["ultimo"].ToString()) + 1;
-                if (proximo == 1)
-                    proximo = 5001;
+                //if (proximo == 1)
+                //    proximo = 5001;
             }
             return proximo;
         }
@@ -306,10 +307,10 @@ namespace WebApi.Entities
                 {
 
                     sql = "insert into orden_presup_ap (id_presup, anio, mes, nro_presup, fecha_alta, id_estado, id_moneda, cambio, fecha, fecha_expiracion, " +
-                            " descripcion, id_concepto_negocio, id_agencia, id_anunciante, id_producto, facturar_a, id_condpagoap, id_ejecutivo " +
+                            " descripcion, id_concepto_negocio, id_agencia, id_anunciante, id_producto, facturar_a, id_condpagoap, id_ejecutivo, " +
                             " monto_bruto, porc_dto, primer_neto, imp_conf_nc, imp_conf_fc, seg_neto, id_usuario, id_facturar)" +
                             " values (@id_presup, @anio, @mes, @nro_presup, @fecha_alta, @id_estado, @id_moneda, @cambio, @fecha, @fecha_expiracion, " +
-                            " @descripcion, @id_concepto_negocio, @id_agencia, @id_anunciante, @id_producto, @facturar_a, @id_condpagoap, @id_ejecutivo " +
+                            " @descripcion, @id_concepto_negocio, @id_agencia, @id_anunciante, @id_producto, @facturar_a, @id_condpagoap, @id_ejecutivo, " +
                             " @monto_bruto, @porc_dto, @primer_neto, @imp_conf_nc, @imp_conf_fc, @seg_neto, @id_usuario, @id_facturar)";
 
                     Fecha_alta = DateTime.Now;

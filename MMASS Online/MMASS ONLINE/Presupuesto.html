@@ -492,7 +492,7 @@
                                 </div>
                                 <div class="col-lg-3" style="padding-right: 0px;">
                                     <label>Moneda</label>
-                                    <select class="form-control" id="selMoneda" onfocus="this.oldvalue = this.value" onchange="prevMonedaSelected(this); this.oldvalue = this.value;"></select>
+                                    <select class="form-control" id="selMoneda" onfocus="this.oldvalue = this.value" onchange="cambiarMoneda(this); this.oldvalue = this.value;"></select>
                                 </div>
                                 <div class="col-lg-1" style="padding-top: 4px;">
                                     <label for="bCambioMoneda" class="invisible">Cambios</label>
@@ -572,7 +572,7 @@
                             <div class="col-lg-6" style="padding-right: 20px;">
                                 <div class="row" style="padding-left: 15px; padding-right: 15px;">
                                     <label>Facturar a</label>
-                                    <select class="form-control" id="selFacturar" onchange="onFacturarSelected()">
+                                    <select class="form-control" id="selFacturar">
                                         <option value="0" checked>Agencia</option>
                                         <option value="1">Anunciante</option>
                                         <option value="2">No facturar</option>
@@ -910,7 +910,9 @@
 
         function onTarifaDSelected() {
             if (!$("#checkTarifaManualD").is(":checked")) {
-                $('#precioUnitarioD').val($('#selTarifaD').children("option:selected").attr("precio_unitario"));
+                var imp_tarifa = $('#selTarifaD').children("option:selected").attr("precio_unitario");
+                var cambio = $('#selTarifaD').children("option:selected").attr("cambio");
+                $('#precioUnitarioD').val(imp_tarifa / cambio);
                 calcularNetoD();
             }
 
@@ -1248,7 +1250,7 @@
             data.formaspago = selectToJson('selFPago', 'id_formapago');
 
             if (cantFPago >= 2) {
-                data.formaspago.forEach(fPago => fPago.porcentaje = $('#inpRonRow_' + fPago.forma_pago.id_formapago).val()
+                data.formaspago.forEach(fPago => fPago.porcentaje = $('#inpRonRow_' + fPago.id_formapago).val()
                 );
             } else if (cantFPago == 1) {
                 data.formaspago[0].porcentaje = 100;
@@ -1261,6 +1263,8 @@
 
             data.Id_moneda = $("#selMoneda").val();
             data.Cambio = $('#selMoneda>option:selected').attr("cambio");
+
+            data.LinkPresup = "";
 
             callWS("orden_presup_aps", "save", JSON.stringify(data), function (resultado) { onSavePresup(resultado, data); });
         }
@@ -1380,6 +1384,29 @@
                     $("#inpFechaAlta").val(today);
                 }
 
+                switch (data.op.id_estado) {
+                    case 1:
+                        $("#inpEstado").val("En Proceso");
+                        $("#inpEstado").css("color", "#ffffe1");
+                        break;
+                    case 2:
+                        $("#inpEstado").val("Pendiente");
+                        $("#inpEstado").css("color", "#05baa4");
+                        break;
+                    case 3:
+                        $("#inpEstado").val("Rechazado");
+                        $("#inpEstado").css("color", "#ff5353");
+                        break;
+                    case 4:
+                        $("#inpEstado").val("Aprobado");
+                        $("#inpEstado").css("color", "#c0dcc0");
+                        break;
+                    case 5:
+                        $("#inpEstado").val("Vinculado");
+                        $("#inpEstado").css("color", "#cff2fe");
+                        break;
+                }        
+
                 //bloquearOp(data.op.id_op_dg);
 
                 Detalles = data.op.detalles;
@@ -1479,13 +1506,11 @@
             var pObj = data;
             var listitems = '';
             $.each(pObj, function (it, iObj) {
-                listitems += '<option forma_uso_desc=' + iObj['forma_uso']['desc_tarifa'] + ' forma_uso_id=' + iObj['forma_uso']['id_tarifa'] + ' precio_unitario= ' + iObj['importe_tarifa'] + ' value=' + iObj[colId] + '>' + iObj[colDesc] + '</option>';
+                listitems += '<option forma_uso_desc=' + iObj['forma_uso']['desc_tarifa'] + ' forma_uso_id=' + iObj['forma_uso']['id_tarifa'] + ' precio_unitario= ' + iObj['importe_tarifa'] + ' cambio= ' + iObj['cambio'] + ' hs_desde= ' + iObj['hs_desde'] + ' hs_hasta= ' + iObj['hs_hasta'] + ' value=' + iObj[colId] + '>' + iObj[colDesc] + '</option>';
             });
             $("#" + idSelect).empty();
-            //$("#" + idSelect).append("<option value=''></option>");
             $("#" + idSelect).append(listitems);
             $("#" + idSelect).val([]);
-            //$("#" + idSelect).change();
         }
 
 
@@ -1493,7 +1518,7 @@
             var pObj = data;
             var listitems = '';
             $.each(pObj, function (it, iObj) {
-                listitems += '<option forma_uso_desc=' + iObj['forma_uso']['desc_tarifa'] + ' forma_uso_id=' + iObj['forma_uso']['id_tarifa'] + ' precio_unitario= ' + iObj['importe_tarifa'] + ' value=' + iObj[colId] + '>' + iObj[colDesc] + '</option>';
+                listitems += '<option forma_uso_desc=' + iObj['forma_uso']['desc_tarifa'] + ' forma_uso_id=' + iObj['forma_uso']['id_tarifa'] + ' precio_unitario= ' + iObj['importe_tarifa'] + ' cambio= ' + iObj['cambio'] + ' hs_desde= ' + iObj['hs_desde'] + ' hs_hasta= ' + iObj['hs_hasta'] + ' value=' + iObj[colId] + '>' + iObj[colDesc] + '</option>';
             });
             $("#" + idSelect).empty();
             $("#" + idSelect).append(listitems);
@@ -1501,7 +1526,6 @@
 
             $.when($("#selTarifaD option[value=" + rDetalle.id_tarifa + "]").attr("selected", "selected")).then(
                 filterPorTarifa(rDetalle)
-                //$("#selTarifaD").change()
             )
         }
 
@@ -1707,12 +1731,12 @@
                 listaParametros.push(objParametro);
             }
 
-            if ($('#selMoneda').val() != null) {
-                objParametro = {};
-                objParametro.ParameterName = "id_moneda";
-                objParametro.Value = $("#selMoneda").val();
-                listaParametros.push(objParametro);
-            }
+            //if ($('#selMoneda').val() != null) {
+            //    objParametro = {};
+            //    objParametro.ParameterName = "id_moneda";
+            //    objParametro.Value = $("#selMoneda").val();
+            //    listaParametros.push(objParametro);
+            //}
 
             objParametro = {};
             objParametro.ParameterName = "vigente";
@@ -1943,6 +1967,8 @@
                 rDetalle.imp_tarifa = parseFloat($('#precioUnitarioD').val());
             }
 
+            rDetalle.ambitoTar = $('#selAmbito').val();
+
             var error = validarDetalle(rDetalle);
 
             if (error.length == 0 && validarFechasD()) {
@@ -2005,20 +2031,36 @@
             if (rDetalle.formausotarifa == null) {
                 error.push("Forma de Uso");
             }
+
             if (isNaN(rDetalle.imp_tarifa)) {
                 error.push("Importe");
             }
+
             if (isNaN(rDetalle.cantidad)) {
                 error.push("Cantidad");
             }
+
             if (isNaN(rDetalle.monto_neto)) {
                 error.push("Monto Neto");
             }
+
             if (isNaN(rDetalle.monto_bruto)) {
                 error.push("Monto Bruto");
             }
+
             if (rDetalle.porc_dto > 100) {
                 error.push("Descuento (tope 100%)");
+            }
+
+            var HsDesdeTar = datetimeToTime($('#selTarifaD').children("option:selected").attr("hs_desde")) + ":00";
+            var HsDesdeDet = $("#rangoDesde").val() + ":00";
+            if (HsDesdeDet < HsDesdeTar) {
+                error.push("Horario Desde fuera de rango de la Tarifa");
+            }
+            var HsHastaTar = datetimeToTime($('#selTarifaD').children("option:selected").attr("hs_hasta")) + ":00";
+            var HsHastaDet = $("#rangoHasta").val() + ":00";
+            if (HsHastaDet > HsHastaTar) {
+                error.push("Horario Hasta fuera de rango de la Tarifa");
             }
 
             return error;
@@ -2805,32 +2847,60 @@
         }
 
 
-        function prevMonedaSelected(selMoneda) {
-            options = [
-                {
-                    optionDesc: "Continuar",
-                    optionFunc: "cambiarMoneda(" + selMoneda.oldvalue + "," + selMoneda.value  + ")"
-                },
-                {
-                    optionDesc: "Cancelar",
-                    optionFunc: "volverMonedaAnterior(" + selMoneda.oldvalue + ")"
-                }
-            ];
-            var mensaje = "<div class='d-flex justify-content-center'>Las Tarifas de todos los Detalles serán reseteadas</div>";
-            showModal(mensaje, options);
-        }
+        //function prevMonedaSelected(selMoneda) {
+        //    options = [
+        //        {
+        //            optionDesc: "Continuar",
+        //            optionFunc: "cambiarMoneda(" + selMoneda.oldvalue + "," + selMoneda.value  + ")"
+        //        },
+        //        {
+        //            optionDesc: "Cancelar",
+        //            optionFunc: "volverMonedaAnterior(" + selMoneda.oldvalue + ")"
+        //        }
+        //    ];
+        //    var mensaje = "<div class='d-flex justify-content-center'>Las Tarifas de todos los Detalles serán reseteadas</div>";
+        //    showModal(mensaje, options);
+        //}
 
 
-        function volverMonedaAnterior(valorAnterior) {
-            $('#selMoneda').val(valorAnterior);
-        }
+        //function volverMonedaAnterior(valorAnterior) {
+        //    $('#selMoneda').val(valorAnterior);
+        //}
 
 
-        function cambiarMoneda(valorAnterior, valorNuevo) {
+        //function cambiarMoneda(valorAnterior, valorNuevo) {
+        //    //buscar el cambio
+        //    var paramsCambio = {};
+        //    paramsCambio.idMonedaO = valorAnterior;
+        //    paramsCambio.idMonedaD = valorNuevo;
+
+        //    var parametrosCambio = setListaParametros(paramsCambio);
+
+        //    callWS("medios", "getCambioActual", JSON.stringify(parametrosCambio), function (data) { onMonedaSelected(data); });
+        //}
+
+
+        //function onMonedaSelected(cambio) {
+        //    $('#precioUnitarioD').val($('#precioUnitarioD').val() / cambio);
+        //    $('#totalD').val($('#totalD').val() / cambio);
+        //    $.when(
+        //        Detalles.forEach(function (detalle) {
+        //            detalle.id_tarifa = 0;
+        //            detalle.monto_neto = detalle.monto_neto / cambio;
+        //            detalle.monto_bruto = detalle.monto_bruto / cambio;
+        //            detalle.impconfnc = detalle.impconfnc / cambio;
+        //            detalle.impconffc = detalle.impconffc / cambio;
+        //            detalle.imp_tarifa = detalle.imp_tarifa / cambio;
+        //        })
+        //    ).then(function () { filterTarifas(); calculateTotals(); recargarRenglones(); });
+        //}
+
+
+        function cambiarMoneda(selMoneda) {
             //buscar el cambio
             var paramsCambio = {};
-            paramsCambio.idMonedaO = valorAnterior;
-            paramsCambio.idMonedaD = valorNuevo;
+            paramsCambio.idMonedaO = selMoneda.oldvalue;
+            paramsCambio.idMonedaD = selMoneda.value;
 
             var parametrosCambio = setListaParametros(paramsCambio);
 
@@ -2843,14 +2913,14 @@
             $('#totalD').val($('#totalD').val() / cambio);
             $.when(
                 Detalles.forEach(function (detalle) {
-                    detalle.id_tarifa = 0;
+                    //detalle.id_tarifa = 0;
                     detalle.monto_neto = detalle.monto_neto / cambio;
                     detalle.monto_bruto = detalle.monto_bruto / cambio;
                     detalle.impconfnc = detalle.impconfnc / cambio;
                     detalle.impconffc = detalle.impconffc / cambio;
                     detalle.imp_tarifa = detalle.imp_tarifa / cambio;
                 })
-            ).then(function () { filterTarifas(); calculateTotals(); recargarRenglones(); });
+            ).then(function () { calculateTotals(); recargarRenglones(); });
         }
 
 
