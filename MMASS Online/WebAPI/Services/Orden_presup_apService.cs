@@ -13,6 +13,8 @@ using System.Net.Mail;
 using System.Net.Security;
 using System.Net;
 using System.Security.Cryptography.X509Certificates;
+using System.Text.RegularExpressions;
+using Google.Api.Ads.AdManager.v202208;
 
 namespace WebApi.Services
 {
@@ -29,7 +31,8 @@ namespace WebApi.Services
         Orden_presup_ap getById(int id);
         IEnumerable<Orden_presup_ap> filter(List<Parametro> parametros);
         bool existePresupNombre(int id, string nom);
-        void grabarLog(List<Parametro> datosLog);
+        int armarMail(Orden_presup_ap miobj);
+        int updateEstado(Orden_presup_ap miobj);
         //bool bloquearOP(Dg_orden_pub_bloqueo opb);
         //bool desbloquearOP(Dg_orden_pub_bloqueo opb);
         //bool desbloquearTodas(int id);
@@ -69,15 +72,7 @@ namespace WebApi.Services
                     int paramEnviarMail = int.Parse(Dg_parametro.getById(7).Valor);
                     if (paramEnviarMail == 1 || paramEnviarMail == 2 || paramEnviarMail == 5)
                     {
-                        string asunto = "MMASS Online - Presupuesto";
-                        string msj = @"Se requiere acción por parte del usuario.<br>
-                                Ingrese al siguiente link para Aprobar o Rechazar el presupuesto: <br>" +
-                                        ret.op.LinkPresup + "< br >" +
-                                        "--------------------------------------------------------------------" +
-                                        "---------------------------------------------------------------<br>" +
-                                        "<font size=1>No responder este mensaje</font><br>" +
-                                        "<H5>Sistema de Notificaciones MMASS Online</H5>";
-                        enviarMail(asunto, msj);
+                        armarMail(miobj);
                     }
                 }
                 else
@@ -118,9 +113,99 @@ namespace WebApi.Services
             return Orden_presup_ap.existePresupNombre(id, nom);
         }
 
-        public void grabarLog(List<Parametro> datosLog)
+        //public void grabarLog(List<Parametro> datosLog)
+        //{
+        //    Orden_presup_ap.grabarLog(datosLog);
+        //}
+
+        public int updateEstado(Orden_presup_ap miobj)
         {
-            Orden_presup_ap.grabarLog(datosLog);
+            int resultado = miobj.updateEstado();
+
+            if (resultado == 3)
+            {
+                int paramEnviarMail = int.Parse(Dg_parametro.getById(7).Valor);
+                if (paramEnviarMail == 1 || paramEnviarMail == 2 || paramEnviarMail == 5)
+                {
+                    string cliente = "";
+                    List<string> destinatarios = new List<string>();
+
+                    if (miobj.Facturar_a == 0)
+                    {
+                        cliente = miobj.agencia.Nombre_com;
+                    }
+                    else if (miobj.Facturar_a == 1)
+                    {
+                        cliente = miobj.anunciante.Nombre_com;
+                    }
+
+                    string asunto = "MMASS Online - Presupuesto";
+                    string msj = "El Cliente: " + cliente + " ha RECHAZADO el Presupuesto: " + miobj.Descripcion + " Nro: " + miobj.Anio + "-" + miobj.Mes + "-" + miobj.Nro_presup + "." +
+                                    "<br>--------------------------------------------------------------------" +
+                                    "---------------------------------------------------------------<br>" +
+                                    "<font size=1>No responder este mensaje</font><br>" +
+                                    "<H5>Sistema de Notificaciones MMASS Online</H5>";
+                    enviarMail(asunto, msj, destinatarios);
+                }
+            }
+            else if (resultado == 4)
+            {
+                int paramEnviarMail = int.Parse(Dg_parametro.getById(7).Valor);
+                if (paramEnviarMail == 1 || paramEnviarMail == 2 || paramEnviarMail == 5)
+                {
+                    string cliente = "";
+                    List<string> destinatarios = new List<string>();
+                    if (miobj.Facturar_a == 0)
+                    {
+                        cliente = miobj.Agencia_nombre;
+                    }
+                    else if (miobj.Facturar_a == 1)
+                    {
+                        cliente = miobj.Anunciante_nombre;
+                    }
+
+                    string asunto = "MMASS Online - Presupuesto";
+                    string msj = "El Cliente: " + cliente + " ha ACEPTADO el Presupuesto: " + miobj.Descripcion + " Nro: " + miobj.Anio + "-" + miobj.Mes + "-" + miobj.Nro_presup + "." +
+                                    "<br>--------------------------------------------------------------------" +
+                                    "---------------------------------------------------------------<br>" +
+                                    "<font size=1>No responder este mensaje</font><br>" +
+                                    "<H5>Sistema de Notificaciones MMASS Online</H5>";
+                    enviarMail(asunto, msj, destinatarios);
+                }
+            }
+
+            return resultado;
+        }
+
+        public int armarMail(Orden_presup_ap miobj)
+        {
+            List<string> mailsCliente = new List<string>();
+            if (miobj.Facturar_a == 0)
+            {
+                mailsCliente = miobj.agencia.GetEmailsPorContacto();
+            }
+            else if (miobj.Facturar_a == 1)
+            {
+                mailsCliente = miobj.anunciante.GetEmailsPorContacto();
+            }
+
+            if (mailsCliente.Count > 0)
+            {
+                miobj.Id_estado = 1;
+                miobj.updateEstado();
+
+                string asunto = "MMASS Online - Presupuesto";
+                string msj = @"Se requiere acción por parte del usuario.<br>
+                               Ingrese al siguiente link para Aprobar o Rechazar el Presupuesto: " + miobj.Descripcion + " Nro: " + miobj.Anio + "-" + miobj.Mes + "-" + miobj.Nro_presup + "<br>" +
+                                "<a href='" + miobj.LinkPresup + "'>Click aquí para visualizar Presupuesto</a> <br>" +
+                                "--------------------------------------------------------------------" +
+                                "---------------------------------------------------------------<br>" +
+                                "<font size=1>No responder este mensaje</font><br>" +
+                                "<H5>Sistema de Notificaciones MMASS Online</H5>";
+               
+                enviarMail(asunto, msj, mailsCliente);
+            }
+            return miobj.Id_estado;
         }
 
         public Mail getMailCta()
@@ -135,16 +220,23 @@ namespace WebApi.Services
             return mail;
         }
 
-        public void enviarMail(string asunto, string mensaje)
+        public void enviarMail(string asunto, string mensaje, List<string> destinatarios)
         {
             Mail mail = getMailCta();
             List<Usuario> listaMails = Usuario.getListaAlertas();
             MailMessage correo = new MailMessage();
 
             correo.From = new MailAddress(mail.DirMail, mail.Nombre, Encoding.UTF8);//Correo de salida
-            foreach (Usuario u in listaMails)
+            if(destinatarios.Count > 0)
             {
-                correo.To.Add(u.Email); //Correo destino
+                foreach (string destinatario in destinatarios)
+                {
+                    correo.To.Add(destinatario); //Correo destino
+                }
+            }
+            else
+            {
+                correo.To.Add(mail.DirMail); //Correo destino
             }
             correo.Subject = asunto; //Asunto
             correo.Body = mensaje; //Mensaje del correo

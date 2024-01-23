@@ -64,6 +64,13 @@ namespace WebApi.Controllers
             return Ok(result);
         }
 
+        [HttpPost("armarMail")]
+        public IActionResult armarMail(Orden_presup_ap presup)
+        {
+            var result = _Orden_presup_apService.armarMail(presup);
+            return Ok(result);
+        }
+
         //[HttpPost("desbloquearTodas")]
         //public IActionResult desbloquearTodas([FromBody] int idUsuario)
         //{
@@ -71,10 +78,17 @@ namespace WebApi.Controllers
         //    return Ok(result);
         //}
 
-        [HttpPost("grabarLog")]
-        public void grabarLog(ListaParametro parametros)
+        //[HttpPost("grabarLog")]
+        //public void grabarLog(ListaParametro parametros)
+        //{
+        //    _Orden_presup_apService.grabarLog(parametros.Parametros);
+        //}
+
+        [HttpPost("updateEstado")]
+        public IActionResult updateEstado(Orden_presup_ap presup)
         {
-            _Orden_presup_apService.grabarLog(parametros.Parametros);
+            var result = _Orden_presup_apService.updateEstado(presup);
+            return Ok(result);
         }
 
     }

@@ -30,6 +30,18 @@ namespace WebApi.Controllers
             return Ok(user);
         }
 
+        [AllowAnonymous]
+        [HttpPost("authenticateClientePresup")]
+        public IActionResult AuthenticateClientePresup([FromBody] User userParam)
+        {
+            var user = _userService.AuthenticateClientePresup(userParam.Username, userParam.Password);
+
+            if (user == null)
+                return BadRequest(new { message = "Username or password is incorrect" });
+
+            return Ok(user);
+        }
+
         [HttpPost]
         public IActionResult GetAll()
         {

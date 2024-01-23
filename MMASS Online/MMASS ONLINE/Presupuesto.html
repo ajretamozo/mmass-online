@@ -804,6 +804,9 @@
                                     <!--<button type="button" id="bClonar" disabled="disabled" class="btn actions btn-dark btn-sm mx-1" onclick="prevClonarOrden()">
                                         <span class="fa fa-clone"></span> Clonar OP
                                     </button>-->
+                                    <button type="button" id="bEnviarPresup" class="btn actions btn-dark btn-sm mx-1" onclick="prevSendPresup()" disabled="disabled">
+                                        <span class="fa fa-paper-plane"></span> Enviar a cliente
+                                    </button>
                                 </div>
                                 <div class="col-lg-3"></div>
                                 <div class="col-md-4 d-flex justify-content-end">
@@ -960,39 +963,59 @@
             $('#fechaDesde').datetimepicker('date', moment(dateToFieldFormat(data.fecha), 'DD/MM/YYYY'));
             $('#fechaHasta').datetimepicker('date', moment(dateToFieldFormat(data.fecha_expiracion), 'DD/MM/YYYY'));
 
+            switch (data.id_estado) {
+                case 0:
+                    $("#inpEstado").val("En Proceso");
+                    $("#inpEstado").css("color", "#dfdf99");
+
+                    $("#bEnviarPresup").attr("disabled", false);
+                    break;
+                case 1:
+                    $("#inpEstado").val("Pendiente");
+                    $("#inpEstado").css("color", "#05baa4");
+
+                    $("#bEnviarPresup").attr("disabled", false);
+                    break;
+                case 2:
+                    $("#inpEstado").val("Aprobado Sin Vincular");
+                    $("#inpEstado").css("color", "#c0dcc0");
+
+                    $("#bEnviarPresup").attr("disabled", false);
+                    break;
+                case 3:
+                    $("#inpEstado").val("Aprobado Vinculado");
+                    $("#inpEstado").css("color", "#0f9013");
+
+                    $("#bGuardarPresup").attr("disabled", true);
+                    $("#bGuardarPresup").attr("title", "No se pueden guardar Presupuestos que estén Vinculados");
+                    bloquearCamposCabecera();
+                    break;
+                case 4:
+                    $("#inpEstado").val("Rechazado");
+                    $("#inpEstado").css("color", "#ff9897");
+
+                    $("#bEnviarPresup").attr("disabled", false);
+                    break;
+                case 5:
+                    $("#inpEstado").val("Rechazado Cerrado");
+                    $("#inpEstado").css("color", "#c82626");
+
+                    $("#bGuardarPresup").attr("disabled", true);
+                    $("#bGuardarPresup").attr("title", "No se pueden guardar Presupuestos que estén Cerrados");
+                    bloquearCamposCabecera();
+                    break;
+            }  
+
             //if (OpClon == false) {
-                $("#inpOrderMonth").val(data.mes);
-                $("#inpOrderYear").val(data.anio);
-                $("#inpOrderNumber").val(data.nro_presup);
-                $("#inpOrderNumber").attr("id_op_dg", data.id_presup);
+            $("#inpOrderMonth").val(data.mes);
+            $("#inpOrderYear").val(data.anio);
+            $("#inpOrderNumber").val(data.nro_presup);
+            $("#inpOrderNumber").attr("id_op_dg", data.id_presup);
             //}
 
             //if (data.fecha_alta != null && OpClon == false) {
-                $("#inpFechaAlta").val(dateToFieldFormat(data.fecha_alta));
+            $("#inpFechaAlta").val(dateToFieldFormat(data.fecha_alta));
             //}
-
-            switch (data.id_estado) {
-                case 1:
-                    $("#inpEstado").val("En Proceso");
-                    $("#inpEstado").css("color", "#ffffe1");
-                    break;
-                case 2:
-                    $("#inpEstado").val("Pendiente");
-                    $("#inpEstado").css("color", "#05baa4");
-                    break;
-                case 3:
-                    $("#inpEstado").val("Rechazado");
-                    $("#inpEstado").css("color", "#ff5353");
-                    break;
-                case 4:
-                    $("#inpEstado").val("Aprobado");
-                    $("#inpEstado").css("color", "#c0dcc0");
-                    break;
-                case 5:
-                    $("#inpEstado").val("Vinculado");
-                    $("#inpEstado").css("color", "#cff2fe");
-                    break;
-            }        
 
             if (data.id_moneda != null) {
                 $("#selMoneda option[value=" + data.id_moneda + "]").attr("selected", "selected");
@@ -1256,15 +1279,16 @@
                 data.formaspago[0].porcentaje = 100;
             }
 
-            //por ahora lo guardamos en estado "pendiente"
-            data.id_estado = 2;
+            //lo guardamos en estado "en proceso", si se manda el mail, el estado pasa a "pendiente"
+            data.id_estado = 0;
 
             data.Detalles = Detalles;
 
             data.Id_moneda = $("#selMoneda").val();
             data.Cambio = $('#selMoneda>option:selected').attr("cambio");
 
-            data.LinkPresup = "";
+            let link = window.location.href;
+            data.LinkPresup = link.replace("Presupuesto", "Presupvistacliente");
 
             callWS("orden_presup_aps", "save", JSON.stringify(data), function (resultado) { onSavePresup(resultado, data); });
         }
@@ -1382,30 +1406,46 @@
                     }
                     today = dd + '/' + mm + '/' + yyyy;
                     $("#inpFechaAlta").val(today);
-                }
+                }      
 
                 switch (data.op.id_estado) {
-                    case 1:
+                    case 0:
                         $("#inpEstado").val("En Proceso");
-                        $("#inpEstado").css("color", "#ffffe1");
+                        $("#inpEstado").css("color", "#dfdf99");
+
+                        $("#bEnviarPresup").attr("disabled", false);
                         break;
-                    case 2:
+                    case 1:
                         $("#inpEstado").val("Pendiente");
                         $("#inpEstado").css("color", "#05baa4");
+
+                        $("#bEnviarPresup").attr("disabled", false);
+                        break;
+                    case 2:
+                        $("#inpEstado").val("Aprobado Sin Vincular");
+                        $("#inpEstado").css("color", "#c0dcc0");
+
+                        $("#bEnviarPresup").attr("disabled", false);
                         break;
                     case 3:
-                        $("#inpEstado").val("Rechazado");
-                        $("#inpEstado").css("color", "#ff5353");
+                        $("#inpEstado").val("Aprobado Vinculado");
+                        $("#inpEstado").css("color", "#0f9013");
+
+                        $("#bEnviarPresup").attr("disabled", true);
                         break;
                     case 4:
-                        $("#inpEstado").val("Aprobado");
-                        $("#inpEstado").css("color", "#c0dcc0");
+                        $("#inpEstado").val("Rechazado");
+                        $("#inpEstado").css("color", "#ff9897");
+
+                        $("#bEnviarPresup").attr("disabled", false);
                         break;
                     case 5:
-                        $("#inpEstado").val("Vinculado");
-                        $("#inpEstado").css("color", "#cff2fe");
+                        $("#inpEstado").val("Rechazado Cerrado");
+                        $("#inpEstado").css("color", "#c82626");
+
+                        $("#bEnviarPresup").attr("disabled", true);
                         break;
-                }        
+                }
 
                 //bloquearOp(data.op.id_op_dg);
 
@@ -2140,14 +2180,14 @@
             str = str + " <button type='button' data-id='" + id + "' class='btn actions btn-outline-dark btn-sm mr-1'  onclick='cargarModificarRenglon(this)' title='Editar Detalle'> <span class='fa fa-edit'></span></button>";
 
             //  Botón clonar renglon y eliminar renglon
-            //if (OpBloqueada == true) {
-            //    str = str + " <button type='button' data-id='" + id + "' disabled id='bClonarReng" + id + "' class='btn actions btn-outline-dark btn-sm mr-1'  onclick='clonarD(this)' title='Clonar Detalle'> <span class='fa fa-clone'></span></button>";
-            //    str = str + " <button type='button' id='bElim" + id + "' data-id='" + id + "' disabled id='bEliminar" + id + "' class='btn actions btn-outline-dark btn-sm mr-1'  onclick='deleteRenglon(this)' title='Eliminar Detalle'> <span class='fa fa-trash'></span></button>";
-            //}
-            //else {
+            if ($("#inpEstado").val() == 'Aprobado Vinculado' || $("#inpEstado").val() == 'Rechazado Cerrado') {
+                //str = str + " <button type='button' data-id='" + id + "' disabled id='bClonarReng" + id + "' class='btn actions btn-outline-dark btn-sm mr-1'  onclick='clonarD(this)' title='Clonar Detalle'> <span class='fa fa-clone'></span></button>";
+                str = str + " <button type='button' id='bElim" + id + "' data-id='" + id + "' disabled id='bEliminar" + id + "' class='btn actions btn-outline-dark btn-sm mr-1'  onclick='deleteRenglon(this)' title='Eliminar Detalle'> <span class='fa fa-trash'></span></button>";
+            }
+            else {
                 //str = str + " <button type='button' data-id='" + id + "' class='btn actions btn-outline-dark btn-sm mr-1'  onclick='clonarD(this)' title='Clonar Detalle'> <span class='fa fa-clone'></span></button>";
                 str = str + " <button type='button' id='bElim" + id + "' data-id='" + id + "' class='btn actions btn-outline-dark btn-sm mr-1'  onclick='deleteRenglon(this)' title='Eliminar Detalle'> <span class='fa fa-trash'></span></button>";
-            //}
+            }
             str = str + "</td>";
 
             //  Alerta renglon no guardado
@@ -2248,10 +2288,6 @@
             $("#checkTarifaManualD")[0].checked = false;
             $("#checkTarifaManualD").change();
 
-            //if ($("#inpEsFacturada").val() == 'SI' || OpAnulada == true || OpYaAbierta == true) {
-            //    bloquearCamposDetalle();
-            //}
-
             var rId = $(r).attr("data-id");
 
             var rDetalle = Detalles.find(detalle => detalle.id_detalle == rId);
@@ -2285,74 +2321,11 @@
             //}
 
             //Primero seleccionamos el medio, luego la tarifa y luego el resto
-            //$.when($("#selMediosD option[value=" + rDetalle.id_medio + "]").attr("selected", "selected")).then(
-            //    $("#selMediosD").change()
-            //).then(
-            //    onCargarModificarRenglon2(rDetalle)
-            //).then(
-            //    $("#selTarifaD").change()
-            //).then(
-            //    seleccionarCamposRestantes(rDetalle)
-            //);
             $.when($("#selMediosD option[value=" + rDetalle.id_medio + "]").attr("selected", "selected")).
                 then(filterTarifas(rDetalle)
-                    //$("#selMediosD").change()
-            )
-            //    .then(
-            //    wait(4000)
-            //);
-            //    then(
-            //    onCargarModificarRenglon2(rDetalle)
-            //);
-  
-            //Carga Medios
-            //if (rDetalle.id_medio != null) {
-            //    $("#selMediosD option[value=" + rDetalle.id_medio + "]").attr("selected", "selected");
-            //}
-
-            //Carga Tarifa
-            //Cambiar filterTarifas, hacerlo al reves. en base a tarifa, filtrar el resto de campos. Primero filtrar por medio
-            //$.when(filterTarifas()).then(function () {
-            //    if (rDetalle.id_tarifa_dg != null) {
-            //        $("#selTarifaD option[value=" + rDetalle.id_tarifa_dg + "]").attr("selected", "selected");
-            //    }
-            //});
-
-            //if (rDetalle.id_tarifa_dg != null) {
-            //    $("#selTarifaD option[value=" + rDetalle.id_tarifa_dg + "]").attr("selected", "selected");
-            //}
-        }
-
-
-        function onCargarModificarRenglon2(rDetalle) {
-            //if ($('#selTarifaD > option').length > 0) {
-            //    $.when($("#selTarifaD option[value=" + rDetalle.id_tarifa + "]").attr("selected", "selected")).then(
-            //        $("#selTarifaD").change()
-            //    ).then(
-            //        seleccionarCamposRestantes(rDetalle)
-            //    )
-            //}
-            //else {
-            //    while ($('#selTarifaD > option').length < 1) {
-            //        if ($('#selTarifaD > option').length > 0) {
-            //            $.when($("#selTarifaD option[value=" + rDetalle.id_tarifa + "]").attr("selected", "selected")).then(
-            //                $("#selTarifaD").change()
-            //            ).then(
-            //                seleccionarCamposRestantes(rDetalle)
-            //            )
-            //        }
-            //        else {
-            //            break;
-            //        }
-            //    }
-            //}
-
-            $.when($("#selTarifaD option[value=" + rDetalle.id_tarifa + "]").attr("selected", "selected")).then(
-                $("#selTarifaD").change()
-            ).then(
-                seleccionarCamposRestantes(rDetalle)
             )
         }
+
 
         function wait(ms) {
             var start = new Date().getTime();
@@ -2408,6 +2381,11 @@
                 $("#checkTarifaManualD").change();
                 $("#precioUnitarioD").val(rDetalle.imp_tarifa);
                 $("#precioUnitarioD").change();
+            }
+
+            if ($("#inpEstado").val() == 'Aprobado Vinculado' || $("#inpEstado").val() == 'Rechazado Cerrado') {
+                bloquearCamposDetalle();
+                $("#selMediosD").attr("disabled", true);
             }
         }
 
@@ -2469,100 +2447,100 @@
         }
 
 
-        function descargar(path) {
-            $.fileDownload(path)
-                .done(function () { alert('File download a success!'); })
-                .fail(function () { alert('File download failed!'); });
-        }
+        //function descargar(path) {
+        //    $.fileDownload(path)
+        //        .done(function () { alert('File download a success!'); })
+        //        .fail(function () { alert('File download failed!'); });
+        //}
 
-        function getArchivos(id_op) {
-            callWS("archivos", "getArchivosPorOP", id_op, function (data) { populateFilesTable(data); })
-        }
+        //function getArchivos(id_op) {
+        //    callWS("archivos", "getArchivosPorOP", id_op, function (data) { populateFilesTable(data); })
+        //}
 
-        function populateFilesTable(files) {
-            rowHTML = '';
-            $.each(files, function (it, file) {
-                rowHTML += "<tr class='d-flex'>";
-                rowHTML += "<td class='col-sm-10'>" + file.nombre + "</td>";
-                rowHTML += "<td class='col-sm-2'>";
-                rowHTML += "<button type='button' title='Descargar' class='btn btn-outline-dark btn-sm mx-1'>" + "<a href='" + file.ruta + "' download='" + file.nombre + "' id='" + file.ruta + "'><span class='fa fa-download'></span></a>" + "</button>"
-                rowHTML += "<button type='button' title='Eliminar' class='btn btn-outline-dark btn-sm mx-1' onclick=\"checkDeleteFile('" + file.ruta + "')\";'><span class='fa fa-trash'></span></button>"
-                rowHTML += "</td>";
-                rowHTML += "</tr>";
-            });
-            $("#tablaArchivos").html(rowHTML);
-            loadImgSizes();
-        }
+        //function populateFilesTable(files) {
+        //    rowHTML = '';
+        //    $.each(files, function (it, file) {
+        //        rowHTML += "<tr class='d-flex'>";
+        //        rowHTML += "<td class='col-sm-10'>" + file.nombre + "</td>";
+        //        rowHTML += "<td class='col-sm-2'>";
+        //        rowHTML += "<button type='button' title='Descargar' class='btn btn-outline-dark btn-sm mx-1'>" + "<a href='" + file.ruta + "' download='" + file.nombre + "' id='" + file.ruta + "'><span class='fa fa-download'></span></a>" + "</button>"
+        //        rowHTML += "<button type='button' title='Eliminar' class='btn btn-outline-dark btn-sm mx-1' onclick=\"checkDeleteFile('" + file.ruta + "')\";'><span class='fa fa-trash'></span></button>"
+        //        rowHTML += "</td>";
+        //        rowHTML += "</tr>";
+        //    });
+        //    $("#tablaArchivos").html(rowHTML);
+        //    loadImgSizes();
+        //}
 
-        function checkDeleteFile(filepath) {
-            options = [
-                {
-                    optionDesc: "Aceptar",
-                    optionFunc: "deleteFile('" + filepath + "')"
-                },
-                {
-                    optionDesc: "Cancelar",
-                    optionFunc: ""
-                }
-            ];
-            var mensaje = "<div class='d-flex justify-content-center'>¿Está seguro de borrar el archivo?</div>";
-            showModal(mensaje, options);
-        }
+        //function checkDeleteFile(filepath) {
+        //    options = [
+        //        {
+        //            optionDesc: "Aceptar",
+        //            optionFunc: "deleteFile('" + filepath + "')"
+        //        },
+        //        {
+        //            optionDesc: "Cancelar",
+        //            optionFunc: ""
+        //        }
+        //    ];
+        //    var mensaje = "<div class='d-flex justify-content-center'>¿Está seguro de borrar el archivo?</div>";
+        //    showModal(mensaje, options);
+        //}
 
-        function deleteFile(filepath) {
-            var arrStr = filepath.split("/");
-            var filename = arrStr[arrStr.length - 1];
-            $.when(callWS("archivos", "delete", "'" + filename + "'", function (data) { })).then(function () { getArchivos($('#inpOrderNumber').attr('id_op_dg')); })
-        }
+        //function deleteFile(filepath) {
+        //    var arrStr = filepath.split("/");
+        //    var filename = arrStr[arrStr.length - 1];
+        //    $.when(callWS("archivos", "delete", "'" + filename + "'", function (data) { })).then(function () { getArchivos($('#inpOrderNumber').attr('id_op_dg')); })
+        //}
 
 
-        function loadImgSizes() {
-            html = "";
-            files = $('#tablaArchivos').children();
-            var id_img = 0;
-            $.each(files, function (it, file) {
-                var img = new Image();
-                path = file.children[1].children[0].children[0].getAttribute('href').toString();
-                imgSize = getMeta(path, id_img)
-                //html += "<div class='d-flex justify-content-center breakBefore'> <img id='img" + id_img + "' src='." + path + "'> </div>"
-                id_img++;
-            })
-            return html;
-        }
+        //function loadImgSizes() {
+        //    html = "";
+        //    files = $('#tablaArchivos').children();
+        //    var id_img = 0;
+        //    $.each(files, function (it, file) {
+        //        var img = new Image();
+        //        path = file.children[1].children[0].children[0].getAttribute('href').toString();
+        //        imgSize = getMeta(path, id_img)
+        //        //html += "<div class='d-flex justify-content-center breakBefore'> <img id='img" + id_img + "' src='." + path + "'> </div>"
+        //        id_img++;
+        //    })
+        //    return html;
+        //}
 
-        function getMeta(url, id_img) {
-            var img = new Image();
-            var height = 0;
-            var width = 0;
-            img.onload = function () {
-                width = this.width;
-                height = this.height;
-                if (this.width > 900) {
-                    height = Math.round(height * (900 / width));
-                    width = Math.round(width * (900 / width));
-                }
-                var a = document.getElementById(url)
-                a.setAttribute('img-width', width)
-                a.setAttribute('img-height', height)
-                //$('#img' + id_img).attr('style', "width:" + width + "px;height:" + height + "px;");
-            };
-            img.src = '.' + url;
-        }
+        //function getMeta(url, id_img) {
+        //    var img = new Image();
+        //    var height = 0;
+        //    var width = 0;
+        //    img.onload = function () {
+        //        width = this.width;
+        //        height = this.height;
+        //        if (this.width > 900) {
+        //            height = Math.round(height * (900 / width));
+        //            width = Math.round(width * (900 / width));
+        //        }
+        //        var a = document.getElementById(url)
+        //        a.setAttribute('img-width', width)
+        //        a.setAttribute('img-height', height)
+        //        //$('#img' + id_img).attr('style', "width:" + width + "px;height:" + height + "px;");
+        //    };
+        //    img.src = '.' + url;
+        //}
 
-        function includeImgs() {
-            html = "";
-            files = $('#tablaArchivos').children();
-            var id_img = 0;
-            $.each(files, function (it, file) {
-                var img = new Image();
-                path = file.children[1].children[0].children[0].getAttribute('href').toString();
-                width = file.children[1].children[0].children[0].getAttribute('img-width').toString();
-                height = file.children[1].children[0].children[0].getAttribute('img-height').toString();
-                html += "<hr class='breakBefore'><div class='d-flex justify-content-center mt-2'> <img src='." + path + "' style='width:" + width + "px;height:" + height + "px;'> </div>";
-                id_img++;
-            })
-            return html;
-        }
+        //function includeImgs() {
+        //    html = "";
+        //    files = $('#tablaArchivos').children();
+        //    var id_img = 0;
+        //    $.each(files, function (it, file) {
+        //        var img = new Image();
+        //        path = file.children[1].children[0].children[0].getAttribute('href').toString();
+        //        width = file.children[1].children[0].children[0].getAttribute('img-width').toString();
+        //        height = file.children[1].children[0].children[0].getAttribute('img-height').toString();
+        //        html += "<hr class='breakBefore'><div class='d-flex justify-content-center mt-2'> <img src='." + path + "' style='width:" + width + "px;height:" + height + "px;'> </div>";
+        //        id_img++;
+        //    })
+        //    return html;
+        //}
 
 
         function openRonPorc() {
@@ -2588,12 +2566,12 @@
             $("#modalCenterBody").html(content);
             footer = '';
             //si esta en estado convertida, poner no editable
-            //if ($("#inpEsFacturada").val() == 'SI' || OpAnulada == true) {
-            //    footer += "<button type='button' disabled id='aceptar' class='btn btn-secondary' onClick=\"setDetailRon($('#ronTableBody').html());\"> Aceptar </button>";
-            //}
-            //else {
+            if ($("#inpEstado").val() == 'Aprobado Vinculado' || $("#inpEstado").val() == 'Rechazado Cerrado') {
+                footer += "<button type='button' disabled id='aceptar' class='btn btn-secondary' onClick=\"setDetailRon($('#ronTableBody').html());\"> Aceptar </button>";
+            }
+            else {
                 footer += "<button type='button' id='aceptar' class='btn btn-secondary' onClick=\"setDetailRon($('#ronTableBody').html());\"> Aceptar </button>";
-            //}
+            }
             footer += "<button type='button' class='btn btn-secondary' data-dismiss='modal' onClick=\"$('#ronTableBody').empty();\"> Cancelar </button>";
             $("#modalCenterFooter").html(footer);
             $("#modalCenter").modal('show');
@@ -2667,24 +2645,6 @@
         }
 
 
-        //function bloquearCamposDetalle() {
-        //    $("#fechaDesdeD").attr("disabled", true);
-        //    $("#fechaHastaD").attr("disabled", true);
-        //    $("#selPrograma").attr("disabled", true);
-        //    $("#selTipoAvisoD").attr("disabled", true);
-        //    $("#selTipoTarifaD").attr("disabled", true);
-        //    $("#selTarifaD").attr("disabled", true);
-        //    $("#selMediosD").attr("disabled", true);
-        //    $("#checkTarifaManualD").attr("disabled", true);
-        //    $("#precioUnitarioD").attr("disabled", true);
-        //    $("#cantidadD").attr("disabled", true);
-        //    $("#descuentoD").attr("disabled", true);
-        //    $("#confNCD").attr("disabled", true);
-        //    $("#confFCD").attr("disabled", true);
-        //    $("#GuardarRenglon").attr("disabled", true);
-        //}
-
-
         function bloquearCamposDetalle() {
             $("#fechaDesdeD").attr("disabled", true);
             $("#fechaHastaD").attr("disabled", true);
@@ -2702,24 +2662,6 @@
             $("#confFCD").attr("disabled", true);
             $("#GuardarRenglon").attr("disabled", true);
         }
-
-
-        //function desbloquearCamposDetalle() {
-        //    $("#fechaDesdeD").attr("disabled", false);
-        //    $("#fechaHastaD").attr("disabled", false);
-        //    $("#selPrograma").attr("disabled", false);
-        //    $("#selTipoAvisoD").attr("disabled", false);
-        //    $("#selTipoTarifaD").attr("disabled", false);
-        //    $("#selTarifaD").attr("disabled", false);
-        //    $("#selMediosD").attr("disabled", false);
-        //    $("#checkTarifaManualD").attr("disabled", false);
-        //    $("#precioUnitarioD").attr("disabled", false);
-        //    $("#cantidadD").attr("disabled", false);
-        //    $("#descuentoD").attr("disabled", false);
-        //    $("#confNCD").attr("disabled", false);
-        //    $("#confFCD").attr("disabled", false);
-        //    $("#GuardarRenglon").attr("disabled", false);
-        //}
 
 
         function desbloquearCamposDetalle() {
@@ -2847,55 +2789,6 @@
         }
 
 
-        //function prevMonedaSelected(selMoneda) {
-        //    options = [
-        //        {
-        //            optionDesc: "Continuar",
-        //            optionFunc: "cambiarMoneda(" + selMoneda.oldvalue + "," + selMoneda.value  + ")"
-        //        },
-        //        {
-        //            optionDesc: "Cancelar",
-        //            optionFunc: "volverMonedaAnterior(" + selMoneda.oldvalue + ")"
-        //        }
-        //    ];
-        //    var mensaje = "<div class='d-flex justify-content-center'>Las Tarifas de todos los Detalles serán reseteadas</div>";
-        //    showModal(mensaje, options);
-        //}
-
-
-        //function volverMonedaAnterior(valorAnterior) {
-        //    $('#selMoneda').val(valorAnterior);
-        //}
-
-
-        //function cambiarMoneda(valorAnterior, valorNuevo) {
-        //    //buscar el cambio
-        //    var paramsCambio = {};
-        //    paramsCambio.idMonedaO = valorAnterior;
-        //    paramsCambio.idMonedaD = valorNuevo;
-
-        //    var parametrosCambio = setListaParametros(paramsCambio);
-
-        //    callWS("medios", "getCambioActual", JSON.stringify(parametrosCambio), function (data) { onMonedaSelected(data); });
-        //}
-
-
-        //function onMonedaSelected(cambio) {
-        //    $('#precioUnitarioD').val($('#precioUnitarioD').val() / cambio);
-        //    $('#totalD').val($('#totalD').val() / cambio);
-        //    $.when(
-        //        Detalles.forEach(function (detalle) {
-        //            detalle.id_tarifa = 0;
-        //            detalle.monto_neto = detalle.monto_neto / cambio;
-        //            detalle.monto_bruto = detalle.monto_bruto / cambio;
-        //            detalle.impconfnc = detalle.impconfnc / cambio;
-        //            detalle.impconffc = detalle.impconffc / cambio;
-        //            detalle.imp_tarifa = detalle.imp_tarifa / cambio;
-        //        })
-        //    ).then(function () { filterTarifas(); calculateTotals(); recargarRenglones(); });
-        //}
-
-
         function cambiarMoneda(selMoneda) {
             //buscar el cambio
             var paramsCambio = {};
@@ -2946,6 +2839,58 @@
             $("#TableCotizaciones").html(rowHTML);
 
             $("#cotizacionModal").modal('show');
+        }
+
+
+        function prevSendPresup() {
+            options = [
+                {
+                    optionDesc: "Enviar",
+                    optionFunc: "sendPresup()"
+                },
+                {
+                    optionDesc: "Cancelar",
+                    optionFunc: ""
+                }
+            ];
+            var mensaje = "<div class='d-flex justify-content-center'>¿Está seguro de enviar el presupuesto al cliente?</div>";
+            showModal(mensaje, options);
+        }
+
+        function sendPresup() {
+            var data = {};
+
+            if ($("#inpOrderNumber").val() != "") {
+                data.nro_presup = $("#inpOrderNumber").val();
+                data.id_presup = $("#inpOrderNumber").attr("id_op_dg")
+            }
+            data.anio = $("#inpOrderYear").val();
+            data.mes = $("#inpOrderMonth").val();
+            data.descripcion = $("#inpDescOP").val();
+            data.agencia = {};
+            data.agencia.Id_contacto = $("#selAgencia").val();
+            data.agencia.Nombre_com = $("#selAgencia option:selected").text();
+            data.anunciante = {};
+            data.anunciante.Id_contacto = $("#selAnunciante").val();
+            data.anunciante.Nombre_com = $("#selAnunciante option:selected").text();
+            data.Facturar_a = $("#selFacturar").val();
+
+            let link = window.location.href;
+            data.LinkPresup = link.replace("Presupuesto", "Presupvistacliente");
+
+            callWS("orden_presup_aps", "armarMail", JSON.stringify(data), function (respuesta) { onSendPresup(respuesta); });
+        }
+
+
+        function onSendPresup(respuesta) {
+            if (respuesta == 1) {
+                $("#inpEstado").val("Pendiente");
+                $("#inpEstado").css("color", "#05baa4");
+                showMessage("Presupuesto enviado", "success");
+            }
+            else {
+                showMessage("El cliente no tiene asociadas cuentas de email", "info");
+            }
         }
 
     </script>

@@ -16,6 +16,7 @@ namespace WebApi.Services
     public interface IUserService
     {
         User Authenticate(string username, string password);
+        User AuthenticateClientePresup(string username, string password);
         IEnumerable<User> GetAll();
         int saveUser(Usuario miobj);
         IEnumerable<Usuario> getAllUsers();
@@ -120,6 +121,34 @@ namespace WebApi.Services
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new Claim[] 
+                {
+                    new Claim(ClaimTypes.Name, user.Id.ToString())
+                }),
+                Expires = DateTime.UtcNow.AddDays(7),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            user.Token = tokenHandler.WriteToken(token);
+
+            // remove password before returning
+            user.Password = null;
+
+            return user;
+        }
+
+        public User AuthenticateClientePresup(string username, string password)
+        {
+            User user = new User();
+            user.Id = 0;
+            user.FirstName = username;
+            user.Usrrol =0;
+
+            // authentication successful so generate jwt token
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new Claim[]
                 {
                     new Claim(ClaimTypes.Name, user.Id.ToString())
                 }),

@@ -363,5 +363,19 @@ namespace WebApi.Entities
             return col;
         }
 
+        public List<string> GetEmailsPorContacto()
+        {
+            string sqlCommand = "select email from emails where id_contacto = " + Id_contacto.ToString();
+            
+            DataTable t = DB.Select(sqlCommand);
+
+            List<string> emails = new List<string>();
+            foreach (DataRow item in t.Rows)
+            {
+                emails.Add(item["email"].ToString());
+            }
+            return emails;
+        }
+
     }
 }

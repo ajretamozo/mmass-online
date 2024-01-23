@@ -6,7 +6,7 @@ const backendDir = "http://localhost:5000/"
 //Variable para mantener el token de logueo, se le pasa siempre al llamado a CallWS
 //var globalBearer = "1";//Lo Inicializo asi no da error al llamar metodos que no necesitan autentificacion
 function callWS(ws, op, data, onDone) {
-    if (sessionStorage.getItem('token') === null && op !== "authenticate") {
+    if (sessionStorage.getItem('token') === null && op !== "authenticate" && op !== "authenticateClientePresup") {
         location.href = '/login.html';
         return null;
     }
@@ -72,7 +72,7 @@ function autentificar(user, pass, onDone,onError) {
         onError();
     });  
     
-}    
+}       
 
 function _onAutentificar(data) {
     //globalBearer = 'Bearer ' + data.token;
@@ -84,6 +84,8 @@ function _onAutentificar(data) {
 
     //inicializar();
 }
+
+
 function getUserName() {
     return sessionStorage.getItem('userName');
 }

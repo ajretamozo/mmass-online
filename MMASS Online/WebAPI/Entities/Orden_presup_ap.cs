@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Transactions;
 using WebApi.Helpers;
+using Microsoft.VisualBasic;
 
 namespace WebApi.Entities
 {
@@ -442,6 +443,27 @@ namespace WebApi.Entities
                 return null;
             }
             return this;
+        }
+
+        public int updateEstado()
+        {
+            string sql = "update orden_presup_ap set id_estado=@id_estado where id_presup = @id_presup";
+
+            List<SqlParameter> parametros = new List<SqlParameter>();
+
+            parametros.Add(new SqlParameter() { ParameterName = "@id_presup", SqlDbType = SqlDbType.Int, Value = Id_presup });
+            parametros.Add(new SqlParameter() { ParameterName = "@id_estado", SqlDbType = SqlDbType.Int, Value = Id_estado });
+            
+            try
+            {
+                DB.Execute(sql, parametros);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return 0;
+            }
+            return Id_estado;
         }
 
         //ADAPTAR PARA PRESUPUESTO
