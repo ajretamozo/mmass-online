@@ -1106,7 +1106,7 @@
             data.Facturar_a = $("#selFacturar").val();
             data.id_estado = estado;
 
-            callWS("orden_presup_aps", "updateEstado", JSON.stringify(data), function (resultado) { onSavePresup(resultado, data); });
+            callWS("orden_presup_aps", "respuestaCliente", JSON.stringify(data), function (resultado) { onSavePresup(resultado, data); });
         }
 
 

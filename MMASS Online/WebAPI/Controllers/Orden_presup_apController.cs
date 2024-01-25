@@ -84,6 +84,13 @@ namespace WebApi.Controllers
         //    _Orden_presup_apService.grabarLog(parametros.Parametros);
         //}
 
+        [HttpPost("respuestaCliente")]
+        public IActionResult respuestaCliente(Orden_presup_ap presup)
+        {
+            var result = _Orden_presup_apService.respuestaCliente(presup);
+            return Ok(result);
+        }
+
         [HttpPost("updateEstado")]
         public IActionResult updateEstado(Orden_presup_ap presup)
         {

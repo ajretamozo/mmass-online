@@ -804,6 +804,9 @@
                                     <!--<button type="button" id="bClonar" disabled="disabled" class="btn actions btn-dark btn-sm mx-1" onclick="prevClonarOrden()">
                                         <span class="fa fa-clone"></span> Clonar OP
                                     </button>-->
+                                    <button type="button" id="bCerrarPresup" class="btn actions btn-dark btn-sm mx-1" onclick="prevClosePresup()" disabled="disabled">
+                                        <span class="fa fa-minus-circle"></span> Cerrar/Finalizar
+                                    </button>
                                     <button type="button" id="bEnviarPresup" class="btn actions btn-dark btn-sm mx-1" onclick="prevSendPresup()" disabled="disabled">
                                         <span class="fa fa-paper-plane"></span> Enviar a cliente
                                     </button>
@@ -974,17 +977,22 @@
                     $("#inpEstado").val("Pendiente");
                     $("#inpEstado").css("color", "#05baa4");
 
-                    $("#bEnviarPresup").attr("disabled", false);
+                    $("#bGuardarPresup").attr("disabled", true);
+                    $("#bGuardarPresup").attr("title", "No se pueden guardar Presupuestos que estén Pendientes");
+                    bloquearCamposCabecera();
                     break;
                 case 2:
                     $("#inpEstado").val("Aprobado Sin Vincular");
                     $("#inpEstado").css("color", "#c0dcc0");
 
-                    $("#bEnviarPresup").attr("disabled", false);
+                    $("#bGuardarPresup").attr("disabled", true);
+                    $("#bGuardarPresup").attr("title", "No se pueden guardar Presupuestos que estén Aprobados");
+                    bloquearCamposCabecera();
                     break;
                 case 3:
                     $("#inpEstado").val("Aprobado Vinculado");
                     $("#inpEstado").css("color", "#0f9013");
+
 
                     $("#bGuardarPresup").attr("disabled", true);
                     $("#bGuardarPresup").attr("title", "No se pueden guardar Presupuestos que estén Vinculados");
@@ -994,6 +1002,7 @@
                     $("#inpEstado").val("Rechazado");
                     $("#inpEstado").css("color", "#ff9897");
 
+                    $("#bCerrarPresup").attr("disabled", false);
                     $("#bEnviarPresup").attr("disabled", false);
                     break;
                 case 5:
@@ -2203,7 +2212,7 @@
             str = str + " <button type='button' data-id='" + id + "' class='btn actions btn-outline-dark btn-sm mr-1'  onclick='cargarModificarRenglon(this)' title='Editar Detalle'> <span class='fa fa-edit'></span></button>";
 
             //  Botón clonar renglon y eliminar renglon
-            if ($("#inpEstado").val() == 'Aprobado Vinculado' || $("#inpEstado").val() == 'Rechazado Cerrado') {
+            if ($("#inpEstado").val() == 'Aprobado Vinculado' || $("#inpEstado").val() == 'Rechazado Cerrado' || $("#inpEstado").val() == 'Pendiente' || $("#inpEstado").val() == 'Aprobado Sin Vincular') {
                 //str = str + " <button type='button' data-id='" + id + "' disabled id='bClonarReng" + id + "' class='btn actions btn-outline-dark btn-sm mr-1'  onclick='clonarD(this)' title='Clonar Detalle'> <span class='fa fa-clone'></span></button>";
                 str = str + " <button type='button' id='bElim" + id + "' data-id='" + id + "' disabled id='bEliminar" + id + "' class='btn actions btn-outline-dark btn-sm mr-1'  onclick='deleteRenglon(this)' title='Eliminar Detalle'> <span class='fa fa-trash'></span></button>";
             }
@@ -2406,7 +2415,7 @@
                 $("#precioUnitarioD").change();
             }
 
-            if ($("#inpEstado").val() == 'Aprobado Vinculado' || $("#inpEstado").val() == 'Rechazado Cerrado') {
+            if ($("#inpEstado").val() == 'Aprobado Vinculado' || $("#inpEstado").val() == 'Rechazado Cerrado' || $("#inpEstado").val() == 'Pendiente' || $("#inpEstado").val() == 'Aprobado Sin Vincular') {
                 bloquearCamposDetalle();
                 $("#selMediosD").attr("disabled", true);
             }
@@ -2919,6 +2928,47 @@
             else {
                 showMessage("El cliente no tiene asociadas cuentas de email", "info");
             }
+        }
+
+
+        function prevClosePresup() {
+            options = [
+                {
+                    optionDesc: "Cerrar/Finalizar",
+                    optionFunc: "closePresup()"
+                },
+                {
+                    optionDesc: "Cancelar",
+                    optionFunc: ""
+                }
+            ];
+            var mensaje = "<div class='d-flex justify-content-center'>¿Está seguro de cerrar/finalizar el presupuesto?</div>";
+            showModal(mensaje, options);
+        }
+
+
+        function closePresup() {
+            var data = {};
+
+            data.id_presup = $("#inpOrderNumber").attr("id_op_dg");
+            data.id_estado = 5;
+
+            callWS("orden_presup_aps", "updateEstado", JSON.stringify(data), function () { onClosePresup(); });
+        }
+
+
+        function onClosePresup() {
+            $("#inpEstado").val("Rechazado Cerrado");
+            $("#inpEstado").css("color", "#c82626");
+
+            $("#bCerrarPresup").attr("disabled", true);
+            $("#bEnviarPresup").attr("disabled", true);
+            $("#bGuardarPresup").attr("disabled", true);
+            $("#bGuardarPresup").attr("title", "No se pueden guardar Presupuestos que estén Cerrados");
+            bloquearCamposCabecera();
+            recargarRenglones();
+
+            showMessage("Presupuesto cerrado", "success");
         }
 
     </script>

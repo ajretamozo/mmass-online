@@ -32,6 +32,7 @@ namespace WebApi.Services
         IEnumerable<Orden_presup_ap> filter(List<Parametro> parametros);
         bool existePresupNombre(int id, string nom);
         int armarMail(Orden_presup_ap miobj);
+        int respuestaCliente(Orden_presup_ap miobj);
         int updateEstado(Orden_presup_ap miobj);
         //bool bloquearOP(Dg_orden_pub_bloqueo opb);
         //bool desbloquearOP(Dg_orden_pub_bloqueo opb);
@@ -112,9 +113,9 @@ namespace WebApi.Services
         //    Orden_presup_ap.grabarLog(datosLog);
         //}
 
-        public int updateEstado(Orden_presup_ap miobj)
+        public int respuestaCliente(Orden_presup_ap miobj)
         {
-            int resultado = miobj.updateEstado();
+            int resultado = updateEstado(miobj);
 
             if (resultado == 4)
             {
@@ -161,6 +162,11 @@ namespace WebApi.Services
             }
 
             return resultado;
+        }
+
+        public int updateEstado(Orden_presup_ap miobj)
+        {
+            return miobj.updateEstado();
         }
 
         public int armarMail(Orden_presup_ap miobj)
