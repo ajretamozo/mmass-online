@@ -1207,12 +1207,14 @@
             return true;
         }
 
+
         function validarEjecutivo(bd) {
             if (bd == 1) {
                 showMessage("Seleccione un Ejecutivo", "info");
                 return false;
             }
         }
+
 
         function prevSavePresup() {
             if (!validarPresup()) { return false; }
@@ -1227,19 +1229,39 @@
                     message = "Ya existe un Presupuesto con la Descripción ingresada";
                     showMessage(message, "error");;
                 } else {
-                    savePresup();
+                    callWS("medios", "getParamById", JSON.stringify(7), function (parNoti) {
+                        //1-todos, 2-creacion, 3-modificacion
+                        if (parNoti.valor == 1 || parNoti.valor == 2 && $("#inpOrderNumber").attr("id_op_dg") == 0 || parNoti.valor == 3 && $("#inpOrderNumber").attr("id_op_dg") > 0) {
+                            options = [
+                                {
+                                    optionDesc: "Guardar y enviar",
+                                    optionFunc: "savePresup('" + 1 + "')"
+                                },
+                                {
+                                    optionDesc: "Guardar",
+                                    optionFunc: "savePresup()"
+                                }
+                            ];
+                            var mensaje = "<div class='d-flex justify-content-center' style='text-align: center;'>El envío automático del presupuesto al cliente está activado. ¿Que desea hacer?</div>";
+                            showModal(mensaje, options);
+                        }
+                        //0-deshabilitadas
+                        else {
+                            savePresup();
+                        }
+                    });
                 }
             });
         }
 
 
-        function savePresup() {
+        function savePresup(enviaMail = 0) {
             var data = {};
 
             if (!validarPresup()) { return false; }
             if ($("#inpOrderNumber").val() != "") {
                 data.nro_presup = $("#inpOrderNumber").val();
-                data.id_presup = $("#inpOrderNumber").attr("id_op_dg")
+                data.id_presup = $("#inpOrderNumber").attr("id_op_dg");
             }
             data.descripcion = $("#inpDescOP").val();
             data.id_concepto_negocio = $("#selConceptoN").val();
@@ -1287,10 +1309,7 @@
             data.Id_moneda = $("#selMoneda").val();
             data.Cambio = $('#selMoneda>option:selected').attr("cambio");
 
-            let link = window.location.href;
-            data.LinkPresup = link.replace("Presupuesto", "Presupvistacliente");
-
-            callWS("orden_presup_aps", "save", JSON.stringify(data), function (resultado) { onSavePresup(resultado, data); });
+            callWS("orden_presup_aps", "save", JSON.stringify(data), function (resultado) { onSavePresup(resultado, enviaMail); });
         }
 
 
@@ -1355,7 +1374,7 @@
         }
 
 
-        function onSavePresup(data) {
+        function onSavePresup(data, enviaMail) {
 
             if (data.result > 0) {
 
@@ -1453,6 +1472,10 @@
                 recargarRenglones();
 
                 showMessage(data.message);
+
+                if (enviaMail == 1) {
+                    sendPresup();
+                }
             }
             else {
                 showMessage(data.message, "error");
@@ -2875,8 +2898,13 @@
             data.anunciante.Nombre_com = $("#selAnunciante option:selected").text();
             data.Facturar_a = $("#selFacturar").val();
 
+            //Se arma el link para enviar al cliente
             let link = window.location.href;
             data.LinkPresup = link.replace("Presupuesto", "Presupvistacliente");
+            //Si es un presupuesto nuevo, se agrega el id ya que la url no lo tiene
+            if (data.LinkPresup.indexOf("?") == -1) {
+                data.LinkPresup += "?presupId=" + data.id_presup;
+            }
 
             callWS("orden_presup_aps", "armarMail", JSON.stringify(data), function (respuesta) { onSendPresup(respuesta); });
         }
