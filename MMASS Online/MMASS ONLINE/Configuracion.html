@@ -296,6 +296,16 @@
             <div id="divRedesData d-flex align-items-around align-items-end">
                 <div class="row py-1 ocultar" style="height: 50px;">
                     <div class="col-md-6">
+                        <label>Usuarios</label>
+                    </div>
+                    <div class="col-md-6">
+                        <button type="button" class="btn btn-dark btn-sm mx-1" onclick="abrirUsuarios()" style="height: 34px;">
+                            <span class="fa fa-users"></span> Administrar
+                        </button>
+                    </div>
+                </div>
+                <div class="row py-1 ocultar" style="height: 50px;">
+                    <div class="col-md-6">
                         <label>Desbloqueo de Ordenes</label>
                     </div>
                     <div class="col-md-6">
@@ -416,7 +426,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="row py-1">
+                <div class="row py-1 ocultar2">
                     <div class="col-md-6">
                         <label>Notificaciones por Mail</label>
                     </div>
@@ -427,7 +437,7 @@
                         </label>
                     </div>
                 </div>
-                <div id="rowNotDetP">
+                <div class="ocultar2" id="rowNotDetP">
                     <div class="row py-1">
                         <div class="col-md-6">
                         </div>
@@ -445,13 +455,13 @@
                         </div>
                     </div>
                     <!--<div class="row py-1">
-                        <div class="col-md-6">
-                        </div>
-                        <div class="col-md-6">
-                            <input type="checkbox" id="checkArcP" style="margin-bottom: .8rem; margin-right: .2rem" onclick="activarMailDP()">
-                            <label for="checkArcP">Archivado de Línea de Pedido</label>
-                        </div>
-                    </div>-->
+            <div class="col-md-6">
+            </div>
+            <div class="col-md-6">
+                <input type="checkbox" id="checkArcP" style="margin-bottom: .8rem; margin-right: .2rem" onclick="activarMailDP()">
+                <label for="checkArcP">Archivado de Línea de Pedido</label>
+            </div>
+        </div>-->
                     <div class="row py-1">
                         <div class="col-md-6">
                         </div>
@@ -491,9 +501,14 @@
 
             //ocultar configuraciones para presupuestador
             callWS("medios", "getParamById", JSON.stringify(1), function (bd) {
+                //si es GT (sólo presupuestos)
                 if (bd.valor == 3) {
                     $('.ocultar').attr('hidden', 'hidden');
                     callWS("medios", "getParamById", JSON.stringify(7), function (parMail) { iniActMailP(parMail, "checkActivarMailP"); });
+                }
+                //otras (sin presupuestos)
+                else {
+                    $('.ocultar2').attr('hidden', 'hidden');
                 }
                 //else {
                 //    $('#navbardropPresup').attr('hidden', 'hidden');
@@ -1311,6 +1326,10 @@
                 $("#rowNotDetP").hide();
             }
             callWS("medios", "cambiarParam", JSON.stringify(param));
+        }
+
+        function abrirUsuarios() {
+            location.href = "/usuariosList.html";
         }
 
     </script>

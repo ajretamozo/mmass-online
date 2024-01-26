@@ -108,10 +108,15 @@
                 </a>
                 <div class="dropdown-menu">
                     <a class="dropdown-item" href="perfil.html">Mi Perfil</a>
-                    <a class="dropdown-item" href="Configuracion.html">Configuración</a>
-                    <a class="dropdown-item disabled" id="usuarios" href="usuariosList.html">Usuarios</a>
+                    <!--<a class="dropdown-item" href="Configuracion.html">Configuración</a>-->
+                    <!--<a class="dropdown-item disabled" id="usuarios" href="usuariosList.html">Usuarios</a>-->
                     <a class="dropdown-item" href="#" onclick="cerrarSesion()">Cerrar Sesión</a>
                 </div>
+            </li>
+            <li>
+                <button type="button" class="btn btn-dark" title="Configuración" onclick="abrirConfig()">
+                    <span class="fa fa-cog"></span>
+                </button>
             </li>
             <li>
                 <button type="button" class="btn btn-dark" title="Ver información del sistema" onclick="verInfo()">
@@ -157,6 +162,10 @@
         });
         $("#modalInfoFooter").html(strHTML);
         $("#modalInfo").modal('show');
+    }
+
+    function abrirConfig() {
+        location.href = "/Configuracion.html";
     }
 
 </script>

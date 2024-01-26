@@ -319,29 +319,26 @@
 
     <script>
 
-        //// Function to change the content of t2
-        //function modifyText(new_text) {
-        //    var t2 = document.getElementById("t2");
-        //    t2.firstChild.nodeValue = new_text;
-        //}
+        // Function to change the content of t2
+        function modifyText(new_text) {
+            var t2 = document.getElementById("t2");
+            t2.firstChild.nodeValue = new_text;
+        }
 
-        //// Function to add event listener to t
-        //function load() {
-        //    var el = document.getElementById("t");
-        //    el.addEventListener("click", function () { modifyText("four") }, false);
-        //}
+        // Function to add event listener to t
+        function load() {
+            var el = document.getElementById("t");
+            el.addEventListener("click", function () { modifyText("four") }, false);
+        }
 
-        //let formChanged = false;
-        //document.addEventListener('change', () => formChanged = true);
-        //window.addEventListener('beforeunload', (event) => {
-        //    desbloquearOp();
-        //    if (formChanged) {
-        //        event.returnValue = '';
-        //    }
-        //    else {
-        //        wait(200);
-        //    }
-        //});
+        let formChanged = false;
+        document.addEventListener('change', () => formChanged = true);
+        window.addEventListener('beforeunload', (event) => {
+            //desbloquearOp();
+            if (formChanged) {
+                event.returnValue = 'Please press the Logout button to logout.';
+            }
+        });
 
     </script>
 
@@ -1003,7 +1000,6 @@
                     $("#inpEstado").css("color", "#ff9897");
 
                     $("#bCerrarPresup").attr("disabled", false);
-                    $("#bEnviarPresup").attr("disabled", false);
                     break;
                 case 5:
                     $("#inpEstado").val("Rechazado Cerrado");
@@ -1465,7 +1461,6 @@
                         $("#inpEstado").val("Rechazado");
                         $("#inpEstado").css("color", "#ff9897");
 
-                        $("#bEnviarPresup").attr("disabled", false);
                         break;
                     case 5:
                         $("#inpEstado").val("Rechazado Cerrado");
