@@ -188,7 +188,7 @@ namespace WebApi.Services
 
                 string asunto = "MMASS Online - Presupuesto";
                 string msj = @"Se requiere acción por parte del usuario.<br>
-                               Ingrese al siguiente link para Aprobar o Rechazar el  <b>" + miobj.Descripcion + "</b> Nro: <b>" + miobj.Anio + "-" + miobj.Mes + "-" + miobj.Nro_presup + "</b>. <br>" +
+                               Ingrese al siguiente link para Aprobar o Rechazar el Presupuesto: <b>" + miobj.Descripcion + "</b> Nro: <b>" + miobj.Anio + "-" + miobj.Mes + "-" + miobj.Nro_presup + "</b>. <br>" +
                                 "<a href='" + miobj.LinkPresup + "'>CLICK AQUI PARA VISUALIZAR EL PRESUPUESTO</a> <br>" +
                                 "--------------------------------------------------------------------" +
                                 "---------------------------------------------------------------<br>" +

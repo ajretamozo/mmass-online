@@ -401,15 +401,33 @@
         }
 
         function populateFields() {
+            if (getUserRol() == 1) {
+                callWS("orden_presup_aps", "getAll", '', function (data) {
+                    if (data.length > 0) {
+                        populateTable(data, 'TableRenglones');
+                    } else {
+                        message = 'La búsqueda no produjo ningun resultado';
+                        showMessage(message, "info");
+                    }
+                });
+            }
+            else {
+                params = {};
 
-            callWS("orden_presup_aps", "getAll", '', function (data) {
-                if (data.length > 0) {
-                    populateTable(data, 'TableRenglones');
-                } else {
-                    message = 'La búsqueda no produjo ningun resultado';
-                    showMessage(message, "info");
-                }
-            });
+                params.id_usuario = getUserId();
+
+                var parametros = setListaParametros(params);
+
+                callWS("orden_presup_aps", "filter", JSON.stringify(parametros), function (data) {
+                    if (data.length > 0) {
+                        populateTable(data, 'TableRenglones');
+                    } else {
+                        populateTable(data, 'TableRenglones');
+                        message = 'La búsqueda no produjo ningun resultado';
+                        showMessage(message, "info");
+                    }
+                });
+            }
         }
 
         function onPopulateSelectDone(data) {
@@ -508,6 +526,10 @@
             params.agencia_nombre = $('#inpDescAgencia').val();
             params.anunciante_nombre = $('#inpDescAnunciante').val();
             params.producto_nombre = $('#inpDescProducto').val();
+
+            if (getUserRol() != 1) {
+                params.id_usuario = getUserId();
+            }
 
             for (param in params) {
                 if (params[param] == null) {

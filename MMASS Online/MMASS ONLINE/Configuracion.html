@@ -294,7 +294,7 @@
             <!--Configuracion DATA-->
             <p class="dataTitle">CONFIGURACION</p>
             <div id="divRedesData d-flex align-items-around align-items-end">
-                <div class="row py-1 ocultar" style="height: 50px;">
+                <div class="row py-1" id="divUsuarios" style="height: 50px;">
                     <div class="col-md-6">
                         <label>Usuarios</label>
                     </div>
@@ -494,9 +494,11 @@
             //si es admin
             if (getUserRol() == 1) {
                 $("#divMultimoneda").show();
+                $("#divUsuarios").show();
             }
             else {
                 $("#divMultimoneda").hide();
+                $("#divUsuarios").hide();
             }
 
             //ocultar configuraciones para presupuestador

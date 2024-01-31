@@ -181,6 +181,9 @@ namespace WebApi.Entities
 
                     if ((p.ParameterName == "id_estado") && (p.Value.ToString() != ""))
                         mifiltro = mifiltro + " and dg.id_estado = " + p.Value;
+
+                    if ((p.ParameterName == "id_usuario") && (p.Value.ToString() != ""))
+                        mifiltro = mifiltro + " and dg.id_ejecutivo = (select id_contacto from contactos where id_usuario_vinc = "+ p.Value + ") ";
                 }
             }
             List<Orden_presup_ap> col = new List<Orden_presup_ap>();
