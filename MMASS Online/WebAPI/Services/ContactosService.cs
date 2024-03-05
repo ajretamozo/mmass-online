@@ -27,6 +27,7 @@ namespace WebApi.Services
         Contacto getContactoByIdyRed(int id, int idRed);
         IEnumerable<Contacto> GetAnunSincro(int idRed);
         bool chequearSincroContacto(int idContacto, int idRed);
+        Contacto saveCliPotencial(Contacto contacto);
     }
 
     public class ContactoService : IContactoService
@@ -95,6 +96,11 @@ namespace WebApi.Services
         public bool chequearSincroContacto(int idContacto, int idRed)
         {
             return Dg_contacto_red_GAM.chequearSincroContacto(idContacto, idRed);
+        }
+
+        public Contacto saveCliPotencial(Contacto contacto)
+        {
+            return contacto.saveCliPotencial();
         }
     }
 }

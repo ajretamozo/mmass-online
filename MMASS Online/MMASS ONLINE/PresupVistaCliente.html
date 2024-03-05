@@ -1009,7 +1009,10 @@
 
             if (data.agencia != null) {
                 $("#selAgencia option[value=" + data.agencia.id_contacto + "]").attr("selected", "selected");
-                cargarProductos(data.anunciante.id_contacto, data.producto.id_producto);
+                $("#selAgencia").change();
+                if (data.producto != null) {
+                    cargarProductos(data.anunciante.id_contacto, data.producto.id_producto);
+                }
             }
 
             $("#selAnunciante option[value=" + data.anunciante.id_contacto + "]").attr("selected", "selected");
@@ -1223,7 +1226,6 @@
             an = $('#selAnunciante').val();
             ag = $('#selAgencia').val();
             if (an == null) {
-                $('#selProductoD').empty();
                 $('#selProducto').empty();
                 callWS("contactos", "getAnunciantesPorAgencia", ag, function (data) { onPopulateSelectDone(data, 'selAnunciante', 'id', 'nombre_com'); });
             } else {
@@ -1636,10 +1638,6 @@
             }
             if ($("#selAnunciante").val() == null) {
                 showMessage("Seleccione un Anunciante", "info");
-                return 0;
-            }
-            if ($("#selProducto").val() == null) {
-                showMessage("Seleccione un Producto", "info");
                 return 0;
             }
             if ($("#selConceptoN").val() == null) {

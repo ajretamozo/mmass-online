@@ -217,56 +217,6 @@
                                         Estado
                                     </div>
                                     <div class="card-body" style="padding-top: 10px; padding-bottom: 5px; padding-left: 14px; padding-right: 5px;">
-                                        <!--<div class="row">
-        <div class="col-md-6 ">
-            <div class="form-check" style="color: #ffffe1;">
-                <input class="form-check-input" type="radio" name="flexRadioEstado" id="flexRadioEnProceso">
-                <label class="form-check-label" for="flexRadioEnProceso">
-                    En Proceso
-                </label>
-            </div>
-            <div class="form-check" style="color: #05baa4;">
-                <input class="form-check-input" type="radio" name="flexRadioEstado" id="flexRadioPendiente">
-                <label class="form-check-label" for="flexRadioPendiente">
-                    Pendiente
-                </label>
-            </div>
-            <div class="form-check" style="color: #c0dcc0;">
-                <input class="form-check-input" type="radio" name="flexRadioEstado" id="flexRadioAprobado">
-                <label class="form-check-label" for="flexRadioAprobado">
-                    Aprobado Sin Vincular
-                </label>
-            </div>
-        </div>
-        <div class="col-md-6 ">
-            <div class="form-check" style="color: #cff2fe;">
-                <input class="form-check-input" type="radio" name="flexRadioEstado" id="flexRadioVinculado">
-                <label class="form-check-label" for="flexRadioVinculado">
-                    Aprobado Vinculado
-                </label>
-            </div>
-            <div class="form-check" style="color: #ff5353;">
-                <input class="form-check-input" type="radio" name="flexRadioEstado" id="flexRadioRechazado">
-                <label class="form-check-label" for="flexRadioRechazado">
-                    Rechazado
-                </label>
-            </div>
-            <div class="form-check" style="color: #ff5353;">
-                <input class="form-check-input" type="radio" name="flexRadioEstado" id="flexRadioRechazado">
-                <label class="form-check-label" for="flexRadioRechazado">
-                    Rechazado Cerrado
-                </label>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="form-check" style="color: white;">
-            <input class="form-check-input" type="radio" name="flexRadioEstado" id="flexRadioTodos" checked>
-            <label class="form-check-label" for="flexRadioTodos">
-                Todos
-            </label>
-        </div>
-    </div>-->
                                         <div class="row">
                                             <div class="col-md-6 ">
                                                 <div class="form-check" style="color: #dfdf99;">
@@ -439,12 +389,17 @@
             rowHTML = ''
             $.each(presuplist, function (it, iord) {
                 rowHTML += "<tr id-presup=\"" + iord.id_presup + "\" onclick='openPresup(this)'>"
-                rowHTML += "<td class='col-xs-1'>" + iord.anio + "-" + iord.mes + "-" + iord.nro_presup + "</td>";
+                rowHTML += "<td class='col-xs-1'>" + iord.anio + " - " + iord.mes + " - " + iord.nro_presup + "</td>";
                 rowHTML += "<td class='col-xs-1'>" + dateToFieldFormat(iord.fecha) + ' - ' + dateToFieldFormat(iord.fecha_expiracion) + "</td>";
                 rowHTML += "<td class='col-xs-1'>" + iord.descripcion + "</td>";
                 rowHTML += "<td class='col-xs-1'>" + iord.agencia.nombre_com + "</td>";
                 rowHTML += "<td class='col-xs-1'>" + iord.anunciante.nombre_com + "</td>";
-                rowHTML += "<td class='col-xs-1'>" + iord.producto.desc_producto + "</td>";
+                if (iord.producto == null) {
+                    rowHTML += "<td class='col-xs-1'></td>";
+                }
+                else {
+                    rowHTML += "<td class='col-xs-1'>" + iord.producto.desc_producto + "</td>";
+                }
                 rowHTML += "<td class='col-xs-1'>" + iord.simboloMoneda + " " + formatearMonto(iord.seg_neto) + "</td>";
                 switch (iord.id_estado) {
                     case 0:

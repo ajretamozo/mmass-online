@@ -355,7 +355,14 @@ namespace WebApi.Entities
                 parametros.Add(new SqlParameter() { ParameterName = "@fecha_expiracion", SqlDbType = SqlDbType.DateTime, Value = Fecha_expiracion });
                 parametros.Add(new SqlParameter() { ParameterName = "@id_agencia", SqlDbType = SqlDbType.Int, Value = agencia.Id_contacto });
                 parametros.Add(new SqlParameter() { ParameterName = "@id_anunciante", SqlDbType = SqlDbType.Int, Value = anunciante.Id_contacto });
-                parametros.Add(new SqlParameter() { ParameterName = "@id_producto", SqlDbType = SqlDbType.Int, Value = producto.Id_producto });
+                if (producto.Id_producto == 0)
+                {
+                    parametros.Add(new SqlParameter() { ParameterName = "@id_producto", SqlDbType = SqlDbType.Int, Value = DBNull.Value });
+                }
+                else
+                {
+                    parametros.Add(new SqlParameter() { ParameterName = "@id_producto", SqlDbType = SqlDbType.Int, Value = producto.Id_producto });
+                }
                 parametros.Add(new SqlParameter() { ParameterName = "@id_condpagoap", SqlDbType = SqlDbType.Int, Value = DB.DInt(Id_condpagoap) });
                 parametros.Add(new SqlParameter() { ParameterName = "@facturar_a", SqlDbType = SqlDbType.Int, Value = DB.DInt(Facturar_a) });
                 parametros.Add(new SqlParameter() { ParameterName = "@monto_bruto", SqlDbType = SqlDbType.Float, Value = Monto_bruto });

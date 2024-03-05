@@ -459,369 +459,448 @@
             </div>
         </div>
 
+        <!--Modal Cliente Potencial-->
+        <div class="modal fade" id="clienteModal" style="height: 1000px;">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content shadow p-3 mb-5 bg-white rounded" style="height: 400px;">
+
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="clienteModalTitle">CLIENTE POTENCIAL</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+
+                    <!-- Modal body -->
+                    <div class="modal-body" id="clienteModalBody">
+                        <div class="row py-1">
+                            <div class="col-md-6">
+                                <label>Razón Social</label>
+                                <div class="input-group"> <input type="text" id="inpRazonSocial" class="form-control"> </div>
+                            </div>
+                            <div class="col-md-6">
+                                <!--<label for="selRol">Rol</label>
+                                <select class="form-control" id="selRol" onchange="filtrarContactos()">
+                                    <option value="1" checked>Agencia</option>
+                                    <option value="2">Anunciante</option>
+                                </select>-->
+
+                                <label for="mail">Mail</label>
+                                <div class="input-group">
+                                    <input type="email" id="mail" class="form-control" placeholder="ejemplo@servidormail.com">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row py-1">
+                            <div class="col-md-6">
+                                <label>Iniciales</label>
+                                <div class="input-group"> <input type="text" id="inpIniciales" class="form-control"> </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="selContactoVinculado">Vincular Agencia/Anunciante</label>
+                                <select class="form-control" id="selContactoVinculado"></select>
+                            </div>
+                        </div>
+                        <div class="row py-1">
+                            <div class="col-lg-6">
+                                <div class="form-check form-check-inline">
+                                    <label>Rol</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="flexRadioRol" id="flexRadioAgencia" onclick="filtrarContactos(1)" checked>
+                                    <label class="form-check-label" for="flexRadioAgencia">
+                                        Agencia
+                                    </label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="flexRadioRol" id="flexRadioAnunciante" onclick="filtrarContactos(2)">
+                                    <label class="form-check-label" for="flexRadioAnunciante">
+                                        Anunciante
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 d-flex justify-content-end">
+                                <button id="botGuardarCliente" title="Guardar Cliente Potencial" type="button" class="btn actions btn-dark btn-sm mx-1" onclick="guardarCliPotencial();">
+                                    <span class="fa fa-save"></span> Guardar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
         <!-- PRINCIPAL -->
         <div id="divMessage" class="alert" style="display:none;cursor:pointer;z-index:10000;" title="Click para cerrar"> </div>
         <div class="jumbotron mt-4 py-4 shadow p-3 mb-5 bg-white rounded">
             <div class=" d-flex align-items-center" style="margin-bottom: 1rem;">
                 <span class="dataTitle" id="pTitulo" style="margin-right: 15px;">PRESUPUESTO DE VENTA</span>
                 <!--<div id="divAnuClon">
-                </div>-->
+            </div>-->
             </div>
             <!-- TABS -->
             <!--<nav class="nav nav-tabs mb-3">
-                <a class="nav-link active" id="principal-tab" data-toggle="tab" href="#principal" role="tab" aria-controls="principal" aria-selected="true">General</a>
-                <a class="nav-link" id="archivos-tab" data-toggle="tab" href="#archivos" role="tab" aria-controls="archivos" aria-selected="false">Certificación</a>
-            </nav>-->
+            <a class="nav-link active" id="principal-tab" data-toggle="tab" href="#principal" role="tab" aria-controls="principal" aria-selected="true">General</a>
+            <a class="nav-link" id="archivos-tab" data-toggle="tab" href="#archivos" role="tab" aria-controls="archivos" aria-selected="false">Certificación</a>
+        </nav>-->
             <!--<div class="tab-content" id="tabsContent">-->
-                <div class="tab-pane fade show active" id="principal" role="tabpanel" aria-labelledby="principal-tab">
-                    <!--ORDER DATA-->
-                    <div id="divOrderData">
-                        <!-- GRUPO 1 -->
-                        <div id="grupo1">
-                            <div class="row">
-                                <div class="col-lg-4">
-                                    <label>Número de Presupuesto</label>
-                                    <div id="PresupuestoNumberComplete" class="row">
-                                        <div class="col-lg-4 "> <div class="input-group"> <input type="text" disabled id="inpOrderYear" class="form-control" value=""></div> </div>
-                                        <div class="col-lg-4 "> <div class="input-group"> <input type="text" disabled id="inpOrderMonth" class="form-control" value=""> </div> </div>
-                                        <div class="col-lg-4 "> <div class="input-group"> <input type="text" disabled class="form-control" id="inpOrderNumber" id_op_dg="0"> </div> </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-3" style="padding-right: 0px;">
-                                    <label>Moneda</label>
-                                    <select class="form-control" id="selMoneda" onfocus="this.oldvalue = this.value" onchange="cambiarMoneda(this); this.oldvalue = this.value;"></select>
-                                </div>
-                                <div class="col-lg-1" style="padding-top: 4px;">
-                                    <label for="bCambioMoneda" class="invisible">Cambios</label>
-                                    <button type="button" data-id="cambioMoneda" id="bCambioMoneda" class="btn actions btn-outline-dark btn-sm mr-1 btn-block" onclick="getCotizaciones()" title="Ver cotizaciones de monedas">
-                                        <span class="fa fa-usd"></span>
-                                        <span class="fa fa-exchange"></span>
-                                        <span class="fa fa-eur"></span>
-                                    </button>
-                                </div>
-                                <div class="col-lg-4">
-                                    <div class="row">
-                                        <div class="col-lg-6">
-                                            <label>Fecha Alta</label>
-                                            <div class="input-group"> <input type="text" disabled id="inpFechaAlta" class="form-control  col text-center" value=""> </div>
-                                        </div>
-                                        <div class="col-lg-6">
-                                            <label>Estado</label>
-                                            <div class="input-group">
-                                                <input type="text" disabled id="inpEstado" class="form-control col text-center" style="background-color: #343a40;">
-                                            </div>
-                                        </div>
-                                    </div>
+            <div class="tab-pane fade show active" id="principal" role="tabpanel" aria-labelledby="principal-tab">
+                <!--ORDER DATA-->
+                <div id="divOrderData">
+                    <!-- GRUPO 1 -->
+                    <div id="grupo1">
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <label>Número de Presupuesto</label>
+                                <div id="PresupuestoNumberComplete" class="row">
+                                    <div class="col-lg-4 "> <div class="input-group"> <input type="text" disabled id="inpOrderYear" class="form-control" value=""></div> </div>
+                                    <div class="col-lg-4 "> <div class="input-group"> <input type="text" disabled id="inpOrderMonth" class="form-control" value=""> </div> </div>
+                                    <div class="col-lg-4 "> <div class="input-group"> <input type="text" disabled class="form-control" id="inpOrderNumber" id_op_dg="0"> </div> </div>
                                 </div>
                             </div>
-                            <hr>
-                            <!-- GRUPO 2 -->
-                            <!-- FILA 1 -->
-                            <div class="row justify-content-around" style="padding-top: 15px;">
-                                <div class="col-lg-4">
-                                    <label>Vigencia Presupuesto</label>
-                                    <div id="OrderDateSpam" class="row">
-                                        <div class="col-lg-12">
-                                            <div class="input-group input-daterange">
-                                                <input type="text" class="form-control datetimepicker-input" id="fechaDesde" data-toggle="datetimepicker" data-target="#fechaDesde" />
-                                                <span class="input-group-addon">hasta</span>
-                                                <input type="text" class="form-control datetimepicker-input" autocomplete="off" id="fechaHasta" data-toggle="datetimepicker" data-target="#fechaHasta" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-4">
-                                    <label>Descripción</label>
-                                    <div class="input-group"> <input type="text" id="inpDescOP" class="form-control"> </div>
-                                </div>
-                                <div class="col-lg-4">
-                                    <label>Concepto de Negocio</label>
-                                    <select class="form-control" id="selConceptoN"></select>
-                                </div>
+                            <div class="col-lg-3" style="padding-right: 0px;">
+                                <label>Moneda</label>
+                                <select class="form-control" id="selMoneda" onfocus="this.oldvalue = this.value" onchange="cambiarMoneda(this); this.oldvalue = this.value;"></select>
                             </div>
-                            <!-- FILA 2 -->
-                            <!-- GRUPO 2 -->
-                            <hr>
-                            <div class="row">
-                                <div class="col-lg-4">
-                                    <label>Agencia</label>
-                                    <select class="form-control" id="selAgencia" onchange="onAgenciaSelected()"></select>
-                                </div>
-                                <div class="col-lg-4">
-                                    <label>Anunciante</label>
-                                    <select class="form-control" id="selAnunciante" onchange="onAnuncianteSelected()"></select>
-                                </div>
-                                <div class="col-lg-4">
-                                    <label>Producto</label>
-                                    <select class="form-control" id="selProducto" onchange="onProductoSelected()"></select>
-                                </div>
+                            <div class="col-lg-1" style="padding-top: 4px;">
+                                <label for="bCambioMoneda" class="invisible">Cambios</label>
+                                <button type="button" data-id="cambioMoneda" id="bCambioMoneda" class="btn actions btn-outline-dark btn-sm mr-1 btn-block" onclick="getCotizaciones()" title="Ver cotizaciones de monedas">
+                                    <span class="fa fa-usd"></span>
+                                    <span class="fa fa-exchange"></span>
+                                    <span class="fa fa-eur"></span>
+                                </button>
                             </div>
-                            <div class="row mt-2">
-                                <div class="col-lg-2 offset-lg-10 d-flex justify-content-end">
-                                    <button id="botLimpiar" title="Limpiar Agencia - Anunciante" type="button" class="btn actions btn-outline-dark btn-sm mr-1" onclick="limpiaVinculados();">
-                                        <span class="fa fa-eraser"></span> Limpiar
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        <hr>
-                        <div class="row" style="padding-top: 15px;">
-                            <div class="col-lg-6" style="padding-right: 20px;">
-                                <div class="row" style="padding-left: 15px; padding-right: 15px;">
-                                    <label>Facturar a</label>
-                                    <select class="form-control" id="selFacturar">
-                                        <option value="0" checked>Agencia</option>
-                                        <option value="1">Anunciante</option>
-                                        <option value="2">No facturar</option>
-                                    </select>
-                                </div>
-                                <div class="row" style="padding-left: 15px; padding-right: 15px; padding-top: 15px;">
-                                    <label>Plazo de Pago</label>
-                                    <select class="form-control" id="selPlazoP"></select>
-                                </div>
-                                <div class="row" style="padding-left: 15px; padding-right: 15px; padding-top: 15px;">
-                                    <label>Ejecutivo</label>
-                                    <select class="form-control" id="selEjecutivo"></select>
-                                </div>
-                            </div>
-                            <div class="col-lg-6" style="padding-left: 20px;">
-                                <div class="row" style="padding-left: 15px; padding-right: 15px;">
-                                    <label for="selFPago" style="margin-bottom: 0px;">Subtipo de Venta</label>
-                                    <select id="selFPago" class="custom-select" onchange="$('#porcRon').empty(); enableRon();" multiple></select>
-                                </div>
-                                <div class="row" style="padding-left: 15px; padding-right: 15px; padding-top: 13px;">
-                                    <button type="button" id="botPorcRon" class="btn actions btn-outline-dark" style="flex-grow: 1;" onclick="openRonPorc();">
-                                        <span class="fa fa-pie-chart"></span> Porcentajes
-                                    </button>
-                                    <div id="porcRon" style="display:none"></div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!--ORDER DETAILS-->
-                        <hr>
-                        <div id="divOrderDetail" class="mt-2">
-
-                            <div id="divDetailsRows">
-
+                            <div class="col-lg-4">
                                 <div class="row">
-                                    <div class="col-lg-1">
-                                        <label>DETALLES</label>
-                                    </div>
-                                    <div class="col-lg-2">
-                                        <button type="button" class="btn  actions btn-outline-dark btn-sm" id="bCargarNuevoRenglon" onclick="cargarNuevoRenglon()" title="Nuevo Detalle" style="padding-top: 2px; padding-bottom: 2px; margin-right: 10px; padding-right: 10px; padding-left: 10px;">
-                                            <span class="fa fa-plus"></span>
-                                        </button>
+                                    <div class="col-lg-6">
+                                        <label>Fecha Alta</label>
+                                        <div class="input-group"> <input type="text" disabled id="inpFechaAlta" class="form-control  col text-center" value=""> </div>
                                     </div>
                                     <div class="col-lg-6">
-                                    </div>
-                                </div>
-
-                                <div class="table-responsive mt-2">
-                                    <table class="table table-fixed" id="tReng" style="text-align: center;">
-                                        <thead>
-                                            <tr>
-                                                <th class="col-xs-3">Programa/Rango horario</th>
-                                                <th class="col-xs-2">Vigencia</th>
-                                                <th class="col-xs-2">T. Aviso</th>
-                                                <th class="col-xs-1">Tarifa</th>
-                                                <th class="col-xs-1">Cant.</th>
-                                                <th class="col-xs-1">Neto</th>
-                                                <th class="col-xs-2 actions" style="text-align:center;">Acciones</th>
-                                                <th width="1px"></th>
-                                                <th width="1px"></th>
-                                                <th width="1px"></th>
-                                                <th width="1px"></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="TableRenglones"></tbody>
-                                    </table>
-                                </div>
-                            </div>
-
-
-                            <div id="divAddRow" class="card" style="display:none;">
-                                <div class="card-header d-flex" id="chDetalle">
-                                    <!--NUEVO DETALLE-->
-                                    <span class="dataTitle" id="pTituloDetalle" style="margin-right: 15px;">NUEVO DETALLE</span>
-                                    <div id="divClonDet">
-                                    </div>
-                                </div>
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-lg-3">
-                                            <label>Medio</label>
-                                            <select class="form-control" id="selMediosD" onchange="filterTarifas(); filterProgramas()"></select>
-                                        </div>
-                                        <div class="col-lg-3">
-                                            <label>Tarifa</label>
-                                            <select class="form-control" id="selTarifaD" onchange="filterPorTarifa()"></select>
-                                            <div class="row float-right">
-                                                <div class="form-check-inline mr-0">
-                                                    <label class="form-check-label " for="checkTarifaManualD" style="padding-right: 15px;">
-                                                        <input type="checkbox" style="margin-top: .4rem; margin-right: .2rem" class="form-check-input float-sm-left" id="checkTarifaManualD">Manual
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-3">
-                                            <label>Ambito</label>
-                                            <select class="form-control" id="selAmbito">
-                                                <option value="0"></option>
-                                                <option value="1">Local</option>
-                                                <option value="2">Nacional</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-lg-3">
-                                            <label>Vigencia</label>
-                                            <div class="input-group input-daterange">
-                                                <input type="datetime" class="form-control" id="fechaDesdeD" data-toggle="datetimepicker" data-target="#fechaDesdeD" onchange="calcularNetoD();" />
-                                                <span class="input-group-addon">hasta</span>
-                                                <input type="datetime" class="form-control" id="fechaHastaD" data-toggle="datetimepicker" data-target="#fechaHastaD" onchange="calcularNetoD();" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-lg-3">
-                                            <label>Forma de Uso</label>
-                                            <select class="form-control" id="selTipoTarifaD" disabled></select>
-                                        </div>
-                                        <div class="col-lg-3">
-                                            <label>Tipo Aviso</label>
-                                            <select class="form-control" id="selTipoAvisoD"></select>
-                                        </div>
-                                        <div class="col-lg-3">
-                                            <label>Programa</label>
-                                            <select class="form-control" id="selPrograma"></select>
-                                        </div>
-                                        <div class="col-lg-3">
-                                            <label>Rango Horario</label>
-                                            <div class="input-group input-daterange">
-                                                <input type="time" id="rangoDesde" class="form-control">
-                                                <span class="input-group-addon">hasta</span>
-                                                <input type="time" id="rangoHasta" class="form-control">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row" style="padding-top: 40px;">
-                                        <div class="col-lg-2">
-                                            <label>Precio Unitario</label>
-                                            <div id="divPrecioUnitarioD">
-                                                <input type="number" id="precioUnitarioD" class="form-control" readonly="readonly" onchange="calcularNetoD()">
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-2">
-                                            <label id="cantidadL">Cantidad</label>
-                                            <div id="divCantD">
-                                                <input type="number" id="cantidadD" class="form-control" onchange="calcularNetoD()">
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-2">
-                                            <label>% Descuento</label>
-                                            <div id="divDescuentoD">
-                                                <input type="number" id="descuentoD" class="form-control" onchange="calcularNetoD()">
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-2">
-                                            <label>Total</label>
-                                            <div id="divTotalD">
-                                                <input type="text" id="totalD" readonly="readonly" class="form-control">
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-2">
-                                            <label>% NC</label>
-                                            <div id="divConfNCD">
-                                                <input type="number" id="confNCD" class="form-control">
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-2">
-                                            <label>% FC</label>
-                                            <div id="divConfFCD">
-                                                <input type="number" id="confFCD" class="form-control">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="card-footer mt-2 ">
-                                    <div class="row">
-                                        <div class="col-lg-4">
-                                        </div>
-                                        <div class="col-lg-4"></div>
-                                        <div class="col-lg-4 d-flex justify-content-end">
-                                            <button type="button" id="GuardarRenglon" class="btn btn-dark btn-sm mx-1" onclick="prevAddRenglon(-1);">
-                                                <span class="fa fa-check"></span> Aceptar
-                                            </button>
-                                            <button type="button" class="btn btn-dark btn-sm mx-1" onclick="cancelarCargaDetalle();">
-                                                <span class="fa fa-remove"></span> Cancelar
-                                            </button>
+                                        <label>Estado</label>
+                                        <div class="input-group">
+                                            <input type="text" disabled id="inpEstado" class="form-control col text-center" style="background-color: #343a40;">
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <hr>
-                        <!--TOTALES-->
-                        <div class="container-fluid small">
-                            <div class="row">
-                                <div class="col-sm">
-                                    <label>Bruto</label>
-                                    <input type="number" class="form-control" id="montoBruto" readonly="readonly" value="0">
-                                </div>
-                                <div class="col-sm">
-                                    <label>% Desc</label>
-                                    <input type="number" class="form-control" value="0" readonly="readonly" id="porc_desc">
-                                </div>
-                                <div class="col-sm">
-                                    <label>Primer Neto</label>
-                                    <input type="number" class="form-control" value="0" readonly="readonly" id="neto1">
-                                </div>      <div class="col-sm">
-                                    <label>Conf NC</label>
-                                    <input type="number" class="form-control" value="0" id="conf_nc" onchange="calculateTotals()" disabled="disabled">
-                                </div>
-                                <div class="col-sm">
-                                    <label>Conf FC</label>
-                                    <input type="number" class="form-control" value="0" id="conf_fc" onchange="calculateTotals()" disabled="disabled">
-                                </div>
-                                <div class="col-sm">
-                                    <label>Seg Neto</label>
-                                    <input type="number" class="form-control" value="0" readonly="readonly" id="neto2">
-                                </div>
-
-                                <div class="col-sm">
-                                    <!--<label>Total (+IVA)</label>-->
-                                    <label>Total</label>
-                                    <input type="number" class="form-control" value="0" readonly="readonly" id="total">
+                        <!-- GRUPO 2 -->
+                        <!-- FILA 1 -->
+                        <div class="row justify-content-around" style="padding-top: 15px;">
+                            <div class="col-lg-4">
+                                <label>Vigencia Presupuesto</label>
+                                <div id="OrderDateSpam" class="row">
+                                    <div class="col-lg-12">
+                                        <div class="input-group input-daterange">
+                                            <input type="text" class="form-control datetimepicker-input" id="fechaDesde" data-toggle="datetimepicker" data-target="#fechaDesde" />
+                                            <span class="input-group-addon">hasta</span>
+                                            <input type="text" class="form-control datetimepicker-input" autocomplete="off" id="fechaHasta" data-toggle="datetimepicker" data-target="#fechaHasta" />
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-
-                        <div class="card-footer mt-2 ">
-                            <div class="row">
-                                <div class="col-lg-5">
-                                    <!--<button type="button" id="bClonar" disabled="disabled" class="btn actions btn-dark btn-sm mx-1" onclick="prevClonarOrden()">
-                                        <span class="fa fa-clone"></span> Clonar OP
-                                    </button>-->
-                                    <button type="button" id="bCerrarPresup" class="btn actions btn-dark btn-sm mx-1" onclick="prevClosePresup()" disabled="disabled">
-                                        <span class="fa fa-minus-circle"></span> Cerrar/Finalizar
-                                    </button>
-                                    <button type="button" id="bEnviarPresup" class="btn actions btn-dark btn-sm mx-1" onclick="prevSendPresup()" disabled="disabled">
-                                        <span class="fa fa-paper-plane"></span> Enviar a cliente
-                                    </button>
-                                </div>
-                                <div class="col-lg-3"></div>
-                                <div class="col-md-4 d-flex justify-content-end">
-                                    <button type="button" id="bGuardarPresup" class="btn actions btn-dark btn-sm mx-1" onclick="prevSavePresup()">
-                                        <span class="fa fa-save"></span> Guardar
-                                    </button>
-                                    <button type="button" class="btn actions btn-dark btn-sm mx-1" onclick="cancelarPresup()">
-                                        <span class="fa fa-remove"></span> Cancelar
-                                    </button>
-                                </div>
+                            <div class="col-lg-4">
+                                <label>Descripción</label>
+                                <div class="input-group"> <input type="text" id="inpDescOP" class="form-control"> </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <label>Concepto de Negocio</label>
+                                <select class="form-control" id="selConceptoN"></select>
                             </div>
                         </div>
-
+                        <!-- FILA 2 -->
+                        <!-- GRUPO 2 -->
+                        <hr>
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <label>Agencia</label>
+                                <select class="form-control" id="selAgencia" onchange="onAgenciaSelected()"></select>
+                            </div>
+                            <div class="col-lg-4">
+                                <label>Anunciante</label>
+                                <select class="form-control" id="selAnunciante" onchange="onAnuncianteSelected()"></select>
+                            </div>
+                            <div class="col-lg-4">
+                                <label>Producto</label>
+                                <select class="form-control" id="selProducto" onchange="onProductoSelected()"></select>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col d-flex justify-content-end">
+                                <button id="bNuevoContacto" title="Cargar Cliente Potencial" type="button" class="btn actions btn-outline-dark btn-sm mr-1" onclick="nuevoCliPotencial();">
+                                    <span class="fa fa-address-book-o"></span> Cliente Potencial
+                                </button>
+                                <button id="botLimpiar" title="Limpiar Agencia - Anunciante" type="button" class="btn actions btn-outline-dark btn-sm mr-1" onclick="limpiaVinculados();">
+                                    <span class="fa fa-eraser"></span> Limpiar
+                                </button>
+                            </div>
+                        </div>
                     </div>
+                    <hr>
+                    <div class="row" style="padding-top: 15px;">
+                        <div class="col-lg-6" style="padding-right: 20px;">
+                            <div class="row" style="padding-left: 15px; padding-right: 15px;">
+                                <label>Facturar a</label>
+                                <select class="form-control" id="selFacturar">
+                                    <option value="0" checked>Agencia</option>
+                                    <option value="1">Anunciante</option>
+                                    <option value="2">No facturar</option>
+                                </select>
+                            </div>
+                            <div class="row" style="padding-left: 15px; padding-right: 15px; padding-top: 15px;">
+                                <label>Plazo de Pago</label>
+                                <select class="form-control" id="selPlazoP"></select>
+                            </div>
+                            <div class="row" style="padding-left: 15px; padding-right: 15px; padding-top: 15px;">
+                                <label>Ejecutivo</label>
+                                <select class="form-control" id="selEjecutivo"></select>
+                            </div>
+                        </div>
+                        <div class="col-lg-6" style="padding-left: 20px;">
+                            <div class="row" style="padding-left: 15px; padding-right: 15px;">
+                                <label for="selFPago" style="margin-bottom: 0px;">Subtipo de Venta</label>
+                                <select id="selFPago" class="custom-select" onchange="$('#porcRon').empty(); enableRon();" multiple></select>
+                            </div>
+                            <div class="row" style="padding-left: 15px; padding-right: 15px; padding-top: 13px;">
+                                <button type="button" id="botPorcRon" class="btn actions btn-outline-dark" style="flex-grow: 1;" onclick="openRonPorc();">
+                                    <span class="fa fa-pie-chart"></span> Porcentajes
+                                </button>
+                                <div id="porcRon" style="display:none"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--ORDER DETAILS-->
+                    <hr>
+                    <div id="divOrderDetail" class="mt-2">
+
+                        <div id="divDetailsRows">
+
+                            <div class="row">
+                                <div class="col-lg-1">
+                                    <label>DETALLES</label>
+                                </div>
+                                <div class="col-lg-2">
+                                    <button type="button" class="btn  actions btn-outline-dark btn-sm" id="bCargarNuevoRenglon" onclick="cargarNuevoRenglon()" title="Nuevo Detalle" style="padding-top: 2px; padding-bottom: 2px; margin-right: 10px; padding-right: 10px; padding-left: 10px;">
+                                        <span class="fa fa-plus"></span>
+                                    </button>
+                                </div>
+                                <div class="col-lg-6">
+                                </div>
+                            </div>
+
+                            <div class="table-responsive mt-2">
+                                <table class="table table-fixed" id="tReng" style="text-align: center;">
+                                    <thead>
+                                        <tr>
+                                            <th class="col-xs-3">Programa/Rango horario</th>
+                                            <th class="col-xs-2">Vigencia</th>
+                                            <th class="col-xs-2">T. Aviso</th>
+                                            <th class="col-xs-1">Tarifa</th>
+                                            <th class="col-xs-1">Cant.</th>
+                                            <th class="col-xs-1">Neto</th>
+                                            <th class="col-xs-2 actions" style="text-align:center;">Acciones</th>
+                                            <th width="1px"></th>
+                                            <th width="1px"></th>
+                                            <th width="1px"></th>
+                                            <th width="1px"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="TableRenglones"></tbody>
+                                </table>
+                            </div>
+                        </div>
+
+
+                        <div id="divAddRow" class="card" style="display:none;">
+                            <div class="card-header d-flex" id="chDetalle">
+                                <!--NUEVO DETALLE-->
+                                <span class="dataTitle" id="pTituloDetalle" style="margin-right: 15px;">NUEVO DETALLE</span>
+                                <div id="divClonDet">
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-lg-3">
+                                        <label>Medio</label>
+                                        <select class="form-control" id="selMediosD" onchange="filterTarifas(); filterProgramas()"></select>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <label>Tarifa</label>
+                                        <select class="form-control" id="selTarifaD" onchange="filterPorTarifa()"></select>
+                                        <div class="row float-right">
+                                            <div class="form-check-inline mr-0">
+                                                <label class="form-check-label " for="checkTarifaManualD" style="padding-right: 15px;">
+                                                    <input type="checkbox" style="margin-top: .4rem; margin-right: .2rem" class="form-check-input float-sm-left" id="checkTarifaManualD">Manual
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <label>Ambito</label>
+                                        <select class="form-control" id="selAmbito">
+                                            <option value="0"></option>
+                                            <option value="1">Local</option>
+                                            <option value="2">Nacional</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <label>Vigencia</label>
+                                        <div class="input-group input-daterange">
+                                            <input type="datetime" class="form-control" id="fechaDesdeD" data-toggle="datetimepicker" data-target="#fechaDesdeD" onchange="calcularNetoD();" />
+                                            <span class="input-group-addon">hasta</span>
+                                            <input type="datetime" class="form-control" id="fechaHastaD" data-toggle="datetimepicker" data-target="#fechaHastaD" onchange="calcularNetoD();" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-3">
+                                        <label>Forma de Uso</label>
+                                        <select class="form-control" id="selTipoTarifaD" disabled></select>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <label>Tipo Aviso</label>
+                                        <select class="form-control" id="selTipoAvisoD"></select>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <label>Programa</label>
+                                        <select class="form-control" id="selPrograma"></select>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <label>Rango Horario</label>
+                                        <div class="input-group input-daterange">
+                                            <input type="time" id="rangoDesde" class="form-control">
+                                            <span class="input-group-addon">hasta</span>
+                                            <input type="time" id="rangoHasta" class="form-control">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row" style="padding-top: 40px;">
+                                    <div class="col-lg-2">
+                                        <label>Precio Unitario</label>
+                                        <div id="divPrecioUnitarioD">
+                                            <input type="number" id="precioUnitarioD" class="form-control" readonly="readonly" onchange="calcularNetoD()">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <label id="cantidadL">Cantidad</label>
+                                        <div id="divCantD">
+                                            <input type="number" id="cantidadD" class="form-control" onchange="calcularNetoD()">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <label>% Descuento</label>
+                                        <div id="divDescuentoD">
+                                            <input type="number" id="descuentoD" class="form-control" onchange="calcularNetoD()">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <label>Total</label>
+                                        <div id="divTotalD">
+                                            <input type="text" id="totalD" readonly="readonly" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <label>% NC</label>
+                                        <div id="divConfNCD">
+                                            <input type="number" id="confNCD" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <label>% FC</label>
+                                        <div id="divConfFCD">
+                                            <input type="number" id="confFCD" class="form-control">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer mt-2 ">
+                                <div class="row">
+                                    <div class="col-lg-4">
+                                    </div>
+                                    <div class="col-lg-4"></div>
+                                    <div class="col-lg-4 d-flex justify-content-end">
+                                        <button type="button" id="GuardarRenglon" class="btn btn-dark btn-sm mx-1" onclick="prevAddRenglon(-1);">
+                                            <span class="fa fa-check"></span> Aceptar
+                                        </button>
+                                        <button type="button" class="btn btn-dark btn-sm mx-1" onclick="cancelarCargaDetalle();">
+                                            <span class="fa fa-remove"></span> Cancelar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <!--TOTALES-->
+                    <div class="container-fluid small">
+                        <div class="row">
+                            <div class="col-sm">
+                                <label>Bruto</label>
+                                <input type="number" class="form-control" id="montoBruto" readonly="readonly" value="0">
+                            </div>
+                            <div class="col-sm">
+                                <label>% Desc</label>
+                                <input type="number" class="form-control" value="0" readonly="readonly" id="porc_desc">
+                            </div>
+                            <div class="col-sm">
+                                <label>Primer Neto</label>
+                                <input type="number" class="form-control" value="0" readonly="readonly" id="neto1">
+                            </div>      <div class="col-sm">
+                                <label>Conf NC</label>
+                                <input type="number" class="form-control" value="0" id="conf_nc" onchange="calculateTotals()" disabled="disabled">
+                            </div>
+                            <div class="col-sm">
+                                <label>Conf FC</label>
+                                <input type="number" class="form-control" value="0" id="conf_fc" onchange="calculateTotals()" disabled="disabled">
+                            </div>
+                            <div class="col-sm">
+                                <label>Seg Neto</label>
+                                <input type="number" class="form-control" value="0" readonly="readonly" id="neto2">
+                            </div>
+
+                            <div class="col-sm">
+                                <!--<label>Total (+IVA)</label>-->
+                                <label>Total</label>
+                                <input type="number" class="form-control" value="0" readonly="readonly" id="total">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-footer mt-2 ">
+                        <div class="row">
+                            <div class="col-lg-5">
+                                <!--<button type="button" id="bClonar" disabled="disabled" class="btn actions btn-dark btn-sm mx-1" onclick="prevClonarOrden()">
+                                <span class="fa fa-clone"></span> Clonar OP
+                            </button>-->
+                                <button type="button" id="bCerrarPresup" class="btn actions btn-dark btn-sm mx-1" onclick="prevClosePresup()" disabled="disabled">
+                                    <span class="fa fa-minus-circle"></span> Cerrar/Finalizar
+                                </button>
+                                <button type="button" id="bEnviarPresup" class="btn actions btn-dark btn-sm mx-1" onclick="prevSendPresup()" disabled="disabled">
+                                    <span class="fa fa-paper-plane"></span> Enviar a cliente
+                                </button>
+                            </div>
+                            <div class="col-lg-3"></div>
+                            <div class="col-md-4 d-flex justify-content-end">
+                                <button type="button" id="bGuardarPresup" class="btn actions btn-dark btn-sm mx-1" onclick="prevSavePresup()">
+                                    <span class="fa fa-save"></span> Guardar
+                                </button>
+                                <button type="button" class="btn actions btn-dark btn-sm mx-1" onclick="cancelarPresup()">
+                                    <span class="fa fa-remove"></span> Cancelar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
+            </div>
         </div>
     </main>
 
@@ -1030,7 +1109,10 @@
 
             if (data.agencia != null) {
                 $("#selAgencia option[value=" + data.agencia.id_contacto + "]").attr("selected", "selected");
-                cargarProductos(data.anunciante.id_contacto, data.producto.id_producto);
+                $("#selAgencia").change();
+                if (data.producto != null) {
+                    cargarProductos(data.anunciante.id_contacto, data.producto.id_producto);
+                }
             }
 
             $("#selAnunciante option[value=" + data.anunciante.id_contacto + "]").attr("selected", "selected");
@@ -1099,11 +1181,11 @@
             // $("#total").val(data.tercer_neto); //Total
 
             $("#TableRenglones").empty();
-            if (Detalles.length > 0) {
-                $("#selAnunciante").attr("disabled", true);
-                $("#botLimpiar").attr("disabled", true);
-                $("#botLimpiar").attr("title", "No es posible limpiar Anunciante si existen Detalles cargados");
-            }
+            //if (Detalles.length > 0) {
+                //$("#selAnunciante").attr("disabled", true);
+                //$("#botLimpiar").attr("disabled", true);
+                //$("#botLimpiar").attr("title", "No es posible limpiar Anunciante si existen Detalles cargados");
+            //}
 
             Detalles.forEach(generarTablaDetalles);
 
@@ -1131,10 +1213,10 @@
                 return false;
             }
 
-            if ($("#selProducto").val() == null) {
-                showMessage("Seleccione un Producto", "info");
-                return false;
-            }
+            //if ($("#selProducto").val() == null) {
+            //    showMessage("Seleccione un Producto", "info");
+            //    return false;
+            //}
 
             if ($("#selAgencia").val() == null) {
                 showMessage("Seleccione una Agencia", "info");
@@ -1278,7 +1360,12 @@
             data.anunciante.Id_contacto = $("#selAnunciante").val();
             data.anunciante.Nombre_com = $("#selAnunciante option:selected").text();
             data.producto = {};
-            data.producto.Id_producto = $("#selProducto").val();
+            if ($("#selProducto").val() == null) {
+                data.producto.Id_producto = 0;
+            }
+            else {
+                data.producto.Id_producto = $("#selProducto").val();
+            }
             data.Monto_bruto = $("#montoBruto").val();
             data.Primer_neto = $("#neto1").val();
             data.Seg_neto = $("#neto2").val();
@@ -1446,32 +1533,9 @@
 
                         $("#bCerrarPresup").attr("disabled", true);
                         $("#bEnviarPresup").attr("disabled", false);
-                        break;
-                    case 2:
-                        $("#inpEstado").val("Aprobado Sin Vincular");
-                        $("#inpEstado").css("color", "#c0dcc0");
-
-                        $("#bCerrarPresup").attr("disabled", true);
-                        $("#bEnviarPresup").attr("disabled", false);
-                        break;
-                    case 3:
-                        $("#inpEstado").val("Aprobado Vinculado");
-                        $("#inpEstado").css("color", "#0f9013");
-
-                        $("#bCerrarPresup").attr("disabled", true);
-                        $("#bEnviarPresup").attr("disabled", true);
-                        break;
-                    case 4:
-                        $("#inpEstado").val("Rechazado");
-                        $("#inpEstado").css("color", "#ff9897");
-
-                        break;
-                    case 5:
-                        $("#inpEstado").val("Rechazado Cerrado");
-                        $("#inpEstado").css("color", "#c82626");
-
-                        $("#bCerrarPresup").attr("disabled", true);
-                        $("#bEnviarPresup").attr("disabled", true);
+                        $("#bGuardarPresup").attr("disabled", true);
+                        $("#bGuardarPresup").attr("title", "No se pueden guardar Presupuestos que estén Pendientes");
+                        bloquearCamposCabecera();
                         break;
                 }
 
@@ -1520,7 +1584,6 @@
             an = $('#selAnunciante').val();
             ag = $('#selAgencia').val();
             if (an == null) {
-                $('#selProductoD').empty();
                 $('#selProducto').empty();
                 callWS("contactos", "getAnunciantesPorAgencia", ag, function (data) { onPopulateSelectDone(data, 'selAnunciante', 'id', 'nombre_com'); });
             } else {
@@ -1697,10 +1760,10 @@
                 showMessage("Seleccione un Anunciante", "info");
                 return 0;
             }
-            if ($("#selProducto").val() == null) {
-                showMessage("Seleccione un Producto", "info");
-                return 0;
-            }
+            //if ($("#selProducto").val() == null) {
+            //    showMessage("Seleccione un Producto", "info");
+            //    return 0;
+            //}
             if ($("#selConceptoN").val() == null) {
                 showMessage("Seleccione un Concepto de Negocio", "info");
                 return 0;
@@ -1726,7 +1789,7 @@
             $("#checkTarifaManualD")[0].checked = false;
             $("#checkTarifaManualD").change();
 
-            $("#selAnunciante").attr("disabled", true);
+            //$("#selAnunciante").attr("disabled", true);
 
             bloquearCamposDetalle();
 
@@ -2164,17 +2227,17 @@
             Detalles.forEach(generarTablaDetalles);
             calculateTotals();
 
-            if (Detalles.length > 0) {
-                $("#selAnunciante").attr("disabled", true);
-                $("#botLimpiar").attr("disabled", true);
-                $("#botLimpiar").attr("title", "No es posible limpiar Agencia - Anunciante si existen Detalles cargados");
-            }
-            else
-            {
-                if ($("#inpOrderNumber").attr("id_op_dg") == 0) {
-                    $("#selAnunciante").attr("disabled", false);
-                }
-            }
+            //if (Detalles.length > 0) {
+            //    $("#selAnunciante").attr("disabled", true);
+            //    $("#botLimpiar").attr("disabled", true);
+            //    $("#botLimpiar").attr("title", "No es posible limpiar Agencia - Anunciante si existen Detalles cargados");
+            //}
+            //else
+            //{
+            //    if ($("#inpOrderNumber").attr("id_op_dg") == 0) {
+            //        $("#selAnunciante").attr("disabled", false);
+            //    }
+            //}
         }
 
 
@@ -2292,10 +2355,10 @@
                 showMessage("Seleccione un Anunciante", "info");
                 return 0;
             }
-            if ($("#selProducto").val() == null) {
-                showMessage("Seleccione un Producto", "info");
-                return 0;
-            }
+            //if ($("#selProducto").val() == null) {
+            //    showMessage("Seleccione un Producto", "info");
+            //    return 0;
+            //}
             if ($("#selConceptoN").val() == null) {
                 showMessage("Seleccione un Concepto de Negocio", "info");
                 return 0;
@@ -2315,7 +2378,7 @@
 
             //$('#fechaDesdeD').datetimepicker({ format: 'L', locale: 'es' });
             //$('#fechaHastaD').datetimepicker({ format: 'L', locale: 'es' });
-            $("#selAnunciante").attr("disabled", true);
+            //$("#selAnunciante").attr("disabled", true);
             $('#divDetailsRows').hide(); $('#divAddRow').show();
             $("#checkTarifaManualD")[0].checked = false;
             $("#checkTarifaManualD").change();
@@ -2442,12 +2505,12 @@
                 Detalles.splice(indexOfObject, 1)
             ).then(function () { reordenarRenglon(); });
 
-            if (Detalles.length == 0) {
-                $("#selAgencia").attr("disabled", false);
-                $("#selAnunciante").attr("disabled", false);
-                $("#botLimpiar").attr("disabled", false);
-                $("#botLimpiar").attr("title", "Limpiar Agencia - Anunciante");
-            }
+            //if (Detalles.length == 0) {
+            //    $("#selAgencia").attr("disabled", false);
+            //    $("#selAnunciante").attr("disabled", false);
+            //    $("#botLimpiar").attr("disabled", false);
+            //    $("#botLimpiar").attr("title", "Limpiar Agencia - Anunciante");
+            //}
 
             $("#bAnular").attr("disabled", true);
             $("#bAnular").attr("title", "Guarde la Orden para poder anularla");
@@ -2722,6 +2785,7 @@
             $("#fechaHasta").attr("disabled", true);
             $("#selConceptoN").attr("disabled", true);
             $("#selAgencia").attr("disabled", true);
+            $("#selAnunciante").attr("disabled", true);
             $("#selProducto").attr("disabled", true);
             $("#selFacturar").attr("disabled", true);
             $("#selFPago").attr("disabled", true);
@@ -2729,6 +2793,8 @@
             $("#selEjecutivo").attr("disabled", true);
             $("#selMoneda").attr("disabled", true);
             $("#bCargarNuevoRenglon").attr("disabled", true);
+            $("#bNuevoContacto").attr("disabled", true); 
+            $("#botLimpiar").attr("disabled", true);
             $(".bootstrap-duallistbox-container").find("*").prop("disabled", true);
         }
 
@@ -2970,6 +3036,99 @@
 
             showMessage("Presupuesto cerrado", "success");
         }
+
+
+        function nuevoCliPotencial() {
+            $("#inpRazonSocial").val(""); 
+            $("#inpIniciales").val("");
+            $("#flexRadioAgencia").click();
+            $("#clienteModal").modal('show');
+        } 
+
+
+        function filtrarContactos(contacto) {
+            //si seleccionamos Anunciante, se traen Agencias para vincular y viceversa
+            if (contacto == 2) {
+                callWS("contactos", "getAgencias", '', function (data) { onPopulateSelectDone(data, 'selContactoVinculado', 'id', 'nombre_com'); });
+            }
+            else {
+                callWS("contactos", "getAnunciantes", '', function (data) { onPopulateSelectDone(data, 'selContactoVinculado', 'id', 'nombre_com'); });
+            }
+        } 
+
+
+        function guardarCliPotencial() {
+            var contacto = {};
+            var error = [];
+            if ($("#inpRazonSocial").val() == "") {
+                error.push("Razón Social");
+            }
+
+            if (error.length == 0) {
+                contacto.razonSocial = $("#inpRazonSocial").val();
+
+                if ($("#inpIniciales").val() == "") {
+                    contacto.nombre_com = $('#inpRazonSocial').val();
+                }
+                else {
+                    contacto.nombre_com = $('#inpIniciales').val();
+                }
+
+                contacto.email = $('#mail').val();
+
+                if (document.getElementById("flexRadioAgencia").checked == true) {
+                    contacto.tipo_contacto = "0";
+                }
+                else {
+                    contacto.tipo_contacto = "1";
+                };
+
+                if ($('#selContactoVinculado').val() == null) {
+                    contacto.id_contacto_vinculado = "0";
+                }
+                else {
+                    contacto.id_contacto_vinculado = $('#selContactoVinculado').val();
+                };
+
+                contacto.id_usuario_alta = getUserId();
+
+                callWS("contactos", "saveCliPotencial", JSON.stringify(contacto), function (resp) {
+                    if (resp != null) {
+                        $.when(callWS("contactos", "getAgencias", '', function (data) { onPopulateSelectDone(data, 'selAgencia', 'id', 'nombre_com'); }),
+                            callWS("contactos", "getAnunciantes", '', function (data) { onPopulateSelectDone(data, 'selAnunciante', 'id', 'nombre_com'); }))
+                            .then(function () {
+                                $("#clienteModal").modal('hide');
+                                if (resp.tipo_contacto == 0) {
+                                    $("#selAgencia option[value=" + resp.id_contacto + "]").attr("selected", "selected");
+                                    $("#selAgencia").change();
+                                    $("#selAnunciante option[value=" + resp.id_contacto_vinculado + "]").attr("selected", "selected");
+                                    $("#selAnunciante").change();
+                                }
+                                else {
+                                    $("#selAgencia option[value=" + resp.id_contacto_vinculado + "]").attr("selected", "selected");
+                                    $("#selAgencia").change();
+                                    $("#selAnunciante option[value=" + resp.id_contacto + "]").attr("selected", "selected");
+                                    $("#selAnunciante").change();
+                                }
+
+                                showMessage("Cliente potencial guardado", "success");
+                            });
+                    }
+                    else {
+                        showMessage("Ocurrió un error al intentar guardar el cliente", "error");
+                        console.log(resp);
+                    }
+                });
+
+            } else {
+                message = "Falta completar/indicar los siguientes datos: "
+                error.forEach(function (err) {
+                    message += err + " - ";
+                });
+                message = message.slice(0, -3);
+                showMessage(message, "error");
+            }
+        } 
 
     </script>
     <footer>

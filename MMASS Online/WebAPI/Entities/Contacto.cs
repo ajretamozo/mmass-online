@@ -4,6 +4,7 @@ using System.Data;
 using WebApi.Helpers;
 using Microsoft.Data.SqlClient;
 using System.Configuration;
+using Microsoft.Identity.Client;
 
 namespace WebApi.Entities
 {
@@ -18,6 +19,11 @@ namespace WebApi.Entities
         public string Token { get; set; }
         public int IdRed { get; set; }
         public List<string> IdContactosDigitales;
+        //Usados para guardar los clientes potenciales
+        public int Tipo_contacto { get; set; }
+        public int Id_usuario_alta { get; set; }
+        public int Id_contacto_vinculado { get; set; }
+        public string Email { get; set; }
 
         public static Contacto getContactoById(int Id)
         {
@@ -375,6 +381,84 @@ namespace WebApi.Entities
                 emails.Add(item["email"].ToString());
             }
             return emails;
+        }
+
+        public Contacto saveCliPotencial()
+        {
+            DataTable t = DB.Select("select IsNull(max(id_contacto),0) as ultimo from contactos");
+            if (t.Rows.Count == 1)
+            {
+                Id_contacto = int.Parse(t.Rows[0]["ultimo"].ToString()) + 1;
+            }
+
+            string sqlCommand = "INSERT [dbo].[contactos] ([id_contacto], [contacto], [ing_contacto], [razon_social], [nombre_com], [tip_doc], [nro_doc], [comfer], [id_cond_iva], [cuit], [ib], [observa], [fecha_baja], [es_borrado], [es_solorutina], [id_contactoenlace], [pesodeorden], [es_exportable], [cobra_comision_vend], [porc_comision_vend], [cobra_comision_cob], [porc_comision_cob], [dias_credito], [monto_credito], [id_rubro], [es_bloqueado], [id_plazo_pago], [es_grupo], [no_facturable], [id_origen], [id_tipo_precio], [id_tipo], [id_usuario_vinc], [provisorio], [id_tipotarifa], [id_tipoorganismo], [convenioanualprecio], [no_vinculable], [solorutina], [porc_grav_coproductor], [dias_actual], [credito_actual], [xctacte], [id_usuario_alta], [noprintfc], [id_contactoenlace2], [id_cond_IB], [id_tipo_doc], [fecha_modificacion], [transferido], [account_id], [Porc_agencia], [recibeFC], [id_formapago], [id_uc], [req_exp_fact], [cod_sociedad], [id_reg_fiscal]) " +
+                                " VALUES (@id_contacto, @contacto, GETDATE(), @razon_social, @nombre_com, NULL, N'', N'', NULL, N'', N'', N'', NULL, 0, 0, N'', 0, 0, 0, 0, 0, 0, 0, 0, NULL, 0, NULL, 0, 0, NULL, NULL, NULL, NULL, 1, 0, NULL, 0, 0, 0, 0, NULL, NULL, NULL, @id_usuario_alta, 0, NULL, NULL, NULL, GETDATE(), NULL, NULL, 0, 0, NULL, NULL, 0, NULL, NULL)";
+
+            List<SqlParameter> parametros = new List<SqlParameter>()
+            {
+                new SqlParameter()
+                { ParameterName="@id_contacto",SqlDbType = SqlDbType.Int, Value = Id_contacto },
+                new SqlParameter()
+                { ParameterName="@contacto",SqlDbType = SqlDbType.Int, Value = Id_contacto },
+                new SqlParameter()
+                { ParameterName="@razon_social",SqlDbType = SqlDbType.NVarChar, Value = RazonSocial },
+                new SqlParameter()
+                { ParameterName="@nombre_com",SqlDbType = SqlDbType.NVarChar, Value = Nombre_com },
+                new SqlParameter()
+                { ParameterName="@id_usuario_alta",SqlDbType = SqlDbType.Int, Value = Id_usuario_alta }
+            };
+
+            try
+            {
+                DB.Execute(sqlCommand, parametros);
+
+                DB.Execute("insert roles (id_contacto, id_tipo_rol) values (" + Id_contacto + ", " + Tipo_contacto + ")");
+
+                if (Email != "")
+                {
+                    int id_email = 0;
+                    DataTable dt = DB.Select("select IsNull(max(id_email),0) as ultimo from emails");
+                    if (dt.Rows.Count == 1)
+                    {
+                        id_email = int.Parse(dt.Rows[0]["ultimo"].ToString()) + 1;
+                    }
+
+                    List<SqlParameter> parametrosMail = new List<SqlParameter>()
+                    {
+                        new SqlParameter()
+                        { ParameterName="@email",SqlDbType = SqlDbType.NVarChar, Value = Email }
+                    };
+
+                    DB.Execute("insert emails (id_contacto, id_email, desc_email, email, es_general, es_certifica, es_factura) " +
+                               "values (" + Id_contacto + ", " + id_email + ", '', @email, 1, 0, 0)", parametrosMail);
+                }
+
+                if (Id_contacto_vinculado > 0)
+                {
+                    int id_vinculo = 0;
+                    DataTable dt = DB.Select("select IsNull(max(id_vinculo),0) as ultimo from vinculos");
+                    if (dt.Rows.Count == 1)
+                    {
+                        id_vinculo = int.Parse(dt.Rows[0]["ultimo"].ToString()) + 1;
+                    }
+
+                    if (Tipo_contacto == 0)
+                    {
+                        DB.Execute("insert vinculos (id_contacto, id_tipo_rol, id_contacto_padre, id_tipo_rol_padre, xctacte, id_vinculo) values (" + Id_contacto_vinculado + ", 1, " + Id_contacto + ", 0, 0, " + id_vinculo + ")");
+                    }
+                    else
+                    {
+                        DB.Execute("insert vinculos (id_contacto, id_tipo_rol, id_contacto_padre, id_tipo_rol_padre, xctacte, id_vinculo) values (" + Id_contacto + ", 1, " + Id_contacto_vinculado + ", 0, 0, " + id_vinculo + ")");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return null;
+            }
+
+            return this;
         }
 
     }

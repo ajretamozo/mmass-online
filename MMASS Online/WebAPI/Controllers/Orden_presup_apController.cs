@@ -24,18 +24,21 @@ namespace WebApi.Controllers
             var result = _Orden_presup_apService.save(presup);
             return Ok(result);
         }
+
         [HttpPost("getById")]
         public IActionResult getById(Orden_presup_ap presup)
         {
             var result = _Orden_presup_apService.getById(presup.Id_presup);
             return Ok(result);
         }
+
         [HttpPost("getAll")]
         public IActionResult getAll()
         {
             var result = _Orden_presup_apService.getAll();
             return Ok(result);
         }
+
         [HttpPost("filter")]
         public IActionResult filter(ListaParametro parametros)
         {

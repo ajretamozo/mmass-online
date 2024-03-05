@@ -109,5 +109,13 @@ namespace WebApi.Controllers
             var result = _contactoService.chequearSincroContacto(anun.Id_contacto, anun.Id_red);
             return Ok(result);
         }
+
+        [HttpPost("saveCliPotencial")]
+        public IActionResult saveCliPotencial(Contacto contacto)
+        {
+            var result = _contactoService.saveCliPotencial(contacto);
+            return Ok(result);
+        }
+
     }
 }
