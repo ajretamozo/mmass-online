@@ -171,7 +171,7 @@
             <div id="divPresupuestosData">
                 <!--Filtros-->
                 <div class="row justify-content-around" style="padding-top: 4px;">
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <label>Número de Presupuesto</label>
                         <div id="PresupuestoNumberComplete" class="row">
                             <div class="col-md-4 "> <div class="input-group"> <input type="number" id="inpPresupYear" class="form-control enterSearch"></div> </div>
@@ -183,7 +183,7 @@
                             <div class="col-md-12"> <div class="input-group enterSearch"> <input type="text" id="inpDescAgencia" class="form-control"> </div> </div>
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <label>Descripción</label>
                         <div class="row align-items-center">
                             <div class="col-md-12"> <div class="input-group enterSearch"> <input type="text" id="inpDescripcion" class="form-control"> </div> </div>
@@ -193,9 +193,9 @@
                             <div class="col-md-12"> <div class="input-group enterSearch"> <input type="text" id="inpDescAnunciante" class="form-control"> </div> </div>
                         </div>
                     </div>
-                    <div class="col-md-6">
-                        <div class="row">
-                            <div class="col-md-6">
+                    <div class="col-md-4">
+                        <!--<div class="row">-->
+                            <!--<div class="col-md-6">-->
                                 <label>Vigencia Orden</label>
                                 <div id="OrderDateSpam" class="row">
                                     <div class="col-md-12">
@@ -210,8 +210,8 @@
                                 <div class="row align-items-center">
                                     <div class="col-md-12"> <div class="input-group enterSearch"> <input type="text" id="inpDescProducto" class="form-control"> </div> </div>
                                 </div>
-                            </div>
-                            <div class="col-md-6" style="padding-left: 20px; padding-right: 18px;">
+                            <!--</div>-->
+                            <!--<div class="col-md-6" style="padding-left: 20px; padding-right: 18px;">
                                 <div class="card" style="height: 216.6px; border-color: #ced4da; background-color: #343a40">
                                     <div class="card-header" style="color: white; padding-bottom: 5px; padding-top: 7px;">
                                         Estado
@@ -281,12 +281,121 @@
                                         </div>
                                     </div>
                                 </div>
+                            </div>-->
+                        <!--</div>-->
+                    </div>
+                </div>
+                <div class="row py-3">
+                    <div class="col-md-12" style="padding-top: 8px;">
+                        <div class="card" style="border-color: #ced4da; background-color: #343a40">
+                            <div class="card-header" style="color: white; padding-bottom: 10px;">
+                                Estado
+                            </div>
+                            <div class="card-body" style="padding-bottom: 15px;padding-top: 10px;">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-check" style="color: #dfdf99;">
+                                            <input class="form-check-input" type="radio" name="flexRadioEstado" id="flexRadioEnProceso">
+                                            <label class="form-check-label" for="flexRadioEnProceso">
+                                                En Proceso
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-check" style="color: #c0dcc0;">
+                                            <input class="form-check-input" type="radio" name="flexRadioEstado" id="flexRadioAprobado">
+                                            <label class="form-check-label" for="flexRadioAprobado">
+                                                Aprobado Sin Vincular
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-check" style="color: #ff9897;">
+                                            <input class="form-check-input" type="radio" name="flexRadioEstado" id="flexRadioRechazado">
+                                            <label class="form-check-label" for="flexRadioRechazado">
+                                                Rechazado
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-check" style="color: white;">
+                                            <input class="form-check-input" type="radio" name="flexRadioEstado" id="flexRadioTodos" checked>
+                                            <label class="form-check-label" for="flexRadioTodos">
+                                                Todos
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-check" style="color: #05baa4;">
+                                            <input class="form-check-input" type="radio" name="flexRadioEstado" id="flexRadioPendiente">
+                                            <label class="form-check-label" for="flexRadioPendiente">
+                                                Pendiente
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-check" style="color: #0f9013;">
+                                            <input class="form-check-input" type="radio" name="flexRadioEstado" id="flexRadioVinculado">
+                                            <label class="form-check-label" for="flexRadioVinculado">
+                                                Aprobado Vinculado
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-check" style="color: #c82626; ">
+                                            <input class="form-check-input" type="radio" name="flexRadioEstado" id="flexRadioCerrado">
+                                            <label class="form-check-label" for="flexRadioCerrado">
+                                                Rechazado Cerrado
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                    </div>
+                                </div>
+                                <!--<div class="row" style="justify-content: center;">
+                                    <div class="col-md-4">
+
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-check" style="color: white;">
+                                            <input class="form-check-input" type="radio" name="flexRadioEstado" id="flexRadioTodos" checked>
+                                            <label class="form-check-label" for="flexRadioTodos">
+                                                Todos
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+
+                                    </div>
+                                </div>-->
                             </div>
                         </div>
                     </div>
+                    <!--<div class="col-md-3 d-flex justify-content-end align-items-end">
+                        <button type="button" class="btn btn-dark btn-sm mx-1" onclick=" $('#divDetailsRows').show();$('#divAddRow').hide(); searchOrders();">
+                            <span class="fa fa-search"></span> Buscar
+                        </button>
+                        <button type="button" class="btn btn-dark btn-sm mx-1" onclick="nuevoPresup()">
+                            <span class="fa fa-plus"></span> Nuevo Presupuesto
+                        </button>
+                    </div>-->
+                    <!--<div class="col-md-4" style="padding-top: 8px;">
+    </div>
+    <div class="col-md-4">
+    </div>
+    <div class="col-md-4 d-flex justify-content-end align-items-end">
+        <button type="button" class="btn btn-dark btn-sm mx-1" onclick=" $('#divDetailsRows').show();$('#divAddRow').hide(); searchOrders();">
+            <span class="fa fa-search"></span> Buscar
+        </button>
+        <button type="button" class="btn btn-dark btn-sm mx-1" onclick="nuevoPresup()">
+            <span class="fa fa-plus"></span> Nuevo Presupuesto
+        </button>
+    </div>-->
                 </div>
-                <div class="row justify-content-end py-3">
-                    <div class="col-md-4" style="padding-top: 8px;">
+                <div class="row">
+                    <div class="col-md-4">
                     </div>
                     <div class="col-md-4">
                     </div>

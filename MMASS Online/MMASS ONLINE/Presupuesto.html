@@ -518,17 +518,17 @@
                                     </label>
                                 </div>
                             </div>
-                            <div class="col-lg-6 d-flex justify-content-end">
-                                <button id="botGuardarCliente" title="Guardar Cliente Potencial" type="button" class="btn actions btn-dark btn-sm mx-1" onclick="guardarCliPotencial();">
-                                    <span class="fa fa-save"></span> Guardar
-                                </button>
+                            <div class="col-lg-6">
                             </div>
                         </div>
                     </div>
 
                     <!-- Modal footer -->
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                        <!--<button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>-->
+                        <button id="botGuardarCliente" title="Guardar Cliente Potencial" type="button" class="btn actions btn-dark btn-sm mx-1" onclick="guardarCliPotencial();">
+                            <span class="fa fa-save"></span> Guardar
+                        </button>
                     </div>
 
                 </div>
@@ -851,7 +851,7 @@
                                 <input type="number" class="form-control" value="0" readonly="readonly" id="porc_desc">
                             </div>
                             <div class="col-sm">
-                                <label>Primer Neto</label>
+                                <label>Prim Neto</label>
                                 <input type="number" class="form-control" value="0" readonly="readonly" id="neto1">
                             </div>      <div class="col-sm">
                                 <label>Conf NC</label>
@@ -876,7 +876,7 @@
 
                     <div class="card-footer mt-2 ">
                         <div class="row">
-                            <div class="col-lg-5">
+                            <div class="col-lg-5" style="padding-top: 5px;padding-bottom: 5px;">
                                 <!--<button type="button" id="bClonar" disabled="disabled" class="btn actions btn-dark btn-sm mx-1" onclick="prevClonarOrden()">
                                 <span class="fa fa-clone"></span> Clonar OP
                             </button>-->
@@ -887,8 +887,8 @@
                                     <span class="fa fa-paper-plane"></span> Enviar a cliente
                                 </button>
                             </div>
-                            <div class="col-lg-3"></div>
-                            <div class="col-md-4 d-flex justify-content-end">
+                            <div class="col-lg-3" style="padding-top: 5px;padding-bottom: 5px;"></div>
+                            <div class="col-md-4 d-flex justify-content-end" style="padding-top: 5px;padding-bottom: 5px;">
                                 <button type="button" id="bGuardarPresup" class="btn actions btn-dark btn-sm mx-1" onclick="prevSavePresup()">
                                     <span class="fa fa-save"></span> Guardar
                                 </button>
@@ -3094,25 +3094,30 @@
 
                 callWS("contactos", "saveCliPotencial", JSON.stringify(contacto), function (resp) {
                     if (resp != null) {
-                        $.when(callWS("contactos", "getAgencias", '', function (data) { onPopulateSelectDone(data, 'selAgencia', 'id', 'nombre_com'); }),
-                            callWS("contactos", "getAnunciantes", '', function (data) { onPopulateSelectDone(data, 'selAnunciante', 'id', 'nombre_com'); }))
-                            .then(function () {
-                                $("#clienteModal").modal('hide');
-                                if (resp.tipo_contacto == 0) {
-                                    $("#selAgencia option[value=" + resp.id_contacto + "]").attr("selected", "selected");
-                                    $("#selAgencia").change();
-                                    $("#selAnunciante option[value=" + resp.id_contacto_vinculado + "]").attr("selected", "selected");
-                                    $("#selAnunciante").change();
-                                }
-                                else {
-                                    $("#selAgencia option[value=" + resp.id_contacto_vinculado + "]").attr("selected", "selected");
-                                    $("#selAgencia").change();
-                                    $("#selAnunciante option[value=" + resp.id_contacto + "]").attr("selected", "selected");
-                                    $("#selAnunciante").change();
-                                }
+                        if (resp.id_contacto > 0) {
+                            $.when(callWS("contactos", "getAgencias", '', function (data) { onPopulateSelectDone(data, 'selAgencia', 'id', 'nombre_com'); }),
+                                   callWS("contactos", "getAnunciantes", '', function (data) { onPopulateSelectDone(data, 'selAnunciante', 'id', 'nombre_com'); }))
+                             .then(function () {
+                                 $("#clienteModal").modal('hide');
+                                 if (resp.tipo_contacto == 0) {
+                                     $("#selAgencia option[value=" + resp.id_contacto + "]").attr("selected", "selected");
+                                     $("#selAgencia").change();
+                                     $("#selAnunciante option[value=" + resp.id_contacto_vinculado + "]").attr("selected", "selected");
+                                     $("#selAnunciante").change();
+                                 }
+                                 else {
+                                     $("#selAgencia option[value=" + resp.id_contacto_vinculado + "]").attr("selected", "selected");
+                                     $("#selAgencia").change();
+                                     $("#selAnunciante option[value=" + resp.id_contacto + "]").attr("selected", "selected");
+                                     $("#selAnunciante").change();
+                                 }
 
-                                showMessage("Cliente potencial guardado", "success");
-                            });
+                                 showMessage("Cliente potencial guardado", "success");
+                             });
+                        }
+                        else {
+                            showMessage("Ya existe un Contacto con la Razón Social ingresada", "info");
+                        }
                     }
                     else {
                         showMessage("Ocurrió un error al intentar guardar el cliente", "error");

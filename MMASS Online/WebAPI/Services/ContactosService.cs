@@ -100,7 +100,19 @@ namespace WebApi.Services
 
         public Contacto saveCliPotencial(Contacto contacto)
         {
-            return contacto.saveCliPotencial();
+            Contacto ret = new Contacto();
+
+            if (contacto.existeContactoNombre())
+            {
+                ret.Id_contacto = 0;
+            }
+
+            else
+            {
+                ret = contacto.saveCliPotencial();
+            }
+
+            return ret;
         }
     }
 }
