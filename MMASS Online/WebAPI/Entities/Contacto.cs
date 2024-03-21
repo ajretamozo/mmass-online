@@ -129,7 +129,7 @@ namespace WebApi.Entities
             string sqlCommand = "select v.id_contacto_padre as id_contacto, c.razon_social, c.nombre_com from contactos c " +
                                 " inner join vinculos v on v.id_contacto_padre = c.id_contacto " +
                                 " inner join roles r on r.id_contacto = v.id_contacto_padre " +
-                                " where v.id_contacto = " + IdAnunciante.ToString();
+                                " where c.es_borrado = 0 and v.id_contacto = " + IdAnunciante.ToString();
             List<Contacto> col = new List<Contacto>();
             Contacto contact;
             DataTable t = DB.Select(sqlCommand);

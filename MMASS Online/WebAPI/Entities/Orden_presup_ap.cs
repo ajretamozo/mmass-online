@@ -48,6 +48,7 @@ namespace WebApi.Entities
         public string LinkPresup { get; set; } // Variable usada para enviar el link en los mails de alerta
         public string SimboloMoneda { get; set; }
         public Usuario usuario { get; set; }
+        public string Motivo_rechazo { get; set; }
 
         public static Orden_presup_ap getOrden_presup_ap(DataRow item)
         {

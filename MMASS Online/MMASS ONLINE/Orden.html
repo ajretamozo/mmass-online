@@ -4430,10 +4430,10 @@
         function showRonModal(content) {
             $("#modalCenterTitle").text("Editar % RON");
             if ($('#selDetConvenio').val() == "" || $('#selDetConvenio').val() == undefined) {
-                content += "<div class='row justify-content-end mt-3 mr-1'><button type='button' id='distrUniforme' class='btn btn-secondary' onClick=\"distrUniforme();\"> Distr. Uniforme </button></div>";
+                content += "<div class='row justify-content-center mt-3'><button type='button' id='distrUniforme' class='btn btn-secondary' onClick=\"distrUniforme();\"> Distr. Uniforme </button></div>";
             }
             else {
-                content += "<div class='row justify-content-end mt-3 mr-1'><button type='button' id='distrUniforme' class='btn btn-secondary' disabled='true' onClick=\"distrUniforme();\"> Distr. Uniforme </button></div>";
+                content += "<div class='row justify-content-center mt-3'><button type='button' id='distrUniforme' class='btn btn-secondary' disabled='true' onClick=\"distrUniforme();\"> Distr. Uniforme </button></div>";
             }
             $("#modalCenterBody").html(content);
             footer = '';

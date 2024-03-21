@@ -385,7 +385,7 @@
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content shadow p-3 mb-5 bg-white rounded">
                     <div class="modal-header d-flex justify-content-center">
-                        <h5 class="modal-title" id="modalCenterTitle">Advertencia</h5>
+                        <h5 class="modal-title" id="modalCenterTitle">ATENCION</h5>
                     </div>
                     <div class="modal-body" id="modalCenterBody">
 
@@ -396,6 +396,24 @@
                 </div>
             </div>
         </div>
+
+        <!-- Modal Porcentaje venta -->
+        <div class="modal fade" id="modalPorc" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content shadow p-3 mb-5 bg-white rounded">
+                    <div class="modal-header d-flex justify-content-center">
+                        <h5 class="modal-title" id="modalCenterTitle">% SUBTIPO DE VENTA</h5>
+                    </div>
+                    <div class="modal-body" id="modalPorcBody">
+
+                    </div>
+                    <div class="modal-footer d-flex justify-content-end" id="modalPorcFooter">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="modal fade" id="largeModal">
 
             <div class="modal-dialog modal-xl">
@@ -479,10 +497,10 @@
                             </div>
                             <div class="col-md-6">
                                 <!--<label for="selRol">Rol</label>
-                                <select class="form-control" id="selRol" onchange="filtrarContactos()">
-                                    <option value="1" checked>Agencia</option>
-                                    <option value="2">Anunciante</option>
-                                </select>-->
+                            <select class="form-control" id="selRol" onchange="filtrarContactos()">
+                                <option value="1" checked>Agencia</option>
+                                <option value="2">Anunciante</option>
+                            </select>-->
 
                                 <label for="mail">Mail</label>
                                 <div class="input-group">
@@ -577,14 +595,17 @@
                             </div>
                             <div class="col-lg-4">
                                 <div class="row">
-                                    <div class="col-lg-6">
+                                    <div class="col-lg-5">
                                         <label>Fecha Alta</label>
                                         <div class="input-group"> <input type="text" disabled id="inpFechaAlta" class="form-control  col text-center" value=""> </div>
                                     </div>
-                                    <div class="col-lg-6">
-                                        <label>Estado</label>
+                                    <div class="col-lg-7">
+                                        <label>Estado/Maduración</label>
                                         <div class="input-group">
                                             <input type="text" disabled id="inpEstado" class="form-control col text-center" style="background-color: #343a40;">
+                                            <div class="input-group-text" style="padding-left: 5px; padding-right: 5px; background-color: #343a40;">
+                                                <a id="inpMaduracion" title="Porcentaje de maduración"></a>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -955,7 +976,7 @@
 
         //    });
 
-            $('#modalCenter').on('hidden.bs.modal', function (e) {
+            $('#modalPorc').on('hidden.bs.modal', function (e) {
                 $('#ronTableBody').empty();
             })
 
@@ -1046,12 +1067,16 @@
                 case 0:
                     $("#inpEstado").val("En Proceso");
                     $("#inpEstado").css("color", "#dfdf99");
+                    $("#inpMaduracion").text("25%");
+                    $("#inpMaduracion").css("color", "#dfdf99");
 
                     $("#bEnviarPresup").attr("disabled", false);
                     break;
                 case 1:
                     $("#inpEstado").val("Pendiente");
                     $("#inpEstado").css("color", "#05baa4");
+                    $("#inpMaduracion").text("50%");
+                    $("#inpMaduracion").css("color", "#05baa4");
 
                     $("#bGuardarPresup").attr("disabled", true);
                     $("#bGuardarPresup").attr("title", "No se pueden guardar Presupuestos que estén Pendientes");
@@ -1060,6 +1085,8 @@
                 case 2:
                     $("#inpEstado").val("Aprobado Sin Vincular");
                     $("#inpEstado").css("color", "#c0dcc0");
+                    $("#inpMaduracion").text("75%");
+                    $("#inpMaduracion").css("color", "#c0dcc0");
 
                     $("#bGuardarPresup").attr("disabled", true);
                     $("#bGuardarPresup").attr("title", "No se pueden guardar Presupuestos que estén Aprobados");
@@ -1068,7 +1095,8 @@
                 case 3:
                     $("#inpEstado").val("Aprobado Vinculado");
                     $("#inpEstado").css("color", "#0f9013");
-
+                    $("#inpMaduracion").text("100%");
+                    $("#inpMaduracion").css("color", "#0f9013");
 
                     $("#bGuardarPresup").attr("disabled", true);
                     $("#bGuardarPresup").attr("title", "No se pueden guardar Presupuestos que estén Vinculados");
@@ -1077,12 +1105,16 @@
                 case 4:
                     $("#inpEstado").val("Rechazado");
                     $("#inpEstado").css("color", "#ff9897");
+                    $("#inpMaduracion").text("25%");
+                    $("#inpMaduracion").css("color", "#ff9897");
 
                     $("#bCerrarPresup").attr("disabled", false);
                     break;
                 case 5:
                     $("#inpEstado").val("Rechazado Cerrado");
                     $("#inpEstado").css("color", "#c82626");
+                    $("#inpMaduracion").text("0%");
+                    $("#inpMaduracion").css("color", "#c82626");
 
                     $("#bGuardarPresup").attr("disabled", true);
                     $("#bGuardarPresup").attr("title", "No se pueden guardar Presupuestos que estén Cerrados");
@@ -1136,13 +1168,18 @@
                     formasPago.forEach(function (fPago) {
                         $("#selFPago option[value=" + fPago.id_formapago + "]").attr("selected", "selected");
                         var desc = $("#selFPago option[value=" + fPago.id_formapago + "]").text();
-                        porcHTML += "<tr id='ronRow_" + fPago.id_formapago + "'><td>" + desc + "</td>" + "<td><input type='number' class='form-control inpRon' id='inpRonRow_" + fPago.id_formapago + "' value='" + fPago.porcentaje + "' onchange=\"$(this).attr('value',$(this).val())\" /></td></tr>"
+                        if (data.id_estado == 0 || data.id_estado == 4) {
+                            porcHTML += "<tr id='ronRow_" + fPago.id_formapago + "'><td>" + desc + "</td>" + "<td><input type='number' class='form-control inpRon' style='margin-left: 20px;width: 75.6px;' id='inpRonRow_" + fPago.id_formapago + "' value='" + fPago.porcentaje + "' onchange=\"$(this).attr('value',$(this).val())\" /></td></tr>"
+                        }
+                        else {
+                            porcHTML += "<tr id='ronRow_" + fPago.id_formapago + "'><td>" + desc + "</td>" + "<td><input type='number' disabled class='form-control inpRon' style='margin-left: 20px;width: 75.6px;' id='inpRonRow_" + fPago.id_formapago + "' value='" + fPago.porcentaje + "' onchange=\"$(this).attr('value',$(this).val())\" /></td></tr>"
+                        }
                     });
                     $("#porcRon").html(porcHTML);
                     enableRon();
                 }
                 else {
-                    viewListMedios += "<li class=\"list-group-item\">(Todos)</li>";
+                    viewListformasPago += "<li class=\"list-group-item\">(Todos)</li>";
                 }
             }
             viewListformasPago += "</ul>"
@@ -1523,6 +1560,8 @@
                     case 0:
                         $("#inpEstado").val("En Proceso");
                         $("#inpEstado").css("color", "#dfdf99");
+                        $("#inpMaduracion").text("25%");
+                        $("#inpMaduracion").css("color", "#dfdf99");
 
                         $("#bCerrarPresup").attr("disabled", true);
                         $("#bEnviarPresup").attr("disabled", false);
@@ -1530,9 +1569,11 @@
                     case 1:
                         $("#inpEstado").val("Pendiente");
                         $("#inpEstado").css("color", "#05baa4");
+                        $("#inpMaduracion").text("50%");
+                        $("#inpMaduracion").css("color", "#05baa4");
 
                         $("#bCerrarPresup").attr("disabled", true);
-                        $("#bEnviarPresup").attr("disabled", false);
+                        $("#bEnviarPresup").attr("disabled", true);
                         $("#bGuardarPresup").attr("disabled", true);
                         $("#bGuardarPresup").attr("title", "No se pueden guardar Presupuestos que estén Pendientes");
                         bloquearCamposCabecera();
@@ -1540,6 +1581,32 @@
                 }
 
                 //bloquearOp(data.op.id_op_dg);
+
+                var formasPago = data.op.formasPago;
+                var viewListformasPago = "<ul class=\"list-group\">"
+                if (formasPago != undefined) {
+                    if (formasPago.length > 0) {
+                        var porcHTML = '';
+                        formasPago.forEach(function (fPago) {
+                            $("#selFPago option[value=" + fPago.id_formapago + "]").attr("selected", "selected");
+                            var desc = $("#selFPago option[value=" + fPago.id_formapago + "]").text();
+                            if (data.id_estado == 0 || data.id_estado == 4) {
+                                porcHTML += "<tr id='ronRow_" + fPago.id_formapago + "'><td>" + desc + "</td>" + "<td><input type='number' class='form-control inpRon' style='margin-left: 20px;width: 75.6px;' id='inpRonRow_" + fPago.id_formapago + "' value='" + fPago.porcentaje + "' onchange=\"$(this).attr('value',$(this).val())\" /></td></tr>"
+                            }
+                            else {
+                                porcHTML += "<tr id='ronRow_" + fPago.id_formapago + "'><td>" + desc + "</td>" + "<td><input type='number' disabled class='form-control inpRon' style='margin-left: 20px;width: 75.6px;' id='inpRonRow_" + fPago.id_formapago + "' value='" + fPago.porcentaje + "' onchange=\"$(this).attr('value',$(this).val())\" /></td></tr>"
+                            }
+                        });
+                        $("#porcRon").html(porcHTML);
+                        enableRon();
+                    }
+                    else {
+                        viewListformasPago += "<li class=\"list-group-item\">(Todos)</li>";
+                    }
+                }
+                viewListformasPago += "</ul>"
+                $("#selFPago").after(viewListformasPago);
+                cMultiSelect.bootstrapDualListbox('refresh');
 
                 Detalles = data.op.detalles;
                 recargarRenglones();
@@ -2645,7 +2712,12 @@
             if (div[0].innerHTML == "") {
                 formasPago = $("#selFPago option:selected");
                 $.each(formasPago, function (index, fPago) {
-                    modalHTML += "<tr id='ronRow_" + fPago.value + "'><td>" + fPago.text + "</td>" + "<td width='30%'><input type='number' class='form-control inpRon' id='inpRonRow_" + fPago.value + "' value='0' onchange=\"$(this).attr('value',$(this).val())\" /></td></tr>"
+                    if ($("#inpEstado").val() == 'En Proceso' || $("#inpEstado").val() == 'Rechazado' || $("#inpEstado").val() == '') {
+                        modalHTML += "<tr id='ronRow_" + fPago.value + "'><td>" + fPago.text + "</td>" + "<td width='30%'><input type='number' class='form-control inpRon' style='margin-left: 20px;width: 75.6px;' id='inpRonRow_" + fPago.value + "' value='0' onchange=\"$(this).attr('value',$(this).val())\" /></td></tr>"
+                    }
+                    else {
+                        modalHTML += "<tr id='ronRow_" + fPago.value + "'><td>" + fPago.text + "</td>" + "<td width='30%'><input type='number' disabled class='form-control inpRon' style='margin-left: 20px;width: 75.6px;' id='inpRonRow_" + fPago.value + "' value='0' onchange=\"$(this).attr('value',$(this).val())\" /></td></tr>"
+                    }
                 })
             } else {
                 modalHTML += div[0].innerHTML;
@@ -2656,20 +2728,19 @@
 
 
         function showRonModal(content) {
-            $("#modalCenterTitle").text("Editar % RON");
-            content += "<div class='row justify-content-end mt-3 mr-1'><button type='button' id='distrUniforme' class='btn btn-secondary' onClick=\"distrUniforme();\"> Distr. Uniforme </button></div>";
-            $("#modalCenterBody").html(content);
             footer = '';
-            //si esta en estado convertida, poner no editable
-            if ($("#inpEstado").val() == 'Aprobado Vinculado' || $("#inpEstado").val() == 'Rechazado Cerrado') {
-                footer += "<button type='button' disabled id='aceptar' class='btn btn-secondary' onClick=\"setDetailRon($('#ronTableBody').html());\"> Aceptar </button>";
+            if ($("#inpEstado").val() == 'En Proceso' || $("#inpEstado").val() == 'Rechazado' || $("#inpEstado").val() == '') {
+                content += "<div class='row justify-content-center mt-3'><button type='button' id='distrUniforme' class='btn btn-secondary' onClick=\"distrUniforme();\"> Distr. Uniforme </button></div>";
+                footer += "<button type='button' id='aceptar' class='btn actions btn-dark btn-sm mx-1' onClick=\"setDetailRon($('#ronTableBody').html());\"> Aceptar </button>";
             }
             else {
-                footer += "<button type='button' id='aceptar' class='btn btn-secondary' onClick=\"setDetailRon($('#ronTableBody').html());\"> Aceptar </button>";
+                content += "<div class='row justify-content-center mt-3'><button type='button' disabled id='distrUniforme' class='btn btn-secondary' onClick=\"distrUniforme();\"> Distr. Uniforme </button></div>";
+                footer += "<button type='button' disabled id='aceptar' class='btn actions btn-dark btn-sm mx-1' onClick=\"setDetailRon($('#ronTableBody').html());\"> Aceptar </button>";
             }
-            footer += "<button type='button' class='btn btn-secondary' data-dismiss='modal' onClick=\"$('#ronTableBody').empty();\"> Cancelar </button>";
-            $("#modalCenterFooter").html(footer);
-            $("#modalCenter").modal('show');
+            $("#modalPorcBody").html(content);
+            footer += "<button type='button' class='btn actions btn-dark btn-sm mx-1' data-dismiss='modal' onClick=\"$('#ronTableBody').empty();\"> Cancelar </button>";
+            $("#modalPorcFooter").html(footer);
+            $("#modalPorc").modal('show');
         }
 
 
@@ -2685,7 +2756,7 @@
                 var ronDiv = $("#porcRon");
                 ronDiv.html(content);
                 $('#ronTableBody').empty();
-                $("#modalCenter").modal('hide');
+                $("#modalPorc").modal('hide');
             } else {
                 if (valido) {
                     showMessage("La suma de los porcentajes debe ser igual a 100", "info");
@@ -2987,8 +3058,20 @@
 
         function onSendPresup(respuesta) {
             if (respuesta == 1) {
+                //$("#inpEstado").val("Pendiente");
+                //$("#inpEstado").css("color", "#05baa4");
+
                 $("#inpEstado").val("Pendiente");
                 $("#inpEstado").css("color", "#05baa4");
+                $("#inpMaduracion").text("50%");
+                $("#inpMaduracion").css("color", "#05baa4");
+
+                $("#bCerrarPresup").attr("disabled", true);
+                $("#bEnviarPresup").attr("disabled", true);
+                $("#bGuardarPresup").attr("disabled", true);
+                $("#bGuardarPresup").attr("title", "No se pueden guardar Presupuestos que estén Pendientes");
+                bloquearCamposCabecera();
+
                 showMessage("Presupuesto enviado", "success");
             }
             else {
@@ -3026,6 +3109,8 @@
         function onClosePresup() {
             $("#inpEstado").val("Rechazado Cerrado");
             $("#inpEstado").css("color", "#c82626");
+            $("#inpMaduracion").text("0%");
+            $("#inpMaduracion").css("color", "#c82626");
 
             $("#bCerrarPresup").attr("disabled", true);
             $("#bEnviarPresup").attr("disabled", true);

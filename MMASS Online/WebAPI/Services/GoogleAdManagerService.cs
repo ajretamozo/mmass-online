@@ -1774,26 +1774,5 @@ namespace WebApi.Services
             return orden;
         }
 
-        public long notificacionCrearPresup(string linkPresup)
-        {
-            int result = 0;
-
-            int paramEnviarMail = int.Parse(Dg_parametro.getById(7).Valor);
-            if (paramEnviarMail == 1 || paramEnviarMail == 2 || paramEnviarMail == 5)
-            {
-                string asunto = "MMASS Online - Presupuesto";
-                string msj = @"Se requiere acción por parte del usuario.<br>
-                                Ingrese al siguiente link para Aprobar o Rechazar el presupuesto: <br>" +
-                                linkPresup + "< br >" +
-                                "--------------------------------------------------------------------" +
-                                "---------------------------------------------------------------<br>" +
-                                "<font size=1>No responder este mensaje</font><br>" +
-                                "<H5>Sistema de Notificaciones MMASS Online</H5>";
-                enviarMail(asunto, msj);
-            }
-
-            return result;
-        }
-
     }
 }

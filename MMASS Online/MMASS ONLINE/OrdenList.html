@@ -275,16 +275,19 @@
                     <div class="col-md-4">
                     </div>
                     <div class="col-md-4 d-flex justify-content-end align-items-end">
-                            <button type="button" class="btn btn-dark btn-sm mx-1" onclick=" $('#divDetailsRows').show();$('#divAddRow').hide(); searchOrders();">
-                                <span class="fa fa-search"></span> Buscar
-                            </button>
-                            <button type="button" class="btn btn-dark btn-sm mx-1" onclick="nuevaOrden()">
-                                <span class="fa fa-plus"></span> Nueva Orden
-                            </button>
-                            <!--TEST-->
-                            <!--<button type="button" class="btn btn-dark btn-sm mx-1" onclick="reporteTest()">
-                                <span class="fa fa-check"></span> Reporte Test
-                            </button>-->
+                        <button id="botLimpiar" title="Limpiar filtros" type="button" class="btn actions btn-outline-dark btn-sm mr-1" onclick="limpiarFiltros();">
+                            <span class="fa fa-eraser"></span> Limpiar
+                        </button>
+                        <button type="button" class="btn btn-dark btn-sm mx-1" onclick=" $('#divDetailsRows').show();$('#divAddRow').hide(); searchOrders();">
+                            <span class="fa fa-search"></span> Buscar
+                        </button>
+                        <button type="button" class="btn btn-dark btn-sm mx-1" onclick="nuevaOrden()">
+                            <span class="fa fa-plus"></span> Nueva Orden
+                        </button>
+                        <!--TEST-->
+                        <!--<button type="button" class="btn btn-dark btn-sm mx-1" onclick="reporteTest()">
+        <span class="fa fa-check"></span> Reporte Test
+    </button>-->
                     </div>
                 </div>
             </div>
@@ -536,6 +539,23 @@
             $("#" + idSelect).empty();
             $("#" + idSelect).append("<option value=''>(Todas) </option>");
             $("#" + idSelect).append(listitems);
+        }
+
+        function limpiarFiltros() {
+            $('#inpOrderYear').val('');
+            $('#inpOrderMonth').val('');
+            $('#inpOrderNumber').val('');
+            $('#inpDescripcion').val('');
+            document.getElementById("checkAnuladas").checked = false;
+            document.getElementById("flexRadioTodas").checked = true;
+            $('#fechaDesde').val('');
+            $('#fechaHasta').val('');
+            $('#inpOrderNumberClient').val('');
+            $('#inpDescAgencia').val('');
+            $('#inpDescAnunciante').val('');
+            $('#inpDescProducto').val('');
+            $('#selEmpresa').val('');
+            $('#selClasificacion').val('');
         }
 
 

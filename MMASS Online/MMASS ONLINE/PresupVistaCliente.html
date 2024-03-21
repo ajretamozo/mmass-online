@@ -452,7 +452,7 @@
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content shadow p-3 mb-5 bg-white rounded">
                     <div class="modal-header d-flex justify-content-center">
-                        <h5 class="modal-title">% Formas de Pago</h5>
+                        <h5 class="modal-title">% SUBTIPO DE VENTA</h5>
                     </div>
                     <div class="modal-body" id="modalRonBody">
 
@@ -502,6 +502,24 @@
             </div>
         </div>
 
+        <!-- Modal Motivos rechazo -->
+        <div class="modal fade" id="modalRerchazo" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+                <div class="modal-content shadow p-3 mb-5 bg-white rounded">
+                    <div class="modal-header d-flex justify-content-center">
+                        <h5 class="modal-title">MOTIVOS DEL RECHAZO</h5>
+                    </div>
+                    <div class="modal-body" id="modalRerchazoBody">
+                        <textarea class="form-control" placeholder="Ingrese aquí los motivos..." rows="10" id="txtRechazo"></textarea>
+                    </div>
+                    <div class="modal-footer d-flex justify-content-center" id="modalRerchazoFooter">
+                        <button type="button" class="btn actions btn-dark btn-sm mx-1" onClick="rechazPresup()"> Aceptar </button>
+                        <button type="button" class="btn actions btn-dark btn-sm mx-1" data-dismiss="modal"> Cancelar </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- PRINCIPAL -->
         <div id="divMessage" class="alert" style="display:none;cursor:pointer;z-index:10000;" title="Click para cerrar"> </div>
         <div class="jumbotron mt-4 py-4 shadow p-3 mb-5 bg-white rounded">
@@ -544,14 +562,17 @@
                             </div>
                             <div class="col-lg-4">
                                 <div class="row">
-                                    <div class="col-lg-6">
+                                    <div class="col-lg-5">
                                         <label>Fecha Alta</label>
                                         <div class="input-group"> <input type="text" disabled id="inpFechaAlta" class="form-control  col text-center" value=""> </div>
                                     </div>
-                                    <div class="col-lg-6">
-                                        <label>Estado</label>
+                                    <div class="col-lg-7">
+                                        <label>Estado/Maduración</label>
                                         <div class="input-group">
                                             <input type="text" disabled id="inpEstado" class="form-control col text-center" style="background-color: #343a40;">
+                                            <div class="input-group-text" style="padding-left: 5px; padding-right: 5px; background-color: #343a40;">
+                                                <a id="inpMaduracion" title="Porcentaje de maduración"></a>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -837,10 +858,10 @@
 
                     <div class="card-footer mt-2 ">
                         <div class="row d-flex justify-content-center">
-                            <button type="button" id="bAceptarPresup" class="btn actions btn-dark mx-1" style="width: 126px;height: 44px;margin-right: 40px;" onclick="savePresup(2)">
+                            <button type="button" id="bAceptarPresup" class="btn actions btn-dark mx-1" style="width: 126px;height: 44px;margin-right: 40px;" onclick="savePresup(2, '')">
                                 <span class="fa fa-check" style="color: lawngreen;"></span> Aceptar
                             </button>
-                            <button type="button" id="bRechazarPresup" class="btn actions btn-dark mx-1" style="width: 126px;height: 44px;margin-right: 40px;" onclick="savePresup(4)">
+                            <button type="button" id="bRechazarPresup" class="btn actions btn-dark mx-1" style="width: 126px;height: 44px;margin-right: 40px;" onclick="prevRechazPresup()">
                                 <span class="fa fa-remove" style="color: red;"></span> Rechazar
                             </button>
                         </div>
@@ -963,6 +984,8 @@
                 case 0:
                     $("#inpEstado").val("En Proceso");
                     $("#inpEstado").css("color", "#dfdf99");
+                    $("#inpMaduracion").text("25%");
+                    $("#inpMaduracion").css("color", "#dfdf99");
 
                     $("#bAceptarPresup").attr("disabled", true);
                     $("#bRechazarPresup").attr("disabled", true);
@@ -970,10 +993,14 @@
                 case 1:
                     $("#inpEstado").val("Pendiente");
                     $("#inpEstado").css("color", "#05baa4");
+                    $("#inpMaduracion").text("50%");
+                    $("#inpMaduracion").css("color", "#05baa4");
                     break;
                 case 2:
                     $("#inpEstado").val("Aprobado Sin Vincular");
                     $("#inpEstado").css("color", "#c0dcc0");
+                    $("#inpMaduracion").text("75%");
+                    $("#inpMaduracion").css("color", "#c0dcc0");
 
                     $("#bAceptarPresup").attr("disabled", true);
                     $("#bRechazarPresup").attr("disabled", true);
@@ -981,6 +1008,8 @@
                 case 3:
                     $("#inpEstado").val("Aprobado Vinculado");
                     $("#inpEstado").css("color", "#0f9013");
+                    $("#inpMaduracion").text("100%");
+                    $("#inpMaduracion").css("color", "#0f9013");
 
                     $("#bAceptarPresup").attr("disabled", true);
                     $("#bRechazarPresup").attr("disabled", true);
@@ -988,6 +1017,8 @@
                 case 4:
                     $("#inpEstado").val("Rechazado");
                     $("#inpEstado").css("color", "#ff9897");
+                    $("#inpMaduracion").text("25%");
+                    $("#inpMaduracion").css("color", "#ff9897");
 
                     $("#bAceptarPresup").attr("disabled", true);
                     $("#bRechazarPresup").attr("disabled", true);
@@ -995,6 +1026,8 @@
                 case 5:
                     $("#inpEstado").val("Rechazado Cerrado");
                     $("#inpEstado").css("color", "#c82626");
+                    $("#inpMaduracion").text("0%");
+                    $("#inpMaduracion").css("color", "#c82626");
 
                     $("#bAceptarPresup").attr("disabled", true);
                     $("#bRechazarPresup").attr("disabled", true);
@@ -1090,7 +1123,19 @@
         }
 
 
-        function savePresup(estado) {
+        function prevRechazPresup() {
+            $("#modalRerchazo").modal('show');
+        }
+        
+
+        function rechazPresup() {
+            var motivo = $("#txtRechazo").val();
+            savePresup(4, motivo);
+            $("#modalRerchazo").modal('hide');
+        }
+
+
+        function savePresup(estado, motivo) {
             var data = {};
 
             if ($("#inpOrderNumber").val() != "") {
@@ -1108,6 +1153,7 @@
             data.anunciante.Nombre_com = $("#selAnunciante option:selected").text();
             data.Facturar_a = $("#selFacturar").val();
             data.id_estado = estado;
+            data.motivo_rechazo = motivo;
 
             callWS("orden_presup_aps", "respuestaCliente", JSON.stringify(data), function (resultado) { onSavePresup(resultado, data); });
         }
@@ -1120,6 +1166,8 @@
                 $("#bRechazarPresup").attr("disabled", true);
                 $("#inpEstado").val("Rechazado");
                 $("#inpEstado").css("color", "#ff9897");
+                $("#inpMaduracion").text("25%");
+                $("#inpMaduracion").css("color", "#ff9897");
 
                 showMessage("El Presupuesto ha sido Rechazado");
             }
@@ -1128,6 +1176,8 @@
                 $("#bRechazarPresup").attr("disabled", true);
                 $("#inpEstado").val("Aprobado Sin Vincular");
                 $("#inpEstado").css("color", "#c0dcc0");
+                $("#inpMaduracion").text("75%");
+                $("#inpMaduracion").css("color", "#c0dcc0");
 
                 showMessage("El Presupuesto ha sido Aceptado");
             }
@@ -1779,7 +1829,7 @@
             if (div[0].innerHTML == "") {
                 formasPago = $("#selFPago option:selected");
                 $.each(formasPago, function (index, fPago) {
-                    modalHTML += "<tr id='ronRow_" + fPago.value + "'><td>" + fPago.text + "</td>" + "<td width='30%'><input type='number' class='form-control inpRon' id='inpRonRow_" + fPago.value + "' value='0' onchange=\"$(this).attr('value',$(this).val())\" /></td></tr>"
+                    modalHTML += "<tr id='ronRow_" + fPago.value + "'><td>" + fPago.text + "</td>" + "<td width='30%'><input type='number' class='form-control inpRon' style='margin-left: 20px;width: 75.6px;' id='inpRonRow_" + fPago.value + "' value='0' onchange=\"$(this).attr('value',$(this).val())\" /></td></tr>"
                 })
             } else {
                 modalHTML += div[0].innerHTML;

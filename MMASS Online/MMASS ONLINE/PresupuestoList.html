@@ -174,9 +174,9 @@
                     <div class="col-md-4">
                         <label>Número de Presupuesto</label>
                         <div id="PresupuestoNumberComplete" class="row">
-                            <div class="col-md-4 "> <div class="input-group"> <input type="number" id="inpPresupYear" class="form-control enterSearch"></div> </div>
-                            <div class="col-md-4 "> <div class="input-group"> <input type="number" id="inpPresupMonth" class="form-control enterSearch"> </div> </div>
-                            <div class="col-md-4 "> <div class="input-group"> <input type="number" id="inpPresupNumber" class="form-control enterSearch"> </div> </div>
+                            <div class="col-md-4 " style="padding-right: 5px;"> <div class="input-group"> <input type="number" id="inpPresupYear" class="form-control enterSearch"></div> </div>
+                            <div class="col-md-4 " style="padding-left: 5px;padding-right: 5px;"> <div class="input-group"> <input type="number" id="inpPresupMonth" class="form-control enterSearch"> </div> </div>
+                            <div class="col-md-4 " style="padding-left: 5px;"> <div class="input-group"> <input type="number" id="inpPresupNumber" class="form-control enterSearch"> </div> </div>
                         </div>
                         <label style="padding-top: 8px;">Agencia</label>
                         <div class="row align-items-center">
@@ -201,7 +201,7 @@
                                     <div class="col-md-12">
                                         <div class="input-group input-daterange">
                                             <input type="text" class="form-control datetimepicker-input enterSearch" id="fechaDesde" data-toggle="datetimepicker" data-target="#fechaDesde" />
-                                            <span class="input-group-addon">hasta</span>
+                                            <span class="input-group-addon">-</span>
                                             <input type="text" class="form-control datetimepicker-input enterSearch" id="fechaHasta" data-toggle="datetimepicker" data-target="#fechaHasta" />
                                         </div>
                                     </div>
@@ -400,6 +400,9 @@
                     <div class="col-md-4">
                     </div>
                     <div class="col-md-4 d-flex justify-content-end align-items-end">
+                        <button id="botLimpiar" title="Limpiar filtros" type="button" class="btn actions btn-outline-dark btn-sm mr-1" onclick="limpiarFiltros();">
+                            <span class="fa fa-eraser"></span> Limpiar
+                        </button>
                         <button type="button" class="btn btn-dark btn-sm mx-1" onclick=" $('#divDetailsRows').show();$('#divAddRow').hide(); searchOrders();">
                             <span class="fa fa-search"></span> Buscar
                         </button>
@@ -422,6 +425,7 @@
                             <th>Producto</th>
                             <th>Neto</th>
                             <th>Estado</th>
+                            <th>Maduración</th>
                         </tr>
                     </thead>
                     <tbody id="TableRenglones" class="small" align="center"></tbody>
@@ -514,26 +518,32 @@
                     case 0:
                         rowHTML += "<td class='col-xs-1'>";
                         rowHTML += "<span class='fa fa-circle fa-2x' style='color: #dfdf99;' title='En Proceso'></span></td>";
+                        rowHTML += "<td class='col-xs-1' style='color: #dfdf99;'>25%</td>";
                         break;
                     case 1:
                         rowHTML += "<td class='col-xs-1'>";
                         rowHTML += "<span class='fa fa-circle fa-2x' style='color: #05baa4;' title='Pendiente'></span></td>";
+                        rowHTML += "<td class='col-xs-1' style='color: #05baa4;'>50%</td>";
                         break;
                     case 2:
                         rowHTML += "<td class='col-xs-1'>";
                         rowHTML += "<span class='fa fa-circle fa-2x' style='color: #c0dcc0;' title='Aprobado Sin Vincular'></span></td>";
+                        rowHTML += "<td class='col-xs-1' style='color: #c0dcc0;'>75%</td>";
                         break;
                     case 3:
                         rowHTML += "<td class='col-xs-1'>";
                         rowHTML += "<span class='fa fa-circle fa-2x' style='color: #0f9013;' title='Aprobado Vinculado'></span></td>";
+                        rowHTML += "<td class='col-xs-1' style='color: #0f9013;'>100%</td>";
                         break;
                     case 4:
                         rowHTML += "<td class='col-xs-1'>";
                         rowHTML += "<span class='fa fa-circle fa-2x' style='color: #ff9897;' title='Rechazado'></span></td>";
+                        rowHTML += "<td class='col-xs-1' style='color: #ff9897;'>25%</td>";
                         break;
                     case 5:
                         rowHTML += "<td class='col-xs-1'>";
                         rowHTML += "<span class='fa fa-circle fa-2x' style='color: #c82626;' title='Rechazado Cerrado'></span></td>";
+                        rowHTML += "<td class='col-xs-1' style='color: #c82626;'>0%</td>";
                         break;
                 }
                 rowHTML += '</tr>'
@@ -650,9 +660,11 @@
             return fieldFormatDate;
         }
 
+
         function nuevoPresup() {
             location.href = "/Presupuesto.html";
         }
+
 
         function formatearMonto(x) {
             return Number.parseFloat(x).toFixed(2);
@@ -669,6 +681,20 @@
             }
 
             return true;
+        }
+
+
+        function limpiarFiltros() {
+            $('#inpPresupYear').val('');
+            $('#inpPresupMonth').val('');
+            $('#inpPresupNumber').val('');
+            $('#inpDescripcion').val('');
+            $('#fechaDesde').val('');
+            $('#fechaHasta').val('');
+            $('#inpDescAgencia').val('');
+            $('#inpDescAnunciante').val('');
+            $('#inpDescProducto').val('');
+            document.getElementById("flexRadioTodos").checked = true;
         }
 
     </script>
