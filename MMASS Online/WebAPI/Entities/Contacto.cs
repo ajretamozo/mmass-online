@@ -24,7 +24,7 @@ namespace WebApi.Entities
         public int Tipo_contacto { get; set; }
         public int Id_usuario_alta { get; set; }
         public int Id_contacto_vinculado { get; set; }
-        public string Email { get; set; }
+        public List<Mail> Emails { get; set; }
 
         public static Contacto getContactoById(int Id)
         {
@@ -157,13 +157,13 @@ namespace WebApi.Entities
             {
                 sqlCommand = @"Select c.id_contacto, c.razon_social, c.nombre_com from contactos c , roles r, vinculos v where r.id_contacto = c.id_contacto  and es_borrado = 0 and es_bloqueado = 0  
                                       and r.tipo_rol = 1 and c.id_contacto = v.id_contacto and v.tipo_rol_padre= 0 
-                                      and v.id_contacto_padre=" + idAgencia.ToString() + " order by razon_social ";
+                                      and v.id_contacto_padre=" + idAgencia.ToString() + " order by nombre_com ";
             }
             else
             {
                 sqlCommand = @"Select c.id_contacto, c.razon_social, c.nombre_com from contactos c , roles r, vinculos v where r.id_contacto = c.id_contacto  and es_borrado = 0 and es_bloqueado = 0  
                                       and r.id_tipo_rol = 1 and c.id_contacto = v.id_contacto and v.id_tipo_rol_padre= 0 
-                                      and v.id_contacto_padre=" + idAgencia.ToString() + " order by razon_social ";
+                                      and v.id_contacto_padre=" + idAgencia.ToString() + " order by nombre_com ";
             }
 
             List<Contacto> col = new List<Contacto>();
@@ -187,7 +187,7 @@ namespace WebApi.Entities
 
         public static List<Contacto> GetAnunciantesPorProducto(int idProducto)
         {
-            string sqlCommand = "select a.id_contacto, a.razon_social, nombre_com from productos p inner join anun_prod pa on p.id_producto = pa.id_producto inner join contactos a on pa.id_anunciante = a.id_contacto where p.es_borrado = 0 and p.id_producto = " + idProducto.ToString() + " order by a.razon_social ";
+            string sqlCommand = "select a.id_contacto, a.razon_social, nombre_com from productos p inner join anun_prod pa on p.id_producto = pa.id_producto inner join contactos a on pa.id_anunciante = a.id_contacto where p.es_borrado = 0 and p.id_producto = " + idProducto.ToString() + " order by a.nombre_com ";
             List<Contacto> col = new List<Contacto>();
             Contacto contact;
             DataTable t = DB.Select(sqlCommand);
@@ -216,14 +216,14 @@ namespace WebApi.Entities
                 sqlCommand = @"Select c.id_contacto, razon_social, nombre_com from contactos c
                                     inner join roles r on r.id_contacto = c.id_contacto
                                     where r.id_contacto = c.id_contacto
-                                    and es_borrado = 0 and (es_bloqueado = 0 or es_bloqueado is null) and r.tipo_rol = " + tipo + " order by razon_social";
+                                    and es_borrado = 0 and (es_bloqueado = 0 or es_bloqueado is null) and r.tipo_rol = " + tipo + " order by nombre_com";
             }
             else
             {
                 sqlCommand = @"Select c.id_contacto, razon_social, nombre_com from contactos c
                                     inner join roles r on r.id_contacto = c.id_contacto
                                     where r.id_contacto = c.id_contacto
-                                    and es_borrado = 0 and (es_bloqueado = 0 or es_bloqueado is null) and r.id_tipo_rol = " + tipo + " order by razon_social";
+                                    and es_borrado = 0 and (es_bloqueado = 0 or es_bloqueado is null) and r.id_tipo_rol = " + tipo + " order by nombre_com";
             }
 
             List<Contacto> col = new List<Contacto>();
@@ -340,7 +340,7 @@ namespace WebApi.Entities
                                 from contactos c
                                 inner join roles r on r.id_contacto = c.id_contacto
                                 left join  dg_contacto_red_GAM g on g.id_contacto = c.id_contacto 
-                                and g.id_red = " + idRed.ToString() + "where r.id_contacto = c.id_contacto and es_borrado = 0 and es_bloqueado = 0 and r.tipo_rol = 1 order by razon_social";
+                                and g.id_red = " + idRed.ToString() + "where r.id_contacto = c.id_contacto and es_borrado = 0 and es_bloqueado = 0 and r.tipo_rol = 1 order by nombre_com";
             }
             else
             {
@@ -348,7 +348,7 @@ namespace WebApi.Entities
                                 from contactos c
                                 inner join roles r on r.id_contacto = c.id_contacto
                                 left join  dg_contacto_red_GAM g on g.id_contacto = c.id_contacto 
-                                and g.id_red = " + idRed.ToString() + "where r.id_contacto = c.id_contacto and es_borrado = 0 and es_bloqueado = 0 and r.id_tipo_rol = 1 order by razon_social";
+                                and g.id_red = " + idRed.ToString() + "where r.id_contacto = c.id_contacto and es_borrado = 0 and es_bloqueado = 0 and r.id_tipo_rol = 1 order by nombre_com";
             }
 
             List<Contacto> col = new List<Contacto>();
@@ -370,18 +370,22 @@ namespace WebApi.Entities
             return col;
         }
 
-        public List<string> GetEmailsPorContacto()
+        public List<Mail> GetEmailsPorContacto()
         {
-            string sqlCommand = "select email from emails where id_contacto = " + Id_contacto.ToString();
+            string sqlCommand = "select id_email, email from emails where id_contacto = " + Id_contacto.ToString();
             
             DataTable t = DB.Select(sqlCommand);
 
-            List<string> emails = new List<string>();
+            List<Mail> mailsCliente = new List<Mail>();
             foreach (DataRow item in t.Rows)
             {
-                emails.Add(item["email"].ToString());
+                Mail mail = new Mail();
+                mail.IdMail = (int.Parse(item["id_email"].ToString()));
+                mail.DirMail = (item["email"].ToString());
+
+                mailsCliente.Add(mail);
             }
-            return emails;
+            return mailsCliente;
         }
 
         public Contacto saveCliPotencial()
@@ -417,7 +421,7 @@ namespace WebApi.Entities
 
                     DB.Execute("insert roles (id_contacto, id_tipo_rol) values (" + Id_contacto + ", " + Tipo_contacto + ")");
 
-                    if (Email != "")
+                    if (Emails != null)
                     {
                         int id_email = 0;
                         DataTable dt = DB.Select("select IsNull(max(id_email),0) as ultimo from emails");
@@ -429,7 +433,7 @@ namespace WebApi.Entities
                         List<SqlParameter> parametrosMail = new List<SqlParameter>()
                         {
                             new SqlParameter()
-                            { ParameterName="@email",SqlDbType = SqlDbType.NVarChar, Value = Email }
+                            { ParameterName="@email",SqlDbType = SqlDbType.NVarChar, Value = Emails[0].DirMail }
                         };
 
                         DB.Execute("insert emails (id_contacto, id_email, desc_email, email, es_general, es_certifica, es_factura) " +
@@ -465,6 +469,52 @@ namespace WebApi.Entities
             }
 
             return this;
+        }
+
+        public bool saveEmail()
+        {
+            int id_email = 0;
+            DataTable dt = DB.Select("select IsNull(max(id_email),0) as ultimo from emails");
+            if (dt.Rows.Count == 1)
+            {
+                id_email = int.Parse(dt.Rows[0]["ultimo"].ToString()) + 1;
+            }
+
+            string sql = "insert emails (id_contacto, id_email, desc_email, email, es_general, es_certifica, es_factura) " +
+                         "values (" + Id_contacto + ", " + id_email + ", '', @email, 1, 0, 0)";
+
+            List<SqlParameter> parametrosMail = new List<SqlParameter>()
+            {
+                new SqlParameter()
+                { ParameterName="@email",SqlDbType = SqlDbType.NVarChar, Value = Emails[0].DirMail }
+            };
+
+            try
+            {
+                DB.Execute(sql, parametrosMail);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+            return true;
+        }
+
+        public static bool deleteEmail(int idEmail)
+        {
+            string sql = "delete from emails where id_email = " + idEmail;
+
+            try
+            {
+                DB.Execute(sql);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+            return true;
         }
 
         public bool existeContactoNombre()

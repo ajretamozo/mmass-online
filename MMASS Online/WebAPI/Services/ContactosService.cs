@@ -28,6 +28,9 @@ namespace WebApi.Services
         IEnumerable<Contacto> GetAnunSincro(int idRed);
         bool chequearSincroContacto(int idContacto, int idRed);
         Contacto saveCliPotencial(Contacto contacto);
+        IEnumerable<Mail> getEmailsPorContacto(Contacto contacto);
+        bool saveEmail(Contacto contacto);
+        bool deleteEmail(int idEmail);
     }
 
     public class ContactoService : IContactoService
@@ -113,6 +116,21 @@ namespace WebApi.Services
             }
 
             return ret;
+        }
+
+        public IEnumerable<Mail> getEmailsPorContacto(Contacto contacto)
+        {
+            return contacto.GetEmailsPorContacto();
+        }
+
+        public bool saveEmail(Contacto contacto)
+        {
+            return contacto.saveEmail();
+        }
+
+        public bool deleteEmail(int idEmail)
+        {
+            return Contacto.deleteEmail(idEmail);
         }
     }
 }

@@ -13,13 +13,57 @@
         width: 100%;
     }
 
-        .navbar li {
-            text-align: center;
-        }
+    .navbar li {
+        text-align: center;
+    }
 
     .shadow {
         box-shadow: 0 .9rem 1rem rgba(0,0,0,.40) !important;
     }
+
+    @media (max-width: 767px) {
+        #divVencApi {
+            position: fixed;
+            width: 100%;
+            bottom: 2px;
+            text-align: center;
+        }
+    }
+
+    @media screen {
+
+        #divVencApi {
+            position: fixed;
+            left: 99%;
+            margin-left: -200px;
+            width: 200px;
+            bottom: 30px;
+            text-align: center;
+            background: rgb(204, 204, 204); /* Fallback for older browsers without RGBA-support */
+            background: rgba(204, 204, 204, 0.2);
+            color: #c2c2c2;
+            border-color: #c2c2c2;
+            border: transparent;
+        }
+    }
+
+    .btn-danger {
+        color: #fff;
+        background-color: #52217d;
+        border-color: #52217d;
+        transition: all 0.2s;
+    }
+
+    .btn-danger:hover {
+        background-color: #7b00ce;
+        border-color: #7b00ce;
+    }
+
+    .btn-danger:active {
+        background-color: #52217d !important;
+        border-color: #52217d !important;
+    }
+
 </style>
 
 <!-- Modal Mensajes -->
@@ -28,7 +72,7 @@
         <div class="modal-content shadow p-3 mb-5 bg-white rounded">
             <div class="modal-header d-flex justify-content-center">
                 <h5 class="modal-title" id="modalCenterTitle">
-                    <span class="fa fa-info-circle" style="color: #f6ab36;"></span>
+                    <span class="fa fa-info-circle" style="color: #52217d;"></span>
                         Información del sistema
                 </h5>
             </div>
@@ -42,10 +86,14 @@
     </div>
 </div>
 
+<!--Notificación vencimiento versión API-->
+<div id="divVencApi" style="display:none;cursor:pointer;z-index:10000;" title="Click para cerrar" onclick="cerrarNoti()"></div>
+
 <nav class="navbar navbar-expand-lg navbar-dark sticky-top bg-dark shadow">
     <!--<a class="navbar-brand" href="OrdenList.html">-->
     <a class="navbar-brand" id="navBarLogo" href="">
-        <img src="/img/logoMmassOnlineFO.svg" width="120" height="35" class="d-inline-block align-top" alt="">
+        <!--<img src="/img/logoMmassOnlineFO.svg" width="120" height="35" class="d-inline-block align-top" alt="">-->
+        <img src="/img/logoNavbar2.png" width="120" height="35" class="d-inline-block align-top" alt="">
         <!--MMASS Online-->
     </a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
@@ -136,6 +184,7 @@
     setUserName();
     setUserRol();
     setOcultarModulos();
+    callWS("medios", "getParamById", JSON.stringify(8), function (fechas) { checkFechaApi(fechas); });
 
     function verInfo() {
         callWS("medios", "getInfoSistema", '', function (cs) { onVerInfo(cs); });
@@ -158,7 +207,7 @@
         $("#modalInfoBody").html(message);
         strHTML = '';
         options.forEach(function (option) {
-            strHTML += "<button type='button' class='btn btn-secondary' data-dismiss='modal' onClick=" + option.optionFunc + ">" + option.optionDesc + "</button>"
+            strHTML += "<button type='button' class='btn btn-danger' data-dismiss='modal' onClick=" + option.optionFunc + ">" + option.optionDesc + "</button>"
         });
         $("#modalInfoFooter").html(strHTML);
         $("#modalInfo").modal('show');
@@ -167,6 +216,28 @@
     function abrirConfig() {
         location.href = "/Configuracion.html";
     }
+
+    function checkFechaApi(fechas) {
+        arr = fechas.valor.split("/");
+        fechaBaja = arr[0];
+        fechaAtardecer = arr[1];
+
+        var hoy = new Date();
+        var dateBaja = new Date(fechaBaja + 'T00:00:00');
+        var dateAtardecer = new Date(fechaAtardecer + 'T00:00:00');
+
+        if (hoy > dateBaja && hoy < dateAtardecer) {
+            $("#divVencApi").addClass("alert alert-info").html("<span class='fa fa-exclamation-circle'></span><br>La versión actual de la API está por caducar. Se recomienda actualizar").show();
+        }
+        else if (hoy > dateAtardecer) {
+            $("#divVencApi").addClass("alert alert-info").html("<span class='fa fa-exclamation-circle'></span><br>La versión actual de la API ha caducado. Actualizar de inmediato").show();
+        }
+    }
+
+    function cerrarNoti() {
+        $("#divVencApi").hide("slideDown");
+    }
+
 
 </script>
 

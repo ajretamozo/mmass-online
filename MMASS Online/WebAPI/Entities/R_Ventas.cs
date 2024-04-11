@@ -123,10 +123,10 @@ namespace WebApi.Entities
                 if (p.Value.ToString() != "")
                 {                   
                     if ((p.ParameterName == "FechaDesde") && (p.Value.ToString() != ""))
-                        mifiltro = mifiltro + " and ap.fecha >='" + p.Value + "'";
+                        mifiltro = mifiltro + " and ap.fecha_expiracion >='" + p.Value + "'";
                    
                     if ((p.ParameterName == "FechaHasta") && (p.Value.ToString() != ""))
-                        mifiltro = mifiltro + " and ap.fecha <='" + p.Value + "'";
+                        mifiltro = mifiltro + " and ap.fecha_expiracion <='" + p.Value + "'";
                   
                     if ((p.ParameterName == "ListaAgencias") && (p.Value.ToString() != ""))
                         mifiltro = mifiltro + " and ap.id_agencia in (" + p.Value + ")";

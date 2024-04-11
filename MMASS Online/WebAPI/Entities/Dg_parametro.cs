@@ -26,21 +26,6 @@ namespace WebApi.Entities
             return mi;
         }
 
-        //public static Dg_red_GAM getByCodigo(long netCode)
-        //{
-        //    string sqlCommand = " select id_red, codigo_red, descripcion from dg_red_GAM" +
-        //                        " where es_borrado = 0 and codigo_red = " + netCode.ToString();
-        //    Dg_red_GAM resultado;
-        //    resultado = new Dg_red_GAM();
-        //    DataTable t = DB.Select(sqlCommand);
-
-        //    if (t.Rows.Count == 1)
-        //    {
-        //        resultado = getDg_red_GAM(t.Rows[0]);
-        //    }
-        //    return resultado;
-        //}
-
         public static Dg_parametro getById(int id)
         {
             string sqlCommand = " select * from dg_parametro" +
@@ -55,36 +40,6 @@ namespace WebApi.Entities
             }
             return resultado;
         }
-
-        //public static List<Dg_red_GAM> getAll()
-        //{
-        //    string sqlCommand = " select id_red, codigo_red, descripcion from dg_red_GAM where es_borrado = 0";
-        //    List<Dg_red_GAM> col = new List<Dg_red_GAM>();
-        //    Dg_red_GAM elem;
-        //    DataTable t = DB.Select(sqlCommand);
-
-        //    foreach (DataRow item in t.Rows)
-        //    {
-        //        elem = getDg_red_GAM(item);
-        //        col.Add(elem);
-        //    }
-        //    return col;
-        //}
-
-        //public static List<string> getCodigos()
-        //{
-        //    string sqlCommand = " select codigo_red from dg_red_GAM where es_borrado = 0";
-        //    List<string> col = new List<string>();
-        //    string elem;
-        //    DataTable t = DB.Select(sqlCommand);
-
-        //    foreach (DataRow item in t.Rows)
-        //    {
-        //        elem = item["codigo_red"].ToString();
-        //        col.Add(elem);
-        //    }
-        //    return col;
-        //}
 
         public bool updateParam()
         {
@@ -110,52 +65,6 @@ namespace WebApi.Entities
                 }
                 return respuesta;
         }
-
-        //public bool deleteRed()
-        //{
-        //    string sql = "update dg_red_GAM set es_borrado = 1 where id_red = " + Id_red.ToString();
-
-        //    if (Id_red != 0)
-        //    {
-        //        try
-        //        {
-        //            DB.Execute(sql);
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            Console.WriteLine(ex.Message);
-        //            return false;
-        //        }
-        //    }
-        //    return true;
-        //}
-
-        //public static List<Dg_red_GAM> filter(List<Parametro> parametros)
-        //{
-        //    string sqlCommand = " select id_red, codigo_red, descripcion from dg_red_GAM where es_borrado = 0";
-
-        //    string mifiltro = "";
-
-        //    foreach (Parametro p in parametros)
-        //    {
-        //        if (p.Value.ToString() != "")
-        //        {
-        //            if ((p.ParameterName == "descripcion") && (p.Value.ToString() != ""))
-        //                mifiltro = mifiltro + " and descripcion like '%" + p.Value + "%'";
-        //        }
-        //    }
-
-        //    List<Dg_red_GAM> col = new List<Dg_red_GAM>();
-        //    Dg_red_GAM elem;
-        //    DataTable t = DB.Select(sqlCommand + mifiltro);
-
-        //    foreach (DataRow item in t.Rows)
-        //    {
-        //        elem = getDg_red_GAM(item);
-        //        col.Add(elem);
-        //    }
-        //    return col;
-        //}
 
     }
 }

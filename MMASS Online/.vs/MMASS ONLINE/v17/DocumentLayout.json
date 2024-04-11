@@ -1,0 +1,466 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{87DA629E-89CD-4B8F-B6A0-0B8C9B569307}|C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE|c:\\users\\terminal\\documents\\github\\mmass-online\\mmass online\\mmass online\\usuarioslist.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{87DA629E-89CD-4B8F-B6A0-0B8C9B569307}|C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE|solutionrelative:mmass online\\usuarioslist.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{87DA629E-89CD-4B8F-B6A0-0B8C9B569307}|C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE|c:\\users\\terminal\\documents\\github\\mmass-online\\mmass online\\mmass online\\usuarios.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{87DA629E-89CD-4B8F-B6A0-0B8C9B569307}|C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE|solutionrelative:mmass online\\usuarios.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{87DA629E-89CD-4B8F-B6A0-0B8C9B569307}|C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE|c:\\users\\terminal\\documents\\github\\mmass-online\\mmass online\\mmass online\\tiposavisoslist.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{87DA629E-89CD-4B8F-B6A0-0B8C9B569307}|C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE|solutionrelative:mmass online\\tiposavisoslist.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{87DA629E-89CD-4B8F-B6A0-0B8C9B569307}|C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE|c:\\users\\terminal\\documents\\github\\mmass-online\\mmass online\\mmass online\\tiposavisos.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{87DA629E-89CD-4B8F-B6A0-0B8C9B569307}|C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE|solutionrelative:mmass online\\tiposavisos.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{87DA629E-89CD-4B8F-B6A0-0B8C9B569307}|C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE|c:\\users\\terminal\\documents\\github\\mmass-online\\mmass online\\mmass online\\tarifaslist.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{87DA629E-89CD-4B8F-B6A0-0B8C9B569307}|C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE|solutionrelative:mmass online\\tarifaslist.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{87DA629E-89CD-4B8F-B6A0-0B8C9B569307}|C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE|c:\\users\\terminal\\documents\\github\\mmass-online\\mmass online\\mmass online\\tarifas.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{87DA629E-89CD-4B8F-B6A0-0B8C9B569307}|C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE|solutionrelative:mmass online\\tarifas.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{87DA629E-89CD-4B8F-B6A0-0B8C9B569307}|C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE|c:\\users\\terminal\\documents\\github\\mmass-online\\mmass online\\mmass online\\sincronizarop.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{87DA629E-89CD-4B8F-B6A0-0B8C9B569307}|C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE|solutionrelative:mmass online\\sincronizarop.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{87DA629E-89CD-4B8F-B6A0-0B8C9B569307}|C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE|c:\\users\\terminal\\documents\\github\\mmass-online\\mmass online\\mmass online\\sincronizarmedidas.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{87DA629E-89CD-4B8F-B6A0-0B8C9B569307}|C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE|solutionrelative:mmass online\\sincronizarmedidas.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{87DA629E-89CD-4B8F-B6A0-0B8C9B569307}|C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE|c:\\users\\terminal\\documents\\github\\mmass-online\\mmass online\\mmass online\\sincronizaremplazamientos.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{87DA629E-89CD-4B8F-B6A0-0B8C9B569307}|C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE|solutionrelative:mmass online\\sincronizaremplazamientos.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{87DA629E-89CD-4B8F-B6A0-0B8C9B569307}|C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE|c:\\users\\terminal\\documents\\github\\mmass-online\\mmass online\\mmass online\\sincronizaranunciantes.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{87DA629E-89CD-4B8F-B6A0-0B8C9B569307}|C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE|solutionrelative:mmass online\\sincronizaranunciantes.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{87DA629E-89CD-4B8F-B6A0-0B8C9B569307}|C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE|c:\\users\\terminal\\documents\\github\\mmass-online\\mmass online\\mmass online\\redesgamlist.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{87DA629E-89CD-4B8F-B6A0-0B8C9B569307}|C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE|solutionrelative:mmass online\\redesgamlist.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{87DA629E-89CD-4B8F-B6A0-0B8C9B569307}|C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE|c:\\users\\terminal\\documents\\github\\mmass-online\\mmass online\\mmass online\\redesgam.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{87DA629E-89CD-4B8F-B6A0-0B8C9B569307}|C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE|solutionrelative:mmass online\\redesgam.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{87DA629E-89CD-4B8F-B6A0-0B8C9B569307}|C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE|c:\\users\\terminal\\documents\\github\\mmass-online\\mmass online\\mmass online\\presupvistacliente.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{87DA629E-89CD-4B8F-B6A0-0B8C9B569307}|C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE|solutionrelative:mmass online\\presupvistacliente.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{87DA629E-89CD-4B8F-B6A0-0B8C9B569307}|C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE|c:\\users\\terminal\\documents\\github\\mmass-online\\mmass online\\mmass online\\presupuestolist.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{87DA629E-89CD-4B8F-B6A0-0B8C9B569307}|C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE|solutionrelative:mmass online\\presupuestolist.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{87DA629E-89CD-4B8F-B6A0-0B8C9B569307}|C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE|c:\\users\\terminal\\documents\\github\\mmass-online\\mmass online\\mmass online\\perfil.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{87DA629E-89CD-4B8F-B6A0-0B8C9B569307}|C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE|solutionrelative:mmass online\\perfil.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{87DA629E-89CD-4B8F-B6A0-0B8C9B569307}|C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE|c:\\users\\terminal\\documents\\github\\mmass-online\\mmass online\\mmass online\\ordenlist.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{87DA629E-89CD-4B8F-B6A0-0B8C9B569307}|C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE|solutionrelative:mmass online\\ordenlist.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{87DA629E-89CD-4B8F-B6A0-0B8C9B569307}|C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE|c:\\users\\terminal\\documents\\github\\mmass-online\\mmass online\\mmass online\\login.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{87DA629E-89CD-4B8F-B6A0-0B8C9B569307}|C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE|solutionrelative:mmass online\\login.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{87DA629E-89CD-4B8F-B6A0-0B8C9B569307}|C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE|c:\\users\\terminal\\documents\\github\\mmass-online\\mmass online\\mmass online\\informeventas.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{87DA629E-89CD-4B8F-B6A0-0B8C9B569307}|C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE|solutionrelative:mmass online\\informeventas.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{87DA629E-89CD-4B8F-B6A0-0B8C9B569307}|C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE|c:\\users\\terminal\\documents\\github\\mmass-online\\mmass online\\mmass online\\configuracion.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{87DA629E-89CD-4B8F-B6A0-0B8C9B569307}|C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE|solutionrelative:mmass online\\configuracion.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{87DA629E-89CD-4B8F-B6A0-0B8C9B569307}|C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE|C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\mmass online\\presupuesto.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{87DA629E-89CD-4B8F-B6A0-0B8C9B569307}|C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE|solutionrelative:mmass online\\presupuesto.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{87DA629E-89CD-4B8F-B6A0-0B8C9B569307}|C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE|C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\mmass online\\orden.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{87DA629E-89CD-4B8F-B6A0-0B8C9B569307}|C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE|solutionrelative:mmass online\\orden.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{87DA629E-89CD-4B8F-B6A0-0B8C9B569307}|C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE|c:\\users\\terminal\\documents\\github\\mmass-online\\mmass online\\mmass online\\home.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{87DA629E-89CD-4B8F-B6A0-0B8C9B569307}|C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE|solutionrelative:mmass online\\home.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{87DA629E-89CD-4B8F-B6A0-0B8C9B569307}|C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE|c:\\users\\terminal\\documents\\github\\mmass-online\\mmass online\\mmass online\\navbar.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{87DA629E-89CD-4B8F-B6A0-0B8C9B569307}|C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE|solutionrelative:mmass online\\navbar.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B767C19F-283E-4057-B828-AE11D61173A3}|WebAPI\\WebApi.csproj|c:\\users\\terminal\\documents\\github\\mmass-online\\mmass online\\webapi\\entities\\dg_parametro.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B767C19F-283E-4057-B828-AE11D61173A3}|WebAPI\\WebApi.csproj|solutionrelative:webapi\\entities\\dg_parametro.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B767C19F-283E-4057-B828-AE11D61173A3}|WebAPI\\WebApi.csproj|c:\\users\\terminal\\documents\\github\\mmass-online\\mmass online\\webapi\\entities\\orden_presup_ap.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B767C19F-283E-4057-B828-AE11D61173A3}|WebAPI\\WebApi.csproj|solutionrelative:webapi\\entities\\orden_presup_ap.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B767C19F-283E-4057-B828-AE11D61173A3}|WebAPI\\WebApi.csproj|c:\\users\\terminal\\documents\\github\\mmass-online\\mmass online\\webapi\\entities\\dg_orden_pub_ap.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B767C19F-283E-4057-B828-AE11D61173A3}|WebAPI\\WebApi.csproj|solutionrelative:webapi\\entities\\dg_orden_pub_ap.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{e506b91c-c606-466a-90a9-123d1d1e12b3}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "usuariosList.html",
+              "DocumentMoniker": "C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE\\usuariosList.html",
+              "RelativeDocumentMoniker": "MMASS ONLINE\\usuariosList.html",
+              "ToolTip": "C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE\\usuariosList.html",
+              "RelativeToolTip": "MMASS ONLINE\\usuariosList.html",
+              "ViewState": "AQIAAEwBAAAAAAAAAAAAAE8BAAAHAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2024-04-11T14:59:14.935Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "usuarios.html",
+              "DocumentMoniker": "C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE\\usuarios.html",
+              "RelativeDocumentMoniker": "MMASS ONLINE\\usuarios.html",
+              "ToolTip": "C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE\\usuarios.html",
+              "RelativeToolTip": "MMASS ONLINE\\usuarios.html",
+              "ViewState": "AQIAAB4CAAAAAAAAAAAAAB8CAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2024-04-11T14:59:10.697Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "tiposavisoslist.html",
+              "DocumentMoniker": "C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE\\tiposavisoslist.html",
+              "RelativeDocumentMoniker": "MMASS ONLINE\\tiposavisoslist.html",
+              "ToolTip": "C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE\\tiposavisoslist.html",
+              "RelativeToolTip": "MMASS ONLINE\\tiposavisoslist.html",
+              "ViewState": "AQIAAEUBAAAAAAAAAAAAAEYBAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2024-04-11T14:59:06.945Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "tiposavisos.html",
+              "DocumentMoniker": "C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE\\tiposavisos.html",
+              "RelativeDocumentMoniker": "MMASS ONLINE\\tiposavisos.html",
+              "ToolTip": "C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE\\tiposavisos.html",
+              "RelativeToolTip": "MMASS ONLINE\\tiposavisos.html",
+              "ViewState": "AQIAAGMBAAAAAAAAAAAAAGQBAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2024-04-11T14:58:59.907Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "tarifasList.html",
+              "DocumentMoniker": "C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE\\tarifasList.html",
+              "RelativeDocumentMoniker": "MMASS ONLINE\\tarifasList.html",
+              "ToolTip": "C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE\\tarifasList.html",
+              "RelativeToolTip": "MMASS ONLINE\\tarifasList.html",
+              "ViewState": "AQIAAFECAAAAAAAAAAAAAFICAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2024-04-11T14:58:55.072Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "Tarifas.html",
+              "DocumentMoniker": "C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE\\Tarifas.html",
+              "RelativeDocumentMoniker": "MMASS ONLINE\\Tarifas.html",
+              "ToolTip": "C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE\\Tarifas.html",
+              "RelativeToolTip": "MMASS ONLINE\\Tarifas.html",
+              "ViewState": "AQIAAP4CAAAAAAAAAAAAAP8CAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2024-04-11T14:58:51.263Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "SincronizarOP.html",
+              "DocumentMoniker": "C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE\\SincronizarOP.html",
+              "RelativeDocumentMoniker": "MMASS ONLINE\\SincronizarOP.html",
+              "ToolTip": "C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE\\SincronizarOP.html",
+              "RelativeToolTip": "MMASS ONLINE\\SincronizarOP.html",
+              "ViewState": "AQIAAH0FAAAAAAAAAAAAAH4FAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2024-04-11T14:58:46.472Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "SincronizarMedidas.html",
+              "DocumentMoniker": "C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE\\SincronizarMedidas.html",
+              "RelativeDocumentMoniker": "MMASS ONLINE\\SincronizarMedidas.html",
+              "ToolTip": "C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE\\SincronizarMedidas.html",
+              "RelativeToolTip": "MMASS ONLINE\\SincronizarMedidas.html",
+              "ViewState": "AQIAAKoBAAAAAAAAAAAAAKsBAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2024-04-11T14:58:42.542Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "SincronizarEmplazamientos.html",
+              "DocumentMoniker": "C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE\\SincronizarEmplazamientos.html",
+              "RelativeDocumentMoniker": "MMASS ONLINE\\SincronizarEmplazamientos.html",
+              "ToolTip": "C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE\\SincronizarEmplazamientos.html",
+              "RelativeToolTip": "MMASS ONLINE\\SincronizarEmplazamientos.html",
+              "ViewState": "AQIAAA0BAAAAAAAAAAAAAA4BAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2024-04-11T14:58:38.255Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "SincronizarAnunciantes.html",
+              "DocumentMoniker": "C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE\\SincronizarAnunciantes.html",
+              "RelativeDocumentMoniker": "MMASS ONLINE\\SincronizarAnunciantes.html",
+              "ToolTip": "C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE\\SincronizarAnunciantes.html",
+              "RelativeToolTip": "MMASS ONLINE\\SincronizarAnunciantes.html",
+              "ViewState": "AQIAALIBAAAAAAAAAAAAALMBAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2024-04-11T14:58:34.435Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "redesGamlist.html",
+              "DocumentMoniker": "C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE\\redesGamlist.html",
+              "RelativeDocumentMoniker": "MMASS ONLINE\\redesGamlist.html",
+              "ToolTip": "C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE\\redesGamlist.html",
+              "RelativeToolTip": "MMASS ONLINE\\redesGamlist.html",
+              "ViewState": "AQIAAFMBAAAAAAAAAAAAAFQBAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2024-04-11T14:58:29.759Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "redesGam.html",
+              "DocumentMoniker": "C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE\\redesGam.html",
+              "RelativeDocumentMoniker": "MMASS ONLINE\\redesGam.html",
+              "ToolTip": "C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE\\redesGam.html",
+              "RelativeToolTip": "MMASS ONLINE\\redesGam.html",
+              "ViewState": "AQIAADwBAAAAAAAAAAAAAD0BAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2024-04-11T14:58:26.05Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "PresupVistaCliente.html",
+              "DocumentMoniker": "C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE\\PresupVistaCliente.html",
+              "RelativeDocumentMoniker": "MMASS ONLINE\\PresupVistaCliente.html",
+              "ToolTip": "C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE\\PresupVistaCliente.html",
+              "RelativeToolTip": "MMASS ONLINE\\PresupVistaCliente.html",
+              "ViewState": "AQIAAJgHAAAAAAAAAAAAAJkHAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2024-04-11T14:58:22.375Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "PresupuestoList.html",
+              "DocumentMoniker": "C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE\\PresupuestoList.html",
+              "RelativeDocumentMoniker": "MMASS ONLINE\\PresupuestoList.html",
+              "ToolTip": "C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE\\PresupuestoList.html",
+              "RelativeToolTip": "MMASS ONLINE\\PresupuestoList.html",
+              "ViewState": "AQIAAL0CAAAAAAAAAAAAAL4CAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2024-04-11T14:58:18.523Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "perfil.html",
+              "DocumentMoniker": "C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE\\perfil.html",
+              "RelativeDocumentMoniker": "MMASS ONLINE\\perfil.html",
+              "ToolTip": "C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE\\perfil.html",
+              "RelativeToolTip": "MMASS ONLINE\\perfil.html",
+              "ViewState": "AQIAADIBAAAAAAAAAAAAADMBAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2024-04-11T14:58:14.098Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "OrdenList.html",
+              "DocumentMoniker": "C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE\\OrdenList.html",
+              "RelativeDocumentMoniker": "MMASS ONLINE\\OrdenList.html",
+              "ToolTip": "C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE\\OrdenList.html",
+              "RelativeToolTip": "MMASS ONLINE\\OrdenList.html",
+              "ViewState": "AQIAADMCAAAAAAAAAAAAADQCAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2024-04-11T14:58:09.884Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "login.html",
+              "DocumentMoniker": "C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE\\login.html",
+              "RelativeDocumentMoniker": "MMASS ONLINE\\login.html",
+              "ToolTip": "C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE\\login.html",
+              "RelativeToolTip": "MMASS ONLINE\\login.html",
+              "ViewState": "AQIAAEgBAAAAAAAAAAAAAEkBAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2024-04-11T14:58:05.282Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "informeVentas.html",
+              "DocumentMoniker": "C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE\\informeVentas.html",
+              "RelativeDocumentMoniker": "MMASS ONLINE\\informeVentas.html",
+              "ToolTip": "C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE\\informeVentas.html",
+              "RelativeToolTip": "MMASS ONLINE\\informeVentas.html",
+              "ViewState": "AQIAAPkCAAAAAAAAAAAAAPoCAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2024-04-11T14:58:00.321Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
+              "Title": "Configuracion.html",
+              "DocumentMoniker": "C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE\\Configuracion.html",
+              "RelativeDocumentMoniker": "MMASS ONLINE\\Configuracion.html",
+              "ToolTip": "C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE\\Configuracion.html",
+              "RelativeToolTip": "MMASS ONLINE\\Configuracion.html",
+              "ViewState": "AQIAAD8FAAAAAAAAAAAAAEAFAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2024-04-11T14:57:55.701Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 21,
+              "Title": "Home.html",
+              "DocumentMoniker": "C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE\\Home.html",
+              "RelativeDocumentMoniker": "MMASS ONLINE\\Home.html",
+              "ToolTip": "C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE\\Home.html",
+              "RelativeToolTip": "MMASS ONLINE\\Home.html",
+              "ViewState": "AQIAACEDAAAAAAAAAAAmwDcDAAAHAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2024-04-11T14:35:07.2Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 22,
+              "Title": "navBar.html",
+              "DocumentMoniker": "C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE\\navBar.html",
+              "RelativeDocumentMoniker": "MMASS ONLINE\\navBar.html",
+              "ToolTip": "C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE\\navBar.html",
+              "RelativeToolTip": "MMASS ONLINE\\navBar.html",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABYAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2024-04-11T14:31:57.077Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 23,
+              "Title": "Dg_parametro.cs",
+              "DocumentMoniker": "C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\WebAPI\\Entities\\Dg_parametro.cs",
+              "RelativeDocumentMoniker": "WebAPI\\Entities\\Dg_parametro.cs",
+              "ToolTip": "C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\WebAPI\\Entities\\Dg_parametro.cs",
+              "RelativeToolTip": "WebAPI\\Entities\\Dg_parametro.cs",
+              "ViewState": "AQIAABIAAAAAAAAAAAAmwCQAAAAiAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-04-08T14:19:16.505Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
+              "Title": "Presupuesto.html",
+              "DocumentMoniker": "C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE\\Presupuesto.html",
+              "RelativeDocumentMoniker": "MMASS ONLINE\\Presupuesto.html",
+              "ToolTip": "C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE\\Presupuesto.html",
+              "RelativeToolTip": "MMASS ONLINE\\Presupuesto.html",
+              "ViewState": "AQIAAD0NAAAAAAAAAAAmwFENAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2024-03-04T14:03:55.37Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 25,
+              "Title": "Dg_orden_pub_ap.cs",
+              "DocumentMoniker": "C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\WebAPI\\Entities\\Dg_orden_pub_ap.cs",
+              "RelativeDocumentMoniker": "WebAPI\\Entities\\Dg_orden_pub_ap.cs",
+              "ToolTip": "C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\WebAPI\\Entities\\Dg_orden_pub_ap.cs",
+              "RelativeToolTip": "WebAPI\\Entities\\Dg_orden_pub_ap.cs",
+              "ViewState": "AQIAAFAAAAAAAAAAAAA0wFcEAAAhAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-01-02T19:06:09.657Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 24,
+              "Title": "Orden_presup_ap.cs",
+              "DocumentMoniker": "C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\WebAPI\\Entities\\Orden_presup_ap.cs",
+              "RelativeDocumentMoniker": "WebAPI\\Entities\\Orden_presup_ap.cs",
+              "ToolTip": "C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\WebAPI\\Entities\\Orden_presup_ap.cs",
+              "RelativeToolTip": "WebAPI\\Entities\\Orden_presup_ap.cs",
+              "ViewState": "AQIAACsAAAAAAAAAAAAswD4AAAA1AAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2023-12-22T17:29:44.767Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 20,
+              "Title": "Orden.html",
+              "DocumentMoniker": "C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE\\Orden.html",
+              "RelativeDocumentMoniker": "MMASS ONLINE\\Orden.html",
+              "ToolTip": "C:\\Users\\Terminal\\Documents\\GitHub\\mmass-online\\MMASS Online\\MMASS ONLINE\\Orden.html",
+              "RelativeToolTip": "MMASS ONLINE\\Orden.html",
+              "ViewState": "AQIAAEIWAAAAAAAAAAAmwFYWAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2024-01-11T15:04:51.074Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

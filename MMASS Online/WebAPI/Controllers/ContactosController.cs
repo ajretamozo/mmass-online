@@ -102,7 +102,7 @@ namespace WebApi.Controllers
             var contactos = _contactoService.GetAnunSincro(idRed);
             return Ok(contactos);
         }
-        //hacer este moetdo
+        //hacer este metodo
         [HttpPost("chequearSincroContacto")]
         public IActionResult chequearSincroContacto(Dg_contacto_red_GAM anun)
         {
@@ -115,6 +115,27 @@ namespace WebApi.Controllers
         {
             var result = _contactoService.saveCliPotencial(contacto);
             return Ok(result);
+        }
+
+        [HttpPost("getEmailsPorContacto")]
+        public IActionResult getEmailsPorContacto(Contacto contacto)
+        {
+            var mails = _contactoService.getEmailsPorContacto(contacto);
+            return Ok(mails);
+        }
+
+        [HttpPost("saveEmail")]
+        public IActionResult saveEmail(Contacto contacto)
+        {
+            var resp = _contactoService.saveEmail(contacto);
+            return Ok(resp);
+        }
+
+        [HttpPost("deleteEmail")]
+        public IActionResult deleteEmail([FromBody] int idEmail)
+        {
+            var contactos = _contactoService.deleteEmail(idEmail);
+            return Ok(contactos);
         }
 
     }

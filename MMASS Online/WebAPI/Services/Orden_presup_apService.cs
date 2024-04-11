@@ -14,7 +14,7 @@ using System.Net.Security;
 using System.Net;
 using System.Security.Cryptography.X509Certificates;
 using System.Text.RegularExpressions;
-using Google.Api.Ads.AdManager.v202208;
+
 
 namespace WebApi.Services
 {
@@ -120,7 +120,7 @@ namespace WebApi.Services
             if (resultado == 4)
             {
                     string cliente = "";
-                    List<string> destinatarios = new List<string>();
+                    List<Mail> destinatarios = new List<Mail>();
 
                     if (miobj.Facturar_a == 0)
                     {
@@ -144,7 +144,7 @@ namespace WebApi.Services
             else if (resultado == 2)
             {
                     string cliente = "";
-                    List<string> destinatarios = new List<string>();
+                    List<Mail> destinatarios = new List<Mail>();
                     if (miobj.Facturar_a == 0)
                     {
                         cliente = miobj.Agencia_nombre;
@@ -173,7 +173,7 @@ namespace WebApi.Services
 
         public int armarMail(Orden_presup_ap miobj)
         {
-            List<string> mailsCliente = new List<string>();
+            List<Mail> mailsCliente = new List<Mail>();
             if (miobj.Facturar_a == 0)
             {
                 mailsCliente = miobj.agencia.GetEmailsPorContacto();
@@ -183,7 +183,7 @@ namespace WebApi.Services
                 mailsCliente = miobj.anunciante.GetEmailsPorContacto();
             }
 
-            if (mailsCliente.Count > 0)
+            if (mailsCliente != null)
             {
                 string asunto = "MMASS Online - Presupuesto";
                 string msj = @"Se requiere acción por parte del usuario.<br>
@@ -214,7 +214,7 @@ namespace WebApi.Services
             return mail;
         }
 
-        public void enviarMail(string asunto, string mensaje, List<string> destinatarios)
+        public void enviarMail(string asunto, string mensaje, List<Mail> destinatarios)
         {
             Mail mail = getMailCta();
             MailMessage correo = new MailMessage();
@@ -222,9 +222,9 @@ namespace WebApi.Services
             correo.From = new MailAddress(mail.DirMail, mail.Nombre, Encoding.UTF8);//Correo de salida
             if(destinatarios.Count > 0)
             {
-                foreach (string destinatario in destinatarios)
+                foreach (Mail destinatario in destinatarios)
                 {
-                    correo.To.Add(destinatario); //Correo destino
+                    correo.To.Add(destinatario.DirMail); //Correo destino
                 }
             }
             else

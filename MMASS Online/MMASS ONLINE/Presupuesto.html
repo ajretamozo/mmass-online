@@ -293,14 +293,19 @@
 
         .btn-danger {
             color: #fff;
-            background-color: #fc9a00;
-            border-color: #fc9a00
+            background-color: #52217d;
+            border-color: #52217d;
+            transition: all 0.2s;
         }
 
-            .btn-danger:hover {
-                color: #fff;
-                background-color: #e08902;
-                border-color: #e08902
+        .btn-danger:hover {
+            background-color: #7b00ce;
+            border-color: #7b00ce;
+        }
+
+            .btn-danger:active {
+                background-color: #52217d !important;
+                border-color: #52217d !important;
             }
 
         .dataTitle {
@@ -478,9 +483,9 @@
         </div>
 
         <!--Modal Cliente Potencial-->
-        <div class="modal fade" id="clienteModal" style="height: 1000px;">
+        <div class="modal fade" id="clienteModal">
             <div class="modal-dialog modal-xl">
-                <div class="modal-content shadow p-3 mb-5 bg-white rounded" style="height: 400px;">
+                <div class="modal-content shadow p-3 mb-5 bg-white rounded">
 
                     <!-- Modal Header -->
                     <div class="modal-header">
@@ -496,12 +501,6 @@
                                 <div class="input-group"> <input type="text" id="inpRazonSocial" class="form-control"> </div>
                             </div>
                             <div class="col-md-6">
-                                <!--<label for="selRol">Rol</label>
-                            <select class="form-control" id="selRol" onchange="filtrarContactos()">
-                                <option value="1" checked>Agencia</option>
-                                <option value="2">Anunciante</option>
-                            </select>-->
-
                                 <label for="mail">Mail</label>
                                 <div class="input-group">
                                     <input type="email" id="mail" class="form-control" placeholder="ejemplo@servidormail.com">
@@ -543,10 +542,79 @@
 
                     <!-- Modal footer -->
                     <div class="modal-footer">
-                        <!--<button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>-->
                         <button id="botGuardarCliente" title="Guardar Cliente Potencial" type="button" class="btn actions btn-dark btn-sm mx-1" onclick="guardarCliPotencial();">
                             <span class="fa fa-save"></span> Guardar
                         </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!--Modal Mail Contacto-->
+        <div class="modal fade" id="mailModal">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content shadow p-3 mb-5 bg-white rounded">
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="mailModalTitle">CASILLAS MAIL</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <!-- Modal body -->
+                    <div class="modal-body" id="mailModalBody">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <label id="lblRazonSoc" style="margin-bottom: 4px;"></label>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-10" style="padding-left: 0px;">
+                                        <div class="input-group">
+                                            <input type="text" disabled id="inpRazonSocialMail" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <input type="hidden" id="idContacto" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="row" style="padding-top: 8px;">
+                                    <label for="inpMail" style="margin-bottom: 4px;">Mail</label>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-10" style="padding-left: 0px;">
+                                        <div class="input-group">
+                                            <input type="email" id="inpMail" class="form-control" placeholder="ejemplo@servidormail.com">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2" style="align-content: center;padding-left: 0px;">
+                                        <button id="botAgregarMail" title="Agregar dirección mail" type="button" class="btn actions btn-dark btn-sm mx-1" onclick="agregarMail();">
+                                            <span class="fa fa-chevron-right"></span><span class="fa fa-chevron-right"></span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="txtDirecciones">Direcciones registradas</label>
+                                    <!--Tabla GAM-->
+                                    <div id="tabla" class="table-responsive">
+                                        <table class='table table-hover table-sm' style='text-align: center;'>
+                                            <thead>
+                                                <tr style='border: 1px solid #ccc;'>
+                                                    <th>Mail</th>
+                                                    <th>Eliminar</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="TableMails" class="small"></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn actions btn-dark btn-sm mx-1" data-dismiss="modal">Cerrar</button>
                     </div>
 
                 </div>
@@ -654,14 +722,32 @@
                             </div>
                         </div>
                         <div class="row mt-2">
-                            <div class="col d-flex justify-content-end">
+                            <div class="col-lg-4 d-flex">
+                                <button id="botMailAgencia" title="Ver/Editar mail Agencia" type="button" class="btn actions btn-outline-dark btn-sm" onclick="verMail('Agencia');">
+                                    <span class="fa fa-envelope"></span> Casillas Mail
+                                </button>
+                            </div>
+                            <div class="col-lg-4 d-flex">
+                                <button id="botMailAnunciante" title="Ver/Editar mail Anunciante" type="button" class="btn actions btn-outline-dark btn-sm" onclick="verMail('Anunciante');">
+                                    <span class="fa fa-envelope"></span> Casillas Mail
+                                </button>
+                            </div>
+                            <div class="col-lg-4 d-flex justify-content-end">
                                 <button id="bNuevoContacto" title="Cargar Cliente Potencial" type="button" class="btn actions btn-outline-dark btn-sm mr-1" onclick="nuevoCliPotencial();">
                                     <span class="fa fa-address-book-o"></span> Cliente Potencial
                                 </button>
-                                <button id="botLimpiar" title="Limpiar Agencia - Anunciante" type="button" class="btn actions btn-outline-dark btn-sm mr-1" onclick="limpiaVinculados();">
+                                <button id="botLimpiar" title="Limpiar Agencia - Anunciante" type="button" class="btn actions btn-outline-dark btn-sm" onclick="limpiaVinculados();">
                                     <span class="fa fa-eraser"></span> Limpiar
                                 </button>
                             </div>
+                            <!--<div class="col d-flex justify-content-end">
+                            <button id="bNuevoContacto" title="Cargar Cliente Potencial" type="button" class="btn actions btn-outline-dark btn-sm mr-1" onclick="nuevoCliPotencial();">
+                                <span class="fa fa-address-book-o"></span> Cliente Potencial
+                            </button>
+                            <button id="botLimpiar" title="Limpiar Agencia - Anunciante" type="button" class="btn actions btn-outline-dark btn-sm mr-1" onclick="limpiaVinculados();">
+                                <span class="fa fa-eraser"></span> Limpiar
+                            </button>
+                        </div>-->
                         </div>
                     </div>
                     <hr>
@@ -3159,7 +3245,11 @@
                     contacto.nombre_com = $('#inpIniciales').val();
                 }
 
-                contacto.email = $('#mail').val();
+                emails = [];
+                email = {};
+                email.dirMail = $('#mail').val();
+                emails.push(email);
+                contacto.emails = emails;
 
                 if (document.getElementById("flexRadioAgencia").checked == true) {
                     contacto.tipo_contacto = "0";
@@ -3218,11 +3308,105 @@
                 message = message.slice(0, -3);
                 showMessage(message, "error");
             }
+        }
+
+
+        function verMail(selContacto) {
+            if ($("#sel" + selContacto).val() > 0) {
+                var contacto = {};
+                contacto.id_contacto = $("#sel" + selContacto).val();
+                $.when(
+                    callWS("contactos", "getEmailsPorContacto", JSON.stringify(contacto), function (data) { onCargarTablaMails('TableMails', data); }),
+                    $("#inpRazonSocialMail").val($("#sel" + selContacto + " option:selected").text()),
+                    $('#lblRazonSoc').text(selContacto),
+                    $("#idContacto").val($("#sel" + selContacto).val())
+                ).then(function () { $("#mailModal").modal('show') });
+            }
+            else {
+                showMessage("Seleccione " + selContacto, "info");
+            }
+        }
+
+
+        function onCargarTablaMails(tablaID, data) {
+            $("#" + tablaID).empty();
+            rowHTML = ''
+
+            $.each(data, function (it, mail) {
+
+                rowHTML += "<tr style='border: 1px solid #ccc;'>";
+                rowHTML += "<td class='col-xs-1' style='vertical-align: middle;'> " + mail.dirMail + "</td > ";
+                rowHTML += "<td class='col-xs-2 pr-0 actions d-flex justify-content-center align-content-start'>";
+                rowHTML += "<button type='button' class='btn actions btn-outline-dark btn-sm mr-1'  onclick='eliminarMail(" + mail.idMail + ")' title='Eliminar mail'> <span class='fa fa-minus'></span></button></td>";
+                rowHTML += "</tr>";
+
+            });
+
+            $("#" + tablaID).html(rowHTML);
         } 
+
+
+        function agregarMail() {
+            var contacto = {};
+            var error = [];
+
+            if ($("#inpMail").val() == "") {
+                error.push("Email");
+            }
+
+            if (error.length == 0) {
+                contacto.Id_contacto = $("#idContacto").val();
+
+                emails = [];
+                email = {};
+                email.dirMail = $('#inpMail').val();
+                emails.push(email);
+                contacto.emails = emails;
+
+                callWS("contactos", "saveEmail", JSON.stringify(contacto), function (resp) {
+                    if (resp == true) {
+                        //recargar tabla
+                        callWS("contactos", "getEmailsPorContacto", JSON.stringify(contacto), function (data) { onCargarTablaMails('TableMails', data); });
+                        $('#inpMail').val('');
+                    }
+                    else {
+                        showMessage("Ocurrió un error al intentar guardar el email", "error");
+                        console.log(resp);
+                    }
+                });
+
+            }
+            else {
+                message = "Falta completar/indicar los siguientes datos: "
+                error.forEach(function (err) {
+                    message += err + " - ";
+                });
+                message = message.slice(0, -3);
+                showMessage(message, "error");
+            }                     
+        }
+
+
+        function eliminarMail(idMail) {
+
+            callWS("contactos", "deleteEmail", JSON.stringify(idMail), function (resp) {
+                if (resp == true) {
+                    //recargar tabla
+                    var contacto = {};
+                    contacto.Id_contacto = $("#idContacto").val();
+
+                    callWS("contactos", "getEmailsPorContacto", JSON.stringify(contacto), function (data) { onCargarTablaMails('TableMails', data); });
+                }
+                else {
+                    showMessage("Ocurrió un error al intentar eliminar el email", "error");
+                    console.log(resp);
+                }
+            });
+        }
 
     </script>
     <footer>
-        <p style="text-align: center; font-size: x-small;">Powered by <b style="font-size: small;">Strategy Zone S.A. ©</b></p>
+        <p style="text-align: center; font-size: x-small;">Desarrollado por<a href="https://mmass-suite.com/" target=”_blank”><img src="stratLogo2.png" width="120" height="35" class="d-inline-block align-top" alt="" style="margin-left: 5px;"></a></p>
     </footer>
 </body>
 </html>
