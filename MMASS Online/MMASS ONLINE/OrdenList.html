@@ -450,6 +450,14 @@
                     error += "Formato 'Fecha Hasta' invalido";
                 }
             }
+            if ($("#fechaHasta").val() != "" && $("#fechaDesde").val() != "") {
+                var o1 = new Date(dateToSqlFormat($('#fechaDesde').val()) + 'T00:00:00');
+                var o2 = new Date(dateToSqlFormat($('#fechaHasta').val()) + 'T00:00:00');
+                if (o2 < o1) {
+                    error += "La Fecha Hasta es menor que la Fecha Desde en la Vigencia de la Orden";
+                }
+            }
+
             params.nro_orden_ag = $('#inpOrderNumberClient').val();
             params.agencia_nombre = $('#inpDescAgencia').val();
             params.anunciante_nombre = $('#inpDescAnunciante').val();

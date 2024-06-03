@@ -342,6 +342,13 @@
             if ($('#fechaDesde').val() == "" || $('#fechaHasta').val() == "") {
                 error += "Es obligatorio seleccionar fechas para el reporte"
             }
+            else {
+                var o1 = new Date(dateToSqlFormat($('#fechaDesde').val()) + 'T00:00:00');
+                var o2 = new Date(dateToSqlFormat($('#fechaHasta').val()) + 'T00:00:00');
+                if (o2 < o1) {
+                    error += "La Fecha Hasta es menor que la Fecha Desde en la selección de rango";
+                }
+            }
 
             if ($('#fechaDesde').val() != "") {
                 fDesde = new Date(moment($("#fechaDesde").val(), 'DD/MM/YYYY', true).format());
@@ -470,6 +477,7 @@
             }
         }
 
+        //la tabla 'tableexport-ignore' estaba deliveradamente para no incluír los totales en el Excel, se volvieron a incluír por pedido del cliente C5N
         function populateTable(data, idTable, tipo) {
             orderlist = data;
 
@@ -490,7 +498,8 @@
                 sumSubtotalAg = 0;
                 sumSubtotal1Ag = 0;
                 sumTotalAg = 0;
-                rowHTML += "<tr class='tableexport-ignore table-secondary agGroup' agencia='" + itAg + "'>"
+                /*rowHTML += "<tr class='tableexport-ignore table-secondary agGroup' agencia='" + itAg + "'>"*/
+                rowHTML += "<tr class='table-secondary agGroup' agencia='" + itAg + "'>"
                 if (tipo == 2) {
                     rowHTML += "<td colspan='18' style='text-align: initial;'> AGENCIA: " + itAg + "</td>";
                 } else {
@@ -503,7 +512,8 @@
                     sumSubtotalAn = 0;
                     sumSubtotal1An = 0;
                     sumTotalAn = 0;
-                    rowHTML += "<tr class='tableexport-ignore table-secondary anGroup' anunciante='" + itAn + "'>"
+                    /*rowHTML += "<tr class='tableexport-ignore table-secondary anGroup' anunciante='" + itAn + "'>"*/
+                    rowHTML += "<tr class='table-secondary anGroup' anunciante='" + itAn + "'>"
                     if (tipo == 2) {
                         rowHTML += "<td></td><td colspan='17' style='text-align: initial;'>         ANUNCIANTE: " + itAn + "</td>";
                     } else {
@@ -579,7 +589,8 @@
 
                     })
                     //totales anunciante
-                    rowHTML += "<tr class='tableexport-ignore table-secondary anGroup' anunciante='" + itAn + "'>"
+                    /*rowHTML += "<tr class='tableexport-ignore table-secondary anGroup' anunciante='" + itAn + "'>"*/
+                    rowHTML += "<tr class='table-secondary anGroup' anunciante='" + itAn + "'>"
                     rowHTML += "<td></td><td colspan='9' style='text-align: initial;'> TOTALES ANUNCIANTE: " + itAn + "</td>";
                     rowHTML += "<td class='align-center'>" + roundSinFormato(sumImpresionesAn, 2) + "</td>";
 
@@ -600,7 +611,8 @@
                     sumTotalAg += sumTotalAn;
                 })
                 //totales agencia
-                rowHTML += "<tr class='tableexport-ignore table-secondary agGroup' agencia='" + itAg + "'>"
+                /*rowHTML += "<tr class='tableexport-ignore table-secondary agGroup' agencia='" + itAg + "'>"*/
+                rowHTML += "<tr class='table-secondary agGroup' agencia='" + itAg + "'>"
                 rowHTML += "<td colspan='10' style='text-align: initial;'> TOTALES AGENCIA: " + itAg + "</td>";
                 rowHTML += "<td class='align-center'>" + sumImpresionesAg + "</td>";
 
@@ -620,7 +632,8 @@
                 sumTotalGral += sumTotalAg;
             })
             //totales
-            rowHTML += "<tr class='tableexport-ignore table-secondary'>"
+            /*rowHTML += "<tr class='tableexport-ignore table-secondary'>"*/
+            rowHTML += "<tr class='table-secondary'>"
             rowHTML += "<td colspan='10' style='text-align: initial;'> TOTALES: </td>";
             rowHTML += "<td class='align-center'>" + sumImpresionesGral + "</td>";
 
@@ -689,9 +702,11 @@
             t2 = document.getElementById("divTablaDet");
             t.classList.remove("vh-100");
             t2.classList.remove("vh-100");
+            $("#divTarifasMain").attr('style', 'width: 1400px;');
             $(".printOnly").show();
             window.print();
             $(".printOnly").hide();
+            $("#divTarifasMain").attr('style', '');
             t.classList.add("vh-100");
             t2.classList.add("vh-100");
         }
