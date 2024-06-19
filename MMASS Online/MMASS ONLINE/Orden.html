@@ -1020,7 +1020,7 @@
                             </div>
                             <div class="row mt-2">
                                 <div class="col-lg-2 offset-lg-10 d-flex justify-content-end">
-                                    <button id="botLimpiar" title="Limpiar Agencia - Anunciante" type="button" class="btn actions btn-outline-dark btn-sm mr-1" onclick="limpiaVinculados();">
+                                    <button id="botLimpiar" title="Limpiar Agencia - Anunciante - Producto" type="button" class="btn actions btn-outline-dark btn-sm mr-1" onclick="limpiaVinculados();">
                                         <span class="fa fa-eraser"></span> Limpiar
                                     </button>
                                 </div>
@@ -1706,6 +1706,10 @@
                 //$("#bAnular").attr("disabled", true);
                 //$("#bAnular").attr("title", "La Orden no puede ser anulada ya que tiene Detalles vinculados con AdServer");
                 $("#bgetOrderASDetais").attr("disabled", false);
+                $("#selAnunciante").attr("disabled", true);
+                $("#botLimpiar").attr("disabled", true);
+                $("#botLimpiar").attr("title", "No es posible limpiar Anunciantes si existen Detalles sincronizados");
+                OpGam = true;
             }
 
             $("#bConvenios").attr("disabled", true);
@@ -1805,14 +1809,14 @@
             // $("#total").val(data.tercer_neto); //Total
 
             $("#TableRenglones").empty();
-            if (Detalles.length > 0) {
-                $("#selAnunciante").attr("disabled", true);
-                $("#botLimpiar").attr("disabled", true);
-                $("#botLimpiar").attr("title", "No es posible limpiar Anunciante si existen Detalles cargados");
+            //if (Detalles.length > 0) {
+                //$("#selAnunciante").attr("disabled", true);
+                //$("#botLimpiar").attr("disabled", true);
+                //$("#botLimpiar").attr("title", "No es posible limpiar Anunciante si existen Detalles cargados");
                //$("#botLimpiar").attr("title", "No es posible limpiar Agencia - Anunciante si existen Detalles cargados");
                //if (data.nro_orden > 0)
                //    $("#selAgencia").attr("disabled", true);
-            }
+            //}
 
             Detalles.forEach(generarTablaDetalles);
 
@@ -2096,10 +2100,18 @@
                 }
 
                 //guardamos parametro en id_google_ad_manager para detectar si la OP contiene o no algún detalle sincronizado y pintarlo de verde en OrderList
-                if (item.id_Google_Ad_Manager > 0) {
-                    data.id_Google_Ad_Manager = 1;
-                }
+                //if (item.id_Google_Ad_Manager > 0) {
+                //    data.id_Google_Ad_Manager = 1;
+                //}
             });
+
+            //guardamos parametro en id_google_ad_manager para detectar si la OP contiene o no algún detalle sincronizado y pintarlo de verde en OrderList
+            if (OpGam == true) {
+                data.id_Google_Ad_Manager = 1;
+            }
+            else {
+                data.id_Google_Ad_Manager = 0;
+            }
 
             if (DetallesASDelete.length > 0) {
                 var orden = {};
@@ -2241,6 +2253,10 @@
 
                 if (data.op.id_Google_Ad_Manager > 0) {
                     $("#bgetOrderASDetais").attr("disabled", false);
+                    OpGam = true;
+                }
+                else {
+                    OpGam = false;
                 }
 
                 $("#bAnular").attr("disabled", false);
@@ -2316,6 +2332,11 @@
             //data.agencia.id = ag;
             //callWS("dg_orden_pub_aps", "getOrdenesRadio", JSON.stringify(data) , function (data) { onPopulateSelectDone(data, 'selOrdenRelacionada', 'id', 'descripcion'); });
             callWS("productos", "getProductosPorAnunciante", an, function (data) { onPopulateSelectDone(data, 'selProducto', 'id_producto', 'desc_producto'); });
+
+            //advertencia por el cambio de Producto en Detalles
+            if (Detalles.length > 0) {
+                showMessage("Los Productos en los Detalles podrían haber cambiado", "info");
+            }
         }
 
         function onAgenciaSelected() {
@@ -2544,6 +2565,11 @@
             callWS("productos", "getAll", '', function (data) { onPopulateSelectDone(data, 'selProducto', 'id_producto', 'desc_producto'); });
             callWS("contactos", "getAgencias", '', function (data) { onPopulateSelectDone(data, 'selAgencia', 'id', 'nombre_com'); });
             callWS("contactos", "getAnunciantes", '', function (data) { onPopulateSelectDone(data, 'selAnunciante', 'id', 'nombre_com'); });
+
+            //advertencia por el cambio de Producto en Detalles
+            if (Detalles.length > 0) {
+                showMessage("Los Productos en los Detalles podrían haber cambiado", "info");
+            }
         }
 
 
@@ -2808,6 +2834,7 @@
         OpClon = false;
         OpAnulada = false;
         OpSinc = false;
+        OpGam = false;
         DetalleClon = false;
         TipoAvisoClase = 0;
         //Parametro global para llevar el último Detalle importado
@@ -3198,10 +3225,21 @@
             Detalles.forEach(generarTablaDetalles);
             calculateTotals();
 
-            if (Detalles.length > 0) {
+            if (OpGam == true) {
                 $("#selAnunciante").attr("disabled", true);
                 $("#botLimpiar").attr("disabled", true);
-                $("#botLimpiar").attr("title", "No es posible limpiar Agencia - Anunciante si existen Detalles cargados");
+                $("#botLimpiar").attr("title", "No es posible limpiar Anunciantes si existen Detalles sincronizados");
+            }
+            else {
+                $("#selAnunciante").attr("disabled", false);
+                $("#botLimpiar").attr("disabled", false);
+                $("#botLimpiar").attr("title", "Limpiar Agencia - Anunciante - Producto");
+            }
+
+            if (Detalles.length > 0) {
+                //$("#selAnunciante").attr("disabled", true);
+                //$("#botLimpiar").attr("disabled", true);
+                //$("#botLimpiar").attr("title", "No es posible limpiar Anunciantes si existen Detalles sincronizados");
 
                 var op = {};
                 op.Detalles = Detalles;
@@ -3211,7 +3249,7 @@
             else
             {
                 if ($("#inpOrderNumber").attr("id_op_dg") == 0) {
-                    $("#selAnunciante").attr("disabled", false);
+                    //$("#selAnunciante").attr("disabled", false);
                 }
             }
         }
@@ -3768,12 +3806,22 @@
                 Detalles.splice(indexOfObject, 1)
             ).then(function () { reordenarRenglon(); });
 
-            if (Detalles.length == 0) {
-                $("#selAgencia").attr("disabled", false);
+            //if (Detalles.length == 0) {
+            //    $("#selAgencia").attr("disabled", false);
+            //    $("#selAnunciante").attr("disabled", false);
+            //    $("#botLimpiar").attr("disabled", false);
+            //    $("#botLimpiar").attr("title", "Limpiar Agencia - Anunciante");
+            //    $("#selEmpresa").attr("disabled", false);
+            //}
+            if (OpGam == true) {
+                $("#selAnunciante").attr("disabled", true);
+                $("#botLimpiar").attr("disabled", true);
+                $("#botLimpiar").attr("title", "No es posible limpiar Anunciantes si existen Detalles sincronizados");
+            }
+            else {
                 $("#selAnunciante").attr("disabled", false);
                 $("#botLimpiar").attr("disabled", false);
-                $("#botLimpiar").attr("title", "Limpiar Agencia - Anunciante");
-                $("#selEmpresa").attr("disabled", false);
+                $("#botLimpiar").attr("title", "Limpiar Agencia - Anunciante - Producto");
             }
             //calculateTotals();
 
@@ -4576,9 +4624,16 @@
                 detImportado = false;
                 LineaImpConv.length = 0;
             }
-            if ($("#inpOrderNumber").attr("id_op_dg") == 0) {
+
+            if (OpGam == true) {
+                $("#selAnunciante").attr("disabled", true);
+            }
+            else {
                 $("#selAnunciante").attr("disabled", false);
             }
+            //if ($("#inpOrderNumber").attr("id_op_dg") == 0) {
+            //    $("#selAnunciante").attr("disabled", false);
+            //}
         }
 
         function nuevaOrden() {
